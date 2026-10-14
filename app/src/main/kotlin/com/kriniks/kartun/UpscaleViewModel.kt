@@ -111,6 +111,25 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** True while «Вставить ссылку» downloads the picture. */
+    var downloading by mutableStateOf(false); private set
+
+    /** «Вставить ссылку на фото»: takes the first link from [clipText], downloads the picture, opens it like a picked one. */
+    fun openLink(clipText: CharSequence?) {
+        val url = LinkDownloader.findUrl(clipText)
+        if (url == null) { error = R.string.link_none to null; return }
+        if (downloading) return
+        downloading = true
+        error = null
+        viewModelScope.launch {
+            val uri = withContext(Dispatchers.IO) {
+                runCatching { LinkDownloader.download(getApplication(), url) }.onFailure { Log.w(TAG, "link download failed", it) }.getOrNull()
+            }
+            downloading = false
+            if (uri == null) error = R.string.link_failed to null else open(uri)
+        }
+    }
+
     fun chooseModel(m: Model) {
         if (m == model) return
         model = m

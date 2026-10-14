@@ -83,4 +83,8 @@
     <string name="save_failed">Не удалось сохранить фото.</string>
     <string name="saving">Сохраняем…</string>
     <string name="webp_too_big">WebP — до 16 383 px по стороне, для этого результата выберите PNG или JPEG</string>
+    <!-- [AI] «Вставить ссылку» (LinkDownloader). -->
+    <string name="link_none">В буфере обмена нет ссылки. Скопируйте ссылку на картинку и нажмите ещё раз.</string>
+    <string name="link_failed">Не удалось скачать фото по ссылке.</string>
+    <string name="link_downloading">Скачиваем фото…</string>
 </resources>

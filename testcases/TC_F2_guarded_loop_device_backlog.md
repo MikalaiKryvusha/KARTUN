@@ -57,6 +57,7 @@ test photo copied to `Pictures/KARTUN_test/` and removed after (R1 of HOUSE_RULE
 | C13 | result → «Поделиться» → system sheet → Telegram «Избранное» → the image arrives 4× sized | use case | [NOT-TESTED] |
 | C15 | Settings → System → Languages: Arabic → KARTUN mirrors (RTL), arrows point left, the text falls back to the system font; then Hindi and Chinese → readable, nothing cut | state | [NOT-TESTED] |
 | C16 | Settings → Apps → Debug KARTUN → Language → the list shows the 10 languages; picking «Español» switches KARTUN without changing the system language | state | [NOT-TESTED] |
+| C17 | copy `https://upload.wikimedia.org/wikipedia/commons/3/3f/JPEG_example_flower.jpg` in Chrome → KARTUN home → «Вставить ссылку на фото» → «Скачиваем фото…» → «Улучшение» with the flower; then with plain text in the clipboard → «В буфере обмена нет ссылки…»; then airplane mode → upscale still works | use case | [NOT-TESTED] |
 | C14 | debug build: `node tools/titan-probe.mjs --in test256.png --model realesr-general-x4v3 --gpu true --tile 200` → JSON line as before | regression | [NOT-TESTED] |
 
 ## 5. Control cases — MUST

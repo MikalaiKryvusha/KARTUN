@@ -1,5 +1,6 @@
 package com.kriniks.kartun
 
+import android.content.ClipboardManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,6 +12,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.kriniks.kartun.ui.HomeScreen
 import com.kriniks.kartun.ui.ResultScreen
@@ -55,7 +57,12 @@ private fun KartunApp(vm: UpscaleViewModel) {
     when (vm.screen) {
         UpscaleViewModel.Screen.Home -> {
             val err = vm.error?.let { (res, arg) -> if (arg != null) stringResource(res, arg) else stringResource(res) }
-            HomeScreen(onPick = pick, error = err, onDismissError = vm::dismissError)
+            val clipboard = LocalContext.current.getSystemService(ClipboardManager::class.java)
+            HomeScreen(
+                onPick = pick,
+                onPasteLink = { vm.openLink(clipboard.primaryClip?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.text) },
+                downloading = vm.downloading, error = err, onDismissError = vm::dismissError,
+            )
         }
         UpscaleViewModel.Screen.Setup -> SetupScreen(vm, onPickOther = pick)
         UpscaleViewModel.Screen.Working -> WorkingScreen(vm)

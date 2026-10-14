@@ -43,11 +43,11 @@ import com.kriniks.kartun.R
 
 /**
  * Home screen, variant A v2 of the accepted mockups ('A-home'): the big «Выберите фото» card opens the system photo
- * picker; «Вставить ссылку» waits for phase 4 (shown disabled); the share hint explains «Поделиться → KARTUN», which
+ * picker; «Вставить ссылку» downloads the picture whose link is in the clipboard (LinkDownloader, network only here); the share hint explains «Поделиться → KARTUN», which
  * works (MainActivity's ACTION_SEND filter). [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
  */
 @Composable
-fun HomeScreen(onPick: () -> Unit, error: String?, onDismissError: () -> Unit) {
+fun HomeScreen(onPick: () -> Unit, onPasteLink: () -> Unit, downloading: Boolean, error: String?, onDismissError: () -> Unit) {
     val c = MaterialTheme.colorScheme
     Column(Modifier.fillMaxSize().background(c.background).systemBarsPadding().padding(horizontal = 20.dp)) {
         // Logo: «K» in pink, the rest white (.logo b). The gear (settings) arrives with the settings screen.
@@ -64,7 +64,7 @@ fun HomeScreen(onPick: () -> Unit, error: String?, onDismissError: () -> Unit) {
                 PickCard(onPick, Modifier.weight(1f).fillMaxHeight())
                 Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     if (error != null) Notice(error, onDismissError)
-                    SecondaryButton(stringResource(R.string.home_paste_link), R.drawable.ic_link, onClick = {}, enabled = false)
+                    SecondaryButton(stringResource(if (downloading) R.string.link_downloading else R.string.home_paste_link), R.drawable.ic_link, onClick = onPasteLink, enabled = !downloading)
                     ShareHint()
                     Spacer(Modifier.weight(1f))
                     OfflineNote()
@@ -75,7 +75,7 @@ fun HomeScreen(onPick: () -> Unit, error: String?, onDismissError: () -> Unit) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             if (error != null) Notice(error, onDismissError)
             PickCard(onPick, Modifier.fillMaxWidth().weight(1f, fill = true).heightIn(max = 380.dp))
-            SecondaryButton(stringResource(R.string.home_paste_link), R.drawable.ic_link, onClick = {}, enabled = false)
+            SecondaryButton(stringResource(if (downloading) R.string.link_downloading else R.string.home_paste_link), R.drawable.ic_link, onClick = onPasteLink, enabled = !downloading)
             ShareHint()
         }
         Box(Modifier.padding(top = 16.dp, bottom = 24.dp)) { OfflineNote() }

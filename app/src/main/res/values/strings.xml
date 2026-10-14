@@ -75,4 +75,8 @@
     <string name="save_failed">Could not save the photo.</string>
     <string name="saving">Saving…</string>
     <string name="webp_too_big">WebP holds up to 16 383 px per side; choose PNG or JPEG for this result</string>
+    <!-- [AI] «Вставить ссылку» (LinkDownloader). -->
+    <string name="link_none">No link in the clipboard. Copy a link to a picture and tap again.</string>
+    <string name="link_failed">Could not download the photo from the link.</string>
+    <string name="link_downloading">Downloading the photo…</string>
 </resources>
