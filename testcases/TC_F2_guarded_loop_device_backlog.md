@@ -1,7 +1,8 @@
 # Test cases — what the guarded loop of 2026-10-14 19:12–19:53 built without the device
 
-**Created:** 2026-10-14 · **Under test:** landscape layouts, the processing service, 8×/16×, the GPU fallback ladder, save and
-share, the debug-only probe · **Version/build:** debug APK from commit `fcbb788` or later
+**Created:** 2026-10-14 · **Under test:** landscape layouts, the processing service, 8×/16× and the two-pass processing screen, the GPU
+fallback ladder, save and share, the debug-only probe, the 8 draft languages and the per-app language list, «Вставить
+ссылку», settings, the user guide, «О приложении», settings remembered between launches, «Фото готово» · **Version/build:** debug APK from commit `fcbb788` or later
 **Test basis:** the owner in chat 2026-10-14 — «лендскейп нужно поддерживать тоже» (≈ 19:12), «работай автономно, без
 тестирования на клиенте, 40 минут» / «потом потестируем» (≈ 19:12); `plans/03_epic01_F2_screens.md` steps 10–13;
 `plans/04_epic01_F1_reliable_engine.md` steps 1–2; `plans/01_EPIC_mvp.md` §2.8 (save), §2.9 (share), §4.4 (service), §4.5 (memory).
