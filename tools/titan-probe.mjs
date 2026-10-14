@@ -5,11 +5,11 @@
 //
 // Usage: node tools/titan-probe.mjs --in test256.png --model realesrgan-x4plus --gpu true --tile 128
 //          [--ref engine/third_party/testdata/ref_x4plus_256.png] [--bicubic engine/third_party/testdata/bicubic256x4.png]
-// Env: KARTUN_ADB (default D:/Android/Sdk/platform-tools/adb.exe), KARTUN_SERIAL (default from `adb devices`).
+// Env: KARTUN_ADB (default C:/Android/Sdk/platform-tools/adb.exe), KARTUN_SERIAL (default from `adb devices`).
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 
-const ADB = process.env.KARTUN_ADB || 'D:/Android/Sdk/platform-tools/adb.exe';
+const ADB = process.env.KARTUN_ADB || 'C:/Android/Sdk/platform-tools/adb.exe';
 const PKG = 'com.kriniks.kartun.debug';
 const DEVICE_DIR = `/sdcard/Android/data/${PKG}/files`;
 const LOCAL_DIR = 'engine/third_party/testdata';

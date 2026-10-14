@@ -56,7 +56,7 @@
 > <!-- classes: question-already-answered, guard-not-proven-against-threat, shown-as-link,
 >      claim-before-evidence, owner-decision-not-applied, text-in-agents-world,
 >      etalon-from-dirty-tree, shell-lied, escaping-layer, twins-missed,
->      field-dropped-in-rebuild, platform-layer-unseen, silent-noop-edit, replace-crossed-scope, stand-left-dirty -->
+>      field-dropped-in-rebuild, platform-layer-unseen, silent-noop-edit, replace-crossed-scope, stand-left-dirty, shallow-scan -->
 >
 > | Class slug | The failure it names |
 > |---|---|
@@ -75,6 +75,7 @@
 | `silent-noop-edit` | a scripted edit whose anchor did not match changed nothing, and the work was reported as done |
 | `replace-crossed-scope` | a scripted replace matched the same text in a neighbouring block (another language, another section) |
 | `stand-left-dirty` | a harness left the owner's device, stand or tree in a state the owner does not expect |
+| `shallow-scan` | a selection walked less of the tree than the action that follows it (top-level `ls` before a recursive delete) |
 >
 > The `#tags` are **trigger-tags**: before a task, grep by the task's tags and QUOTE the relevant
 > lessons in your report (id + one line) — or state "no relevant lessons". An unquoted recall is
@@ -85,6 +86,17 @@
 ## Entries
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
+
+### EXP-0013 · 2026-10-15 · ❌ · #titan #media #delete #device
+class: shallow-scan
+**Context:** the owner ordered «УДАЛИТЬ» on the Titan's `/sdcard/Download`; before deleting, the agent rescued the owner's own camera shots (`YYYYMMDD_HHMMSS.*`) to the PC.
+**Tried / did:** listed candidates with `ls /sdcard/Download` (top level only), then `find Download -mindepth 1 -delete`.
+**Result:** ❌ three camera videos in the subfolder `Download/Quick Share/` (20260820_230357, 20260822_221208, 20260823_160318, ≈ 860 MB) were deleted without a copy; the delete's own list file showed them.
+**Lesson:** the rescue selection must walk the SAME tree the delete will walk — select with `find <dir> -type f`, never with `ls <dir>`.
+**Repro:** compare `adb shell "find /sdcard/<dir> -type f | grep -cE '/[0-9]{8}_[0-9]{6}'"` with the count the rescue copied — they must be equal before `-delete`.
+**Trigger:** about to delete a device folder after rescuing part of it → run the Repro count in the same call as the delete, stop on a mismatch.
+**Not for:** deletes of a single flat folder with no subfolders (`find -mindepth 2 | wc -l` = 0).
+none-cheap: the rescue scripts are throwaway; the net is the Repro count before every delete
 
 ### EXP-0012 · 2026-10-14 · ❌→✅ · #status #claim #state
 class: claim-before-evidence
@@ -216,7 +228,7 @@ the `rm` silently missed the file; paths INSIDE one quoted `adb shell "…"` str
 **Lesson:** any argv word that starts with `/` is a Windows path to Git Bash; device paths passed to `adb` from Git Bash
 need `MSYS_NO_PATHCONV=1` (or call adb from PowerShell / Node `spawnSync`, which pass argv untouched). Measured speed over
 Tailscale (DERP relay): 4.2 MB/s (20 MB in 4.8 s, 2026-10-14).   → link: ideas/01, HOUSE_RULES.md §3
-**Repro:** `export MSYS_NO_PATHCONV=1; D:/Android/Sdk/platform-tools/adb.exe shell ls -la /data/local/tmp` — prints the device dir, not a Windows error.
+**Repro:** `export MSYS_NO_PATHCONV=1; C:/Android/Sdk/platform-tools/adb.exe shell ls -la /data/local/tmp` — prints the device dir, not a Windows error.
 **Trigger:** writing an `adb pull|push|shell <path>` command in the Bash tool → prefix `MSYS_NO_PATHCONV=1`.
 **Not for:** PowerShell and Node scripts — they do not rewrite argv.
 mechanized: tools/titan-probe.mjs (drives adb through Node spawnSync, so device paths never pass through Git Bash)

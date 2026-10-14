@@ -14,7 +14,7 @@ debugs, and documents. Verification is concrete (builds compile, tests pass, the
 |-----------|----------------|
 | `bugs/` | code defects, crashes, wrong behavior, regressions |
 | release | a tagged, shippable version of the product (GitHub Release) |
-| build | compiling/packaging the product (`$env:JAVA_HOME='C:\Program Files\Microsoft\jdk-21.0.11.10-hotspot'; $env:ANDROID_HOME='D:\Android\Sdk'; $env:GRADLE_USER_HOME='D:\Android\gradle-home'; .\gradlew.bat assembleDebug --console=plain`) |
+| build | compiling/packaging the product (`$env:JAVA_HOME='C:\Program Files\Microsoft\jdk-21.0.11.10-hotspot'; $env:ANDROID_HOME='C:\Android\Sdk'; $env:GRADLE_USER_HOME='C:\Android\gradle-home'; .\gradlew.bat assembleDebug --console=plain`) |
 | test / verify | unit/integration tests, running the app, objective checks via a harness |
 | `plans/` | roadmap, phases, architecture map, feature ideas |
 | interview | UI/UX, library/protocol/architecture forks, brand/scope decisions |

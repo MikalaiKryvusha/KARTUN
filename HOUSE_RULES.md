@@ -56,7 +56,7 @@
 
 | Стенд / устройство | Для чего | Как агент до него добирается | Известные ловушки |
 |---|---|---|---|
-| Планшет HEADWOLF Titan 1 (`Titan_1`, `kriniks-titan1`): Android 16 (API 36, патч 2026-05-05), MediaTek MT8792 (платформа `mt6897`, класс Dimensity 8300), только `arm64-v8a`, GPU Mali-G615 MC6, Vulkan 1.3 + `vulkan.compute`, ОЗУ 11,8 ГБ, Java-куча 256 МБ (`largeHeap` 512 МБ), экран 1600×2560 | главный стенд MVP: установка APK, прогоны апскейла на Vulkan и CPU, logcat, скриншоты | `D:\Android\Sdk\platform-tools\adb.exe connect 100.99.111.48:<порт>` — порт с главного экрана «Беспроводной отладки» (2026-10-14 был `44421`; меняется после перезагрузки — спроси у владельца); сопряжение уже сделано 2026-09-26 в KAST | ⚠ свободно 27 ГБ из 225 (88 %, проба 2026-10-14 14:30; до удаления записей экрана было 18 ГБ) — тестовые 192-Мп результаты чистить за собой; только `adb.exe` из `D:\Android\Sdk` стоит в исключениях NordVPN, `C:\adb\adb.exe` до `100.x` может не дойти; ошибка `10061` (отказ в соединении) значит, что порт сменился: спроси новый порт у владельца |
+| Планшет HEADWOLF Titan 1 (`Titan_1`, `kriniks-titan1`): Android 16 (API 36, патч 2026-05-05), MediaTek MT8792 (платформа `mt6897`, класс Dimensity 8300), только `arm64-v8a`, GPU Mali-G615 MC6, Vulkan 1.3 + `vulkan.compute`, ОЗУ 11,8 ГБ, Java-куча 256 МБ (`largeHeap` 512 МБ), экран 1600×2560 | главный стенд MVP: установка APK, прогоны апскейла на Vulkan и CPU, logcat, скриншоты | `C:\Android\Sdk\platform-tools\adb.exe connect 100.99.111.48:<порт>` — порт с главного экрана «Беспроводной отладки» (2026-10-14 был `44421`; меняется после перезагрузки — спроси у владельца); сопряжение уже сделано 2026-09-26 в KAST | ⚠ свободно 27 ГБ из 225 (88 %, проба 2026-10-14 14:30; до удаления записей экрана было 18 ГБ) — тестовые 192-Мп результаты чистить за собой; только `adb.exe` из `C:\Android\Sdk` стоит в исключениях NordVPN, `C:\adb\adb.exe` до `100.x` может не дойти; ошибка `10061` (отказ в соединении) значит, что порт сменился: спроси новый порт у владельца |
 
 ## 4. Досье окружения — факты машины
 
@@ -70,19 +70,19 @@
 | Node.js | v24.15.0 | `node -v` |
 | Java в PATH | OpenJDK 21.0.11 (Microsoft), `C:\Program Files\Microsoft\jdk-21.0.11.10-hotspot` | `java -version` |
 | `JAVA_HOME` | ⚠ `C:\Users\krinik\.bubblewrap\jdk\jdk-17.0.11+9` — каталога нет (в проекте KAST `JAVA_HOME` указывает на этот путь и тоже не работает); для Gradle задавай JDK 21 явно | `echo $JAVA_HOME` |
-| Android SDK | `D:\Android\Sdk` (переменная `ANDROID_HOME` НЕ задана): platforms `android-36`, `android-37.0`; build-tools `35.0.0`; NDK `27.0.12077973` и `29.0.14206865` (r29 — им собран ncnn 20260526); CMake `3.31.6` (поставлены агентом 2026-10-14 13:51) | `ls /d/Android/Sdk/{ndk,cmake,build-tools,platforms}` |
-| Установка пакетов SDK | `sdkmanager` объявлен устаревшим (замена — `android sdk`), но работает; имена пакетов — через `/`: `sdkmanager.bat --sdk_root=D:\Android\Sdk cmake/3.31.6 ndk/29.0.14206865` (через `;` их режет `cmd`) | `D:\Android\Sdk\cmdline-tools\latest\bin\sdkmanager.bat --list` |
+| Android SDK | `C:\Android\Sdk` (переменная `ANDROID_HOME` НЕ задана): platforms `android-36`, `android-37.0`; build-tools `35.0.0`; NDK `27.0.12077973` и `29.0.14206865` (r29 — им собран ncnn 20260526); CMake `3.31.6` (поставлены агентом 2026-10-14 13:51) | `ls /c/Android/Sdk/{ndk,cmake,build-tools,platforms}` |
+| Установка пакетов SDK | `sdkmanager` объявлен устаревшим (замена — `android sdk`), но работает; имена пакетов — через `/`: `sdkmanager.bat --sdk_root=C:\Android\Sdk cmake/3.31.6 ndk/29.0.14206865` (через `;` их режет `cmd`) | `C:\Android\Sdk\cmdline-tools\latest\bin\sdkmanager.bat --list` |
 | Gradle | обёртка проекта, Gradle 9.8.1; AGP 9.4.1, Kotlin 2.4.21, Compose BOM 2026.09.00 (версии сверены 2026-10-14) | `gradle/wrapper/gradle-wrapper.properties`, `gradle/libs.versions.toml` |
 | Android Studio | не установлен — сборка только из командной строки | `ls "C:/Program Files/Android"` |
-| adb | `D:\Android\Sdk\platform-tools\adb.exe` 1.0.41 (рабочий для Tailscale); есть ещё `C:\adb\adb.exe` — первый в PATH | `which -a adb` |
+| adb | `C:\Android\Sdk\platform-tools\adb.exe` 1.0.41 (рабочий для Tailscale); есть ещё `C:\adb\adb.exe` — первый в PATH | `which -a adb` |
 | Остальное (кодировки, локали, `tar`/`curl`/`find`) | `— not probed yet —` | |
 
 ## 5. Маршруты, рецепты и соглашения — указатель своей работы
 
 | Поверхность | Где живёт работа | Что покрывает |
 |---|---|---|
-| `adb` к Титану через Tailscale при NordVPN | `D:\work\ai_sandbox\KAST\HOUSE_RULES.md` (строки 147–156 и 224, только чтение) | рецепт сопряжения, раздельное туннелирование NordVPN (в исключениях ТОЛЬКО `adb.exe` из `D:\Android\Sdk`), `adb kill-server` после правки исключений |
-| Сборка Android из командной строки на этой машине | `D:\work\ai_sandbox\KAST\HOUSE_RULES.md` строка 233 (образец) | PowerShell: `$env:JAVA_HOME='C:\Program Files\Microsoft\jdk-21.0.11.10-hotspot'; $env:ANDROID_HOME='D:\Android\Sdk'; $env:GRADLE_USER_HOME='D:\Android\gradle-home'; .\gradlew.bat assembleDebug --console=plain` |
+| `adb` к Титану через Tailscale при NordVPN | `D:\work\ai_sandbox\KAST\HOUSE_RULES.md` (строки 147–156 и 224, только чтение) | рецепт сопряжения, раздельное туннелирование NordVPN (в исключениях ТОЛЬКО `adb.exe` из `C:\Android\Sdk`), `adb kill-server` после правки исключений |
+| Сборка Android из командной строки на этой машине | `D:\work\ai_sandbox\KAST\HOUSE_RULES.md` строка 233 (образец) | PowerShell: `$env:JAVA_HOME='C:\Program Files\Microsoft\jdk-21.0.11.10-hotspot'; $env:ANDROID_HOME='C:\Android\Sdk'; $env:GRADLE_USER_HOME='C:\Android\gradle-home'; .\gradlew.bat assembleDebug --console=plain` |
 | Стиль Криника (цвета, компоненты, сборка) | `researches/01_krinikcam_style_and_stack.md` | палитра `#FF1A8C` / `#0D0D0D`, компоненты Compose, версии инструментов KrinikCam |
 | UI/UX и движок Upscayl 2.15.0 | `researches/02_upscayl_desktop_reverse_engineering.md` | экраны, настройки, аргументы `upscayl-bin`, модели, ловушки |
 | Пуш и аутентификация | `gh auth setup-git` | non-fast-forward → `git pull --rebase` → повтор |
@@ -104,6 +104,7 @@
 | `node tools/catalogue.mjs [--check]` | копирует каталог моделей `docs/model-catalogue.json` в `app/src/main/assets/catalogue.json`, проверив поля, хеши и что модель с NC-лицензией не помечена коммерческой; `--check` — exit 1 при расхождении копии с источником | ручная правка копии каталога в приложении |
 | `node tools/check-app-names.mjs` | сверяет названия сборок в `app/build.gradle.kts` с правилом R3 («Debug KARTUN» · «Stage KARTUN» · «KARTUN»), exit 1 при расхождении | переименованная сборка или название не то, что дал владелец |
 | `KARTUN_SERIAL=100.99.111.48:<порт> node tools/shoot-readme.mjs [--lang ru\|en\|all]` | проходит путь пользователя на Титане и снимает 8 экранов в `docs/screenshots/<язык>/` (WebP 540 px) для README; статус-бар чистит демо-режим Android, язык приложения и поворот возвращает | README со старыми или чужими скриншотами |
+| UI-агент на устройстве (лежит ВНЕ репозитория, `C:\Android\private\ui-agent\`, описание — `UI_AGENT.md` там же; APK `evegf.app.macrobenchmark` на Титане уже стоит): PowerShell `$env:PATH="C:\Android\Sdk\platform-tools;$env:PATH"; $env:PYTHONUTF8="1"; python C:\Android\private\ui-agent\ui.py --serial 100.99.111.48:<порт> --start ping`, дальше `wait <текст>` · `tapText <текст>` · `tap x y` · `labels` · `tree` · `shot <файл>` | водит интерфейс за десятки мс на команду, `wait` возвращается по событию смены экрана — вместо `uiautomator dump` по 3 с (владелец 2026-10-15 ≈ 00:00: «там выжный и полезный инструмент автоматизации тестирования андроид»; рецепт — `KAST/HOUSE_RULES.md`) | медленные прогоны на Титане; без `PYTHONUTF8=1` кириллица в ответах ломается; через 10 мин без клиента агент гаснет — снова `--start` |
 | `node tools/stamp-guard.mjs --staged` (git-хук `.git/hooks/pre-commit` этого клона) | отказывает коммиту с отметкой времени позже текущего момента | время, написанное на глаз (EXP-0004, EXP-0005) |
 
 ## 7. Знания о продукте

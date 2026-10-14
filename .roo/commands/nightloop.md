@@ -44,7 +44,7 @@ Until one fires — don't stop, don't wait for confirmations, work.
    - Make technical/implementation decisions yourself.
    - ONLY brand/UX/architecture-defining decisions — file an `/interview` + mark `STATUS.md`, take another task.
    - Tasks needing human actions (real hardware, external accounts) — file homework in `homeworks/`.
-3. **Do it**: code → build (`$env:JAVA_HOME='C:\Program Files\Microsoft\jdk-21.0.11.10-hotspot'; $env:ANDROID_HOME='D:\Android\Sdk'; $env:GRADLE_USER_HOME='D:\Android\gradle-home'; .\gradlew.bat assembleDebug --console=plain`) → deploy → test on the harness (`JVM: .\gradlew.bat testDebugUnitTest (same env as the build); device: functional run on Titan 1 over adb - install, launch, logcat, screencap (HOUSE_RULES.md section 3)`),
+3. **Do it**: code → build (`$env:JAVA_HOME='C:\Program Files\Microsoft\jdk-21.0.11.10-hotspot'; $env:ANDROID_HOME='C:\Android\Sdk'; $env:GRADLE_USER_HOME='C:\Android\gradle-home'; .\gradlew.bat assembleDebug --console=plain`) → deploy → test on the harness (`JVM: .\gradlew.bat testDebugUnitTest (same env as the build); device: functional run on Titan 1 over adb - install, launch, logcat, screencap (HOUSE_RULES.md section 3)`),
    verify objectively. High-level harness commands first; if missing, do it low-level then ADD the command.
    Execute the item by the fable loop (`/fable-method`; `/fable-loop` for substantive items) — its gates
    and forced artifacts (`INTENT`/`AUTH`/`TWINS`/`PENDING`) apply inside the cycle too. A HEAVY item

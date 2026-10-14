@@ -8,13 +8,13 @@
 // first en run caught the «Enhance» title matching the button - fixed]
 //
 // Usage: node tools/shoot-readme.mjs [--lang ru|en|all]
-// Env: KARTUN_ADB (default D:/Android/Sdk/platform-tools/adb.exe), KARTUN_SERIAL (e.g. 100.99.111.48:44487).
+// Env: KARTUN_ADB (default C:/Android/Sdk/platform-tools/adb.exe), KARTUN_SERIAL (e.g. 100.99.111.48:44487).
 // Coordinates are the Titan's portrait 1600x2560; elements with text are found by uiautomator, not by coordinates.
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
-const ADB = process.env.KARTUN_ADB || 'D:/Android/Sdk/platform-tools/adb.exe';
+const ADB = process.env.KARTUN_ADB || 'C:/Android/Sdk/platform-tools/adb.exe';
 const PKG = 'com.kriniks.kartun.debug';
 const ACTIVITY = `${PKG}/com.kriniks.kartun.MainActivity`;
 const OUT = 'docs/screenshots';
