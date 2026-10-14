@@ -69,4 +69,8 @@
     <string name="size_to">%1$s → %2$s</string>
     <string name="percent">%1$d%%</string>
     <string name="arrow">→</string>
+    <!-- [AI] the notification of the processing service (plans/03 slice 2). -->
+    <string name="notif_channel">Обработка</string>
+    <string name="notif_progress">Готово %1$d%%</string>
+    <string name="notif_starting">Запускаем нейросеть…</string>
 </resources>

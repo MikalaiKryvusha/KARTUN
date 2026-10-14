@@ -60,4 +60,8 @@
     <string name="size_to">%1$s → %2$s</string>
     <string name="percent">%1$d%%</string>
     <string name="arrow">→</string>
+    <!-- [AI] the notification of the processing service (plans/03 slice 2). -->
+    <string name="notif_channel">Processing</string>
+    <string name="notif_progress">%1$d%% done</string>
+    <string name="notif_starting">Starting the network…</string>
 </resources>

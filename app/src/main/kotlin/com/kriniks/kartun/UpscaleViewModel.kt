@@ -74,7 +74,6 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
     private val engineThread = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private val prefs = app.getSharedPreferences("estimates", Context.MODE_PRIVATE)
-    @Volatile private var cancelRequested = false
     private var job: Job? = null
     private var preload: Job? = null
     // The loaded net lives on the engine thread only (touched inside withContext(engineThread)).
@@ -146,23 +145,25 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     fun start() {
         val src = source ?: return
         if (!scaleSupported) return
-        cancelRequested = false
+        ProcessingState.cancelRequested = false
         error = null
         val chosen = model
         val target = scale
-        _progress.value = Progress(estimateMs = estimateMs())
+        publish(Progress(estimateMs = estimateMs()))
         screen = Screen.Working
+        // Keep the process alive and show the notification while the network works (plans/03 slice 2).
+        UpscaleService.start(getApplication())
         job = viewModelScope.launch {
             val t0 = SystemClock.elapsedRealtime()
             val outcome = withContext(engineThread) {
                 runCatching {
                     // Normally already loaded by preload(); a start during loading waits for it on this same thread.
                     ensureLoaded(chosen).let { u ->
-                        _progress.value = _progress.value.copy(gpu = u.usesGpu)
+                        publish(_progress.value.copy(gpu = u.usesGpu))
                         val tRun = SystemClock.elapsedRealtime()
                         val out4 = u.upscale(src.bitmap, ENGINE_SCALE, TILE_PX) { done, total ->
-                            _progress.value = _progress.value.copy(done = done, total = total, elapsedMs = SystemClock.elapsedRealtime() - t0)
-                            !cancelRequested
+                            publish(_progress.value.copy(done = done, total = total, elapsedMs = SystemClock.elapsedRealtime() - t0))
+                            !ProcessingState.cancelRequested
                         }
                         learnRate(chosen, src.megapixels, SystemClock.elapsedRealtime() - tRun)
                         val full = if (target == ENGINE_SCALE) out4 else downscale(out4, src.width * target, src.height * target)
@@ -172,6 +173,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 }
             }
+            ProcessingState.progress.value = null // the run is over: the service stops itself
             outcome.onSuccess { result = it; screen = Screen.Result }
                 .onFailure {
                     screen = Screen.Setup
@@ -184,7 +186,13 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun cancel() { cancelRequested = true }
+    fun cancel() { ProcessingState.cancelRequested = true }
+
+    /** One progress value for the screen and for the notification of [UpscaleService]. */
+    private fun publish(p: Progress) {
+        _progress.value = p
+        ProcessingState.progress.value = p
+    }
 
     fun back() {
         when (screen) {
@@ -208,6 +216,10 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
+        // The screen is gone for good (Back from the app mid-run): stop the run between tiles and let the service go,
+        // so no notification is left behind for a result nobody will see.
+        ProcessingState.cancelRequested = true
+        ProcessingState.progress.value = null
         // Release the net on its own thread, then stop the thread (ncnn/Vulkan objects must not cross threads).
         engineThread.executor.execute { release() }
         engineThread.close()

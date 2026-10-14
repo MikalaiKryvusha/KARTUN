@@ -72,7 +72,15 @@ Owner's remarks on the build, chat 2026-10-14 ≈ 18:48–18:50 (verbatim), all 
     them; processing — photo left, ring panel right; result — the panel capped at 600 dp. Open: walk all four on the
     Titan rotated («потом потестируем»).
 
-Slice 2 (next): foreground service `mediaProcessing` with a notification; the probe activity moves to a debug-only entry.
+Slice 2:
+11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel
+    keeps owning the engine job; the service keeps the process alive and mirrors `ProcessingState.progress` in a silent
+    notification (percent, «Отменить», tap opens the app), stops itself when the run ends, cancels on the 6 h/day limit
+    (`onTimeout`). Permissions `FOREGROUND_SERVICE` + `FOREGROUND_SERVICE_MEDIA_PROCESSING` (install-time, no dialog).
+    Open: the device run — start, leave the app, watch the notification, «Отменить» from it («потом потестируем»).
+    `[AI]` POST_NOTIFICATIONS is NOT requested: without it Android 13+ still lists the run in the task manager, a
+    permission dialog is a UX decision for the owner.
+12. [ ] The probe activity moves to a debug-only entry.
 
 ## Risks
 
