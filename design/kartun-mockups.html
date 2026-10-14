@@ -306,9 +306,10 @@ const summary = () => `<div class="sum"><span>960 × 1280 → <b>3840 × 5120</b
 // square while scrolling down, and grows back when scrolling up. Every setting carries an (i) button.
 const info = '<div class="info">i</div>';
 const sh = (t) => `<div style="display:flex;align-items:center;justify-content:space-between;margin:4px 4px -6px"><span class="label" style="margin:0">${t}</span>${info}</div>`;
-// Scale slider 1x..16x, step 1 (like the desktop Upscayl): bubble, resulting size, a warning above 4x.
+// Scale slider with five steps 1x, 2x (default), 4x, 8x, 16x (owner's word): bubble, resulting size, a warning above 4x.
+const STEPS = [1, 2, 4, 8, 16];
 const kscale = (v) => `<div class="kscale" data-kscale data-v="${v}"><div class="track"><div class="fill"></div><div class="thumb"></div><div class="bubble"></div></div>
-  <div class="marks">${[1, 4, 8, 12, 16].map((m) => `<span style="left:${((m - 1) / 15) * 100}%">${m}×</span>`).join('')}</div>
+  <div class="marks">${STEPS.map((m, i) => `<span style="left:${i * 25}%">${m}×${m === 2 ? ' · по умолч.' : ''}</span>`).join('')}</div>
   <div class="res"><span class="r1"></span><span class="r2"></span></div>
   <div class="warn">Выше 4× нейросеть делает два прохода: обработка в 4–16 раз дольше, файл очень большой.</div></div>`;
 function setupScreen(scrolled) {
@@ -320,7 +321,7 @@ function setupScreen(scrolled) {
     <div class="stack">
       ${sh('Модель')}${modelCards()}
       <div class="row-link"><div><div class="a">Все модели</div><div class="b">10 моделей · 2 на устройстве</div></div><div class="go">Выбрать ›</div></div>
-      ${sh('Масштаб')}${kscale(scrolled ? 8 : 4)}
+      ${sh('Масштаб')}${kscale(scrolled ? 8 : 2)}
       ${sh('Формат результата')}<div class="chips" style="flex-wrap:wrap"><div class="pill on">PNG</div><div class="pill">JPEG</div><div class="pill">WebP</div><div class="pill">HEIC</div><div class="pill">AVIF</div></div>
       ${sh('Качество · 92')}<div class="slider"><i style="width:92%"></i><b style="right:auto;left:calc(92% - 11px)"></b></div>
       ${sh('Дополнительно')}<div class="group">
@@ -434,8 +435,8 @@ const S = {
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div class="photo" style="height:120px;${bg('before.jpg')}"><div class="chip">2× · 1920 × 2560</div></div>
         <div class="photo" style="height:120px;${bg('after.jpg')}"><div class="chip">4× · 3840 × 5120</div></div></div>
-      <div class="muted" style="color:var(--text);line-height:1.5">Масштаб — во сколько раз вырастут ширина и высота фото, от 1× до 16×. При 4× фото 960 × 1280 станет 3840 × 5120: пикселей в 16 раз больше.</div>
-      <div class="muted" style="line-height:1.5">• 1× — размер прежний, нейросеть только убирает шум и размытие.<br>• 2×–4× — один проход нейросети; хватает для экрана и печати.<br>• 5×–16× — два прохода: обработка в 4–16 раз дольше, файл очень большой.</div>
+      <div class="muted" style="color:var(--text);line-height:1.5">Масштаб — во сколько раз вырастут ширина и высота фото: 1×, 2×, 4×, 8× или 16×, по умолчанию 2×. При 2× фото 960 × 1280 станет 1920 × 2560.</div>
+      <div class="muted" style="line-height:1.5">• 1× — размер прежний, нейросеть только убирает шум и размытие.<br>• 2× и 4× — один проход нейросети; хватает для экрана и печати.<br>• 8× и 16× — два прохода: обработка дольше в 4–16 раз, файл очень большой.</div>
       <div class="row-link"><div class="a">Открыть руководство полностью</div><div class="go">›</div></div>
     </div>`,
   'settings': () => {
@@ -467,12 +468,13 @@ if (shot) {
   const t = document.querySelector(`.phone-wrap[data-id="${shot}"]`);
   if (t) t.classList.add('target');
 }
-// Scale slider: drag anywhere on the track; values 1..16, step 1. Source photo of the mockups is 960x1280.
+// Scale slider: drag anywhere on the track; snaps to the five steps. Source photo of the mockups is 960x1280.
 for (const k of document.querySelectorAll('[data-kscale]')) {
   const tr = k.querySelector('.track');
-  const set = (v) => {
-    v = Math.min(16, Math.max(1, Math.round(v)));
-    const p = ((v - 1) / 15) * 100;
+  const set = (i) => {
+    i = Math.min(4, Math.max(0, Math.round(i)));
+    const v = STEPS[i];
+    const p = i * 25;
     k.querySelector('.fill').style.width = p + '%';
     k.querySelector('.thumb').style.left = p + '%';
     const b = k.querySelector('.bubble'); b.style.left = p + '%'; b.textContent = v + '×';
@@ -481,10 +483,10 @@ for (const k of document.querySelectorAll('[data-kscale]')) {
     k.querySelector('.r2').textContent = `${(w * h / 1e6).toLocaleString('ru-RU', { maximumFractionDigits: 1 })} Мп`;
     k.classList.toggle('big', v > 4);
   };
-  const drag = (e) => { const r = tr.getBoundingClientRect(); set(1 + ((e.clientX - r.left) / r.width) * 15); };
+  const drag = (e) => { const r = tr.getBoundingClientRect(); set(((e.clientX - r.left) / r.width) * 4); };
   tr.addEventListener('pointerdown', (e) => { tr.setPointerCapture(e.pointerId); drag(e); tr.onpointermove = drag; });
   tr.addEventListener('pointerup', () => { tr.onpointermove = null; });
-  set(+k.dataset.v);
+  set(STEPS.indexOf(+k.dataset.v));
 }
 // Pinned preview: shrinks while scrolling down, becomes a small square past 190 px, grows back on the way up.
 for (const sc of document.querySelectorAll('[data-collapse]')) {
