@@ -298,7 +298,7 @@ private fun DragHandle(modifier: Modifier) {
 private fun SettingsBlock(vm: UpscaleViewModel, onInfo: (Int) -> Unit) {
     vm.error?.let { (res, arg) -> Notice(if (arg != null) stringResource(res, arg) else stringResource(res), vm::dismissError) }
     SectionLabel(stringResource(R.string.label_model)) { onInfo(R.string.label_model) }
-    UpscaleViewModel.Model.entries.forEach { m -> ModelCard(m, m == vm.model, m == vm.model && vm.modelLoading, durationText(vm.estimateMs(m))) { vm.chooseModel(m) } }
+    vm.modelOrder.forEach { m -> ModelCard(m, m == vm.model, m == vm.model && vm.modelLoading, durationText(vm.estimateMs(m))) { vm.chooseModel(m) } }
     SectionLabel(stringResource(R.string.label_scale)) { onInfo(R.string.label_scale) }
     ScaleSlider(vm)
 }

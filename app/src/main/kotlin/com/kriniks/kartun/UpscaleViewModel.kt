@@ -112,6 +112,10 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** The model cards' order: the last used on top, the one before it next (the owner, plan 03 step 18: «Вверху последнюю
+     *  использованную, ниже предпоследнюю»); a model never used keeps its catalogue place after them. Kept between launches. */
+    var modelOrder by mutableStateOf(Model.entries.toList()); private set
+
     /** «Ускорение GPU» of the settings; off = the CPU path. Kept between launches. */
     var useGpu by mutableStateOf(true); private set
     private var beforeSettings = Screen.Home
@@ -121,6 +125,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     init {
         useGpu = prefs.getBoolean(PREF_GPU, true)
         model = Model.entries.firstOrNull { it.name == prefs.getString(PREF_MODEL, null) } ?: Model.Fast
+        modelOrder = byRecency(prefs.getString(PREF_MODEL_ORDER, null))
         scaleIndex = prefs.getInt(PREF_SCALE, DEFAULT_SCALE_INDEX).coerceIn(0, SCALES.lastIndex)
         saveFormat = ResultStore.Format.entries.firstOrNull { it.name == prefs.getString(PREF_FORMAT, null) } ?: ResultStore.Format.Png
         saveQuality = prefs.getInt(PREF_QUALITY, DEFAULT_QUALITY)
@@ -219,7 +224,9 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         if (!scaleSupported) return
         ProcessingState.cancelRequested = false
         error = null
-        prefs.edit { putInt(PREF_SCALE, scaleIndex) }
+        val recent = usedFirst(prefs.getString(PREF_MODEL_ORDER, null), model)
+        prefs.edit { putInt(PREF_SCALE, scaleIndex); putString(PREF_MODEL_ORDER, recent) }
+        modelOrder = byRecency(recent)
         val chosen = model
         val target = scale
         publish(Progress(estimateMs = estimateMs()))
@@ -397,6 +404,17 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         private const val TAG = "KARTUN"
         private const val PREF_GPU = "use_gpu"
         private const val PREF_MODEL = "model"
+        private const val PREF_MODEL_ORDER = "model_order"
+
+        /** The models in the stored order (names, comma-separated, most recent first); unknown names are dropped, models
+         *  never used follow in their catalogue order. [TESTED: 2026-10-14 · RecencyTest] */
+        fun byRecency(stored: String?): List<Model> {
+            val used = stored.orEmpty().split(',').mapNotNull { n -> Model.entries.firstOrNull { it.name == n } }.distinct()
+            return used + Model.entries.filter { it !in used }
+        }
+
+        /** The stored order after a run with [m]: [m] moves to the front. */
+        fun usedFirst(stored: String?, m: Model): String = (listOf(m) + byRecency(stored).filter { it != m }).joinToString(",") { it.name }
         private const val PREF_SCALE = "scale_index"
         private const val PREF_FORMAT = "save_format"
         private const val PREF_QUALITY = "save_quality"

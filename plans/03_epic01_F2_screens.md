@@ -77,8 +77,11 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
     «а превью фото можно тапом и удержанием двигать и перемещать прямо во вьюшке преввью» · «даблтам увеличивает» →
     `DragHandle` + `PhotoCard` gestures built ≈ 20:16 (double tap ×2.5, long press + drag pans, single tap full screen);
     NOT walked on the Titan yet.
-18. [ ] «в выборе моделей на экране Улучшение нужно показывать две последние использованные модели. Вверху последнюю
+18. [x] «в выборе моделей на экране Улучшение нужно показывать две последние использованные модели. Вверху последнюю
     использованную, ниже предпоследнюю».
+    Done 2026-10-14 ≈ 21:41 +03:00: a run moves its model to the front of the stored order (`model_order`), the cards follow
+    it; `RecencyTest` 4/4, reddened by a mutant that appended instead of prepending. On the Titan: General v3 on top before,
+    after an x4plus run x4plus on top. With only two models today the whole list is the two last used.
 19. [ ] «описание модели на экране Улучшение сделать подробнее. Слово - Максимум - странное, и ни о чем не говорит».
 20. [x] «в кольце прогресса цифры процентов пляшут, вероятно из-за разной ширины цифр. Нужен там или моноширинный шрифт, или
     как-то закрепить, чтобы не плясали цифры» (tabular figures: `fontFeatureSettings = "tnum"`).
