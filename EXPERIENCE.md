@@ -80,6 +80,18 @@
 
 ## Entries
 
+### EXP-0004 · 2026-10-14 · ❌→✅ · #report #time #testrun
+class: claim-before-evidence
+**Context:** writing the phase 0 run report right after eight probe runs on the Titan.
+**Tried / did:** filled the Runs table moments (14:08–14:16) from a sense of elapsed work, without a clock probe.
+**Result:** ❌ the first probe after the commit showed 14:10:06 — the moments were in the future. ✅ corrected from the
+device output files' mtimes (`ls --full-time`), runs without an own file marked `≈`; the correction is written in the report.
+**Lesson:** a session's sense of time comes from the volume of work, not from the clock; every moment in a report is a
+probe in the same call as the write, or a mtime/log line — never typed by feel.   → link: testcases/reports/2026-10-14_F0_engine_probe.md
+**Repro:** `date '+%Y-%m-%d %H:%M:%S %z'` in the same tool call that writes the report row; for past runs `adb shell ls -la --full-time <outputs>`.
+**Trigger:** writing a `Moment` cell or a `Created:` stamp → run `date` in that same call.
+**Not for:** dates of external events (a vendor release) — those are dates, not moments of our work.
+
 ### EXP-0003 · 2026-10-14 · ❌→✅ · #shell #heredoc #windows #paths
 class: escaping-layer
 **Context:** writing `tools/fetch-ncnn.mjs` through a Bash heredoc with a JS string `'C:\\Windows\\System32\\tar.exe'`.

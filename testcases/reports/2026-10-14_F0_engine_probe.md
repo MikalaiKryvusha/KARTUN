@@ -1,6 +1,6 @@
 # Test run report — Phase 0 engine probe on the Titan (Real-ESRGAN via own JNI over ncnn 20260526)
 
-**Created:** 2026-10-14 14:17 +03:00 · **Run by:** the agent (Claude Opus 5.5) · **Version/build:** debug APK `com.kriniks.kartun.debug` 0.1 (1), engine `libkartun_engine.so` (clamped-tile build), ncnn `20260526` android-vulkan (sha256 `26909c92…52804`)
+**Created:** ≈ 2026-10-14 14:09 +03:00 (file written 14:09:28; corrected: stood «14:17», a moment written by feel) · **Run by:** the agent (Claude Opus 5.5) · **Version/build:** debug APK `com.kriniks.kartun.debug` 0.1 (1), engine `libkartun_engine.so` (clamped-tile build), ncnn `20260526` android-vulkan (sha256 `26909c92…52804`)
 
 ## 1. Work
 
@@ -21,16 +21,18 @@ baseline `magick -filter Catrom -resize 400%` → `bicubic256x4.png`. Not produc
 
 ## 3. Runs
 
+Moments: the output file mtime on the device (end of the run), probed 2026-10-14 14:10 with `ls --full-time`; runs 2 and 8 left no own file (overwritten / none), so they carry `≈`. Corrected 2026-10-14 ≈ 14:11: the table first stood with moments 14:08–14:16 written by feel.
+
 | # | Moment | Command | Exit / outcome |
 |---|---|---|---|
-| 1 | 2026-10-14 14:01 +03:00 | `adb shell am start … --es in test256.png --es model realesrgan-x4plus --ez gpu true --ei tile 128` (first build) | ok · 1024×1024 · 5192 ms · PSNR vs ref 37.66 dB, vs bicubic 31.30 dB |
-| 2 | 2026-10-14 14:08 +03:00 | `node tools/titan-probe.mjs --in test256.png --model realesrgan-x4plus --gpu true --tile 200 --ref … --bicubic …` (replicate-padding build) | ok · 6435 ms · 38.59 / 30.89 dB |
-| 3 | 2026-10-14 14:08 +03:00 | same, `--tile 128` (replicate-padding build) | ok · 6241 ms · 36.32 / 30.85 dB |
-| 4 | 2026-10-14 14:10 +03:00 | same, `--gpu false --tile 128` (replicate-padding build) | ok · CPU · 93 881 ms · 36.34 / 30.86 dB |
-| 5 | 2026-10-14 14:12 +03:00 | `node tools/titan-probe.mjs --in test256.png --model realesrgan-x4plus --gpu true --tile 200 --ref … --bicubic …` (clamped-tile build, kept) | ok · 5482 ms · **39.22 / 31.12 dB** |
-| 6 | 2026-10-14 14:14 +03:00 | `node tools/titan-probe.mjs --in test1mp.png --model realesrgan-x4plus --gpu true --tile 200` | ok · 4096×4096 · **88 717 ms** |
-| 7 | 2026-10-14 14:15 +03:00 | `node tools/titan-probe.mjs --in test1mp.png --model realesr-animevideov3-x4 --gpu true --tile 200` | ok · 4096×4096 · **3 140 ms** |
-| 8 | 2026-10-14 14:16 +03:00 | `node tools/titan-probe.mjs --in test256.png --model no-such-model --gpu true --tile 128` | `{"ok":false,"error":"model load failed: no-such-model"}` · 0 FATAL/SIGSEGV in logcat · process alive |
+| 1 | 2026-10-14 14:01:53 +03:00 | `adb shell am start … --es in test256.png --es model realesrgan-x4plus --ez gpu true --ei tile 128` (first build) | ok · 1024×1024 · 5192 ms · PSNR vs ref 37.66 dB, vs bicubic 31.30 dB |
+| 2 | ≈ 2026-10-14 14:03 +03:00 | `node tools/titan-probe.mjs --in test256.png --model realesrgan-x4plus --gpu true --tile 200 --ref … --bicubic …` (replicate-padding build) | ok · 6435 ms · 38.59 / 30.89 dB |
+| 3 | 2026-10-14 14:03:55 +03:00 | same, `--tile 128` (replicate-padding build) | ok · 6241 ms · 36.32 / 30.85 dB |
+| 4 | 2026-10-14 14:05:33 +03:00 | same, `--gpu false --tile 128` (replicate-padding build) | ok · CPU · 93 881 ms · 36.34 / 30.86 dB |
+| 5 | 2026-10-14 14:06:32 +03:00 | `node tools/titan-probe.mjs --in test256.png --model realesrgan-x4plus --gpu true --tile 200 --ref … --bicubic …` (clamped-tile build, kept) | ok · 5482 ms · **39.22 / 31.12 dB** |
+| 6 | 2026-10-14 14:08:25 +03:00 | `node tools/titan-probe.mjs --in test1mp.png --model realesrgan-x4plus --gpu true --tile 200` | ok · 4096×4096 · **88 717 ms** |
+| 7 | 2026-10-14 14:08:44 +03:00 | `node tools/titan-probe.mjs --in test1mp.png --model realesr-animevideov3-x4 --gpu true --tile 200` | ok · 4096×4096 · **3 140 ms** |
+| 8 | ≈ 2026-10-14 14:09 +03:00 | `node tools/titan-probe.mjs --in test256.png --model no-such-model --gpu true --tile 128` | `{"ok":false,"error":"model load failed: no-such-model"}` · 0 FATAL/SIGSEGV in logcat · process alive |
 
 ## 4. Checks
 

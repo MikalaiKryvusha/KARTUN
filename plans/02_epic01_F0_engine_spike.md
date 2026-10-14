@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-14 (agent)
 > **Родитель:** `plans/01_EPIC_mvp.md` §3 row «0 — проверка движка», gate: criteria 2.4 and 2.6 met by a console probe on the Titan
-> **Статус:** 🔧 in progress — engine proven on the Titan 2026-10-14 14:17 +03:00 (`testcases/reports/2026-10-14_F0_engine_probe.md`): steps 1–3, 5–9 done; step 4 partly (x4plus + animevideov3 from the xinntao release; general-x4v3 not converted); step 10 open
+> **Статус:** 🔧 in progress — engine proven on the Titan 2026-10-14 ≈ 14:09 +03:00 (`testcases/reports/2026-10-14_F0_engine_probe.md`): steps 1–3, 5–9 done; step 4 partly (x4plus + animevideov3 from the xinntao release; general-x4v3 not converted); step 10 open
 > **Вовне:** the measured time per 1 MP → to the owner at phase close (proposes the number for criterion 2.6)
 
 ## Goal vector
