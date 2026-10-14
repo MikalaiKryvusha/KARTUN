@@ -72,7 +72,15 @@
 
 ## 6. Инструменты проекта
 
-Пока нет — строка появляется в день, когда добавлен инструмент.
+| Команда | Что делает | От чего страхует |
+|---|---|---|
+| PowerShell: сборка из раздела 5 (`.gradlew.bat assembleDebug`) | собирает APK с нативным движком | — |
+| `node tools/fetch-ncnn.mjs` | скачивает ncnn `20260526` android-vulkan в `engine/third_party/` и сверяет SHA-256 | подмена или порча пакета ncnn |
+| `node tools/titan-probe.mjs --in <файл> --model <модель> --gpu true --tile 200 [--ref <png>]` | запускает пробу движка на Титане через adb, печатает JSON и PSNR | заявление «движок работает» без прогона на устройстве |
+| `.venv-convert/Scripts/python.exe -I tools/convert-model.py <веса.pth> <папка>` | конвертирует веса SRVGGNetCompact (BSD-3) в ncnn с именами входа и выхода движка | — |
+| `node tools/shoot-mockups.mjs` | снимает экраны `design/kartun-mockups.html` в `design/flow-map/screens/` (вне git) | лист KUIPS из устаревших кадров |
+| `node D:/work/ai_sandbox/ndim/tools/build-flow-map.mjs` (из корня KARTUN) | собирает лист KUIPS `design/flow-map.html` сборщиком NDim на месте (код AGPL не копируется, лист вне git) | — |
+| `node tools/stamp-guard.mjs --staged` (git-хук `.git/hooks/pre-commit` этого клона) | отказывает коммиту с отметкой времени позже текущего момента | время, написанное на глаз (EXP-0004, EXP-0005) |
 
 ## 7. Знания о продукте
 

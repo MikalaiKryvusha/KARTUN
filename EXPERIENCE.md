@@ -80,6 +80,18 @@
 
 ## Entries
 
+### EXP-0005 · 2026-10-14 · ❌→✅ · #report #time #guard
+class: claim-before-evidence
+**Context:** recording the owner's acceptance of the mockups in MASTER_PLAN, STATUS and interview 002.
+**Tried / did:** typed "≈ 15:05" for the moment; the commit carrying it went out at 15:04 — the second time this session
+(EXP-0004 was the first) a moment was written ahead of the clock.
+**Result:** ❌ a future moment stood in pushed files; ✅ replaced by the recording commit's time (15:02) and the class mechanized.
+**Lesson:** a lesson written as text did not stop the second slip within the hour; a guard at commit time does.   → link: tools/stamp-guard.mjs
+**Repro:** `node tools/stamp-guard.mjs --staged` (runs in .git/hooks/pre-commit); a stamp later than now reddens with exit 1.
+**Trigger:** any commit that carries a "YYYY-MM-DD HH:MM" moment.
+**Not for:** past moments typed by feel (earlier than the truth) — the guard cannot see those; the Trigger of EXP-0004 still applies.
+mechanized: tools/stamp-guard.mjs
+
 ### EXP-0004 · 2026-10-14 · ❌→✅ · #report #time #testrun
 class: claim-before-evidence
 **Context:** writing the phase 0 run report right after eight probe runs on the Titan.
@@ -91,7 +103,7 @@ probe in the same call as the write, or a mtime/log line — never typed by feel
 **Repro:** `date '+%Y-%m-%d %H:%M:%S %z'` in the same tool call that writes the report row; for past runs `adb shell ls -la --full-time <outputs>`.
 **Trigger:** writing a `Moment` cell or a `Created:` stamp → run `date` in that same call.
 **Not for:** dates of external events (a vendor release) — those are dates, not moments of our work.
-none-cheap: a moment typed by feel and a probed one look the same to a script; the Trigger line at the write is the carrier
+mechanized: tools/stamp-guard.mjs (future moments only; see EXP-0005)
 
 ### EXP-0003 · 2026-10-14 · ❌→✅ · #shell #heredoc #windows #paths
 class: escaping-layer
