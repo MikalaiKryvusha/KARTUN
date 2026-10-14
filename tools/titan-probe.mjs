@@ -36,7 +36,12 @@ while (!line && Date.now() - t0 < TIMEOUT_MS) {
   line = log.split(/\r?\n/).find((l) => l.includes('KARTUN_PROBE') || l.includes('FATAL')) || null;
   if (!line) await new Promise((r) => setTimeout(r, POLL_MS));
 }
-if (!line) { console.error('no probe result within timeout'); process.exit(1); }
+// The probe starts KARTUN without its interface (MainActivity returns before setContent), so the device shows a black
+// screen until the app is opened again - the owner saw it on 2026-10-14 ≈ 22:18 («почему черный экран сейчас?»).
+// Every exit below therefore puts the normal interface back first.
+const restoreUi = () => adb('shell', 'am', 'start', '-S', '-n', `${PKG}/com.kriniks.kartun.MainActivity`);
+if (!line) { restoreUi(); console.error('no probe result within timeout'); process.exit(1); }
+restoreUi();
 const json = line.slice(line.indexOf('{'));
 console.log(json);
 const res = JSON.parse(json);

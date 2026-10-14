@@ -56,7 +56,7 @@
 > <!-- classes: question-already-answered, guard-not-proven-against-threat, shown-as-link,
 >      claim-before-evidence, owner-decision-not-applied, text-in-agents-world,
 >      etalon-from-dirty-tree, shell-lied, escaping-layer, twins-missed,
->      field-dropped-in-rebuild, platform-layer-unseen, silent-noop-edit -->
+>      field-dropped-in-rebuild, platform-layer-unseen, silent-noop-edit, replace-crossed-scope, stand-left-dirty -->
 >
 > | Class slug | The failure it names |
 > |---|---|
@@ -73,6 +73,8 @@
 > | `field-dropped-in-rebuild` | a field or section silently lost when an artifact was regenerated |
 > | `platform-layer-unseen` | the platform renders an asset in a place the agent never looked at (splash, themed icon, dark mode) |
 | `silent-noop-edit` | a scripted edit whose anchor did not match changed nothing, and the work was reported as done |
+| `replace-crossed-scope` | a scripted replace matched the same text in a neighbouring block (another language, another section) |
+| `stand-left-dirty` | a harness left the owner's device, stand or tree in a state the owner does not expect |
 >
 > The `#tags` are **trigger-tags**: before a task, grep by the task's tags and QUOTE the relevant
 > lessons in your report (id + one line) — or state "no relevant lessons". An unquoted recall is
@@ -81,6 +83,43 @@
 > Skill: `/experience` (capture a lesson · recall relevant lessons).
 
 ## Entries
+
+<!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
+
+### EXP-0012 · 2026-10-14 · ❌→✅ · #status #claim #state
+class: claim-before-evidence
+**Context:** answering the owner's «что там по беклогу?» about the Titan media offload (idea 01).
+**Tried / did:** retold STATUS from memory: «скопированы, но сверка хешей не запускалась».
+**Result:** ❌ wrong twice — the state files (`<inbox>\_state\verified.json`, `verify-bad.json`, 14:11) showed a check that ran mid-copy
+(3 964 verified, 4 731 missing). ✅ corrected in chat and STATUS (`02aa118`); the resume then verified 8 716 of 8 716.
+**Lesson:** a status line about an external process is a pointer, not evidence — read the process's own state files before repeating it.
+**Repro:** `node -e "for(const f of ['verified','verify-bad'])console.log(f,JSON.parse(require('fs').readFileSync('J:/OLD_HDD/Pic/_titan_inbox_2026-10-14/_state/'+f+'.json','utf8')).length)"`
+**Trigger:** about to tell the owner the state of a copy, a run or a sync → open its state file or log in the same turn.
+**Not for:** facts this session measured itself a moment ago.
+none-cheap: the claim lives in chat prose and in STATUS; no repository tool can know which external process a sentence describes
+
+### EXP-0011 · 2026-10-14 · ❌→✅ · #i18n #script #edit
+class: replace-crossed-scope
+**Context:** rewriting positional entries of `tools/make-translations.py` (8 languages, one list each).
+**Tried / did:** a global `text.replace(old_pair, new_pair)` per language.
+**Result:** ❌ Spanish and Portuguese share some old values («Máximo · textura viva»), so the Spanish pass would have written Spanish
+into the Portuguese list; ✅ caught by the next language's assert before any write, then replaced inside each language's own block.
+**Lesson:** a value is unique per BLOCK, not per file — scope the replace to the block that owns it and assert count == 1 there.
+**Repro:** in the edit script: find `    "<lang>": [` inside the right dict, slice to the next language, `assert seg.count(old) == 1`.
+**Trigger:** writing a script that edits a multi-language table → per-block replace, never a file-wide one.
+**Not for:** keys that are unique by construction (resource names in strings.xml).
+none-cheap: the edit scripts are throwaway; the net is the per-block assert plus `python tools/make-translations.py --check`
+
+### EXP-0010 · 2026-10-14 · ❌→✅ · #titan #probe #device
+class: stand-left-dirty
+**Context:** probing catalogue models on the Titan with `tools/titan-probe.mjs` while the owner held the tablet.
+**Tried / did:** the probe starts MainActivity with extras that skip `setContent` and left it like that.
+**Result:** ❌ the owner: «почему черный экран сейчас?»; ✅ the probe now restarts the normal interface on every exit.
+**Lesson:** a harness that drives the owner's device leaves it the way the owner expects to find it.
+**Repro:** `KARTUN_SERIAL=<serial> node tools/titan-probe.mjs --in test256.png --model realesr-animevideov3-x4 --gpu true --tile 200` → the home screen («Выберите фото») is back.
+**Trigger:** writing any adb harness step that changes what the device shows → end it by restoring the screen.
+**Not for:** runs on a device nobody looks at.
+mechanized: tools/titan-probe.mjs (restoreUi on every exit)
 
 ### EXP-0009 · 2026-10-14 · ❌→✅ · #docs #numbers #claim
 class: claim-before-evidence

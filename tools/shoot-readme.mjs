@@ -70,6 +70,7 @@ const W = {
   maxModel: /^Real-ESRGAN x4plus$/,
   result: /^(Сохранить|Save)$/,
   manual: /(Руководство|guide)/i,
+  about: /^(О приложении|About)$/, // a settings row since 2026-10-14 22:00 (plan 03 step 39)
 };
 
 async function walk(lang) {
@@ -89,13 +90,14 @@ async function walk(lang) {
   shot(lang, '04_working');
   await waitFor(W.result, 60000); await sleep(800);
   shot(lang, '05_result');
+  sh('rm -f /sdcard/kartun-ui.xml');
   sh('input keyevent KEYCODE_BACK'); await sleep(1200); sh('input keyevent KEYCODE_BACK'); await sleep(1500);
   tap(...GEAR); await sleep(1500);
   shot(lang, '06_settings');
   await tapText(W.manual, 1500);
   shot(lang, '07_manual');
   sh('input keyevent KEYCODE_BACK'); await sleep(1200);
-  tap(...GEAR); await sleep(1500);
+  await tapText(W.about, 1500);
   shot(lang, '08_about');
 }
 
@@ -113,6 +115,9 @@ try {
   demo('notifications -e visible false');
   for (const lang of which === 'all' ? Object.keys(LANGS) : [which]) await walk(lang);
 } finally {
+  // R1: the test photo leaves the Titan with the run.
+  sh(`rm -f ${PHOTO_DEVICE}; rmdir /sdcard/Pictures/KARTUN_test 2>/dev/null`);
+  sh(`am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://${PHOTO_DEVICE} >/dev/null`);
   sh('am broadcast -a com.android.systemui.demo -e command exit >/dev/null');
   sh(`settings put system accelerometer_rotation ${rotation || 1}`);
   // Back to what the app had: an empty list = follow the system language.

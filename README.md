@@ -51,7 +51,7 @@ Sections: 1 What it does · 2 Screens · 3 Models and speed · 4 Privacy · 5 Fo
 1. Enlarges a photo 1×, 2×, 4×, 8× or 16× with a Real-ESRGAN neural network. The network restores detail that plain
    stretching does not have: edges, texture, small text.
 2. Takes the photo three ways: from the gallery, from any app's «Share» menu (Telegram, the gallery, a browser), or from
-   a link copied to the clipboard.
+   a link — taken from the clipboard or typed in.
 3. Estimates the time before the run and shows the progress as a percent ring over the photo's real tiles. The estimate
    learns from the runs on your device.
 4. Keeps working when you leave the app: the progress and «Cancel» stay in the notification, «Your photo is ready»
@@ -73,7 +73,7 @@ Sections: 1 What it does · 2 Screens · 3 Models and speed · 4 Privacy · 5 Fo
 | Enhance | see the photo and its size, pick the model and the scale, start; swipe up to fold the photo into a row, pull the handle down to open it full screen |
 | Processing | watch the ring and the tiles fill in, see the time left, cancel |
 | Result | compare before and after, save, share |
-| Settings | GPU acceleration, notifications, language, the user guide, «About» with the device and the licences |
+| Settings | GPU acceleration, notifications, language, the user guide, «About» with the device, the author and the licences, the terms of use |
 
 <p align="center">
   <img src="docs/screenshots/en/03_setup.webp" width="24%" alt="Model and scale">
@@ -196,7 +196,7 @@ Vulkan.
 1. Увеличивает фото в 1×, 2×, 4×, 8× или 16× нейросетью Real-ESRGAN. Нейросеть восстанавливает то, чего нет при
    обычном растяжении: края, фактуру, мелкий текст.
 2. Берёт фото тремя путями: из галереи, из меню «Поделиться» любого приложения (Telegram, галерея, браузер) или по
-   ссылке из буфера обмена.
+   ссылке — из буфера обмена или набранной вручную.
 3. Оценивает время до запуска и показывает ход работы кольцом процентов поверх настоящих тайлов фото. Оценка учится на
    прогонах вашего устройства.
 4. Продолжает работу, когда вы выходите из приложения: прогресс и «Отменить» остаются в уведомлении, по готовности
@@ -218,7 +218,7 @@ Vulkan.
 | «Улучшение» | видят фото и его размер, выбирают модель и масштаб, запускают; свайп вверх сворачивает фото в строку, хендл вниз раскрывает его на весь экран |
 | Обработка | следят за кольцом и тайлами, видят оставшееся время, могут отменить |
 | Результат | сравнивают «до» и «после», сохраняют, делятся |
-| Настройки | ускорение GPU, уведомления, язык, руководство пользователя, «О приложении» с устройством и лицензиями |
+| Настройки | ускорение GPU, уведомления, язык, руководство пользователя, «О приложении» с устройством, автором и лицензиями, условия использования |
 
 <p align="center">
   <img src="docs/screenshots/ru/03_setup.webp" width="24%" alt="Модель и масштаб">
