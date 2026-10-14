@@ -54,7 +54,9 @@
 | Node.js | v24.15.0 | `node -v` |
 | Java в PATH | OpenJDK 21.0.11 (Microsoft), `C:\Program Files\Microsoft\jdk-21.0.11.10-hotspot` | `java -version` |
 | `JAVA_HOME` | ⚠ `C:\Users\krinik\.bubblewrap\jdk\jdk-17.0.11+9` — каталога НЕТ (та же причуда, что в KAST); для Gradle задавай JDK 21 явно | `echo $JAVA_HOME` |
-| Android SDK | `D:\Android\Sdk` (переменная `ANDROID_HOME` НЕ задана): platform `android-36`, build-tools `35.0.0`, NDK `27.0.12077973`, `cmdline-tools`; **CMake не установлен** | `ls /d/Android/Sdk/{ndk,cmake,build-tools,platforms}` |
+| Android SDK | `D:\Android\Sdk` (переменная `ANDROID_HOME` НЕ задана): platforms `android-36`, `android-37.0`; build-tools `35.0.0`; NDK `27.0.12077973` и `29.0.14206865` (r29 — им собран ncnn 20260526); CMake `3.31.6` (поставлены агентом 2026-10-14 13:51) | `ls /d/Android/Sdk/{ndk,cmake,build-tools,platforms}` |
+| Установка пакетов SDK | `sdkmanager` объявлен устаревшим (замена — `android sdk`), но работает; имена пакетов — через `/`: `sdkmanager.bat --sdk_root=D:\Android\Sdk cmake/3.31.6 ndk/29.0.14206865` (через `;` их режет `cmd`) | `D:\Android\Sdk\cmdline-tools\latest\bin\sdkmanager.bat --list` |
+| Gradle | обёртка проекта, Gradle 9.8.1; AGP 9.4.1, Kotlin 2.4.21, Compose BOM 2026.09.00 (версии сверены 2026-10-14) | `gradle/wrapper/gradle-wrapper.properties`, `gradle/libs.versions.toml` |
 | Android Studio | не установлен — сборка только из командной строки | `ls "C:/Program Files/Android"` |
 | adb | `D:\Android\Sdk\platform-tools\adb.exe` 1.0.41 (рабочий для Tailscale); есть ещё `C:\adb\adb.exe` — первый в PATH | `which -a adb` |
 | Остальное (кодировки, локали, `tar`/`curl`/`find`) | `— not probed yet —` | |

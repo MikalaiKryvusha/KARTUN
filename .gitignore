@@ -42,3 +42,6 @@ local.properties
 .externalNativeBuild/
 .cxx/
 captures/
+
+# Third-party native packages downloaded by tools/fetch-ncnn.mjs (pinned by SHA-256 in the script).
+engine/third_party/

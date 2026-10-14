@@ -80,6 +80,18 @@
 
 ## Entries
 
+### EXP-0003 · 2026-10-14 · ❌→✅ · #shell #heredoc #windows #paths
+class: escaping-layer
+**Context:** writing `tools/fetch-ncnn.mjs` through a Bash heredoc with a JS string `'C:\\Windows\\System32\\tar.exe'`.
+**Tried / did:** typed doubled backslashes in the Bash tool's command parameter.
+**Result:** ❌ the file got single backslashes (`'C:\Windows\System32\tar.exe'`) → JS read `\t` as a tab, `spawnSync` ENOENT,
+"unpack failed". ✅ path built without escapes: `join(process.env.SystemRoot || 'C:/Windows', 'System32', 'tar.exe')`.
+**Lesson:** a doubled backslash typed into a tool parameter can arrive single; write code files with the Write/Edit tools
+and build Windows paths with `path.join` / forward slashes, never with escaped backslashes.   → link: tools/fetch-ncnn.mjs
+**Repro:** `grep -n "\\\\\\\\" tools/*.mjs` after writing a script — any `\\` you intended must be there; better, `grep -n "C:\\\\" tools/*.mjs` shows none.
+**Trigger:** writing a code file that contains a Windows path → Write tool + `path.join`, not a heredoc.
+**Not for:** prose in Markdown, where a single backslash in a path is the intended text.
+
 ### EXP-0002 · 2026-10-14 · ❌→✅ · #adb #device #shell #titan
 class: shell-lied
 **Context:** measuring `adb pull` speed to the Titan from Git Bash with a device path `/data/local/tmp/…`.

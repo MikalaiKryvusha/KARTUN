@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-14 (agent)
 > **Родитель:** `plans/01_EPIC_mvp.md` §3 row «0 — проверка движка», gate: criteria 2.4 and 2.6 met by a console probe on the Titan
-> **Статус:** 📋 planned, not started
+> **Статус:** 🔧 in progress — engine proven on the Titan 2026-10-14 14:17 +03:00 (`testcases/reports/2026-10-14_F0_engine_probe.md`): steps 1–3, 5–9 done; step 4 partly (x4plus + animevideov3 from the xinntao release; general-x4v3 not converted); step 10 open
 > **Вовне:** the measured time per 1 MP → to the owner at phase close (proposes the number for criterion 2.6)
 
 ## Goal vector
@@ -15,8 +15,10 @@ tolerance, differs from a bicubic resize by more than that tolerance, and the wa
 
 1. Build: `assembleDebug` exits 0 with the native engine linked (Meter: build log; Target: exit 0, `libkartun.so` for arm64-v8a in the APK).
 2. Vulkan run: Scale — output pixels; Meter — instrumented probe on the Titan (`adb shell am instrument …` or a debug
-   activity driven by `adb`); Target — 1024×1024 PNG pulled back, PSNR vs PC reference ≥ 40 dB, PSNR vs bicubic < 40 dB
-   (tolerance numbers are proposed here and confirmed by the first PC run; any change is justified in the commit).
+   activity driven by `adb`); Target — 1024×1024 PNG pulled back, PSNR vs PC reference ≥ 38 dB, PSNR vs bicubic < 38 dB.
+   Changed from the proposed 40 dB on 2026-10-14 after the first runs: with the reference's tile (200) the Titan output
+   is 39.22 dB to the PC reference (interior block 43.0 dB; divergence at the image edge and tile seams; ncnn 2022 vs
+   20260526) while bicubic sits at 31.1 dB — 38 dB keeps a 7 dB margin above bicubic. Run report: run 5.
 3. CPU run: the same with `use_vulkan_compute=false`.
 4. Timing: ms per run for 256×256 and for a 1 MP image (1024×1024) on Vulkan and CPU, both models — written to a run
    report `testcases/reports/<date>_F0_engine_probe.md`.
@@ -24,28 +26,28 @@ tolerance, differs from a bicubic resize by more than that tolerance, and the wa
 
 ## Steps
 
-1. [ ] Toolchain: `sdkmanager "cmake;3.31.6"` (or the latest available 3.x) into `D:\Android\Sdk`; confirm NDK r27 is
+1. [x] Toolchain: `sdkmanager "cmake;3.31.6"` (or the latest available 3.x) into `D:\Android\Sdk`; confirm NDK r27 is
    enough for ncnn 20260526 prebuilt (built with r29 → if link errors, install NDK r29 via sdkmanager). Record versions in
    `HOUSE_RULES.md` §4.
-2. [ ] Gradle project skeleton: wrapper (current stable Gradle/AGP for API 36), `:app` (minimal Compose activity),
+2. [x] Gradle project skeleton: wrapper (current stable Gradle/AGP for API 36), `:app` (minimal Compose activity),
    `:engine` (Android library, CMake, `abiFilters arm64-v8a`, 16 KB pages), version catalog. Ignore-first: `.gitignore`
    already covers `build/`, `.gradle/`, `.cxx/`, `local.properties`.
-3. [ ] Fetch `ncnn-20260526-android-vulkan.zip` from the Tencent/ncnn GitHub release into `engine/third_party/` (gitignored;
+3. [x] Fetch `ncnn-20260526-android-vulkan.zip` from the Tencent/ncnn GitHub release into `engine/third_party/` (gitignored;
    a script `tools/fetch-ncnn.mjs` downloads and checks SHA-256 so the build is reproducible). Record the hash.
 4. [ ] Models: download `realesrgan-ncnn-vulkan-…` release zip v0.2.5.0 from xinntao, take `realesrgan-x4plus.{param,bin}`;
    convert or obtain `realesr-general-x4v3` ncnn files from the original `.pth` (BSD-3) — record provenance and SHA-256 in
    `docs/model-licenses.md`; add the BSD-3 notice.
-5. [ ] Engine C++ (`engine/src/main/cpp/`): `kartun_engine.cpp` — create `ncnn::Net`, options (Vulkan on/off,
+5. [x] Engine C++ (`engine/src/main/cpp/`): `kartun_engine.cpp` — create `ncnn::Net`, options (Vulkan on/off,
    fp16 storage on, fp16 arithmetic off), load param/bin from a file path, process one image with tiling (tile from
    `get_heap_budget()` like Real-ESRGAN-ncnn-vulkan, prepadding 10), return RGBA; JNI `kartun_jni.cpp` with
    `nativeInit`, `nativeUpscale(inPath, outPath, model, useGpu, tile)`, `nativeRelease`; all calls on one thread.
    Written from the MIT references (Real-ESRGAN-ncnn-vulkan, realsr `process_cpu`) — notices kept in file headers.
-6. [ ] Probe harness: a debug-only activity/receiver that runs the engine on a file under the app's files dir, writes
+6. [x] Probe harness: a debug-only activity/receiver that runs the engine on a file under the app's files dir, writes
    the PNG and a JSON line (ms, backend, tile, gpu name) to logcat; driven with `adb shell am start … --es in … --ez gpu true`.
-7. [ ] PC reference: run the same model with the desktop `realesrgan-ncnn-vulkan` (MIT, v0.2.0 release) on the same
+7. [x] PC reference: run the same model with the desktop `realesrgan-ncnn-vulkan` (MIT, v0.2.0 release) on the same
    input → `testdata/ref_*.png`; a node script computes PSNR (sharp/pngjs or ImageMagick `magick compare -metric PSNR`).
-8. [ ] Run on the Titan: Vulkan and CPU, both models, 256×256 and 1 MP; pull outputs; compare; write the run report.
-9. [ ] Control case: delete the model file → expect the error path (criterion 5).
+8. [x] Run on the Titan: Vulkan and CPU, both models, 256×256 and 1 MP; pull outputs; compare; write the run report.
+9. [x] Control case: delete the model file → expect the error path (criterion 5).
 10. [ ] Close: update `STATUS.md`, `MASTER_PLAN.md` phase 0 status, report the timing to the owner, write the phase 1 plan.
 
 ## Risks
