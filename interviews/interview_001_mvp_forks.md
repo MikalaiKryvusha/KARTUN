@@ -58,7 +58,7 @@ CLI, чтобы ИИ агенты могли им пользоваться по 
   - Check. В манифесте нет `INTERNET`; приём картинки через «Поделиться» проходит на Титане.
 - **D) your own answer** —
 
-**Answer:**
+**Answer:** A) <!-- owner-review: by Mikalai Kryvusha · 14 октября 2026, 15:28 (+03:00) -->
 
 ### Q2. Какая модель работает по умолчанию, когда пользователь просто нажимает «Улучшить»?
 
@@ -96,7 +96,7 @@ CLI, чтобы ИИ агенты могли им пользоваться по 
   - Check. В APK одна модель, 33,4 МБ.
 - **D) your own answer** —
 
-**Answer:**
+**Answer:** A) <!-- owner-review: by Mikalai Kryvusha · 14 октября 2026, 15:28 (+03:00) -->
 
 ## Proposed implementation plan (after answers)
 

@@ -120,7 +120,7 @@
   - Check. Ряд «Шрифты», экран «Шрифт · Nunito».
 - **D) your own answer** — например, Montserrat Alternates (экран «Шрифт · Montserrat Alternates») или другой шрифт:
 
-**Answer:**
+**Answer:** A) <!-- owner-review: by Mikalai Kryvusha · 14 октября 2026, 15:28 (+03:00) -->
 
 ## Proposed implementation plan (after answers)
 

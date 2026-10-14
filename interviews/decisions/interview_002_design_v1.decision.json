@@ -1,0 +1,17 @@
+{
+  "kind": "interview",
+  "document": "interviews/interview_002_design_v1.md",
+  "by": "Mikalai Kryvusha",
+  "at": "2026-10-14T12:28:21.402Z",
+  "atHuman": "14 октября 2026, 15:28 (+03:00)",
+  "comment": "",
+  "answers": {
+    "Q2": {
+      "choice": "A",
+      "text": "",
+      "comment": ""
+    }
+  },
+  "rev": "c4a25d16b8500922d1de802c2f3230ed64e419ede942261a5070ebe6610b1652",
+  "revAfter": "f2dc5ee121dd2a8ba558cd6c527e611ffd14f2927968da998e80040fb6ffc1b1"
+}

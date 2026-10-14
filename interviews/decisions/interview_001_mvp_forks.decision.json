@@ -1,0 +1,22 @@
+{
+  "kind": "interview",
+  "document": "interviews/interview_001_mvp_forks.md",
+  "by": "Mikalai Kryvusha",
+  "at": "2026-10-14T12:28:05.919Z",
+  "atHuman": "14 октября 2026, 15:28 (+03:00)",
+  "comment": "",
+  "answers": {
+    "Q1": {
+      "choice": "A",
+      "text": "",
+      "comment": ""
+    },
+    "Q2": {
+      "choice": "A",
+      "text": "",
+      "comment": ""
+    }
+  },
+  "rev": "a4fca9b6bf72ac613d53aa79a55998cbec6d79294ce3b35df31e567b2765dce4",
+  "revAfter": "5451805041b461d09cb715d24bc3824fdd44a70f16f0847d1a3bd72a6b17b357"
+}
