@@ -67,8 +67,6 @@ fun HomeScreen(onPick: () -> Unit, onSettings: () -> Unit, onPasteLink: () -> Un
                     if (error != null) Notice(error, onDismissError)
                     SecondaryButton(stringResource(if (downloading) R.string.link_downloading else R.string.home_paste_link), R.drawable.ic_link, onClick = onPasteLink, enabled = !downloading)
                     ShareHint()
-                    Spacer(Modifier.weight(1f))
-                    OfflineNote()
                 }
             }
             return@Column
@@ -79,7 +77,9 @@ fun HomeScreen(onPick: () -> Unit, onSettings: () -> Unit, onPasteLink: () -> Un
             SecondaryButton(stringResource(if (downloading) R.string.link_downloading else R.string.home_paste_link), R.drawable.ic_link, onClick = onPasteLink, enabled = !downloading)
             ShareHint()
         }
-        Box(Modifier.padding(top = 16.dp, bottom = 24.dp)) { OfflineNote() }
+        // No «open source · offline · on the device» lines in the interface (the owner, chat 2026-10-14 ≈ 21:55 +03:00:
+        // «открытый код, офлайн, на устройстве - убирай из интерфейсов»); the gap the note held stays.
+        Spacer(Modifier.height(24.dp))
     }
 }
 
@@ -130,17 +130,6 @@ private fun ShareHint() {
             FlowChip(stringResource(R.string.flow_share), false); Arrow()
             FlowChip("KARTUN", true)
         }
-    }
-}
-
-/** Foot note with the green dot: the promise of on-device processing. */
-@Composable
-private fun OfflineNote() {
-    val c = MaterialTheme.colorScheme
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.size(8.dp).clip(CircleShape).background(c.tertiary))
-        Spacer(Modifier.width(8.dp))
-        Text(stringResource(R.string.home_offline), style = MaterialTheme.typography.bodySmall, color = c.outlineVariant)
     }
 }
 

@@ -137,6 +137,9 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
     reached the right edge too) - clamp the bubble inside the track's width.
     Done ≈ 21:47: the bubble (52 dp) is clamped to the track; on the Titan at 1× it starts at the track's left end, at 16× it
     ends at the right end.
+37. [x] (owner, chat 2026-10-14 ≈ 21:55 +03:00) «открытый код, офлайн, на устройстве - убирай из интерфейсов» — the home screen's
+    green-dot note «Обработка на устройстве, без сети» and its string are gone (10 languages); «О приложении» reads «Версия …»
+    alone. Kept: the guide's explaining sentence (section 1) and the README's tagline - asked in chat whether they go too.
 
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel

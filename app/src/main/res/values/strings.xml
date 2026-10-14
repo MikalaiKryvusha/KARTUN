@@ -8,7 +8,6 @@
     <string name="home_share_text">Open a photo in your gallery, Telegram or browser, tap “Share” and pick KARTUN — the photo opens here, ready to enhance.</string>
     <string name="flow_photo">Photo</string>
     <string name="flow_share">Share</string>
-    <string name="home_offline">Processed on the device, no network</string>
 
     <string name="setup_title">Enhance</string>
     <string name="setup_other_photo">Choose another photo</string>
@@ -96,9 +95,9 @@
     <string name="settings_manual">User guide</string>
     <string name="settings_manual_sub">How to use KARTUN and its models</string>
     <string name="info_open_guide">Open the full guide</string>
-    <!-- [AI] «О приложении» (plans/01 §2.14; the tagline echoes GOAL.md «Open-source · Offline · AI-powered»). -->
+    <!-- [AI] «О приложении» (plans/01 §2.14); the tagline is the version alone - the owner, 2026-10-14 ≈ 21:55: «открытый код, офлайн, на устройстве - убирай из интерфейсов». -->
     <string name="about_title">About</string>
-    <string name="about_tagline">Version %1$s · open source · offline · AI on the device</string>
+    <string name="about_tagline">Version %1$s</string>
     <string name="about_device">Device</string>
     <string name="about_model">Device model</string>
     <string name="about_engine">Engine</string>

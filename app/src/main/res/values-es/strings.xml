@@ -9,7 +9,6 @@
     <string name="home_share_text">Abre una foto en la galería, Telegram o el navegador, toca «Compartir» y elige KARTUN: la foto se abrirá aquí lista para mejorar.</string>
     <string name="flow_photo">Foto</string>
     <string name="flow_share">Compartir</string>
-    <string name="home_offline">Procesado en el dispositivo, sin red</string>
     <string name="setup_title">Mejorar</string>
     <string name="setup_other_photo">Elegir otra foto</string>
     <string name="setup_other_short">Otra foto</string>
@@ -89,7 +88,7 @@
     <string name="notif_done">Tu foto está lista</string>
     <string name="notif_done_text">Toca para comparar antes y después</string>
     <string name="about_title">Acerca de</string>
-    <string name="about_tagline">Versión %1$s · código abierto · sin conexión · IA en el dispositivo</string>
+    <string name="about_tagline">Versión %1$s</string>
     <string name="about_device">Dispositivo</string>
     <string name="about_model">Modelo del dispositivo</string>
     <string name="about_engine">Motor</string>

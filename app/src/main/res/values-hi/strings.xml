@@ -9,7 +9,6 @@
     <string name="home_share_text">गैलरी, Telegram या ब्राउज़र में फ़ोटो खोलें, «शेयर करें» दबाएँ और KARTUN चुनें — फ़ोटो यहीं खुलेगी, बेहतर बनाने के लिए तैयार।</string>
     <string name="flow_photo">फ़ोटो</string>
     <string name="flow_share">शेयर करें</string>
-    <string name="home_offline">डिवाइस पर प्रोसेसिंग, बिना नेटवर्क</string>
     <string name="setup_title">बेहतर बनाएँ</string>
     <string name="setup_other_photo">दूसरी फ़ोटो चुनें</string>
     <string name="setup_other_short">दूसरी फ़ोटो</string>
@@ -87,7 +86,7 @@
     <string name="notif_done">आपकी फ़ोटो तैयार है</string>
     <string name="notif_done_text">पहले और बाद की तुलना के लिए दबाएँ</string>
     <string name="about_title">ऐप के बारे में</string>
-    <string name="about_tagline">संस्करण %1$s · ओपन सोर्स · ऑफ़लाइन · डिवाइस पर AI</string>
+    <string name="about_tagline">संस्करण %1$s</string>
     <string name="about_device">डिवाइस</string>
     <string name="about_model">डिवाइस मॉडल</string>
     <string name="about_engine">इंजन</string>

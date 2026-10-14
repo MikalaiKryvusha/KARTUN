@@ -9,7 +9,6 @@
     <string name="home_share_text">在相册、Telegram 或浏览器中打开照片，点按“分享”并选择 KARTUN——照片会在这里打开，随时可以增强。</string>
     <string name="flow_photo">照片</string>
     <string name="flow_share">分享</string>
-    <string name="home_offline">在设备上处理，无需联网</string>
     <string name="setup_title">增强</string>
     <string name="setup_other_photo">选择其他照片</string>
     <string name="setup_other_short">其他照片</string>
@@ -85,7 +84,7 @@
     <string name="notif_done">照片已完成</string>
     <string name="notif_done_text">点按以对比处理前后</string>
     <string name="about_title">关于</string>
-    <string name="about_tagline">版本 %1$s · 开源 · 离线 · 设备端 AI</string>
+    <string name="about_tagline">版本 %1$s</string>
     <string name="about_device">设备</string>
     <string name="about_model">设备型号</string>
     <string name="about_engine">引擎</string>

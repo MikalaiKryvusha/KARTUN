@@ -9,7 +9,6 @@
     <string name="home_share_text">افتح صورة في المعرض أو Telegram أو المتصفح، واضغط «مشاركة» واختر KARTUN — ستُفتح الصورة هنا جاهزة للتحسين.</string>
     <string name="flow_photo">صورة</string>
     <string name="flow_share">مشاركة</string>
-    <string name="home_offline">معالجة على الجهاز، بلا شبكة</string>
     <string name="setup_title">تحسين</string>
     <string name="setup_other_photo">اختر صورة أخرى</string>
     <string name="setup_other_short">صورة أخرى</string>
@@ -95,7 +94,7 @@
     <string name="notif_done">صورتك جاهزة</string>
     <string name="notif_done_text">اضغط للمقارنة بين قبل وبعد</string>
     <string name="about_title">حول التطبيق</string>
-    <string name="about_tagline">الإصدار %1$s · مفتوح المصدر · دون اتصال · ذكاء اصطناعي على الجهاز</string>
+    <string name="about_tagline">الإصدار %1$s</string>
     <string name="about_device">الجهاز</string>
     <string name="about_model">طراز الجهاز</string>
     <string name="about_engine">المحرك</string>

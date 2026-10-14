@@ -9,7 +9,6 @@
     <string name="home_share_text">Öffne ein Foto in der Galerie, in Telegram oder im Browser, tippe auf „Teilen“ und wähle KARTUN – das Foto öffnet sich hier, bereit zum Verbessern.</string>
     <string name="flow_photo">Foto</string>
     <string name="flow_share">Teilen</string>
-    <string name="home_offline">Verarbeitung auf dem Gerät, ohne Netz</string>
     <string name="setup_title">Verbessern</string>
     <string name="setup_other_photo">Anderes Foto wählen</string>
     <string name="setup_other_short">Anderes Foto</string>
@@ -87,7 +86,7 @@
     <string name="notif_done">Dein Foto ist fertig</string>
     <string name="notif_done_text">Tippe, um Vorher und Nachher zu vergleichen</string>
     <string name="about_title">Über</string>
-    <string name="about_tagline">Version %1$s · Open Source · offline · KI auf dem Gerät</string>
+    <string name="about_tagline">Version %1$s</string>
     <string name="about_device">Gerät</string>
     <string name="about_model">Gerätemodell</string>
     <string name="about_engine">Engine</string>

@@ -9,7 +9,6 @@
     <string name="home_share_text">গ্যালারি, Telegram বা ব্রাউজারে ছবি খুলুন, «শেয়ার» চাপুন এবং KARTUN বেছে নিন — ছবিটি এখানে খুলবে, উন্নত করার জন্য প্রস্তুত।</string>
     <string name="flow_photo">ছবি</string>
     <string name="flow_share">শেয়ার</string>
-    <string name="home_offline">ডিভাইসেই প্রক্রিয়া, নেটওয়ার্ক ছাড়া</string>
     <string name="setup_title">উন্নত করুন</string>
     <string name="setup_other_photo">অন্য ছবি বেছে নিন</string>
     <string name="setup_other_short">অন্য ছবি</string>
@@ -87,7 +86,7 @@
     <string name="notif_done">আপনার ছবি প্রস্তুত</string>
     <string name="notif_done_text">আগে ও পরে তুলনা করতে চাপুন</string>
     <string name="about_title">অ্যাপ সম্পর্কে</string>
-    <string name="about_tagline">সংস্করণ %1$s · ওপেন সোর্স · অফলাইন · ডিভাইসে AI</string>
+    <string name="about_tagline">সংস্করণ %1$s</string>
     <string name="about_device">ডিভাইস</string>
     <string name="about_model">ডিভাইসের মডেল</string>
     <string name="about_engine">ইঞ্জিন</string>
