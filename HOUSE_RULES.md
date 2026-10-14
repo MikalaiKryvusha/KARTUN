@@ -93,6 +93,7 @@
 | `python tools/make-icon.py` (системный Python с Pillow; `-I` не годится — Pillow стоит в пользовательских пакетах) | собирает адаптивную иконку Android (`app/src/main/res/mipmap-*`), `design/icon/store_512.png` и превью масок `design/icon/preview_masks.png` из картинок владельца в `design/icon/` | ручная правка производных файлов иконки; сердце, срезанное маской лаунчера |
 | `python tools/make-vector-icon.py [--apply]` | рисует своё векторное стеклянное сердце (`res/drawable/ic_launcher_heart*.xml`, SVG-двойник `design/icon/heart_vector.svg`); `--apply` переключает адаптивную иконку на него, растр `icon_v3` остаётся в `mipmap-*` | ручная правка сгенерированных drawable |
 | `python tools/make-translations.py` | пишет `res/values-{es,pt,fr,de,zh,hi,bn,ar}/strings.xml` — `[AI]` черновые переводы с английского; EN и RU правятся руками | ручная правка сгенерированных переводов (правь скрипт) |
+| `node tools/check-app-names.mjs` | сверяет названия сборок в `app/build.gradle.kts` с правилом R3 («Debug KARTUN» · «Stage KARTUN» · «KARTUN»), exit 1 при расхождении | переименованная сборка или название не то, что дал владелец |
 | `node tools/stamp-guard.mjs --staged` (git-хук `.git/hooks/pre-commit` этого клона) | отказывает коммиту с отметкой времени позже текущего момента | время, написанное на глаз (EXP-0004, EXP-0005) |
 
 ## 7. Знания о продукте
