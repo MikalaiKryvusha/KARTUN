@@ -58,6 +58,8 @@ licence text beside it; the non-commercial ones stay there only while KARTUN is 
    through every model on the Titan with `tools/titan-probe.mjs`; 320 px WebP per model, uploaded with the model.
    22:20: the beach crop for all 7 models (2 built-in + 5 catalogue; x4plus anime run 22:19 on the Titan GPU) in
    `docs/model-previews/<id>.webp`, 9–19 KB each, linked from the catalogue; a drawing sample for anime models still to do.
+   Step 2's generator, 22:21: `tools/catalogue.mjs` writes `app/src/main/assets/catalogue.json` (shape, hash, NC-not-commercial
+   checks); `--check` proved red on a hand-edited copy (DRIFT, exit 1), green after rewriting.
 4. [ ] The release `models`: upload files + licence texts with `gh release upload`; a tool `tools/publish-models.mjs`
    checks every hash against the catalogue before upload.
 5. [ ] The app: a downloader (resume-safe, hash-verified, into app storage), the «Все модели» screen with cards
