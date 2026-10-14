@@ -39,13 +39,14 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     enum class Screen { Home, Setup, Working, Result, Settings, Manual, About, Terms }
 
     /**
-     * The two models shipped in the APK. [msPerMp] is the starting estimate for the time per input megapixel, measured
-     * on the Titan (testcases/reports/2026-10-14_F0_own_fast_model.md run 9: 5 777 ms for 1 MP;
-     * 2026-10-14_F0_engine_probe.md run 6: 88 717 ms for 1 MP); each device then learns its own rate from its runs.
+     * The two models shipped in the APK. [msPerMp] / [cpuMsPerMp] are the starting estimates of the time per input
+     * megapixel on the GPU and on the CPU, measured on the Titan: GPU - 2026-10-14_F0_own_fast_model.md run 9 (5 777 ms
+     * for 1 MP) and 2026-10-14_F0_engine_probe.md run 6 (88 717 ms for 1 MP); CPU - _own_fast_model.md run 11 (84 806 ms
+     * for 1 MP) and _engine_probe.md run 4 (93 881 ms for 256 x 256 = 0.0655 MP). Each device then learns its own two rates.
      */
-    enum class Model(val file: String, @param:StringRes val title: Int, @param:StringRes val desc: Int, val msPerMp: Float) {
-        Fast("realesr-general-x4v3", R.string.model_fast_name, R.string.model_fast_desc, 5_777f),
-        Max("realesrgan-x4plus", R.string.model_max_name, R.string.model_max_desc, 88_717f),
+    enum class Model(val file: String, @param:StringRes val title: Int, @param:StringRes val desc: Int, val msPerMp: Float, val cpuMsPerMp: Float) {
+        Fast("realesr-general-x4v3", R.string.model_fast_name, R.string.model_fast_desc, 5_777f, 84_806f),
+        Max("realesrgan-x4plus", R.string.model_max_name, R.string.model_max_desc, 88_717f, 1_432_510f),
     }
 
     class Source(val uri: Uri, val name: String, val bitmap: Bitmap) {
@@ -238,7 +239,10 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     /** The same estimate for [m] - the model cards show it next to each model (mockup: «Быстрая · для фото · ≈ 7 с»). */
     fun estimateMs(m: Model): Long {
         val src = source ?: return 0
-        val rate = prefs.getFloat(m.file, m.msPerMp)
+        // The rate of the backend that will run: GPU off means the CPU, 15-16 times slower on the Titan (the owner, chat
+        // 2026-10-14 ≈ 22:40 +03:00: «эстиматор времени улучшения неверно рабоает, когда ГПУ ускорение выключено» ·
+        // «пишет в кнопке 6 секунд» · «а на самом деле больше минуты работа требует»).
+        val rate = prefs.getFloat(rateKey(m, useGpu), startRate(m, useGpu))
         return (src.megapixels * passFactor(scale) * rate).toLong()
     }
 
@@ -282,7 +286,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                         }
                         val tRun = SystemClock.elapsedRealtime()
                         val out4 = pass(src.bitmap, report(0, pass1))
-                        learnRate(chosen, src.megapixels, SystemClock.elapsedRealtime() - tRun)
+                        learnRate(chosen, gpuUsed, src.megapixels, SystemClock.elapsedRealtime() - tRun)
                         val full = when {
                             target == ENGINE_SCALE -> out4
                             mid == null -> downscale(out4, src.width * target, src.height * target)
@@ -403,11 +407,12 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
     fun dismissError() { error = null }
 
-    /** Keeps a running average of ms per input MP for each model on THIS device (the estimate learns). */
-    private fun learnRate(m: Model, mp: Float, ms: Long) {
+    /** Keeps a running average of ms per input MP for each model and backend on THIS device (the estimate learns);
+     *  [gpu] is the backend that actually ran - a GPU failure that fell back to the CPU teaches the CPU rate. */
+    private fun learnRate(m: Model, gpu: Boolean, mp: Float, ms: Long) {
         if (mp < MIN_MP_TO_LEARN) return
-        val old = prefs.getFloat(m.file, m.msPerMp)
-        prefs.edit { putFloat(m.file, old * (1 - LEARN_WEIGHT) + (ms / mp) * LEARN_WEIGHT) }
+        val old = prefs.getFloat(rateKey(m, gpu), startRate(m, gpu))
+        prefs.edit { putFloat(rateKey(m, gpu), old * (1 - LEARN_WEIGHT) + (ms / mp) * LEARN_WEIGHT) }
     }
 
     override fun onCleared() {
@@ -471,6 +476,13 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         private const val DISPLAY_MAX_SIDE = 4096
         private const val MIN_MP_TO_LEARN = 0.2f
         private const val LEARN_WEIGHT = 0.5f
+
+        /** The preference key of a learned rate: one per model and backend. New keys on purpose - the old one per model
+         *  mixed GPU and CPU runs, so a CPU run had inflated the GPU estimate too. [TESTED: 2026-10-14 · EstimateTest] */
+        fun rateKey(m: Model, gpu: Boolean): String = "rate_${m.file}_${if (gpu) "gpu" else "cpu"}"
+
+        /** The starting rate before this device has learned one. */
+        fun startRate(m: Model, gpu: Boolean): Float = if (gpu) m.msPerMp else m.cpuMsPerMp
 
         private fun decode(ctx: Context, uri: Uri): Bitmap =
             ImageDecoder.decodeBitmap(ImageDecoder.createSource(ctx.contentResolver, uri)) { decoder, info, _ ->
