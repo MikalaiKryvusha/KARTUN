@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- KARTUN manifest. Phase 0: no permissions at all - the probe reads and writes only the app's own files dir. -->
+<!-- KARTUN manifest. No permissions: photos come through the system photo picker or another app's «Поделиться»
+     (plans/01 §2.3); INTERNET arrives with «Вставить ссылку» in phase 4 (interview #001, Q1 = A). largeHeap: a 4x
+     result of a 12 MP photo is held as one bitmap until phase 1 streams tiles to disk (plans/03, risks). -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Launcher icon: adaptive, generated from the owner's picture by tools/make-icon.py (design/icon/). -->
@@ -8,13 +10,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/Theme.KARTUN">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- «Поделиться → KARTUN» from a gallery, Telegram or a browser (the share hint on the home screen). -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
     </application>

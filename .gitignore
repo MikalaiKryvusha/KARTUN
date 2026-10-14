@@ -61,3 +61,6 @@ design/flow-map/screens/
 
 # Python bytecode (tools/*.py imported by check scripts)
 __pycache__/
+
+# Model files staged into the APK by tools/stage-models.mjs from engine/third_party/ (provenance: docs/model-licenses.md).
+app/src/main/assets/models/

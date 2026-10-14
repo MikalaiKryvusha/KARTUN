@@ -3,7 +3,7 @@
 > Topic: число для критерия приёмки MVP 2.6 «Скорость» — сколько секунд допустимо на фото 1 Мп моделью по умолчанию на Титане
 > Source of the idea: `plans/01_EPIC_mvp.md` §2.6 («Целевое число фаза 0 предлагает владельцу после замера своей конвертации этой модели»), отчёт прогона `testcases/reports/2026-10-14_F0_own_fast_model.md`, 2026-10-14
 > Created: 2026-10-14 18:25 +03:00
-> Status: **❓ WAITING FOR THE OWNER**
+> Status: **✅ ANSWER RECEIVED 2026-10-14 18:29 +03:00** — Q1 = D (no norm; an estimate before the run and a percent progress ring) (queue page, by Mikalai Kryvusha); propagated to `plans/01_EPIC_mvp.md` §2.6, `plans/03_epic01_F2_screens.md` steps 4–5 and the `MASTER_PLAN.md` decision log
 
 ## Context / what I already found in the code
 

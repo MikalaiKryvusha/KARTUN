@@ -1,4 +1,4 @@
-// :app - the Compose UI. Phase 0 holds only a debug probe screen that drives the engine.
+// :app - the Compose UI: the main path of phase 2 (plans/03) plus the phase 0 engine probe driven by adb intent extras.
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -34,6 +34,11 @@ android {
             resValue("string", "app_name", "KARTUN")
         }
     }
+    // Model files stay uncompressed in the APK: ModelStore reads their size through AssetManager.openFd, which only
+    // works for stored (not deflated) assets, and the copy out of the APK is a plain stream.
+    androidResources {
+        noCompress += listOf("param", "bin")
+    }
     buildFeatures {
         compose = true
         resValues = true
@@ -45,6 +50,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)

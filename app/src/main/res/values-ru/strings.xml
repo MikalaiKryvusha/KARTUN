@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Russian UI strings. Texts of the screens are taken verbatim from the accepted mockups (design/kartun-mockups.html,
+     interview #002); lines the mockups do not have are marked [AI] in a comment. -->
+<resources>
+    <string name="home_pick_title">Выберите фото</string>
+    <string name="home_pick_sub">из галереи телефона</string>
+    <string name="home_paste_link">Вставить ссылку на фото</string>
+    <string name="home_share_title">Или отправьте фото из другого приложения</string>
+    <string name="home_share_text">Откройте фото в галерее, Telegram или браузере, нажмите «Поделиться» и выберите KARTUN — фото сразу откроется здесь для улучшения.</string>
+    <string name="flow_photo">Фото</string>
+    <string name="flow_share">Поделиться</string>
+    <string name="home_offline">Обработка на устройстве, без сети</string>
+
+    <string name="setup_title">Улучшение</string>
+    <string name="setup_other_photo">Выбрать другое фото</string>
+    <string name="setup_other_short">Другое фото</string>
+    <string name="label_model">Модель</string>
+    <string name="label_scale">Масштаб</string>
+    <string name="model_fast_name">Real-ESRGAN General v3</string>
+    <string name="model_fast_desc">Быстрая · для фото</string>
+    <string name="model_max_name">Real-ESRGAN x4plus</string>
+    <string name="model_max_desc">Максимум · живая фактура</string>
+    <string name="licence_bsd">Для коммерции · BSD-3</string>
+    <string name="scale_default">по умолч.</string>
+    <string name="megapixels">%1$s Мп</string>
+    <!-- [AI] 8x and 16x need the second pass and the megapixel limit of phase 1 (plans/03 step 4). -->
+    <string name="scale_soon">8× и 16× появятся вместе с обработкой больших фото</string>
+    <string name="upscale">Улучшить</string>
+    <string name="upscale_with_estimate">Улучшить · ≈ %1$s</string>
+
+    <string name="info_close">Закрыть</string>
+    <string name="info_scale_text">Масштаб — во сколько раз вырастут ширина и высота фото: 1×, 2×, 4×, 8× или 16×, по умолчанию 2×.</string>
+    <string name="info_scale_list">• 1× — размер прежний, нейросеть только убирает шум и размытие.\n• 2× и 4× — один проход нейросети; хватает для экрана и печати.\n• 8× и 16× — два прохода: обработка дольше в 4–16 раз, файл очень большой.</string>
+    <string name="info_model_text">Модель — это обученная нейросеть. Модели различаются тем, на каких снимках учились: одна лучше восстанавливает фото, другая — рисунки.</string>
+    <!-- [AI] the line on the two shipped models; the ratio is the Titan measurement (5.8 s vs 88.7 s per 1 MP). -->
+    <string name="info_model_list">• Быстрая — для фото, обычно несколько секунд.\n• Максимум — живая фактура, примерно в 15 раз дольше.</string>
+
+    <string name="working_title">Нейросеть улучшает фото</string>
+    <string name="working_tiles">Тайл %1$d из %2$d · осталось ≈ %3$s</string>
+    <string name="working_starting">Осталось ≈ %1$s</string>
+    <string name="cancel">Отменить</string>
+    <string name="backend_gpu">GPU · Vulkan</string>
+    <string name="backend_cpu">CPU</string>
+
+    <string name="before">До</string>
+    <string name="after">После</string>
+    <string name="save">Сохранить</string>
+    <string name="share">Поделиться</string>
+    <string name="result_time">%1$s · %2$s</string>
+
+    <!-- [AI] error lines (the mockups have none; GOAL.md §3: understandable errors, not exception codes). -->
+    <string name="error_too_big">Фото больше %1$s Мп пока не поддерживается: большие фото появятся вместе с обработкой по частям.</string>
+    <string name="error_decode">Не удалось открыть это фото.</string>
+    <string name="error_model">Не удалось загрузить модель. Переустановите приложение.</string>
+    <string name="error_engine">Нейросеть не смогла обработать фото.</string>
+    <string name="seconds">%1$d с</string>
+    <string name="size_to">%1$s → %2$s</string>
+    <string name="percent">%1$d%%</string>
+    <string name="arrow">→</string>
+</resources>

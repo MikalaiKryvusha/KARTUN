@@ -1,75 +1,63 @@
 package com.kriniks.kartun
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.os.SystemClock
-import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import com.kriniks.kartun.engine.NcnnUpscaler
-import java.io.File
-import java.util.concurrent.Executors
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.kriniks.kartun.ui.HomeScreen
+import com.kriniks.kartun.ui.ResultScreen
+import com.kriniks.kartun.ui.SetupScreen
+import com.kriniks.kartun.ui.WorkingScreen
+import com.kriniks.kartun.ui.theme.KartunTheme
 
 /**
- * Phase 0 probe screen (plans/02): runs one engine upscale driven by intent extras and logs a JSON line to logcat
- * (tag KARTUN_PROBE). Files live in the app's external files dir so adb can push inputs and pull outputs. [NOT-TESTED]
- *
- * adb shell am start -n com.kriniks.kartun.debug/com.kriniks.kartun.MainActivity \
- *   --es in test256.png --es model realesrgan-x4plus --ez gpu true --ei tile 128 --ei scale 4
+ * The one activity: the main path of phase 2 (plans/03) - home → setup → processing → result, switched by
+ * [UpscaleViewModel.screen]. Photos come from the system photo picker (no storage permission, plans/01 §2.3) or from
+ * another app's «Поделиться» (ACTION_SEND). An adb launch with the `in` extra runs the phase 0 [EngineProbe]. [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
  */
 class MainActivity : ComponentActivity() {
 
-    private val status = mutableStateOf("KARTUN phase 0 probe")
-    // One dedicated thread for every engine call (research 03, section B, lesson 7).
-    private val engineThread = Executors.newSingleThreadExecutor()
+    private val vm: UpscaleViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        setContent {
-            Box(Modifier.fillMaxSize().background(Color(0xFF0D0D0D)).padding(16.dp)) {
-                Text(status.value, color = Color(0xFFFF1A8C))
-            }
-        }
-        val input = intent.getStringExtra("in") ?: return
-        val model = intent.getStringExtra("model") ?: "realesrgan-x4plus"
-        val gpu = intent.getBooleanExtra("gpu", true)
-        val tile = intent.getIntExtra("tile", 128)
-        val scale = intent.getIntExtra("scale", 4)
-        engineThread.execute { runProbe(input, model, gpu, tile, scale) }
+        if (EngineProbe.runIfRequested(this, intent)) return
+        if (savedInstanceState == null) sharedImage(intent)?.let(vm::open)
+        setContent { KartunTheme { KartunApp(vm) } }
     }
 
-    private fun runProbe(input: String, model: String, gpu: Boolean, tile: Int, scale: Int) {
-        val dir = getExternalFilesDir(null) ?: filesDir
-        val tag = "KARTUN_PROBE"
-        try {
-            val info = NcnnUpscaler.gpuInfo()
-            val bmp: Bitmap = BitmapFactory.decodeFile(File(dir, input).path)
-                ?: error("cannot decode ${File(dir, input).path}")
-            val t0 = SystemClock.elapsedRealtime()
-            val up = NcnnUpscaler.load(File(dir, "$model.param").path, File(dir, "$model.bin").path, gpu)
-                ?: error("model load failed: $model")
-            val t1 = SystemClock.elapsedRealtime()
-            val out = up.use { it.upscale(bmp, scale, tile) }
-            val t2 = SystemClock.elapsedRealtime()
-            val name = "out_${model}_${if (gpu) "gpu" else "cpu"}_t${tile}_${input.substringBeforeLast('.')}.png"
-            File(dir, name).outputStream().use { out.compress(Bitmap.CompressFormat.PNG, 100, it) }
-            val line = """{"ok":true,"in":"$input","w":${bmp.width},"h":${bmp.height},"out":"$name","ow":${out.width},"oh":${out.height},"model":"$model","gpu_requested":$gpu,"gpu_used":${up.usesGpu},"tile":$tile,"load_ms":${t1 - t0},"upscale_ms":${t2 - t1},"info":"$info"}"""
-            Log.i(tag, line)
-            status.value = line
-        } catch (t: Throwable) {
-            val line = """{"ok":false,"error":"${t.message}"}"""
-            Log.e(tag, line, t)
-            status.value = line
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        sharedImage(intent)?.let(vm::open)
+    }
+
+    /** The image another app sent with «Поделиться → KARTUN», if any. */
+    private fun sharedImage(intent: Intent): Uri? =
+        if (intent.action == Intent.ACTION_SEND && intent.type?.startsWith("image/") == true)
+            intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+        else null
+}
+
+@Composable
+private fun KartunApp(vm: UpscaleViewModel) {
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> uri?.let(vm::open) }
+    val pick = { picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }
+    when (vm.screen) {
+        UpscaleViewModel.Screen.Home -> {
+            val err = vm.error?.let { (res, arg) -> if (arg != null) stringResource(res, arg) else stringResource(res) }
+            HomeScreen(onPick = pick, error = err, onDismissError = vm::dismissError)
         }
+        UpscaleViewModel.Screen.Setup -> SetupScreen(vm, onPickOther = pick)
+        UpscaleViewModel.Screen.Working -> WorkingScreen(vm)
+        UpscaleViewModel.Screen.Result -> ResultScreen(vm)
     }
 }

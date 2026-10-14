@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- English UI strings (the default locale; plans/01 §4.7). Russian twins: values-ru/strings.xml. -->
+<resources>
+    <string name="home_pick_title">Choose a photo</string>
+    <string name="home_pick_sub">from your phone\'s gallery</string>
+    <string name="home_paste_link">Paste a photo link</string>
+    <string name="home_share_title">Or send a photo from another app</string>
+    <string name="home_share_text">Open a photo in your gallery, Telegram or browser, tap “Share” and pick KARTUN — the photo opens here, ready to enhance.</string>
+    <string name="flow_photo">Photo</string>
+    <string name="flow_share">Share</string>
+    <string name="home_offline">Processed on the device, no network</string>
+
+    <string name="setup_title">Enhance</string>
+    <string name="setup_other_photo">Choose another photo</string>
+    <string name="setup_other_short">Another photo</string>
+    <string name="label_model">Model</string>
+    <string name="label_scale">Scale</string>
+    <string name="model_fast_name">Real-ESRGAN General v3</string>
+    <string name="model_fast_desc">Fast · for photos</string>
+    <string name="model_max_name">Real-ESRGAN x4plus</string>
+    <string name="model_max_desc">Maximum · rich texture</string>
+    <string name="licence_bsd">Commercial use · BSD-3</string>
+    <string name="scale_default">default</string>
+    <string name="megapixels">%1$s MP</string>
+    <string name="scale_soon">8× and 16× arrive together with large-photo processing</string>
+    <string name="upscale">Enhance</string>
+    <string name="upscale_with_estimate">Enhance · ≈ %1$s</string>
+
+    <string name="info_close">Close</string>
+    <string name="info_scale_text">Scale is how many times the photo\'s width and height grow: 1×, 2×, 4×, 8× or 16×; 2× by default.</string>
+    <string name="info_scale_list">• 1× — same size; the network only removes noise and blur.\n• 2× and 4× — one pass of the network; enough for a screen and for print.\n• 8× and 16× — two passes: 4–16 times longer, a very large file.</string>
+    <string name="info_model_text">A model is a trained neural network. Models differ in what pictures they learned from: one restores photos better, another drawings.</string>
+    <string name="info_model_list">• Fast — for photos, usually a few seconds.\n• Maximum — rich texture, about 15 times longer.</string>
+
+    <string name="working_title">The network is enhancing your photo</string>
+    <string name="working_tiles">Tile %1$d of %2$d · ≈ %3$s left</string>
+    <string name="working_starting">≈ %1$s left</string>
+    <string name="cancel">Cancel</string>
+    <string name="backend_gpu">GPU · Vulkan</string>
+    <string name="backend_cpu">CPU</string>
+
+    <string name="before">Before</string>
+    <string name="after">After</string>
+    <string name="save">Save</string>
+    <string name="share">Share</string>
+    <string name="result_time">%1$s · %2$s</string>
+
+    <string name="error_too_big">Photos over %1$s MP are not supported yet: large photos arrive together with processing in parts.</string>
+    <string name="error_decode">Could not open this photo.</string>
+    <string name="error_model">Could not load the model. Please reinstall the app.</string>
+    <string name="error_engine">The network could not process this photo.</string>
+    <string name="seconds">%1$d s</string>
+    <string name="size_to">%1$s → %2$s</string>
+    <string name="percent">%1$d%%</string>
+    <string name="arrow">→</string>
+</resources>

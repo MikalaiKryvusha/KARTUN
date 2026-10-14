@@ -6,6 +6,9 @@
 //
 // Contract (phase 0): input and output are Android Bitmaps in ARGB_8888; output must be exactly scale x input.
 // All calls must come from ONE thread (research 03 section B, lesson 7). Return codes: 0 ok, negative = error.
+// Phase 2: after every tile the engine calls `listener.onTile(done, total)` (a com.kriniks.kartun.engine.TileListener,
+// may be null); a `false` answer stops the run between tiles with kErrCancelled - the progress ring and the cancel
+// button of the processing screen (plans/03 step 5). [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
 
 #include <jni.h>
 #include <android/bitmap.h>
@@ -30,6 +33,7 @@ constexpr float kDenorm = 255.f;
 constexpr int kErrBadArgs = -1;
 constexpr int kErrBitmap = -2;
 constexpr int kErrExtract = -3;
+constexpr int kErrCancelled = -4;
 
 bool g_gpuInstance = false;
 
@@ -97,10 +101,10 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeDestroy(JNIEnv*, jclass, jlong
     delete reinterpret_cast<Upscaler*>(handle);
 }
 
-// Upscales `input` into `output` (output = input * scale) tile by tile.
+// Upscales `input` into `output` (output = input * scale) tile by tile, reporting each finished tile to `listener`.
 JNIEXPORT jint JNICALL
 Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, jlong handle, jobject input,
-                                                          jobject output, jint scale, jint tile) {
+                                                          jobject output, jint scale, jint tile, jobject listener) {
     auto* u = reinterpret_cast<Upscaler*>(handle);
     if (!u || scale < 1 || tile < 16) return kErrBadArgs;
 
@@ -126,6 +130,12 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, j
                                             ncnn::Mat::PIXEL_RGBA2RGB, w, h, static_cast<int>(inInfo.stride));
     const float norm[3] = {kNorm, kNorm, kNorm};
     full.substract_mean_normalize(nullptr, norm);
+
+    // Progress: the tile count is known up front, so the caller can show an exact percentage.
+    const int total = ((w + tile - 1) / tile) * ((h + tile - 1) / tile);
+    jmethodID onTile = nullptr;
+    if (listener) onTile = env->GetMethodID(env->GetObjectClass(listener), "onTile", "(II)Z");
+    int done = 0;
 
     int rc = 0;
     auto* outBase = static_cast<unsigned char*>(outPixels);
@@ -161,6 +171,10 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, j
 
             unsigned char* dst = outBase + static_cast<size_t>(ty * scale) * outInfo.stride + static_cast<size_t>(tx * scale) * 4;
             crop.to_pixels(dst, ncnn::Mat::PIXEL_RGB2RGBA, static_cast<int>(outInfo.stride));
+
+            ++done;
+            if (onTile && !env->CallBooleanMethod(listener, onTile, done, total)) rc = kErrCancelled;
+            if (env->ExceptionCheck()) { env->ExceptionClear(); rc = kErrCancelled; }
         }
     }
 

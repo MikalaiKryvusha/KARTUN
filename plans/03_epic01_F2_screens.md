@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-14 (agent)
 > **Родитель:** `plans/01_EPIC_mvp.md` §3 row «2 — основной сценарий», gate: criteria 2.2, 2.3, 2.5, 2.7 walked on the Titan by touch, no adb commands; `MASTER_PLAN.md` phase 2
-> **Статус:** 🔧 started 2026-10-14 18:27 +03:00 — slice 1 (steps 1–6) in work
+> **Статус:** 🔧 started 2026-10-14 18:27 +03:00 — slice 1 steps 1–6 done 2026-10-14 18:47 +03:00, step 7 run (`testcases/reports/2026-10-14_F2_screens_slice1.md`, criteria 1–4, 6 pass; pinch and >12.5 MP not run); the mockup sheet for the owner and the icon (step 8) open
 > **Вовне:** each screen's Titan screenshot next to its mockup → to the owner (taste class: his eye judges the look)
 
 ## Goal vector
@@ -32,20 +32,34 @@ the picture — all by touch, in Krinik's style, as on the accepted mockups (`de
 ## Steps
 
 Slice 1 (this session):
-1. [ ] Theme: `ui/theme` — colours of the mockups (`--bg #0D0D0D`, `--card #1C1C1E`, `--pink #FF1A8C` …), shapes
+1. [x] Theme: `ui/theme` — colours of the mockups (`--bg #0D0D0D`, `--card #1C1C1E`, `--pink #FF1A8C` …), shapes
    (20–32 dp), type: Unbounded (headings, logo) + Manrope (text) as OFL font files in `res/font` (`[OWNER]` interview #002, Q2 = A).
-2. [ ] Models in the APK: `tools/stage-models.mjs` copies `realesr-general-x4v3` (own conversion) and `realesrgan-x4plus`
+2. [x] Models in the APK: `tools/stage-models.mjs` copies `realesr-general-x4v3` (own conversion) and `realesrgan-x4plus`
    into `app/src/main/assets/models/` (gitignored, like `engine/third_party/`); first launch copies them to `filesDir`
    (the engine loads from a path).
-3. [ ] Home screen A: logo, «Выберите фото» card → Photo Picker (`PickVisualMedia`), «Вставить ссылку» (disabled until
+3. [x] Home screen A: logo, «Выберите фото» card → Photo Picker (`PickVisualMedia`), «Вставить ссылку» (disabled until
    phase 4), the share hint, «Обработка на устройстве, без сети».
-4. [ ] Setup screen: pinned collapsing preview, model cards (fast · maximum), scale slider 1×/2×/4×/8×/16× with the result
+4. [x] Setup screen: pinned collapsing preview, model cards (fast · maximum), scale slider 1×/2×/4×/8×/16× with the result
    size, (i) buttons with a short text sheet, «Улучшить» button. Scales 1× and 2× = one 4× pass + downscale; 8×/16× stay
    disabled with «скоро» until phase 1 brings the megapixel limit and the second pass.
-5. [ ] Upscale in a ViewModel on the single engine thread; progress screen (indeterminate until phase 1 adds tile progress).
-6. [ ] Result screen: before/after compare grabbed anywhere, pinch zoom + pan, size and time line; «Сохранить» /
+5. [x] Upscale in a ViewModel on the single engine thread; progress screen with a PERCENT ring fed by tile progress from the
+   engine, and a time estimate before the run (`[OWNER]` interview #003, Q1 = D: «Рисуем примерную эстимацию для юзера, и
+   прогресс бары-кольца в процентах»). The estimate starts from the Titan measurement and learns from the device's own runs.
+6. [x] Result screen: before/after compare grabbed anywhere, pinch zoom + pan, size and time line; «Сохранить» /
    «Поделиться» shown disabled until phase 3.
-7. [ ] Titan run by touch per criteria 1–4 → run report; sheet «mockup | build» for the owner.
+7. [~] Titan run by touch per criteria 1–4 → run report; sheet «mockup | build» for the owner.
+
+8. [ ] Own vector icon — the owner's order in chat 2026-10-14 ≈ 18:33 +03:00, verbatim: «Нарисуй вообще свою векторную
+   иконку. Сердце, как нам ГПТ пытался рисовать. И правая и левая части гладкие. Стеклянные. Но левая - покрыта
+   шахматными квадратиками стекла - а левая идеально гладкая, блеслящая». Reading (said in chat, awaiting correction):
+   the right half is the smooth shiny one (his earlier «слева пиксели, справа от черты-лазера - гладкое»). A
+   VectorDrawable heart; a sheet «own vector | icon_v3» on the home screen and the splash goes to the owner first.
+
+Owner's remarks on the build, chat 2026-10-14 ≈ 18:48–18:50 (verbatim), all applied and seen on the Titan (run report runs 11–12):
+- [x] «прыгает картинка на экране Улучшение» → collapsing header (NestedScrollConnection), the preview turns into the small row at 80 dp.
+- [x] «Инфо открывать диалогами, а не ботом шитами» → `InfoDialog` in `ui/Common.kt`.
+- [x] «модель качать на экране улучшение, а не на прогрессе» → `UpscaleViewModel.preload()` on entering the screen and on a card tap.
+- [x] «Фото - Поделиться - Кртун - выровнять по центру» → the row centred in the share hint card.
 
 Slice 2 (next): foreground service `mediaProcessing` with a notification; the probe activity moves to a debug-only entry.
 
