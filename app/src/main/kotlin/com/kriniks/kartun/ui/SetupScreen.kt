@@ -40,6 +40,10 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.Velocity
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.layout.layout
@@ -60,6 +64,10 @@ import kotlin.math.roundToInt
 /** Preview height at rest, and the height at which it becomes the small row ('A-setup-scrolled'). */
 private val HERO_MAX = 330.dp
 private val HERO_MIN = 80.dp
+/** How far past the full preview a downward pull must stretch it to open the photo full screen (plans/03 step 9). */
+private val PULL_OPEN = 90.dp
+/** The stretch never grows beyond this - the rubber band of the pull. */
+private val PULL_MAX = 160.dp
 
 /**
  * «Фото выбрано» (mockups 'A-setup' / 'A-setup-scrolled', interview #002 Q1): the preview stays on top and shrinks while
@@ -80,26 +88,50 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
     val maxPx = with(density) { HERO_MAX.toPx() }
     val minPx = with(density) { HERO_MIN.toPx() }
     var heroPx by remember { mutableFloatStateOf(maxPx) }
+    // Pull-down past the full preview: the photo stretches like a rubber band; released past PULL_OPEN it opens full
+    // screen - the owner in chat 2026-10-14 ≈ 18:57: «свайпом вниз было бы здорово раскрывать вью картинки на весь экран».
+    var pullPx by remember { mutableFloatStateOf(0f) }
+    var fullscreen by remember { mutableStateOf(false) }
+    val openPx = with(density) { PULL_OPEN.toPx() }
+    val pullMaxPx = with(density) { PULL_MAX.toPx() }
     val collapse = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 if (available.y >= 0) return Offset.Zero
-                val next = (heroPx + available.y).coerceAtLeast(minPx)
-                val used = next - heroPx
+                // An upward move first takes back the stretch, then shrinks the preview.
+                var left = available.y
+                if (pullPx > 0f) {
+                    val p = (pullPx + left).coerceAtLeast(0f)
+                    left -= p - pullPx
+                    pullPx = p
+                }
+                val next = (heroPx + left).coerceAtLeast(minPx)
+                left -= next - heroPx
                 heroPx = next
-                return Offset(0f, used)
+                return Offset(0f, available.y - left)
             }
 
             override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
                 if (available.y <= 0) return Offset.Zero
                 val next = (heroPx + available.y).coerceAtMost(maxPx)
-                val used = next - heroPx
+                var left = available.y - (next - heroPx)
                 heroPx = next
-                return Offset(0f, used)
+                // Only a finger drag stretches (a fling arriving at the top must not open the viewer).
+                if (left > 0f && source == NestedScrollSource.UserInput) {
+                    pullPx = (pullPx + left * 0.5f).coerceAtMost(pullMaxPx)
+                    left = 0f
+                }
+                return Offset(0f, available.y - left)
+            }
+
+            override suspend fun onPreFling(available: Velocity): Velocity {
+                if (pullPx >= openPx) fullscreen = true
+                pullPx = 0f
+                return Velocity.Zero
             }
         }
     }
-    val heroDp = with(density) { heroPx.toDp() }
+    val heroDp = with(density) { (heroPx + pullPx).toDp() }
     BackHandler { vm.back() }
 
     Box(Modifier.fillMaxSize().background(c.background)) {
@@ -126,7 +158,18 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                         Pill(stringResource(R.string.setup_other_short), outlined = true, onClick = onPickOther)
                     }
                 } else {
-                    Box(Modifier.fillMaxWidth().height(heroDp).clip(MaterialTheme.shapes.large).background(c.surfaceContainer)) {
+                    // The photo itself is a handle too: dragging it feeds the same collapse/stretch as the settings do.
+                    Box(Modifier.fillMaxWidth().height(heroDp).clip(MaterialTheme.shapes.large).background(c.surfaceContainer)
+                        .clickable { fullscreen = true }
+                        .draggable(
+                            rememberDraggableState { d ->
+                                val delta = Offset(0f, d)
+                                if (d < 0) collapse.onPreScroll(delta, NestedScrollSource.UserInput)
+                                else collapse.onPostScroll(Offset.Zero, delta, NestedScrollSource.UserInput)
+                            },
+                            Orientation.Vertical,
+                            onDragStopped = { collapse.onPreFling(Velocity.Zero) },
+                        )) {
                         Image(src.bitmap.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
                         Pill("${sizeText(src.width, src.height)} · ${stringResource(R.string.megapixels, mpText(src.megapixels))}",
                             Modifier.align(Alignment.BottomStart).padding(12.dp), translucent = true)
@@ -164,6 +207,7 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
             )
         }
     }
+    if (fullscreen) FullPhoto(src.bitmap) { fullscreen = false }
     when (info) {
         R.string.label_scale -> InfoDialog(stringResource(R.string.label_scale), stringResource(R.string.info_scale_text), stringResource(R.string.info_scale_list)) { info = null }
         R.string.label_model -> InfoDialog(stringResource(R.string.label_model), stringResource(R.string.info_model_text), stringResource(R.string.info_model_list)) { info = null }

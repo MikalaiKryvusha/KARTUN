@@ -14,7 +14,7 @@ with the before/after divider grabbed anywhere. Basis: the accepted mockups `des
 
 HEADWOLF Titan 1 (Android 16, Mali-G615 MC6) over adb `100.99.111.48:42661`. Input: the owner's photo 960×1280 (the
 phase 0 `photo1.jpg`), copied into the Titan gallery as `Pictures/KARTUN_test/kartun_test_photo1.jpg` for the picker
-(test data, to be removed at the end of the session — `HOUSE_RULES.md` R1). The picker is driven by `adb shell input
+(test data; removed 2026-10-14 19:06 with `content delete` + `rm -rf /sdcard/Pictures/KARTUN_test` — `HOUSE_RULES.md` R1). The picker is driven by `adb shell input
 tap` at the screen coordinates read from screenshots — taps, not intents; the user's path.
 
 ## 3. Runs
@@ -36,6 +36,8 @@ tap` at the screen coordinates read from screenshots — taps, not intents; the 
 | 13 | 2026-10-14 18:53 +03:00 | Google Photos: `am start -a VIEW -d content://media/external/images/media/63257 -p com.google.android.apps.photos` → tap «Поделиться» → «Оригинал» → «Поделиться» → swipe the chooser → tap «Debug KARTUN» | KARTUN opens «Улучшение» with «960 × 1280 · 1,2 Мп» — share-in works on the user's path |
 | 14 | 2026-10-14 18:59 +03:00 | build with the vector icon (`python tools/make-vector-icon.py --apply`) → `am start` + `screencap` 0.15 s later; `input keyevent 3`, swipe up to the app list | splash: the vector glass heart on the dark field; app list: «Debug KARTUN» with the heart in the OS circle (`design/icon/compare_vector.png`) |
 | 15 | 2026-10-14 19:00 +03:00 | path of run 2 → `uiautomator dump`; tap the x4plus card → dump; back to the fast card → «Улучшить» → dump on the result | «Улучшить · ≈ 7 секунд», «Улучшить · ≈ 1 минута 49 секунд», «8 секунд · GPU · Vulkan» — durations in whole words with plural forms |
+| 16 | 2026-10-14 19:02 +03:00 | build with the pull-down (plans/03 step 9) → path of run 2 → `input swipe 800 1400 800 2300 1500` (on the settings) → `input swipe 800 1200 800 1900 400` | the photo opens full screen on black; the vertical swipe closes it back to «Улучшение» |
+| 17 | 2026-10-14 19:05 +03:00 | build with the draggable preview → `input swipe 800 500 800 1300 1500` (on the photo) → `input keyevent 4` → `input swipe 800 1000 800 300 800` (photo up) | pull on the photo opens full screen (empty dump), Back closes it; dragging the photo up shrinks it; FATAL count 0 |
 
 ## 4. Checks
 
@@ -56,6 +58,7 @@ dumps (`captures/`, local only), the divider position READ from screenshot pixel
 | C8 photo over 12.5 MP, the «слишком большое» notice | not run | no such photo in the test set |
 | C9 share-in from another app | pass | run 13 (Google Photos); run 10 is an adb limit, not a defect |
 | C11 durations in whole words (owner, ≈ 18:58) | pass | run 15 |
+| C12 pull-down to full screen (owner, ≈ 18:57) | pass | runs 16–17; pinch inside the viewer not run (no multi-touch in adb) |
 | C10 owner's remarks 18:48–18:50 | pass | run 11 (no jump, preload), run 12 (dialogs, centred row) — the look stays his verdict |
 
 ## 5. Found

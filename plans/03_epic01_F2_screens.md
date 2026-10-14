@@ -62,7 +62,7 @@ Owner's remarks on the build, chat 2026-10-14 ≈ 18:48–18:50 (verbatim), all 
 - [x] «Фото - Поделиться - Кртун - выровнять по центру» → the row centred in the share hint card.
 - [x] «минут секунд в кнопке улучшения писать целым слвом» (≈ 18:58) → `durationText` with `plurals` («7 секунд», «1 минута 49 секунд»), run 15.
 
-9. [ ] Pull-down to full screen — the owner in chat 2026-10-14 ≈ 18:57 +03:00, verbatim: «На экране Улучшения свайпом внижз
+9. [x] Pull-down to full screen (2026-10-14 19:05 +03:00, `ui/FullPhoto.kt`, runs 16–17) — the owner in chat 2026-10-14 ≈ 18:57 +03:00, verbatim: «На экране Улучшения свайпом внижз
    было бы здорово раскрывать вью картинки на весь экран». A downward pull past the full preview opens the photo full
    screen on black, pinch zoom inside; a swipe up or Back returns to the settings.
 
