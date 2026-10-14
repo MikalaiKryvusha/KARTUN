@@ -40,6 +40,21 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.kriniks.kartun.R
+import com.kriniks.kartun.LinkDownloader
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.window.Dialog
 
 /**
  * Home screen, variant A v2 of the accepted mockups ('A-home'): the big «Выберите фото» card opens the system photo
@@ -131,6 +146,42 @@ private fun ShareHint() {
             FlowChip("KARTUN", true)
         }
     }
+}
+
+/**
+ * The link window: the clipboard held no link, so the user types or pastes one (the owner, chat 2026-10-14 ≈ 21:59 +03:00:
+ * «вставить ссылку можно не только из буфера обмена, в просто в текстовое поле» · «если буффер пуст, то пусть кнопка
+ * открывается как поле ввода»). «Скачать» lights up once the text holds an http(s) link; the keyboard's Go does the same.
+ */
+@Composable
+fun LinkDialog(onDownload: (String) -> Unit, onClose: () -> Unit) {
+    val c = MaterialTheme.colorScheme
+    var text by remember { mutableStateOf("") }
+    val focus = remember { FocusRequester() }
+    val valid = LinkDownloader.findUrl(text) != null
+    Dialog(onDismissRequest = onClose) {
+        Column(
+            Modifier.fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow)
+                .padding(start = 22.dp, end = 22.dp, top = 22.dp, bottom = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Text(stringResource(R.string.link_title), style = MaterialTheme.typography.titleLarge)
+            OutlinedTextField(
+                value = text, onValueChange = { text = it }, singleLine = true,
+                placeholder = { Text("https://…", color = c.onSurfaceVariant) },
+                modifier = Modifier.fillMaxWidth().focusRequester(focus),
+                shape = MaterialTheme.shapes.medium,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri, imeAction = ImeAction.Go),
+                keyboardActions = KeyboardActions(onGo = { if (valid) onDownload(text) }),
+                colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = c.primary, cursorColor = c.primary),
+            )
+            PrimaryButton(stringResource(R.string.link_download), R.drawable.ic_link, onClick = { onDownload(text) }, enabled = valid, height = 54)
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Pill(stringResource(R.string.info_close), outlined = true, onClick = onClose)
+            }
+        }
+    }
+    LaunchedEffect(Unit) { focus.requestFocus() }
 }
 
 @Composable

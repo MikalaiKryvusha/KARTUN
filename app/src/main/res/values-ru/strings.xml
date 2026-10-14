@@ -16,9 +16,9 @@
     <string name="label_model">Модель</string>
     <string name="label_scale">Масштаб</string>
     <string name="model_fast_name">Real-ESRGAN General v3</string>
-    <string name="model_fast_desc">Быстрая · для фото</string>
+    <string name="model_fast_desc">Быстрая · убирает шум и размытие</string>
     <string name="model_max_name">Real-ESRGAN x4plus</string>
-    <string name="model_max_desc">Максимум · живая фактура</string>
+    <string name="model_max_desc">Детальная · чётче мелкие детали</string>
     <string name="licence_bsd">Разрешена для коммерческого использования · BSD-3</string>
     <string name="megapixels">%1$s Мп</string>
     <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
@@ -32,7 +32,7 @@
     <string name="info_scale_list">• 1× — размер прежний, нейросеть только убирает шум и размытие.\n• 2× и 4× — один проход нейросети; хватает для экрана и печати.\n• 8× и 16× — два прохода: обработка дольше в 4–16 раз, файл очень большой.</string>
     <string name="info_model_text">Модель — это обученная нейросеть. Модели различаются тем, на каких снимках учились: одна лучше восстанавливает фото, другая — рисунки.</string>
     <!-- [AI] the line on the two shipped models; the ratio is the Titan measurement (5.8 s vs 88.7 s per 1 MP). -->
-    <string name="info_model_list">• Быстрая — для фото, обычно несколько секунд.\n• Максимум — живая фактура, примерно в 15 раз дольше.</string>
+    <string name="info_model_list">• Быстрая — убирает шум и размытие, обычно несколько секунд.\n• Детальная — чётче мелкие детали, считает дольше.</string>
 
     <string name="working_title">Нейросеть улучшает фото</string>
     <string name="working_tiles">Тайл %1$d из %2$d · осталось ≈ %3$s</string>
@@ -82,7 +82,8 @@
     <string name="saving">Сохраняем…</string>
     <string name="webp_too_big">WebP — до 16 383 px по стороне, для этого результата выберите PNG или JPEG</string>
     <!-- [AI] «Вставить ссылку» (LinkDownloader). -->
-    <string name="link_none">В буфере обмена нет ссылки. Скопируйте ссылку на картинку и нажмите ещё раз.</string>
+    <string name="link_title">Ссылка на фото</string>
+    <string name="link_download">Скачать</string>
     <string name="link_failed">Не удалось скачать фото по ссылке.</string>
     <string name="link_downloading">Скачиваем фото…</string>
     <!-- [AI] Settings (mockup 'settings'): only the working rows. -->
@@ -112,6 +113,7 @@
     <string name="about_inspired">Вдохновители и движок</string>
     <string name="about_author">Автор</string>
     <string name="about_source">Исходный код на GitHub</string>
+    <string name="settings_about_sub">Версия, устройство, автор, лицензии</string>
     <string name="notif_done">Фото готово</string>
     <string name="notif_done_text">Нажмите, чтобы сравнить «до» и «после»</string>
     <string name="working_pass">Проход %1$d из 2 · тайл %2$d из %3$d · осталось ≈ %4$s</string>

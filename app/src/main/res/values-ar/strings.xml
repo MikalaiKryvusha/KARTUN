@@ -14,8 +14,8 @@
     <string name="setup_other_short">صورة أخرى</string>
     <string name="label_model">النموذج</string>
     <string name="label_scale">المقياس</string>
-    <string name="model_fast_desc">سريع · للصور</string>
-    <string name="model_max_desc">أقصى جودة · ملمس حي</string>
+    <string name="model_fast_desc">سريع · يزيل التشويش والضبابية</string>
+    <string name="model_max_desc">مفصّل · تفاصيل دقيقة أوضح</string>
     <string name="licence_bsd">مسموح بالاستخدام التجاري · BSD-3</string>
     <string name="megapixels">%1$s ميغابكسل</string>
     <string name="scale_too_big">ستتجاوز النتيجة %1$s ميغابكسل — اختر لهذه الصورة حتى %2$d×</string>
@@ -26,7 +26,7 @@
     <string name="info_scale_text">المقياس هو عدد المرات التي يكبر بها عرض الصورة وارتفاعها: 1× أو 2× أو 4× أو 8× أو 16×؛ والافتراضي 2×.</string>
     <string name="info_scale_list">• 1× — الحجم نفسه؛ تزيل الشبكة الضجيج والضبابية فقط.\n• 2× و4× — مرور واحد للشبكة؛ يكفي للشاشة والطباعة.\n• 8× و16× — مروران: أطول بـ 4 إلى 16 مرة، وملف كبير جدًا.</string>
     <string name="info_model_text">النموذج شبكة عصبية مدرَّبة. تختلف النماذج في الصور التي تعلّمت منها: أحدها يرمّم الصور أفضل، والآخر الرسوم.</string>
-    <string name="info_model_list">• سريع — للصور، عادةً بضع ثوانٍ.\n• أقصى جودة — ملمس حي، أطول بنحو 15 مرة.</string>
+    <string name="info_model_list">• سريع — يزيل التشويش والضبابية، عادةً بضع ثوانٍ.\n• مفصّل — تفاصيل دقيقة أوضح، يستغرق وقتًا أطول.</string>
     <string name="working_title">الشبكة العصبية تحسّن صورتك</string>
     <string name="working_tiles">البلاطة %1$d من %2$d · المتبقي ≈ %3$s</string>
     <string name="working_starting">المتبقي ≈ %1$s</string>
@@ -66,9 +66,10 @@
         <item quantity="many">%1$d دقيقة</item>
         <item quantity="other">%1$d دقيقة</item>
     </plurals>
-    <string name="link_none">لا يوجد رابط في الحافظة. انسخ رابط صورة واضغط مرة أخرى.</string>
+    <string name="link_title">رابط الصورة</string>
     <string name="link_failed">تعذّر تنزيل الصورة من الرابط.</string>
     <string name="link_downloading">جارٍ تنزيل الصورة…</string>
+    <string name="link_download">تنزيل</string>
     <string name="settings_title">الإعدادات</string>
     <string name="settings_processing">المعالجة</string>
     <string name="settings_app">التطبيق</string>
@@ -103,6 +104,7 @@
     <string name="about_inspired">الإلهام والمحرك</string>
     <string name="about_author">المؤلف</string>
     <string name="about_source">الشيفرة المصدرية على GitHub</string>
+    <string name="settings_about_sub">الإصدار، الجهاز، المؤلف، التراخيص</string>
     <string name="arrow">←</string>
     <string name="size_to">%1$s ← %2$s</string>
 </resources>

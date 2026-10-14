@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.kriniks.kartun.ui.AboutScreen
 import com.kriniks.kartun.ui.HomeScreen
+import com.kriniks.kartun.ui.LinkDialog
 import com.kriniks.kartun.ui.ManualScreen
 import com.kriniks.kartun.ui.ResultScreen
 import com.kriniks.kartun.ui.SettingsScreen
@@ -71,6 +72,7 @@ private fun KartunApp(vm: UpscaleViewModel) {
                 onPasteLink = { vm.openLink(clipboard.primaryClip?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.text) },
                 downloading = vm.downloading, error = err, onDismissError = vm::dismissError,
             )
+            if (vm.linkDialog) LinkDialog(onDownload = vm::downloadLink, onClose = vm::closeLinkDialog)
         }
         UpscaleViewModel.Screen.Setup -> SetupScreen(vm, onPickOther = pick)
         UpscaleViewModel.Screen.Working -> WorkingScreen(vm)

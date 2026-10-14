@@ -82,53 +82,57 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
     Done 2026-10-14 ≈ 21:41 +03:00: a run moves its model to the front of the stored order (`model_order`), the cards follow
     it; `RecencyTest` 4/4, reddened by a mutant that appended instead of prepending. On the Titan: General v3 on top before,
     after an x4plus run x4plus on top. With only two models today the whole list is the two last used.
-19. [ ] «описание модели на экране Улучшение сделать подробнее. Слово - Максимум - странное, и ни о чем не говорит».
+19. [x] «описание модели на экране Улучшение сделать подробнее. Слово - Максимум - странное, и ни о чем не говорит».
+    Done ≈ 22:03 by the owner's pick (chat): «А: «Быстрая · убирает шум и размытие» / «Детальная · чётче мелкие детали, - без
+    написания, в сколько раз дольше, ибо моделей у нас будет МНОГО, заопарк целый» — the cards, the model (i) and the guide
+    in 10 languages; seen on the Titan 22:06.
 20. [x] «в кольце прогресса цифры процентов пляшут, вероятно из-за разной ширины цифр. Нужен там или моноширинный шрифт, или
     как-то закрепить, чтобы не плясали цифры» (tabular figures: `fontFeatureSettings = "tnum"`).
     Done 2026-10-14 ≈ 21:37 +03:00: both fonts carry `tnum`; measured on the Titan by the percent text's width during an x4plus 16×
     run - before: two-digit values 268..320 px (control, old build); after: 21 values from 10 % to 72 %, all 295 px.
-21. [ ] «в настройках нужно будет сделать секцию о приложении и авторе, как в KrinikCam, ссослаться на вжохновителей -
+21. [~] «в настройках нужно будет сделать секцию о приложении и авторе, как в KrinikCam, ссослаться на вжохновителей -
     репозиторий Upscayl, и репозиторий движка, и моделей (если они отдельными репами)» — read KrinikCam's about first.
 22. [ ] «В экране выбора всех моделей нужно картинку показывать превью по каждой модели» · «моделей нужно сильно больше
     добавить» — the model catalogue (phase 4 pulled forward; mockup 'models', licence badges as accepted in interview #002).
-23. [ ] (owner, chat 2026-10-14 ≈ 20:49 +03:00, looking at the «Улучшение» screenshot) «убрать строчку По умолч» — the
+23. [x] (owner, chat 2026-10-14 ≈ 20:49 +03:00, looking at the «Улучшение» screenshot) «убрать строчку По умолч» — the
     «2× · по умолч.» tick label under the scale slider becomes plain «2×».
-24. [ ] (owner, chat 2026-10-14 ≈ 20:50 +03:00) «в настройки пускать только с главного экрана приложения» — the gear leaves
+24. [x] (owner, chat 2026-10-14 ≈ 20:50 +03:00) «в настройки пускать только с главного экрана приложения» — the gear leaves
     the «Улучшение» top bar (the only other screen that had it); the home screen keeps it.
-25. [ ] (owner, chat 2026-10-14 ≈ 20:54 +03:00) «непонятно зачем две кнопки поделиться на результате тебе» — the round share
+25. [x] (owner, chat 2026-10-14 ≈ 20:54 +03:00) «непонятно зачем две кнопки поделиться на результате тебе» — the round share
     icon leaves the result's top bar; «Поделиться» stays in the panel next to «Сохранить».
-26. [ ] (owner, chat 2026-10-14 ≈ 20:54 +03:00) «и почему у кнопки назад нет видимой подложки, хоть чуть-чуть серой, или какой
+26. [x] (owner, chat 2026-10-14 ≈ 20:54 +03:00) «и почему у кнопки назад нет видимой подложки, хоть чуть-чуть серой, или какой
     в дизайн схеме нашего приложения» — the translucent round button (result, full-screen photo) takes the theme's grey card
     `surfaceContainerHigh` at 85 % instead of the near-black background at 55 %.
-27. [ ] (owner, chat 2026-10-14 ≈ 20:58 +03:00) «до после можно не ярко, а полупрозрачно» · «после сейчас слишком кричащее» — both
+27. [x] (owner, chat 2026-10-14 ≈ 20:58 +03:00) «до после можно не ярко, а полупрозрачно» · «после сейчас слишком кричащее» — both
     result tags translucent grey (`Pill(translucent)` = `surfaceContainerHigh` at 70 %); the pink «После» pill is gone.
-28. [ ] (owner, chat 2026-10-14 ≈ 20:59 +03:00) «и в сводке внизу нужно писать, какая модель улучшила» — the result panel opens
+28. [x] (owner, chat 2026-10-14 ≈ 20:59 +03:00) «и в сводке внизу нужно писать, какая модель улучшила» — the result panel opens
     with the model's title.
-29. [ ] BUG (owner, chat 2026-10-14 ≈ 20:57 +03:00) «когда картинку ты свернул - драг хендл пропал - баг» — the handle was drawn in
+29. [x] BUG (owner, chat 2026-10-14 ≈ 20:57 +03:00) «когда картинку ты свернул - драг хендл пропал - баг» — the handle was drawn in
     the expanded branch only; now it stands under the photo in both states and the compact row drags too.
-30. [ ] (owner, chat 2026-10-14 ≈ 21:00 +03:00) «м там у тебя перемешает слайдер до после - а должен хватать фото на навигацию» —
+30. [x] (owner, chat 2026-10-14 ≈ 21:00 +03:00) «м там у тебя перемешает слайдер до после - а должен хватать фото на навигацию» —
     on the result the divider moves only when grabbed on the line or its knob (±36 dp); a finger elsewhere pans the photo;
     a double tap zooms ×2.5 at the point and back (as the preview, step 17).
-31. [ ] (owner, chat 2026-10-14 ≈ 21:01 +03:00) «виджет сводки чуть ниже сместить» — the result panel's bottom gap 28 → 8 dp.
-32. [ ] (owner, chat 2026-10-14 ≈ 21:05 +03:00) «и полоса до после зачем-то у тебя от края экрана до края экрана, перекрывает вверху
+31. [x] (owner, chat 2026-10-14 ≈ 21:01 +03:00) «виджет сводки чуть ниже сместить» — the result panel's bottom gap 28 → 8 dp.
+32. [x] (owner, chat 2026-10-14 ≈ 21:05 +03:00) «и полоса до после зачем-то у тебя от края экрана до края экрана, перекрывает вверху
     статус бар ОС. Нужно её начинать мягкий фейдом и ззаканчивать мягим фейдом в прозрачность на концах» — the divider spans
     the picture's fitted rect inside the system bars, with a 12 % transparent fade at each end. Revised ≈ 21:11: «ну ты уже
     слишком сократил полосу до после. Пусть от верха девайся буде до низа, но немножко от низа отсутпает, и немножко от
     верха, чтобы статус бар не перекрывала и достаточно» — the divider runs the screen's height inside the system bars with
     an 8 dp gap from each, the fades kept.
-33. [ ] (owner, chat 2026-10-14 ≈ 21:08 +03:00) «давай виждет сводки на экране результата сделаем скрывающися в сторону за пределы
+33. [x] (owner, chat 2026-10-14 ≈ 21:08 +03:00) «давай виждет сводки на экране результата сделаем скрывающися в сторону за пределы
     экрана, и чтобы на краб оставалась стрелочка, в которую он скрылся. И отуда его можно ообратно раскрыть» — a sideways swipe
     hides the panel past the right edge (released beyond 25 % of the width or flung); a grey arrow tab stays on the edge at
     the panel's height; a tap or a swipe left on it brings the panel back. The tab is excluded from the system back gesture
     (`systemGestureExclusion`: on the Titan 21:11 a swipe left on it left the screen). ≈ 21:13: «в что виджет сводки можно
     смахнуть - нукто не догадается, ему нужен или драг хендл или кнопочка-стрелочка» — a round «›» button in the panel's top
     right corner hides it.
-34. [~] (owner, chat 2026-10-14 ≈ 20:58 +03:00) «м в настройках в пункте о приложении и авторе нужна и ссылка на наш GH, и ссылка
+34. [x] (owner, chat 2026-10-14 ≈ 20:58 +03:00) «м в настройках в пункте о приложении и авторе нужна и ссылка на наш GH, и ссылка
     на николая нотификейшен алертс, где можно ему донат отправить» — done with step 21's half: «О приложении» gains «Проект»
     (our GitHub), «Вдохновители и движок» (Upscayl, ncnn, Real-ESRGAN) and «Автор» (KrinikCam's set: GitHub, Telegram,
     YouTube, Instagram @kotkrinik); the GPU row reads the name only. Walked on the Titan 21:29: a link opens the GitHub app.
     Open: the DonationAlerts address - in no project on disk and not in KrinikCam; asked in chat 21:25, the row comes with
-    the owner's URL.
+    the owner's URL. Done ≈ 22:05: «найдешь в моем проекте ндим» - `https://donationalerts.com/r/mikalai_kryvusha` (NDim
+    `menu/donate`), the row «DonationAlerts — mikalai_kryvusha» in «Автор», seen on the Titan 22:06.
 35. [x] (owner, chat 2026-10-14 ≈ 21:39 +03:00) «"Для комерции" заменить на "Разрешеа для комерческого использования" а те, которые
     не разрешены - "Не для комерческого использования"» — `licence_bsd` reads «Разрешена для коммерческого использования · BSD-3»
     (EN «Commercial use allowed · BSD-3», 8 drafts regenerated); fits one line on the Titan 21:44. The «Не для коммерческого
@@ -140,6 +144,17 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
 37. [x] (owner, chat 2026-10-14 ≈ 21:55 +03:00) «открытый код, офлайн, на устройстве - убирай из интерфейсов» — the home screen's
     green-dot note «Обработка на устройстве, без сети» and its string are gone (10 languages); «О приложении» reads «Версия …»
     alone. Kept: the guide's explaining sentence (section 1) and the README's tagline - asked in chat whether they go too.
+38. [x] (owner, chat 2026-10-14 ≈ 21:58-21:59 +03:00) «вставить ссылку можно не только из буфера обмена, в просто в текстовое поле» ·
+    «если буффер пуст, то пусть кнопка открывается как поле ввода» — a link in the clipboard downloads at once; none opens the
+    window «Ссылка на фото» (a URL keyboard, focus in the field, «Скачать» lit only for an http(s) link). On the Titan 22:05:
+    the window opened, a typed raw.githubusercontent link downloaded and opened 540 × 864 on «Улучшение».
+39. [x] (owner, chat 2026-10-14 ≈ 22:00 +03:00) «а О приложении - отдельным пуктом в настройках, а не i скромной на экране
+    настроек» — the corner icon gone; «О приложении · Версия, устройство, автор, лицензии» is a row of «Приложение» (no (i):
+    not a setting). Seen on the Titan 22:06.
+40. [ ] (owner, chat 2026-10-14 ≈ 22:04 +03:00) «помечаем, что модели принадлежит их авторам, мы не претендуем на владение. Нужно в
+    настройках сделать ToU секцию со снятием с нас ответственности за владение, авторские права и целостность устройства
+    пользователя и за удовлетворённость резулттатом улучшения фото» — an «Условия использования» row in settings with the
+    text (an `[AI]` draft to the owner first - legal text in his name), and an «автор модели» line on every catalogue card.
 
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel

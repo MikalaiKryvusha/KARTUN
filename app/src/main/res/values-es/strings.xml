@@ -14,8 +14,8 @@
     <string name="setup_other_short">Otra foto</string>
     <string name="label_model">Modelo</string>
     <string name="label_scale">Escala</string>
-    <string name="model_fast_desc">Rápido · para fotos</string>
-    <string name="model_max_desc">Máximo · textura viva</string>
+    <string name="model_fast_desc">Rápido · quita ruido y desenfoque</string>
+    <string name="model_max_desc">Detallado · detalles finos más nítidos</string>
     <string name="licence_bsd">Uso comercial permitido · BSD-3</string>
     <string name="megapixels">%1$s MP</string>
     <string name="scale_too_big">El resultado superaría %1$s MP: para esta foto elige hasta %2$d×</string>
@@ -26,7 +26,7 @@
     <string name="info_scale_text">La escala indica cuántas veces crecen el ancho y el alto de la foto: 1×, 2×, 4×, 8× o 16×; 2× por defecto.</string>
     <string name="info_scale_list">• 1× — mismo tamaño; la red solo quita ruido y desenfoque.\n• 2× y 4× — una pasada de la red; suficiente para pantalla e impresión.\n• 8× y 16× — dos pasadas: de 4 a 16 veces más lento, archivo muy grande.</string>
     <string name="info_model_text">Un modelo es una red neuronal entrenada. Los modelos se diferencian por las imágenes con las que aprendieron: uno restaura mejor fotos, otro dibujos.</string>
-    <string name="info_model_list">• Rápido — para fotos, normalmente unos segundos.\n• Máximo — textura viva, unas 15 veces más lento.</string>
+    <string name="info_model_list">• Rápido — quita ruido y desenfoque, normalmente unos segundos.\n• Detallado — detalles finos más nítidos, tarda más.</string>
     <string name="working_title">La red está mejorando tu foto</string>
     <string name="working_tiles">Mosaico %1$d de %2$d · quedan ≈ %3$s</string>
     <string name="working_starting">Quedan ≈ %1$s</string>
@@ -60,9 +60,10 @@
         <item quantity="many">%1$d minutos</item>
         <item quantity="other">%1$d minutos</item>
     </plurals>
-    <string name="link_none">No hay ningún enlace en el portapapeles. Copia un enlace a una imagen y toca de nuevo.</string>
+    <string name="link_title">Enlace a la foto</string>
     <string name="link_failed">No se pudo descargar la foto del enlace.</string>
     <string name="link_downloading">Descargando la foto…</string>
+    <string name="link_download">Descargar</string>
     <string name="settings_title">Ajustes</string>
     <string name="settings_processing">Procesamiento</string>
     <string name="settings_app">Aplicación</string>
@@ -97,4 +98,5 @@
     <string name="about_inspired">Inspiración y motor</string>
     <string name="about_author">Autor</string>
     <string name="about_source">Código fuente en GitHub</string>
+    <string name="settings_about_sub">Versión, dispositivo, autor, licencias</string>
 </resources>

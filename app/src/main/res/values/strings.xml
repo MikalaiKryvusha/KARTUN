@@ -15,9 +15,9 @@
     <string name="label_model">Model</string>
     <string name="label_scale">Scale</string>
     <string name="model_fast_name" translatable="false">Real-ESRGAN General v3</string>
-    <string name="model_fast_desc">Fast · for photos</string>
+    <string name="model_fast_desc">Fast · removes noise and blur</string>
     <string name="model_max_name" translatable="false">Real-ESRGAN x4plus</string>
-    <string name="model_max_desc">Maximum · rich texture</string>
+    <string name="model_max_desc">Detailed · sharper fine details</string>
     <string name="licence_bsd">Commercial use allowed · BSD-3</string>
     <string name="megapixels">%1$s MP</string>
     <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
@@ -30,7 +30,7 @@
     <string name="info_scale_text">Scale is how many times the photo\'s width and height grow: 1×, 2×, 4×, 8× or 16×; 2× by default.</string>
     <string name="info_scale_list">• 1× — same size; the network only removes noise and blur.\n• 2× and 4× — one pass of the network; enough for a screen and for print.\n• 8× and 16× — two passes: 4–16 times longer, a very large file.</string>
     <string name="info_model_text">A model is a trained neural network. Models differ in what pictures they learned from: one restores photos better, another drawings.</string>
-    <string name="info_model_list">• Fast — for photos, usually a few seconds.\n• Maximum — rich texture, about 15 times longer.</string>
+    <string name="info_model_list">• Fast — removes noise and blur, usually a few seconds.\n• Detailed — sharper fine details, takes longer.</string>
 
     <string name="working_title">The network is enhancing your photo</string>
     <string name="working_tiles">Tile %1$d of %2$d · ≈ %3$s left</string>
@@ -74,7 +74,8 @@
     <string name="saving">Saving…</string>
     <string name="webp_too_big">WebP holds up to 16 383 px per side; choose PNG or JPEG for this result</string>
     <!-- [AI] «Вставить ссылку» (LinkDownloader). -->
-    <string name="link_none">No link in the clipboard. Copy a link to a picture and tap again.</string>
+    <string name="link_title">Photo link</string>
+    <string name="link_download">Download</string>
     <string name="link_failed">Could not download the photo from the link.</string>
     <string name="link_downloading">Downloading the photo…</string>
     <!-- [AI] Settings (mockup 'settings'): only the working rows. -->
@@ -106,6 +107,7 @@
     <string name="about_inspired">Inspiration and engine</string>
     <string name="about_author">Author</string>
     <string name="about_source">Source code on GitHub</string>
+    <string name="settings_about_sub">Version, device, author, licences</string>
     <string name="notif_done">Your photo is ready</string>
     <string name="notif_done_text">Tap to compare before and after</string>
     <string name="working_pass">Pass %1$d of 2 · tile %2$d of %3$d · ≈ %4$s left</string>

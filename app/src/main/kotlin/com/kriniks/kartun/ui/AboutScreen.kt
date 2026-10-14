@@ -56,6 +56,9 @@ private val AUTHOR_LINKS = listOf(
     "Telegram — @kotkrinik" to "https://t.me/kotkrinik",
     "YouTube — @kotkrinik" to "https://youtube.com/@kotkrinik",
     "Instagram — @kotkrinik" to "https://instagram.com/kotkrinik",
+    // Donations - the address the owner's NDim uses (src/routes/[lang=lang]/menu/donate/+page.svelte; the owner, chat
+    // 2026-10-14 ≈ 22:03 +03:00: «найдешь в моем проекте ндим»).
+    "DonationAlerts — mikalai_kryvusha" to "https://donationalerts.com/r/mikalai_kryvusha",
 )
 
 /** The GPU's name out of the engine's diagnostic line («gpu_count=1 name=Mali-G615 MC6 fp16_storage=1 …»); the line itself if it has none. */

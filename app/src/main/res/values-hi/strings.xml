@@ -14,8 +14,8 @@
     <string name="setup_other_short">दूसरी फ़ोटो</string>
     <string name="label_model">मॉडल</string>
     <string name="label_scale">स्केल</string>
-    <string name="model_fast_desc">तेज़ · फ़ोटो के लिए</string>
-    <string name="model_max_desc">अधिकतम · जीवंत बनावट</string>
+    <string name="model_fast_desc">तेज़ · शोर और धुंधलापन हटाता है</string>
+    <string name="model_max_desc">विस्तृत · बारीक विवरण अधिक स्पष्ट</string>
     <string name="licence_bsd">व्यावसायिक उपयोग की अनुमति · BSD-3</string>
     <string name="megapixels">%1$s MP</string>
     <string name="scale_too_big">नतीजा %1$s MP से बड़ा होगा — इस फ़ोटो के लिए %2$d× तक चुनें</string>
@@ -26,7 +26,7 @@
     <string name="info_scale_text">स्केल बताता है कि फ़ोटो की चौड़ाई और ऊँचाई कितने गुना बढ़ेगी: 1×, 2×, 4×, 8× या 16×; डिफ़ॉल्ट 2×।</string>
     <string name="info_scale_list">• 1× — आकार वही; न्यूरल नेटवर्क सिर्फ़ शोर और धुंधलापन हटाता है।\n• 2× और 4× — नेटवर्क एक बार; स्क्रीन और प्रिंट के लिए काफ़ी।\n• 8× और 16× — दो बार: 4–16 गुना ज़्यादा समय, बहुत बड़ी फ़ाइल।</string>
     <string name="info_model_text">मॉडल एक प्रशिक्षित न्यूरल नेटवर्क है। मॉडल इस बात में अलग हैं कि उन्होंने किन तस्वीरों से सीखा: एक फ़ोटो बेहतर सुधारता है, दूसरा चित्र।</string>
-    <string name="info_model_list">• तेज़ — फ़ोटो के लिए, आमतौर पर कुछ सेकंड।\n• अधिकतम — जीवंत बनावट, लगभग 15 गुना ज़्यादा समय।</string>
+    <string name="info_model_list">• तेज़ — शोर और धुंधलापन हटाता है, आमतौर पर कुछ सेकंड।\n• विस्तृत — बारीक विवरण अधिक स्पष्ट, ज़्यादा समय लेता है।</string>
     <string name="working_title">न्यूरल नेटवर्क आपकी फ़ोटो बेहतर बना रहा है</string>
     <string name="working_tiles">टाइल %1$d / %2$d · बाक़ी ≈ %3$s</string>
     <string name="working_starting">बाक़ी ≈ %1$s</string>
@@ -58,9 +58,10 @@
         <item quantity="one">%1$d मिनट</item>
         <item quantity="other">%1$d मिनट</item>
     </plurals>
-    <string name="link_none">क्लिपबोर्ड में कोई लिंक नहीं है। किसी तस्वीर का लिंक कॉपी करें और फिर दबाएँ।</string>
+    <string name="link_title">फ़ोटो का लिंक</string>
     <string name="link_failed">लिंक से फ़ोटो डाउनलोड नहीं हो सकी।</string>
     <string name="link_downloading">फ़ोटो डाउनलोड हो रही है…</string>
+    <string name="link_download">डाउनलोड करें</string>
     <string name="settings_title">सेटिंग्स</string>
     <string name="settings_processing">प्रोसेसिंग</string>
     <string name="settings_app">ऐप</string>
@@ -95,4 +96,5 @@
     <string name="about_inspired">प्रेरणा और इंजन</string>
     <string name="about_author">लेखक</string>
     <string name="about_source">GitHub पर सोर्स कोड</string>
+    <string name="settings_about_sub">संस्करण, डिवाइस, लेखक, लाइसेंस</string>
 </resources>

@@ -14,8 +14,8 @@
     <string name="setup_other_short">Autre photo</string>
     <string name="label_model">Modèle</string>
     <string name="label_scale">Échelle</string>
-    <string name="model_fast_desc">Rapide · pour les photos</string>
-    <string name="model_max_desc">Maximum · texture vivante</string>
+    <string name="model_fast_desc">Rapide · enlève le bruit et le flou</string>
+    <string name="model_max_desc">Détaillé · petits détails plus nets</string>
     <string name="licence_bsd">Usage commercial autorisé · BSD-3</string>
     <string name="megapixels">%1$s Mpx</string>
     <string name="scale_too_big">Le résultat dépasserait %1$s Mpx — pour cette photo, choisissez jusqu’à %2$d×</string>
@@ -26,7 +26,7 @@
     <string name="info_scale_text">L’échelle indique combien de fois la largeur et la hauteur de la photo augmentent : 1×, 2×, 4×, 8× ou 16× ; 2× par défaut.</string>
     <string name="info_scale_list">• 1× — même taille ; le réseau retire seulement le bruit et le flou.\n• 2× et 4× — une passe du réseau ; assez pour l’écran et l’impression.\n• 8× et 16× — deux passes : 4 à 16 fois plus long, fichier très volumineux.</string>
     <string name="info_model_text">Un modèle est un réseau de neurones entraîné. Les modèles diffèrent par les images apprises : l’un restaure mieux les photos, l’autre les dessins.</string>
-    <string name="info_model_list">• Rapide — pour les photos, en général quelques secondes.\n• Maximum — texture vivante, environ 15 fois plus long.</string>
+    <string name="info_model_list">• Rapide — enlève le bruit et le flou, en général quelques secondes.\n• Détaillé — petits détails plus nets, prend plus de temps.</string>
     <string name="working_title">Le réseau améliore votre photo</string>
     <string name="working_tiles">Tuile %1$d sur %2$d · reste ≈ %3$s</string>
     <string name="working_starting">Reste ≈ %1$s</string>
@@ -60,9 +60,10 @@
         <item quantity="many">%1$d minutes</item>
         <item quantity="other">%1$d minutes</item>
     </plurals>
-    <string name="link_none">Aucun lien dans le presse-papiers. Copiez un lien vers une image et touchez à nouveau.</string>
+    <string name="link_title">Lien de la photo</string>
     <string name="link_failed">Impossible de télécharger la photo depuis le lien.</string>
     <string name="link_downloading">Téléchargement de la photo…</string>
+    <string name="link_download">Télécharger</string>
     <string name="settings_title">Réglages</string>
     <string name="settings_processing">Traitement</string>
     <string name="settings_app">Application</string>
@@ -97,4 +98,5 @@
     <string name="about_inspired">Inspiration et moteur</string>
     <string name="about_author">Auteur</string>
     <string name="about_source">Code source sur GitHub</string>
+    <string name="settings_about_sub">Version, appareil, auteur, licences</string>
 </resources>

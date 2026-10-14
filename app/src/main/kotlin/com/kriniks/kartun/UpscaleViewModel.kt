@@ -152,10 +152,29 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     /** True while «Вставить ссылку» downloads the picture. */
     var downloading by mutableStateOf(false); private set
 
-    /** «Вставить ссылку на фото»: takes the first link from [clipText], downloads the picture, opens it like a picked one. */
+    /** The link window is open: the clipboard held no link, so the user types or pastes one (the owner, chat 2026-10-14
+     *  ≈ 21:59 +03:00: «вставить ссылку можно не только из буфера обмена, в просто в текстовое поле» · «если буффер пуст,
+     *  то пусть кнопка открывается как поле ввода»). */
+    var linkDialog by mutableStateOf(false); private set
+
+    /** «Вставить ссылку на фото»: the first link in [clipText] downloads at once; no link there opens the link window. */
     fun openLink(clipText: CharSequence?) {
         val url = LinkDownloader.findUrl(clipText)
-        if (url == null) { error = R.string.link_none to null; return }
+        if (url == null) { error = null; linkDialog = true; return }
+        download(url)
+    }
+
+    /** «Скачать» in the link window: [text] as typed or pasted. */
+    fun downloadLink(text: String) {
+        val url = LinkDownloader.findUrl(text) ?: return
+        linkDialog = false
+        download(url)
+    }
+
+    fun closeLinkDialog() { linkDialog = false }
+
+    /** Downloads the picture at [url] and opens it like a picked one. */
+    private fun download(url: String) {
         if (downloading) return
         downloading = true
         error = null

@@ -14,8 +14,8 @@
     <string name="setup_other_short">অন্য ছবি</string>
     <string name="label_model">মডেল</string>
     <string name="label_scale">স্কেল</string>
-    <string name="model_fast_desc">দ্রুত · ছবির জন্য</string>
-    <string name="model_max_desc">সর্বোচ্চ · জীবন্ত টেক্সচার</string>
+    <string name="model_fast_desc">দ্রুত · নয়েজ ও ঝাপসা ভাব দূর করে</string>
+    <string name="model_max_desc">বিস্তারিত · সূক্ষ্ম খুঁটিনাটি আরও স্পষ্ট</string>
     <string name="licence_bsd">বাণিজ্যিক ব্যবহারের অনুমতি আছে · BSD-3</string>
     <string name="megapixels">%1$s MP</string>
     <string name="scale_too_big">ফলাফল %1$s MP ছাড়িয়ে যাবে — এই ছবির জন্য %2$d× পর্যন্ত বেছে নিন</string>
@@ -26,7 +26,7 @@
     <string name="info_scale_text">স্কেল বলে ছবির প্রস্থ ও উচ্চতা কত গুণ বাড়বে: 1×, 2×, 4×, 8× বা 16×; ডিফল্ট 2×।</string>
     <string name="info_scale_list">• 1× — একই আকার; নিউরাল নেটওয়ার্ক শুধু নয়েজ ও ঝাপসা ভাব সরায়।\n• 2× ও 4× — নেটওয়ার্ক একবার; স্ক্রিন ও প্রিন্টের জন্য যথেষ্ট।\n• 8× ও 16× — দুবার: ৪–১৬ গুণ বেশি সময়, খুব বড় ফাইল।</string>
     <string name="info_model_text">মডেল হলো একটি প্রশিক্ষিত নিউরাল নেটওয়ার্ক। মডেলগুলো আলাদা কোন ছবি থেকে শিখেছে তাতে: একটি ছবি ভালো সারায়, অন্যটি আঁকা।</string>
-    <string name="info_model_list">• দ্রুত — ছবির জন্য, সাধারণত কয়েক সেকেন্ড।\n• সর্বোচ্চ — জীবন্ত টেক্সচার, প্রায় ১৫ গুণ বেশি সময়।</string>
+    <string name="info_model_list">• দ্রুত — নয়েজ ও ঝাপসা ভাব দূর করে, সাধারণত কয়েক সেকেন্ড।\n• বিস্তারিত — সূক্ষ্ম খুঁটিনাটি আরও স্পষ্ট, সময় বেশি লাগে।</string>
     <string name="working_title">নিউরাল নেটওয়ার্ক আপনার ছবি উন্নত করছে</string>
     <string name="working_tiles">টাইল %1$d / %2$d · বাকি ≈ %3$s</string>
     <string name="working_starting">বাকি ≈ %1$s</string>
@@ -58,9 +58,10 @@
         <item quantity="one">%1$d মিনিট</item>
         <item quantity="other">%1$d মিনিট</item>
     </plurals>
-    <string name="link_none">ক্লিপবোর্ডে কোনো লিংক নেই। একটি ছবির লিংক কপি করে আবার চাপুন।</string>
+    <string name="link_title">ছবির লিংক</string>
     <string name="link_failed">লিংক থেকে ছবি ডাউনলোড করা যায়নি।</string>
     <string name="link_downloading">ছবি ডাউনলোড হচ্ছে…</string>
+    <string name="link_download">ডাউনলোড করুন</string>
     <string name="settings_title">সেটিংস</string>
     <string name="settings_processing">প্রক্রিয়া</string>
     <string name="settings_app">অ্যাপ</string>
@@ -95,4 +96,5 @@
     <string name="about_inspired">অনুপ্রেরণা ও ইঞ্জিন</string>
     <string name="about_author">লেখক</string>
     <string name="about_source">GitHub-এ সোর্স কোড</string>
+    <string name="settings_about_sub">সংস্করণ, ডিভাইস, লেখক, লাইসেন্স</string>
 </resources>

@@ -14,8 +14,8 @@
     <string name="setup_other_short">其他照片</string>
     <string name="label_model">模型</string>
     <string name="label_scale">放大倍数</string>
-    <string name="model_fast_desc">快速 · 适合照片</string>
-    <string name="model_max_desc">最佳 · 生动纹理</string>
+    <string name="model_fast_desc">快速 · 去除噪点和模糊</string>
+    <string name="model_max_desc">细致 · 细节更清晰</string>
     <string name="licence_bsd">允许商业使用 · BSD-3</string>
     <string name="megapixels">%1$s 百万像素</string>
     <string name="scale_too_big">结果将超过 %1$s 百万像素——这张照片最多可选 %2$d×</string>
@@ -26,7 +26,7 @@
     <string name="info_scale_text">放大倍数表示照片的宽和高增大几倍：1×、2×、4×、8× 或 16×；默认 2×。</string>
     <string name="info_scale_list">• 1×——尺寸不变，神经网络只去除噪点和模糊。\n• 2× 和 4×——神经网络处理一次，足够屏幕显示和打印。\n• 8× 和 16×——处理两次：时间长 4–16 倍，文件非常大。</string>
     <string name="info_model_text">模型是训练好的神经网络。模型的区别在于学习过的图片：有的更擅长修复照片，有的更擅长修复绘画。</string>
-    <string name="info_model_list">• 快速——适合照片，通常几秒钟。\n• 最佳——生动纹理，约慢 15 倍。</string>
+    <string name="info_model_list">• 快速 — 去除噪点和模糊，通常几秒钟。\n• 细致 — 细节更清晰，耗时更长。</string>
     <string name="working_title">神经网络正在增强你的照片</string>
     <string name="working_tiles">第 %1$d / %2$d 块 · 剩余约 %3$s</string>
     <string name="working_starting">剩余约 %1$s</string>
@@ -56,9 +56,10 @@
     <plurals name="duration_minutes">
         <item quantity="other">%1$d 分钟</item>
     </plurals>
-    <string name="link_none">剪贴板中没有链接。请复制图片链接后再点一次。</string>
+    <string name="link_title">照片链接</string>
     <string name="link_failed">无法通过链接下载照片。</string>
     <string name="link_downloading">正在下载照片…</string>
+    <string name="link_download">下载</string>
     <string name="settings_title">设置</string>
     <string name="settings_processing">处理</string>
     <string name="settings_app">应用</string>
@@ -93,4 +94,5 @@
     <string name="about_inspired">灵感与引擎</string>
     <string name="about_author">作者</string>
     <string name="about_source">GitHub 上的源代码</string>
+    <string name="settings_about_sub">版本、设备、作者、许可证</string>
 </resources>

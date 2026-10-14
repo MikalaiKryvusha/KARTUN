@@ -14,8 +14,8 @@
     <string name="setup_other_short">Anderes Foto</string>
     <string name="label_model">Modell</string>
     <string name="label_scale">Maßstab</string>
-    <string name="model_fast_desc">Schnell · für Fotos</string>
-    <string name="model_max_desc">Maximum · lebendige Textur</string>
+    <string name="model_fast_desc">Schnell · entfernt Rauschen und Unschärfe</string>
+    <string name="model_max_desc">Detailliert · feine Details schärfer</string>
     <string name="licence_bsd">Kommerzielle Nutzung erlaubt · BSD-3</string>
     <string name="megapixels">%1$s MP</string>
     <string name="scale_too_big">Das Ergebnis würde %1$s MP überschreiten – für dieses Foto bis %2$d× wählen</string>
@@ -26,7 +26,7 @@
     <string name="info_scale_text">Der Maßstab gibt an, wie oft Breite und Höhe des Fotos wachsen: 1×, 2×, 4×, 8× oder 16×; standardmäßig 2×.</string>
     <string name="info_scale_list">• 1× – gleiche Größe; das Netz entfernt nur Rauschen und Unschärfe.\n• 2× und 4× – ein Durchgang; reicht für Bildschirm und Druck.\n• 8× und 16× – zwei Durchgänge: 4- bis 16-mal länger, sehr große Datei.</string>
     <string name="info_model_text">Ein Modell ist ein trainiertes neuronales Netz. Modelle unterscheiden sich darin, womit sie gelernt haben: eines stellt Fotos besser wieder her, ein anderes Zeichnungen.</string>
-    <string name="info_model_list">• Schnell – für Fotos, meist wenige Sekunden.\n• Maximum – lebendige Textur, etwa 15-mal länger.</string>
+    <string name="info_model_list">• Schnell — entfernt Rauschen und Unschärfe, meist ein paar Sekunden.\n• Detailliert — feine Details schärfer, dauert länger.</string>
     <string name="working_title">Das Netz verbessert dein Foto</string>
     <string name="working_tiles">Kachel %1$d von %2$d · noch ≈ %3$s</string>
     <string name="working_starting">Noch ≈ %1$s</string>
@@ -58,9 +58,10 @@
         <item quantity="one">%1$d Minute</item>
         <item quantity="other">%1$d Minuten</item>
     </plurals>
-    <string name="link_none">Kein Link in der Zwischenablage. Kopiere einen Bild-Link und tippe erneut.</string>
+    <string name="link_title">Foto-Link</string>
     <string name="link_failed">Das Foto ließ sich nicht über den Link laden.</string>
     <string name="link_downloading">Foto wird geladen…</string>
+    <string name="link_download">Herunterladen</string>
     <string name="settings_title">Einstellungen</string>
     <string name="settings_processing">Verarbeitung</string>
     <string name="settings_app">App</string>
@@ -95,4 +96,5 @@
     <string name="about_inspired">Inspiration und Engine</string>
     <string name="about_author">Autor</string>
     <string name="about_source">Quellcode auf GitHub</string>
+    <string name="settings_about_sub">Version, Gerät, Autor, Lizenzen</string>
 </resources>

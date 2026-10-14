@@ -16,7 +16,7 @@ KARTUN upscales on the device: the picture never leaves the phone, and processin
 
 On the “Enhance” screen the photo is pinned on top. Swipe up — the photo folds into a row and shows the settings; pull down — the photo opens full screen.
 
-- **Model.** Fast suits most photos; “Maximum” gives a richer texture and takes about 15 times longer. The model loads as soon as you choose it.
+- **Model.** Fast removes noise and blur; Detailed makes fine details sharper and takes longer. The model loads as soon as you choose it.
 - **Scale.** A slider from 1× to 16×; the result's size is shown under it.
 - **Enhance.** The button shows an estimate of the time. It learns from your previous runs.
 

@@ -62,8 +62,9 @@ fun SettingsScreen(vm: UpscaleViewModel, onBack: () -> Unit) {
         Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
             RoundIconButton(R.drawable.ic_back, onClick = onBack)
             Text(stringResource(R.string.settings_title), Modifier.weight(1f), style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
-            // «О приложении» - the (i)-in-a-circle icon on the right of the mockup's settings bar.
-            RoundIconButton(R.drawable.ic_about, onClick = vm::openAbout)
+            // «О приложении» moved from this corner icon to its own row below (the owner, chat 2026-10-14 ≈ 22:00 +03:00:
+            // «О приложении - отдельным пунктом в настройках, а не i скромной на экране настроек»); the box keeps the title centred.
+            Spacer(Modifier.size(44.dp))
         }
         Column(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).widthIn(max = 720.dp),
@@ -112,6 +113,11 @@ fun SettingsScreen(vm: UpscaleViewModel, onBack: () -> Unit) {
                         ctx.startActivity(Intent(Settings.ACTION_APP_LOCALE_SETTINGS, Uri.fromParts("package", ctx.packageName, null)))
                     },
                 ) { Text("›", style = MaterialTheme.typography.titleMedium, color = c.onSurfaceVariant) }
+                // «О приложении»: a row like the others - not a setting, so no (i).
+                SettingRow(
+                    R.drawable.ic_about, stringResource(R.string.about_title), stringResource(R.string.settings_about_sub),
+                    onInfo = null, onClick = vm::openAbout,
+                ) { Text("›", style = MaterialTheme.typography.titleMedium, color = c.onSurfaceVariant) }
             }
         }
     }
@@ -124,7 +130,7 @@ fun SettingsScreen(vm: UpscaleViewModel, onBack: () -> Unit) {
 
 /** One row of a settings group (.item): pink icon tile, title and value, the control, the (i). */
 @Composable
-internal fun SettingRow(icon: Int, title: String, sub: String, onInfo: () -> Unit, onClick: () -> Unit, control: @Composable () -> Unit) {
+internal fun SettingRow(icon: Int, title: String, sub: String, onInfo: (() -> Unit)?, onClick: () -> Unit, control: @Composable () -> Unit) {
     val c = MaterialTheme.colorScheme
     Row(
         Modifier.fillMaxWidth().clickable(onClick = onClick).padding(horizontal = 16.dp, vertical = 15.dp),
@@ -138,7 +144,7 @@ internal fun SettingRow(icon: Int, title: String, sub: String, onInfo: () -> Uni
             Text(sub, style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
         }
         control()
-        InfoButton(onInfo)
+        onInfo?.let { InfoButton(it) }
     }
     HorizontalDivider(color = c.outline)
 }

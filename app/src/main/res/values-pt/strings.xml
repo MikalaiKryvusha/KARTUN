@@ -14,8 +14,8 @@
     <string name="setup_other_short">Outra foto</string>
     <string name="label_model">Modelo</string>
     <string name="label_scale">Escala</string>
-    <string name="model_fast_desc">Rápido · para fotos</string>
-    <string name="model_max_desc">Máximo · textura viva</string>
+    <string name="model_fast_desc">Rápido · remove ruído e desfoque</string>
+    <string name="model_max_desc">Detalhado · detalhes finos mais nítidos</string>
     <string name="licence_bsd">Uso comercial permitido · BSD-3</string>
     <string name="megapixels">%1$s MP</string>
     <string name="scale_too_big">O resultado passaria de %1$s MP — para esta foto escolha até %2$d×</string>
@@ -26,7 +26,7 @@
     <string name="info_scale_text">A escala diz quantas vezes a largura e a altura da foto crescem: 1×, 2×, 4×, 8× ou 16×; 2× por padrão.</string>
     <string name="info_scale_list">• 1× — mesmo tamanho; a rede só remove ruído e desfoque.\n• 2× e 4× — uma passagem da rede; basta para tela e impressão.\n• 8× e 16× — duas passagens: de 4 a 16 vezes mais demorado, arquivo muito grande.</string>
     <string name="info_model_text">Um modelo é uma rede neural treinada. Os modelos diferem nas imagens com que aprenderam: um restaura melhor fotos, outro desenhos.</string>
-    <string name="info_model_list">• Rápido — para fotos, normalmente alguns segundos.\n• Máximo — textura viva, cerca de 15 vezes mais demorado.</string>
+    <string name="info_model_list">• Rápido — remove ruído e desfoque, normalmente alguns segundos.\n• Detalhado — detalhes finos mais nítidos, demora mais.</string>
     <string name="working_title">A rede está melhorando sua foto</string>
     <string name="working_tiles">Bloco %1$d de %2$d · faltam ≈ %3$s</string>
     <string name="working_starting">Faltam ≈ %1$s</string>
@@ -60,9 +60,10 @@
         <item quantity="many">%1$d minutos</item>
         <item quantity="other">%1$d minutos</item>
     </plurals>
-    <string name="link_none">Não há link na área de transferência. Copie um link de imagem e toque de novo.</string>
+    <string name="link_title">Link da foto</string>
     <string name="link_failed">Não foi possível baixar a foto do link.</string>
     <string name="link_downloading">Baixando a foto…</string>
+    <string name="link_download">Baixar</string>
     <string name="settings_title">Configurações</string>
     <string name="settings_processing">Processamento</string>
     <string name="settings_app">App</string>
@@ -97,4 +98,5 @@
     <string name="about_inspired">Inspiração e motor</string>
     <string name="about_author">Autor</string>
     <string name="about_source">Código-fonte no GitHub</string>
+    <string name="settings_about_sub">Versão, dispositivo, autor, licenças</string>
 </resources>
