@@ -257,7 +257,8 @@ private fun UpscaleButton(vm: UpscaleViewModel, modifier: Modifier, sidePadding:
     ) {
         PrimaryButton(
             stringResource(R.string.upscale_with_estimate, durationText(vm.estimateMs())), R.drawable.ic_spark,
-            onClick = vm::start, enabled = vm.scaleSupported,
+            // [OWNER] interview #004, Q1 = A: the notification permission is asked at the first «Улучшить».
+            onClick = rememberStartWithNotificationAsk(vm::start), enabled = vm.scaleSupported,
         )
     }
 }

@@ -9,6 +9,8 @@
     <!-- The network serves only «Вставить ссылку» (and, later, model downloads) - [OWNER] interview #001, Q1 = A. The
          upscale itself never touches it (AGENT_GUIDE.md architecture rule). Install-time, no dialog. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- [OWNER] interview #004 Q1 = A: asked at the first «Улучшить»; the settings row «Уведомления» asks again or explains. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROCESSING" />
 

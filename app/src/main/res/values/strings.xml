@@ -107,4 +107,12 @@
     <string name="notif_done">Your photo is ready</string>
     <string name="notif_done_text">Tap to compare before and after</string>
     <string name="working_pass">Pass %1$d of 2 · tile %2$d of %3$d · ≈ %4$s left</string>
+    <!-- [OWNER] interview #004 (the permission row and its window; the window text follows his comment). -->
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_on">Allowed: progress and “Your photo is ready”</string>
+    <string name="settings_notifications_off">Off — tap to allow</string>
+    <string name="info_notifications_text">While the network works, the shade shows the percent and “Cancel”, and a notification tells you when the photo is ready. Without the permission the processing still runs, only without the shade.</string>
+    <string name="notif_denied_title">Notifications are off</string>
+    <string name="notif_denied_text">The notification permission was refused earlier, and KARTUN can no longer ask for it by itself. Turn notifications on by hand in Android\'s settings for KARTUN.</string>
+    <string name="notif_open_settings">Open settings</string>
 </resources>

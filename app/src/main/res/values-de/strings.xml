@@ -78,6 +78,13 @@
     <string name="settings_manual_sub">So nutzt du KARTUN und seine Modelle</string>
     <string name="info_open_guide">Die ganze Anleitung öffnen</string>
     <string name="working_pass">Durchgang %1$d von 2 · Kachel %2$d von %3$d · noch ≈ %4$s</string>
+    <string name="settings_notifications">Benachrichtigungen</string>
+    <string name="settings_notifications_on">Erlaubt: Fortschritt und „Dein Foto ist fertig“</string>
+    <string name="settings_notifications_off">Aus – tippen zum Erlauben</string>
+    <string name="info_notifications_text">Während das Netz arbeitet, zeigt die Leiste den Prozentsatz und „Abbrechen“, und eine Benachrichtigung meldet das fertige Foto. Ohne die Erlaubnis läuft die Verarbeitung trotzdem, nur ohne Leiste.</string>
+    <string name="notif_denied_title">Benachrichtigungen aus</string>
+    <string name="notif_denied_text">Die Benachrichtigungen wurden früher abgelehnt, und KARTUN kann nicht mehr selbst fragen. Schalte sie in den Android-Einstellungen für KARTUN von Hand ein.</string>
+    <string name="notif_open_settings">Einstellungen öffnen</string>
     <string name="notif_done">Dein Foto ist fertig</string>
     <string name="notif_done_text">Tippe, um Vorher und Nachher zu vergleichen</string>
     <string name="about_title">Über</string>

@@ -127,7 +127,7 @@ fun InfoButton(onClick: () -> Unit) {
  * not a bottom sheet: the owner's word in chat 2026-10-14 ≈ 18:48 «Инфо открывать диалогами, а не ботом шитами».
  */
 @Composable
-fun InfoDialog(title: String, text: String, list: String, onGuide: (() -> Unit)? = null, onClose: () -> Unit) {
+fun InfoDialog(title: String, text: String, list: String, onGuide: (() -> Unit)? = null, action: Pair<String, () -> Unit>? = null, onClose: () -> Unit) {
     Dialog(onDismissRequest = onClose) {
         Column(
             Modifier.fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(MaterialTheme.colorScheme.surfaceContainerLow)
@@ -148,8 +148,9 @@ fun InfoDialog(title: String, text: String, list: String, onGuide: (() -> Unit)?
                     Text("›", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
                 }
             }
+            if (action != null) PrimaryButton(action.first, null, onClick = action.second, height = 54)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Pill(stringResource(R.string.info_close), on = true, onClick = onClose)
+                Pill(stringResource(R.string.info_close), on = action == null, outlined = action != null, onClick = onClose)
             }
         }
     }

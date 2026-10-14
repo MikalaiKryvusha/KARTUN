@@ -3,7 +3,7 @@
 > Topic: показывать ли пользователю системный вопрос «Разрешить KARTUN отправлять уведомления?» — без него Android 13+ не показывает ни прогресс в шторке, ни «Фото готово»
 > Source of the idea: защищённый цикл 2026-10-14, Android Lint `NotificationPermission` (2 ошибки), `plans/03_epic01_F2_screens.md` шаг 11, `testcases/TC_F2_guarded_loop_device_backlog.md` C6, C7, C24
 > Created: 2026-10-14 19:45 +03:00
-> Status: **❓ WAITING FOR THE OWNER**
+> Status: **✅ ANSWER RECEIVED 2026-10-14 20:13 +03:00** — Q1 = A + comment (a settings row with a tick, a tap that asks, a window to the OS settings when it can no longer ask) (queue page, by Mikalai Kryvusha); applied 2026-10-14 ≈ 20:16 in `ui/NotificationAccess.kt`, `SetupScreen`, `SettingsScreen`, the manifest
 
 ## Context / what I already found in the code
 

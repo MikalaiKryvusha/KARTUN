@@ -113,4 +113,12 @@
     <string name="notif_done">Фото готово</string>
     <string name="notif_done_text">Нажмите, чтобы сравнить «до» и «после»</string>
     <string name="working_pass">Проход %1$d из 2 · тайл %2$d из %3$d · осталось ≈ %4$s</string>
+    <!-- [OWNER] interview #004 (the permission row and its window; the window text follows his comment). -->
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_notifications_on">Разрешены: прогресс и «Фото готово»</string>
+    <string name="settings_notifications_off">Выключены — нажмите, чтобы разрешить</string>
+    <string name="info_notifications_text">Пока нейросеть работает, в шторке видны проценты и «Отменить», а когда фото готово, приходит уведомление. Без разрешения обработка всё равно идёт, только без шторки.</string>
+    <string name="notif_denied_title">Уведомления выключены</string>
+    <string name="notif_denied_text">Разрешение на уведомления раньше отклонили, и KARTUN больше не может запросить его сам. Включите уведомления вручную в настройках Android для KARTUN.</string>
+    <string name="notif_open_settings">Открыть настройки</string>
 </resources>

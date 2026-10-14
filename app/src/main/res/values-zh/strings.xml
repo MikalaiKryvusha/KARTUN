@@ -76,6 +76,13 @@
     <string name="settings_manual_sub">如何使用 KARTUN 及其模型</string>
     <string name="info_open_guide">打开完整指南</string>
     <string name="working_pass">第 %1$d / 2 次 · 第 %2$d / %3$d 块 · 剩余约 %4$s</string>
+    <string name="settings_notifications">通知</string>
+    <string name="settings_notifications_on">已允许：进度和“照片已完成”</string>
+    <string name="settings_notifications_off">已关闭——点按以允许</string>
+    <string name="info_notifications_text">神经网络运行时，通知栏会显示百分比和“取消”，照片完成时会收到通知。没有此权限也能处理，只是通知栏中不显示。</string>
+    <string name="notif_denied_title">通知已关闭</string>
+    <string name="notif_denied_text">通知权限之前被拒绝，KARTUN 无法再自行请求。请在 Android 设置中为 KARTUN 手动开启通知。</string>
+    <string name="notif_open_settings">打开设置</string>
     <string name="notif_done">照片已完成</string>
     <string name="notif_done_text">点按以对比处理前后</string>
     <string name="about_title">关于</string>

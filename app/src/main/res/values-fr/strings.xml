@@ -80,6 +80,13 @@
     <string name="settings_manual_sub">Comment utiliser KARTUN et ses modèles</string>
     <string name="info_open_guide">Ouvrir le guide complet</string>
     <string name="working_pass">Passe %1$d sur 2 · tuile %2$d sur %3$d · reste ≈ %4$s</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_on">Autorisées : progression et « Votre photo est prête »</string>
+    <string name="settings_notifications_off">Désactivées — touchez pour autoriser</string>
+    <string name="info_notifications_text">Pendant que le réseau travaille, le volet montre le pourcentage et « Annuler », et une notification prévient quand la photo est prête. Sans l’autorisation le traitement continue, seulement sans le volet.</string>
+    <string name="notif_denied_title">Notifications désactivées</string>
+    <string name="notif_denied_text">L’autorisation des notifications a été refusée auparavant et KARTUN ne peut plus la demander lui-même. Activez les notifications à la main dans les réglages Android de KARTUN.</string>
+    <string name="notif_open_settings">Ouvrir les réglages</string>
     <string name="notif_done">Votre photo est prête</string>
     <string name="notif_done_text">Touchez pour comparer avant et après</string>
     <string name="about_title">À propos</string>

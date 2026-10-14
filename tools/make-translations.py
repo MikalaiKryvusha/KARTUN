@@ -266,6 +266,36 @@ PASS = {"es": "Pasada %1$d de 2 · mosaico %2$d de %3$d · quedan ≈ %4$s", "pt
         "zh": "第 %1$d / 2 次 · 第 %2$d / %3$d 块 · 剩余约 %4$s", "hi": "पास %1$d / 2 · टाइल %2$d / %3$d · बाक़ी ≈ %4$s",
         "bn": "পাস %1$d / ২ · টাইল %2$d / %3$d · বাকি ≈ %4$s", "ar": "المرور %1$d من 2 · البلاطة %2$d من %3$d · المتبقي ≈ %4$s"}
 
+# Notification permission (interview #004): settings_notifications · _on · _off · info_notifications_text · notif_denied_title · notif_denied_text · notif_open_settings.
+NOTIF_KEYS = ["settings_notifications", "settings_notifications_on", "settings_notifications_off", "info_notifications_text",
+              "notif_denied_title", "notif_denied_text", "notif_open_settings"]
+NOTIF = {
+    "es": ["Notificaciones", "Permitidas: progreso y «Tu foto está lista»", "Desactivadas — toca para permitir",
+           "Mientras la red trabaja, la barra muestra el porcentaje y «Cancelar», y una notificación avisa cuando la foto está lista. Sin el permiso el procesamiento sigue, solo sin la barra.",
+           "Notificaciones desactivadas", "El permiso de notificaciones se rechazó antes y KARTUN ya no puede pedirlo por sí mismo. Activa las notificaciones a mano en los ajustes de Android para KARTUN.", "Abrir ajustes"],
+    "pt": ["Notificações", "Permitidas: progresso e «Sua foto está pronta»", "Desativadas — toque para permitir",
+           "Enquanto a rede trabalha, a barra mostra a porcentagem e «Cancelar», e uma notificação avisa quando a foto fica pronta. Sem a permissão o processamento continua, só sem a barra.",
+           "Notificações desativadas", "A permissão de notificações foi recusada antes e o KARTUN não pode mais pedi-la sozinho. Ative as notificações manualmente nas configurações do Android para o KARTUN.", "Abrir configurações"],
+    "fr": ["Notifications", "Autorisées : progression et « Votre photo est prête »", "Désactivées — touchez pour autoriser",
+           "Pendant que le réseau travaille, le volet montre le pourcentage et « Annuler », et une notification prévient quand la photo est prête. Sans l’autorisation le traitement continue, seulement sans le volet.",
+           "Notifications désactivées", "L’autorisation des notifications a été refusée auparavant et KARTUN ne peut plus la demander lui-même. Activez les notifications à la main dans les réglages Android de KARTUN.", "Ouvrir les réglages"],
+    "de": ["Benachrichtigungen", "Erlaubt: Fortschritt und „Dein Foto ist fertig“", "Aus – tippen zum Erlauben",
+           "Während das Netz arbeitet, zeigt die Leiste den Prozentsatz und „Abbrechen“, und eine Benachrichtigung meldet das fertige Foto. Ohne die Erlaubnis läuft die Verarbeitung trotzdem, nur ohne Leiste.",
+           "Benachrichtigungen aus", "Die Benachrichtigungen wurden früher abgelehnt, und KARTUN kann nicht mehr selbst fragen. Schalte sie in den Android-Einstellungen für KARTUN von Hand ein.", "Einstellungen öffnen"],
+    "zh": ["通知", "已允许：进度和“照片已完成”", "已关闭——点按以允许",
+           "神经网络运行时，通知栏会显示百分比和“取消”，照片完成时会收到通知。没有此权限也能处理，只是通知栏中不显示。",
+           "通知已关闭", "通知权限之前被拒绝，KARTUN 无法再自行请求。请在 Android 设置中为 KARTUN 手动开启通知。", "打开设置"],
+    "hi": ["सूचनाएँ", "अनुमति है: प्रगति और «आपकी फ़ोटो तैयार है»", "बंद — अनुमति देने के लिए दबाएँ",
+           "जब न्यूरल नेटवर्क काम करता है, शेड में प्रतिशत और «रद्द करें» दिखते हैं, और फ़ोटो तैयार होने पर सूचना आती है। अनुमति के बिना भी प्रोसेसिंग चलती है, बस शेड में नहीं दिखती।",
+           "सूचनाएँ बंद हैं", "सूचनाओं की अनुमति पहले अस्वीकार की गई थी, और KARTUN अब ख़ुद नहीं पूछ सकता। KARTUN के लिए Android सेटिंग्स में सूचनाएँ हाथ से चालू करें।", "सेटिंग्स खोलें"],
+    "bn": ["বিজ্ঞপ্তি", "অনুমোদিত: অগ্রগতি ও «আপনার ছবি প্রস্তুত»", "বন্ধ — অনুমতি দিতে চাপুন",
+           "নিউরাল নেটওয়ার্ক কাজ করার সময় শেডে শতাংশ ও «বাতিল» দেখা যায়, আর ছবি তৈরি হলে বিজ্ঞপ্তি আসে। অনুমতি ছাড়াও প্রক্রিয়া চলে, শুধু শেডে দেখা যায় না।",
+           "বিজ্ঞপ্তি বন্ধ", "বিজ্ঞপ্তির অনুমতি আগে প্রত্যাখ্যান করা হয়েছিল, আর KARTUN নিজে আর চাইতে পারে না। KARTUN-এর জন্য Android সেটিংসে হাতে বিজ্ঞপ্তি চালু করুন।", "সেটিংস খুলুন"],
+    "ar": ["الإشعارات", "مسموح بها: التقدم و«صورتك جاهزة»", "متوقفة — اضغط للسماح",
+           "أثناء عمل الشبكة يظهر في الشريط العلوي النسبة المئوية و«إلغاء»، ويصلك إشعار عندما تجهز الصورة. بدون الإذن تستمر المعالجة، لكن دون الشريط.",
+           "الإشعارات متوقفة", "رُفض إذن الإشعارات سابقًا، ولم يعد بإمكان KARTUN طلبه بنفسه. فعّل الإشعارات يدويًا في إعدادات Android الخاصة بـ KARTUN.", "فتح الإعدادات"],
+}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -294,6 +324,9 @@ def main():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="info_open_guide">{xml_text(OPEN_GUIDE[lang])}</string>')
         lines.append(f'    <string name="working_pass">{xml_text(PASS[lang])}</string>')
+        assert len(NOTIF[lang]) == len(NOTIF_KEYS), (lang, "notif")
+        for k, v in zip(NOTIF_KEYS, NOTIF[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in zip(("notif_done", "notif_done_text"), DONE[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         assert len(ABOUT[lang]) == len(ABOUT_KEYS), (lang, "about")

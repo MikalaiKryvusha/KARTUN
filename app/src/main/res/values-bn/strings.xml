@@ -78,6 +78,13 @@
     <string name="settings_manual_sub">KARTUN ও এর মডেল কীভাবে ব্যবহার করবেন</string>
     <string name="info_open_guide">পুরো নির্দেশিকা খুলুন</string>
     <string name="working_pass">পাস %1$d / ২ · টাইল %2$d / %3$d · বাকি ≈ %4$s</string>
+    <string name="settings_notifications">বিজ্ঞপ্তি</string>
+    <string name="settings_notifications_on">অনুমোদিত: অগ্রগতি ও «আপনার ছবি প্রস্তুত»</string>
+    <string name="settings_notifications_off">বন্ধ — অনুমতি দিতে চাপুন</string>
+    <string name="info_notifications_text">নিউরাল নেটওয়ার্ক কাজ করার সময় শেডে শতাংশ ও «বাতিল» দেখা যায়, আর ছবি তৈরি হলে বিজ্ঞপ্তি আসে। অনুমতি ছাড়াও প্রক্রিয়া চলে, শুধু শেডে দেখা যায় না।</string>
+    <string name="notif_denied_title">বিজ্ঞপ্তি বন্ধ</string>
+    <string name="notif_denied_text">বিজ্ঞপ্তির অনুমতি আগে প্রত্যাখ্যান করা হয়েছিল, আর KARTUN নিজে আর চাইতে পারে না। KARTUN-এর জন্য Android সেটিংসে হাতে বিজ্ঞপ্তি চালু করুন।</string>
+    <string name="notif_open_settings">সেটিংস খুলুন</string>
     <string name="notif_done">আপনার ছবি প্রস্তুত</string>
     <string name="notif_done_text">আগে ও পরে তুলনা করতে চাপুন</string>
     <string name="about_title">অ্যাপ সম্পর্কে</string>

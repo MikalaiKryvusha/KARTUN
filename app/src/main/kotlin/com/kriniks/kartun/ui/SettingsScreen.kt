@@ -98,6 +98,8 @@ fun SettingsScreen(vm: UpscaleViewModel, onBack: () -> Unit) {
                         colors = SwitchDefaults.colors(checkedTrackColor = c.primary, checkedThumbColor = c.onPrimary, uncheckedTrackColor = c.surfaceContainerHigh),
                     )
                 }
+                // [OWNER] interview #004, comment: «И в Настройках приложения тоже будет пункт про нотификации».
+                NotificationsRow(onInfo = { info = R.string.settings_notifications })
             }
             Text(stringResource(R.string.settings_app).uppercase(), Modifier.padding(start = 4.dp, top = 8.dp),
                 style = MaterialTheme.typography.labelSmall, color = c.primary)
@@ -115,13 +117,14 @@ fun SettingsScreen(vm: UpscaleViewModel, onBack: () -> Unit) {
     }
     when (info) {
         R.string.settings_gpu -> InfoDialog(stringResource(R.string.settings_gpu), stringResource(R.string.info_gpu_text), stringResource(R.string.info_gpu_list)) { info = null }
+        R.string.settings_notifications -> InfoDialog(stringResource(R.string.settings_notifications), stringResource(R.string.info_notifications_text), "") { info = null }
         R.string.settings_language -> InfoDialog(stringResource(R.string.settings_language), stringResource(R.string.info_language_text), "") { info = null }
     }
 }
 
 /** One row of a settings group (.item): pink icon tile, title and value, the control, the (i). */
 @Composable
-private fun SettingRow(icon: Int, title: String, sub: String, onInfo: () -> Unit, onClick: () -> Unit, control: @Composable () -> Unit) {
+internal fun SettingRow(icon: Int, title: String, sub: String, onInfo: () -> Unit, onClick: () -> Unit, control: @Composable () -> Unit) {
     val c = MaterialTheme.colorScheme
     Row(
         Modifier.fillMaxWidth().clickable(onClick = onClick).padding(horizontal = 16.dp, vertical = 15.dp),
