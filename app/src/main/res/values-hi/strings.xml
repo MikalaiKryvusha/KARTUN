@@ -73,4 +73,7 @@
     <string name="info_gpu_text">न्यूरल नेटवर्क Vulkan से फ़ोन की ग्राफ़िक्स चिप पर चलता है — प्रोसेसर से लगभग 15 गुना तेज़।</string>
     <string name="info_gpu_list">• चालू — सामान्य मोड।\n• बंद — सिर्फ़ प्रोसेसर: धीमा, पर मदद करता है अगर इस फ़ोन की ग्राफ़िक्स चिप गड़बड़ करे।</string>
     <string name="info_language_text">KARTUN की भाषाओं की सिस्टम सूची खुलेगी: ऐप की भाषा फ़ोन की भाषा से अलग हो सकती है।</string>
+    <string name="manual_title">गाइड</string>
+    <string name="settings_manual">उपयोगकर्ता गाइड</string>
+    <string name="settings_manual_sub">KARTUN और उसके मॉडल कैसे इस्तेमाल करें</string>
 </resources>

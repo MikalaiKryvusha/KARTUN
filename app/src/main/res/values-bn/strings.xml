@@ -73,4 +73,7 @@
     <string name="info_gpu_text">নিউরাল নেটওয়ার্ক Vulkan দিয়ে ফোনের গ্রাফিক্স চিপে চলে — প্রসেসরের চেয়ে প্রায় ১৫ গুণ দ্রুত।</string>
     <string name="info_gpu_list">• চালু — সাধারণ মোড।\n• বন্ধ — শুধু প্রসেসর: ধীর, তবে এই ফোনের গ্রাফিক্স চিপ সমস্যা করলে কাজে আসে।</string>
     <string name="info_language_text">KARTUN-এর ভাষার সিস্টেম তালিকা খুলবে: অ্যাপের ভাষা ফোনের ভাষা থেকে আলাদা হতে পারে।</string>
+    <string name="manual_title">নির্দেশিকা</string>
+    <string name="settings_manual">ব্যবহারকারী নির্দেশিকা</string>
+    <string name="settings_manual_sub">KARTUN ও এর মডেল কীভাবে ব্যবহার করবেন</string>
 </resources>

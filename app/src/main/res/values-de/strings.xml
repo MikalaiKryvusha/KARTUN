@@ -73,4 +73,7 @@
     <string name="info_gpu_text">Das Netz rechnet über Vulkan auf dem Grafikchip des Telefons – etwa 15-mal schneller als auf dem Prozessor.</string>
     <string name="info_gpu_list">• An – der normale Modus.\n• Aus – nur der Prozessor: langsam, hilft aber, wenn der Grafikchip dieses Telefons versagt.</string>
     <string name="info_language_text">Die Systemliste der Sprachen von KARTUN öffnet sich: Die App-Sprache kann von der Telefonsprache abweichen.</string>
+    <string name="manual_title">Anleitung</string>
+    <string name="settings_manual">Benutzeranleitung</string>
+    <string name="settings_manual_sub">So nutzt du KARTUN und seine Modelle</string>
 </resources>

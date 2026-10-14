@@ -75,4 +75,7 @@
     <string name="info_gpu_text">Le réseau calcule sur la puce graphique du téléphone via Vulkan — environ 15 fois plus vite que sur le processeur.</string>
     <string name="info_gpu_list">• Activé — le mode normal.\n• Désactivé — le processeur seul : lent, mais utile si la puce graphique de ce téléphone défaille.</string>
     <string name="info_language_text">La liste système des langues de KARTUN s’ouvre : la langue de l’appli peut différer de celle du téléphone.</string>
+    <string name="manual_title">Guide</string>
+    <string name="settings_manual">Guide de l’utilisateur</string>
+    <string name="settings_manual_sub">Comment utiliser KARTUN et ses modèles</string>
 </resources>

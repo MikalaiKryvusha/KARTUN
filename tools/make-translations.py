@@ -223,6 +223,19 @@ SETTINGS = {
            "ستُفتح قائمة النظام بلغات KARTUN: يمكن أن تختلف لغة التطبيق عن لغة الهاتف."],
 }
 
+# User guide strings (fourth batch): manual_title · settings_manual · settings_manual_sub. The guide's BODY is
+# res/raw/manual.md (EN) and res/raw-ru/manual.md; the other languages show the English body until translated.
+GUIDE = {
+    "es": ("Guía", "Guía del usuario", "Cómo usar KARTUN y sus modelos"),
+    "pt": ("Guia", "Guia do usuário", "Como usar o KARTUN e seus modelos"),
+    "fr": ("Guide", "Guide de l’utilisateur", "Comment utiliser KARTUN et ses modèles"),
+    "de": ("Anleitung", "Benutzeranleitung", "So nutzt du KARTUN und seine Modelle"),
+    "zh": ("指南", "用户指南", "如何使用 KARTUN 及其模型"),
+    "hi": ("गाइड", "उपयोगकर्ता गाइड", "KARTUN और उसके मॉडल कैसे इस्तेमाल करें"),
+    "bn": ("নির্দেশিকা", "ব্যবহারকারী নির্দেশিকা", "KARTUN ও এর মডেল কীভাবে ব্যবহার করবেন"),
+    "ar": ("الدليل", "دليل المستخدم", "كيف تستخدم KARTUN ونماذجه"),
+}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -243,6 +256,8 @@ def main():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         assert len(SETTINGS[lang]) == len(SETTINGS_KEYS), (lang, "settings")
         for k, v in zip(SETTINGS_KEYS, SETTINGS[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
+        for k, v in zip(("manual_title", "settings_manual", "settings_manual_sub"), GUIDE[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
