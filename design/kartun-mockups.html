@@ -35,8 +35,8 @@
     padding: 8px 16px; font: 600 14px var(--font); cursor: pointer; }
   .fonts button.on { background: var(--pink); border-color: var(--pink); }
   .row { padding: 24px 32px 8px; }
-  .row h2 { font: 700 18px var(--font-head); margin-bottom: 4px; }
-  .row h2 span { color: var(--pink); }
+  .row > h2 { font: 700 18px var(--font-head); margin-bottom: 4px; }
+  .row > h2 span { color: var(--pink); }
   .row p.note { color: var(--sub); font-size: 14px; margin-bottom: 16px; max-width: 900px; }
   .phones { display: flex; gap: 28px; flex-wrap: wrap; }
   .phone-wrap .cap { color: var(--mute); font-size: 13px; margin: 0 0 8px 6px; }
@@ -241,8 +241,42 @@
   .kscale .warn { display: none; margin-top: 10px; background: rgba(255,170,0,.12); color: #ffb020; border-radius: 14px; padding: 10px 12px; font: 600 13px var(--font); line-height: 1.4; }
   .kscale.big .warn { display: block; }
 
+  /* v2.2: model cards with a before/after thumbnail, like Upscayl (owner's remark 2026-10-14) */
+  .mrow { display: flex; gap: 12px; align-items: center; background: var(--card); border-radius: 20px; padding: 10px; border: 2px solid transparent; position: relative; }
+  .mrow.on { border-color: var(--pink); background: linear-gradient(90deg, var(--pink-soft), var(--card) 60%); }
+  .mthumb { width: 76px; height: 76px; border-radius: 14px; flex: none; position: relative; overflow: hidden; }
+  .mthumb .b, .mthumb .a { position: absolute; inset: 0; background-size: cover; background-position: center; }
+  .mthumb .a { clip-path: inset(0 0 0 50%); }
+  .mthumb::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: var(--pink); }
+  .mrow .tx { flex: 1; min-width: 0; }
+  .mrow .n { font: 700 15px var(--font-head); line-height: 1.25; }
+  .mrow .f { color: var(--sub); font-size: 13px; margin: 2px 0 6px; }
+  .mrow .tick { position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border-radius: 50%; background: var(--pink); display: grid; place-items: center; }
+  .mrow .tick svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 3; }
+  .kscale .warn2 { display: none; margin-top: 10px; } .kscale.big .warn2 { display: inline-flex; }
+  .kscale .warn2 span { background: rgba(255,170,0,.14); color: #ffb020; border-radius: var(--r-pill); padding: 5px 12px; font: 700 12px var(--font); }
+
+  /* v2.3: the user manual is laid out like a rendered markdown document (owner's remark 2026-10-14) */
+  .md { color: #E5E5EA; font: 400 14.5px/1.6 var(--font); padding: 4px 22px 40px; overflow: hidden; flex: 1; }
+  .md h1 { font: 800 24px/1.2 var(--font-head); color: var(--text); margin: 4px 0 6px; }
+  .md .meta { color: var(--mute); font-size: 12px; margin-bottom: 12px; }
+  .md h2 { font: 700 18px/1.3 var(--font-head); color: var(--text); margin: 18px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  .md h2 span { color: var(--pink); margin-right: 6px; }
+  .md p { margin: 0 0 10px; }
+  .md b { color: var(--text); }
+  .md ol, .md ul { margin: 0 0 10px 20px; } .md li { margin-bottom: 4px; } .md li::marker { color: var(--pink); font-weight: 700; }
+  .md .toc { background: var(--card); border-radius: 14px; padding: 10px 14px; font-size: 13px; color: var(--sub); }
+  .md .toc a { color: var(--pink); text-decoration: none; }
+  .md table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 4px 0 12px; }
+  .md th { text-align: left; color: var(--pink); font: 700 11px var(--font); letter-spacing: .8px; text-transform: uppercase; padding: 6px 6px; border-bottom: 1.5px solid var(--pink-line); }
+  .md td { padding: 6px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .md .note { border-left: 3px solid var(--pink); background: var(--pink-soft); border-radius: 0 12px 12px 0; padding: 8px 12px; font-size: 13px; margin: 6px 0 12px; }
+  .md figure { margin: 6px 0 12px; } .md figure .img { height: 150px; border-radius: 14px; background-size: cover; background-position: center top; }
+  .md figcaption { color: var(--mute); font-size: 12px; margin-top: 6px; }
+  .md code { font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; background: var(--card2); padding: 1px 6px; border-radius: 6px; }
+
   body.shot { background: var(--bg); }
-  body.shot .page-head, body.shot .row h2, body.shot .row p.note, body.shot .cap { display: none; }
+  body.shot .page-head, body.shot .row > h2, body.shot .row > p.note, body.shot .cap { display: none; }
   body.shot .row { padding: 0; }
   body.shot .phone-wrap { display: none; }
   body.shot .phone-wrap.target { display: block; }
@@ -311,7 +345,21 @@ const STEPS = [1, 2, 4, 8, 16];
 const kscale = (v) => `<div class="kscale" data-kscale data-v="${v}"><div class="track"><div class="fill"></div><div class="thumb"></div><div class="bubble"></div></div>
   <div class="marks">${STEPS.map((m, i) => `<span style="left:${i * 25}%">${m}×${m === 2 ? ' · по умолч.' : ''}</span>`).join('')}</div>
   <div class="res"><span class="r1"></span><span class="r2"></span></div>
-  <div class="warn">Выше 4× нейросеть делает два прохода: обработка в 4–16 раз дольше, файл очень большой.</div></div>`;
+  <div class="warn2"><span>2 прохода · дольше · большой файл</span></div></div>`;
+// Model catalogue data: the thumbnails are REAL outputs of each model on a crop of the owner's photo (design/mockups/local/thumbs).
+const MODELS = [
+  { id: 'fast', n: 'Real-ESRGAN General v3', f: 'Быстрая · для фото · ≈ 7 с', lic: 'ok', l: 'Для коммерции · BSD-3', size: '2,4 МБ', st: 'have' },
+  { id: 'x4plus', n: 'Real-ESRGAN x4plus', f: 'Максимум · живая фактура · ≈ 1:45', lic: 'ok', l: 'Для коммерции · BSD-3', size: '33,4 МБ', st: 'have' },
+  { id: 'anime', n: 'Real-ESRGAN x4plus Anime', f: 'Рисунки и аниме', lic: 'ok', l: 'Для коммерции · BSD-3', size: '8,9 МБ', st: 'dl' },
+  { id: 'animevideo', n: 'Real-ESRGAN AnimeVideo v3', f: 'Аниме и кадры видео · самая лёгкая', lic: 'ok', l: 'Для коммерции · BSD-3', size: '1,2 МБ', st: 'get' },
+  { id: 'hifi', n: '4xHFA2k (High Fidelity)', f: 'Детали и гладкие поверхности', lic: 'by', l: 'Для коммерции · CC BY 4.0', size: '33,4 МБ', st: 'get' },
+  { id: 'ultrasharp', n: '4x-UltraSharp', f: 'Наибольшая резкость', lic: 'nc', l: 'Не для коммерческого использования', size: '33,4 МБ', st: 'get' },
+  { id: 'remacri', n: '4x Remacri', f: 'Природа и мелкие детали', lic: 'nc', l: 'Не для коммерческого использования', size: '33,4 МБ', st: 'get' },
+  { id: 'ultramix', n: '4x UltraMix Balanced', f: 'Баланс резкости и деталей', lic: 'nc', l: 'Не для коммерческого использования', size: '33,4 МБ', st: 'get' },
+];
+const thumb = (id) => `<div class="mthumb"><div class="b" style="${bg('thumbs/bicubic.jpg')}"></div><div class="a" style="${bg(`thumbs/${id}.jpg`)}"></div></div>`;
+const licBadge = (m) => `<span class="badge ${m.lic === 'ok' ? 'os' : m.lic === 'by' ? 'by' : 'nc'}">${m.l}</span>`;
+const mrow = (m, on, right = '') => `<div class="mrow${on ? ' on' : ''}">${thumb(m.id)}<div class="tx"><div class="n">${m.n}</div><div class="f">${m.f}</div>${licBadge(m)}</div>${on ? `<div class="tick">${I.tick}</div>` : right}</div>`;
 function setupScreen(scrolled) {
   return `${status()}${topBack('Улучшение')}<div class="scroller" data-collapse${scrolled ? ' data-start="250"' : ''}>
     <div class="hero${scrolled ? ' compact' : ''}">
@@ -319,8 +367,8 @@ function setupScreen(scrolled) {
       <div class="mini"><div class="photo" style="${bg('preview.jpg')}"></div><div class="t"><b>IMG_20260317.jpg</b><span>${scrolled ? '960 × 1280 → 7 680 × 10 240' : '960 × 1280 → 3840 × 5120'}</span></div><div class="pill out">Другое фото</div></div>
     </div>
     <div class="stack">
-      ${sh('Модель')}${modelCards()}
-      <div class="row-link"><div><div class="a">Все модели</div><div class="b">10 моделей · 2 на устройстве</div></div><div class="go">Выбрать ›</div></div>
+      ${sh('Модель')}${mrow(MODELS[0], true)}${mrow(MODELS[1], false)}
+      <div class="row-link"><div><div class="a">Все модели</div><div class="b">8 моделей · 2 на устройстве</div></div><div class="go">Выбрать ›</div></div>
       ${sh('Масштаб')}${kscale(scrolled ? 8 : 2)}
       ${sh('Формат результата')}<div class="chips" style="flex-wrap:wrap"><div class="pill on">PNG</div><div class="pill">JPEG</div><div class="pill">WebP</div><div class="pill">HEIC</div><div class="pill">AVIF</div></div>
       ${sh('Качество · 92')}<div class="slider"><i style="width:92%"></i><b style="right:auto;left:calc(92% - 11px)"></b></div>
@@ -344,46 +392,41 @@ const S = {
   'A-setup': () => setupScreen(false),
   'A-setup-scrolled': () => setupScreen(true),
   'models': () => {
-    const m = (n, d, badges, state, on) => `<div class="mcard${on ? ' on' : ''}"><div class="top1"><div><div class="n">${n}</div><div class="d">${d}</div></div>${state}</div><div class="badges">${badges}</div></div>`;
-    const have = `<div class="state have">${I.ok}На устройстве</div>`;
-    const get = (s) => `<div class="state get">${I.dl}${s}</div>`;
-    const os = (l) => `<span class="badge os">Open source · ${l}</span>`;
-    const by = (a) => `<span class="badge by">CC BY 4.0 · автор ${a}</span>`;
-    const nc = (a) => `<span class="badge nc">Не для коммерческого использования · ${a}</span>`;
+    const state = (m) => m.st === 'have' ? `<div class="state have">${I.ok}</div>` : m.st === 'dl' ? `<div class="state dl">42%</div>` : `<div class="state get">${I.dl}${m.size.replace(',4 МБ', ' МБ').replace(',2 МБ', ' МБ').replace(',9 МБ', ' МБ')}</div>`;
     return `${status()}${topBack('Модели', I.book)}<div class="body" style="gap:10px;overflow:hidden">
-      <div class="chips" style="flex-wrap:wrap"><div class="pill on">Все</div><div class="pill">Фото</div><div class="pill">Арт и аниме</div><div class="pill">На устройстве</div></div>
-      ${m('Быстрая', 'Фото · ≈ 7 с на этом устройстве · 2,4 МБ', os('BSD-3') + '<span class="badge dev">Real-ESRGAN</span>', have, true)}
-      ${m('Максимум', 'Фото · ≈ 1:45 · 33,4 МБ', os('BSD-3') + '<span class="badge dev">Real-ESRGAN x4plus</span>', have)}
-      ${m('Арт и аниме', 'Рисунки и аниме · 8,9 МБ', os('BSD-3'), `<div class="state dl">42%</div>`)}
-      <div class="bar" style="margin:-4px 14px 2px"><i style="width:42%"></i></div>
-      ${m('Высокая точность', 'Фото, детали · 33,4 МБ', by('Phhofm'), get('33 МБ'))}
-      ${m('UltraSharp', 'Фото, резкость · 33,4 МБ', nc('Kim2091'), get('33 МБ'))}
-      ${m('Remacri', 'Природа, детали · 33,4 МБ', nc('Foolhardy'), get('33 МБ'))}
+      <div class="chips" style="flex-wrap:nowrap"><div class="pill on">Все</div><div class="pill">Фото</div><div class="pill">Аниме</div><div class="pill">Для коммерции</div></div>
+      ${MODELS.map((m, i) => mrow(m, i === 0, state(m))).join('')}
       </div>${gesture}`;
   },
-  'manual': () => {
-    const g = (n, h, p, pic) => `<div class="guide"><div class="pic ${pic.cls || ''}" style="${pic.bg || ''}">${pic.icon || ''}</div><div><div class="num">ШАГ ${n}</div><div class="h">${h}</div><div class="p">${p}</div></div></div>`;
-    return `${status()}${topBack('Руководство', I.about)}<div class="body" style="gap:10px;overflow:hidden">
-      <div class="manual-hero"><div class="h">Как пользоваться KARTUN</div><div class="p">Нейросеть увеличивает фото в 4 раза прямо на телефоне. Пошагово — от выбора фото до сохранения результата.</div></div>
-      ${g(1, 'Выберите фото', 'Большая розовая карточка на главном экране открывает галерею.', { cls: 'pink', icon: I.img })}
-      ${g(2, 'Или поделитесь из другого приложения', 'В Telegram, галерее или браузере: «Поделиться» → KARTUN.', { cls: 'pink', icon: I.share })}
-      ${g(3, 'Выберите модель и масштаб', 'Быстрая — для повседневных фото, «Максимум» — для самых важных.', { bg: bg('preview.jpg') + ';background-size:cover' })}
-      ${g(4, 'Сравните «до» и «после»', 'Ведите пальцем по картинке — граница движется за ним.', { bg: bg('after.jpg') + ';background-size:cover', icon: I.hand })}
-      </div>${gesture}`;
-  },
-  'manual-models': () => {
-    const row = (badge, text) => `<div class="guide" style="flex-direction:column;gap:8px"><div>${badge}</div><div class="p" style="color:var(--text)">${text}</div></div>`;
-    return `${status()}${topBack('Руководство · модели', I.about)}<div class="body" style="gap:10px;overflow:hidden">
-      <div class="manual-hero"><div class="h">Какую модель выбрать</div><div class="p">Модель — это обученная нейросеть. Разные модели лучше справляются с разными снимками.</div></div>
-      <div class="guide"><div class="pic pink">${I.spark}</div><div><div class="h">Быстрая</div><div class="p">Для большинства фото. Секунды на снимок, края чёткие.</div></div></div>
-      <div class="guide"><div class="pic" style="${bg('after.jpg')};background-size:cover"></div><div><div class="h">Максимум</div><div class="p">Для важных снимков: естественная фактура, обработка дольше.</div></div></div>
-      <div class="label">Пометки моделей</div>
-      ${row('<span class="badge os">Open source</span>', 'Модель открыта, ей можно пользоваться для любых целей.')}
-      ${row('<span class="badge by">CC BY 4.0</span>', 'Свободная модель; KARTUN называет её автора.')}
-      ${row('<span class="badge nc">Не для коммерческого использования</span>', 'Автор разрешает только личное использование: для работы на заказ и продажи такие результаты брать нельзя.')}
-      ${row(`<div class="state get">${I.dl}Скачать</div>`, 'Модель не входит в приложение; скачайте её один раз, дальше она работает без сети.')}
-      </div>${gesture}`;
-  },
+  'manual': () => `${status()}${topBack('Руководство', I.about)}<div class="md">
+      <h1>Руководство пользователя KARTUN</h1>
+      <div class="meta">Версия 0.1 · обновлено 14.10.2026</div>
+      <div class="toc">1 <a>Назначение</a> · 2 <a>Как передать фото</a> · 3 <a>Настройка улучшения</a> · 4 <a>Масштаб</a> · 5 <a>Сравнение и сохранение</a> · 6 <a>Модели</a></div>
+      <h2><span>1</span>Назначение</h2>
+      <p><b>Апскейл</b> — это увеличение разрешения изображения. Нейросеть строит из каждого пикселя исходника несколько пикселей результата и восстанавливает мелкие детали, которых при обычном растяжении нет.</p>
+      <p>KARTUN выполняет апскейл на устройстве: изображение не покидает телефон, сеть для обработки не нужна.</p>
+      <h2><span>2</span>Как передать фото</h2>
+      <ol><li><b>Галерея.</b> Нажмите «Выберите фото» на главном экране и выберите снимок.</li>
+      <li><b>Другое приложение.</b> Откройте фото в Telegram, галерее или браузере, нажмите «Поделиться» и выберите KARTUN.</li>
+      <li><b>Ссылка.</b> Скопируйте ссылку на изображение и нажмите «Вставить ссылку на фото».</li></ol>
+      <figure><div class="img" style="background-image:url('flow-map/screens/A-home.png'), linear-gradient(160deg,#333,#111)"></div><figcaption>Рис. 1. Главный экран: выбор фото, ссылка и подсказка «Поделиться».</figcaption></figure>
+    </div>${gesture}`,
+  'manual-models': () => `${status()}${topBack('Руководство', I.about)}<div class="md">
+      <h2 style="margin-top:4px"><span>4</span>Масштаб</h2>
+      <p><b>Масштаб</b> — во сколько раз растут ширина и высота изображения. Число пикселей растёт как квадрат масштаба: при 4× их становится в 16 раз больше.</p>
+      <table><tr><th>Масштаб</th><th>Проходов</th><th>Фото 960 × 1280</th></tr>
+      <tr><td>1×</td><td>1</td><td>960 × 1280</td></tr><tr><td><b>2× · по умолч.</b></td><td>1</td><td>1920 × 2560</td></tr>
+      <tr><td>4×</td><td>1</td><td>3840 × 5120</td></tr><tr><td>8×</td><td>2</td><td>7680 × 10 240</td></tr><tr><td>16×</td><td>2</td><td>15 360 × 20 480</td></tr></table>
+      <div class="note">Нейросеть всегда увеличивает изображение ровно в 4 раза за один проход. Масштабы 1× и 2× получаются уменьшением результата, 8× и 16× — вторым проходом.</div>
+      <h2><span>6</span>Модели</h2>
+      <p><b>Модель</b> — это обученная нейросеть. Модели различаются тем, на каких снимках учились: одна лучше восстанавливает фото, другая — рисунки.</p>
+      <table><tr><th>Модель</th><th>Назначение</th><th>Лицензия</th></tr>
+      <tr><td>General v3</td><td>фото, быстро</td><td>BSD-3 · для коммерции</td></tr>
+      <tr><td>x4plus</td><td>фото, максимум</td><td>BSD-3 · для коммерции</td></tr>
+      <tr><td>UltraSharp</td><td>резкость</td><td>CC BY-NC-SA · не для коммерции</td></tr></table>
+      <div class="note">Лицензия «Не для коммерческого использования» запрещает коммерческое использование самой модели. Распространяется ли она на результат обработки, юристы спорят; для работы на заказ выбирайте модели с пометкой «Для коммерции».</div>
+    </div>${gesture}`,
+
   'B-steps': () => `${status()}${topHome()}<div class="body" style="gap:14px">
     <div class="step"><div class="num done">1</div><div class="c"><div class="h">Фото</div><div class="thumbrow"><div class="photo" style="${bg('preview.jpg')}"></div>
       <div><div style="font-weight:600">IMG_20260317.jpg</div><div class="muted">960 × 1280 · 1,2 Мп</div></div><div class="pill out" style="margin-left:auto">Сменить</div></div></div></div>
