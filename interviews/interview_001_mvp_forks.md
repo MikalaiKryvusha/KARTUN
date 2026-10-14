@@ -3,7 +3,7 @@
 > Topic: две развилки MVP — как совместить скачивание по ссылке (и API в локальной сети) с обещанием «Offline», и какую модель запускать по умолчанию
 > Source of the idea: `GOAL.md` (коммит `b47a812`), план MVP `plans/01_EPIC_mvp.md` §2.10, `researches/03` §D, отчёт прогона `testcases/reports/2026-10-14_F0_engine_probe.md`, 2026-10-14
 > Created: 2026-10-14 13:44 +03:00
-> Status: **🟡 awaiting the owner's answers**
+> Status: **✅ ANSWERS RECEIVED 2026-10-14 15:28 +03:00** — Q1 = A, Q2 = A (queue page, by Mikalai Kryvusha); propagated to `plans/01_EPIC_mvp.md` §2.6, §2.10, §4.2, §4.9 and the `MASTER_PLAN.md` decision log
 
 ## Context / what I already found in the code
 

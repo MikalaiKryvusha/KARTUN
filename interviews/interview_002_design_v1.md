@@ -3,7 +3,7 @@
 > Topic: выбор по черновым макетам — каким путём пользователь идёт от выбора фото до «Улучшить» и каким шрифтом говорит приложение
 > Source of the idea: слово владельца в чате 2026-10-14 ≈ 14:25: «давай примерно прикинем дизайн приложения. Нарисуй мне макеты, открой в браузере на отсмотр» и уточнения «я визу свой розовый фирменный цвет» · «скругленные элементы» · «красивый шрифт» · «минималистичный лаконичный UI/UX»
 > Created: ≈ 2026-10-14 14:33 +03:00 (corrected: stood «14:36», typed by feel; the commit with the file is 14:35:16)
-> Status: **🟡 Q1 answered and the mockups accepted 2026-10-14 ≈ 15:02 («в остальном ОК, принято, можем делать!»; propagated to MASTER_PLAN.md, plans/01 §4.6); Q2 (font) awaiting the owner**
+> Status: **✅ ANSWERS RECEIVED 2026-10-14 15:28 +03:00** — Q1 answered in chat 14:42–15:02 (mockups accepted «в остальном ОК, принято, можем делать!»), Q2 = A on the queue page (by Mikalai Kryvusha); propagated to `plans/01_EPIC_mvp.md` §4.6 and the `MASTER_PLAN.md` decision log
 
 ## Context / what I already found in the code
 
