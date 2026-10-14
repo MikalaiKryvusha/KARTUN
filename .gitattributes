@@ -1,0 +1,19 @@
+# KARTUN - line endings pinned to LF on every platform (the KAIF tools and hashes assume LF;
+# the owner's machine has core.autocrlf=true globally).
+* text=auto eol=lf
+
+# Windows scripts keep CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binaries - never converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.pdf binary
+*.jar binary
+*.so binary
+*.a binary
+*.apk binary
+*.bin binary

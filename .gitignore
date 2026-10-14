@@ -1,0 +1,44 @@
+.kaif/install/
+/KAIF.md
+/KAIF-LOADER.mjs
+/KAIF_ADAPTATION_TASK.md
+/KAIF_UPDATE_TASK.md
+/KAIF_UPDATE_TASK.superseded.md
+/KAIF_ADAPTATION_TASK.superseded.md
+.kaif/backup-*/
+.kaif/update-journal.json
+.kaif/heartbeat.log
+.kaif/guarded-loop.json
+.kaif/refresh-marker.json
+.kaif/voice-marker.json
+.kaif/contour-window/
+.kaif/.contour-tmp/
+interviews/decisions/*.lock
+.kaif/update-rehearsal.json
+
+# --- KARTUN: ignore-first ---
+
+# The owner's voice portrait - the PUBLIC snapshot of his voice core (owner's choice 2026-10-14,
+# chat answer "Публичный слепок"). This repository is public and a portrait may quote the owner's
+# private writing, so the file lives on disk and never ships.
+# Refresh it with: cp d:\work\ai_sandbox\KAIF\AUTHOR_STYLOMETRY.md .
+AUTHOR_STYLOMETRY.md
+
+# Signing keys and secrets for stage and prod builds - they live on the owner's machine in the
+# project root, never in git (owner's word 2026-10-14, chat). Only a value-free .env.example ships.
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+keystore.properties
+
+# Android / Gradle build output and local machine files.
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+.externalNativeBuild/
+.cxx/
+captures/
