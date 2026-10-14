@@ -63,4 +63,14 @@
     <string name="link_none">Kein Link in der Zwischenablage. Kopiere einen Bild-Link und tippe erneut.</string>
     <string name="link_failed">Das Foto ließ sich nicht über den Link laden.</string>
     <string name="link_downloading">Foto wird geladen…</string>
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_processing">Verarbeitung</string>
+    <string name="settings_app">App</string>
+    <string name="settings_gpu">GPU-Beschleunigung</string>
+    <string name="settings_gpu_sub">Vulkan · %1$s</string>
+    <string name="settings_language">Sprache</string>
+    <string name="settings_language_sub">Wie das System oder eigene für KARTUN</string>
+    <string name="info_gpu_text">Das Netz rechnet über Vulkan auf dem Grafikchip des Telefons – etwa 15-mal schneller als auf dem Prozessor.</string>
+    <string name="info_gpu_list">• An – der normale Modus.\n• Aus – nur der Prozessor: langsam, hilft aber, wenn der Grafikchip dieses Telefons versagt.</string>
+    <string name="info_language_text">Die Systemliste der Sprachen von KARTUN öffnet sich: Die App-Sprache kann von der Telefonsprache abweichen.</string>
 </resources>

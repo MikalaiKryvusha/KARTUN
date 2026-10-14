@@ -185,6 +185,44 @@ LINK = {
     "ar": ("لا يوجد رابط في الحافظة. انسخ رابط صورة واضغط مرة أخرى.", "تعذّر تنزيل الصورة من الرابط.", "جارٍ تنزيل الصورة…"),
 }
 
+# Settings strings (third batch), in the order of SETTINGS_KEYS.
+SETTINGS_KEYS = ["settings_title", "settings_processing", "settings_app", "settings_gpu", "settings_gpu_sub", "settings_language",
+                 "settings_language_sub", "info_gpu_text", "info_gpu_list", "info_language_text"]
+SETTINGS = {
+    "es": ["Ajustes", "Procesamiento", "Aplicación", "Aceleración GPU", "Vulkan · %1$s", "Idioma", "Como el sistema o uno propio para KARTUN",
+           "La red calcula en el chip gráfico del teléfono con Vulkan: unas 15 veces más rápido que en el procesador.",
+           "• Activado — el modo normal.\\n• Desactivado — solo el procesador: lento, pero ayuda si el chip gráfico de este teléfono falla.",
+           "Se abre la lista del sistema con los idiomas de KARTUN: el idioma de la app puede ser distinto del del teléfono."],
+    "pt": ["Configurações", "Processamento", "App", "Aceleração por GPU", "Vulkan · %1$s", "Idioma", "Como o sistema ou um próprio para o KARTUN",
+           "A rede calcula no chip gráfico do telefone via Vulkan — cerca de 15 vezes mais rápido que no processador.",
+           "• Ligado — o modo normal.\\n• Desligado — só o processador: lento, mas ajuda se o chip gráfico deste telefone falhar.",
+           "Abre a lista do sistema com os idiomas do KARTUN: o idioma do app pode ser diferente do idioma do telefone."],
+    "fr": ["Réglages", "Traitement", "Application", "Accélération GPU", "Vulkan · %1$s", "Langue", "Comme le système ou propre à KARTUN",
+           "Le réseau calcule sur la puce graphique du téléphone via Vulkan — environ 15 fois plus vite que sur le processeur.",
+           "• Activé — le mode normal.\\n• Désactivé — le processeur seul : lent, mais utile si la puce graphique de ce téléphone défaille.",
+           "La liste système des langues de KARTUN s’ouvre : la langue de l’appli peut différer de celle du téléphone."],
+    "de": ["Einstellungen", "Verarbeitung", "App", "GPU-Beschleunigung", "Vulkan · %1$s", "Sprache", "Wie das System oder eigene für KARTUN",
+           "Das Netz rechnet über Vulkan auf dem Grafikchip des Telefons – etwa 15-mal schneller als auf dem Prozessor.",
+           "• An – der normale Modus.\\n• Aus – nur der Prozessor: langsam, hilft aber, wenn der Grafikchip dieses Telefons versagt.",
+           "Die Systemliste der Sprachen von KARTUN öffnet sich: Die App-Sprache kann von der Telefonsprache abweichen."],
+    "zh": ["设置", "处理", "应用", "GPU 加速", "Vulkan · %1$s", "语言", "跟随系统或为 KARTUN 单独设置",
+           "神经网络通过 Vulkan 在手机图形芯片上运算——比处理器快约 15 倍。",
+           "• 开启——常规模式。\\n• 关闭——只用处理器：较慢，但当这部手机的图形芯片出错时有用。",
+           "将打开系统中 KARTUN 的语言列表：应用语言可以与手机语言不同。"],
+    "hi": ["सेटिंग्स", "प्रोसेसिंग", "ऐप", "GPU एक्सेलेरेशन", "Vulkan · %1$s", "भाषा", "सिस्टम जैसी या KARTUN की अपनी",
+           "न्यूरल नेटवर्क Vulkan से फ़ोन की ग्राफ़िक्स चिप पर चलता है — प्रोसेसर से लगभग 15 गुना तेज़।",
+           "• चालू — सामान्य मोड।\\n• बंद — सिर्फ़ प्रोसेसर: धीमा, पर मदद करता है अगर इस फ़ोन की ग्राफ़िक्स चिप गड़बड़ करे।",
+           "KARTUN की भाषाओं की सिस्टम सूची खुलेगी: ऐप की भाषा फ़ोन की भाषा से अलग हो सकती है।"],
+    "bn": ["সেটিংস", "প্রক্রিয়া", "অ্যাপ", "GPU ত্বরণ", "Vulkan · %1$s", "ভাষা", "সিস্টেমের মতো বা KARTUN-এর নিজস্ব",
+           "নিউরাল নেটওয়ার্ক Vulkan দিয়ে ফোনের গ্রাফিক্স চিপে চলে — প্রসেসরের চেয়ে প্রায় ১৫ গুণ দ্রুত।",
+           "• চালু — সাধারণ মোড।\\n• বন্ধ — শুধু প্রসেসর: ধীর, তবে এই ফোনের গ্রাফিক্স চিপ সমস্যা করলে কাজে আসে।",
+           "KARTUN-এর ভাষার সিস্টেম তালিকা খুলবে: অ্যাপের ভাষা ফোনের ভাষা থেকে আলাদা হতে পারে।"],
+    "ar": ["الإعدادات", "المعالجة", "التطبيق", "تسريع GPU", "Vulkan · %1$s", "اللغة", "مثل النظام أو لغة خاصة بـ KARTUN",
+           "تعمل الشبكة على شريحة رسوم الهاتف عبر Vulkan — أسرع بنحو 15 مرة من المعالج.",
+           "• تشغيل — الوضع العادي.\\n• إيقاف — المعالج فقط: أبطأ، لكنه يفيد إذا تعطّلت شريحة رسوم هذا الهاتف.",
+           "ستُفتح قائمة النظام بلغات KARTUN: يمكن أن تختلف لغة التطبيق عن لغة الهاتف."],
+}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -202,6 +240,9 @@ def main():
             items = "\n".join(f'        <item quantity="{q}">{xml_text(forms[idx])}</item>' for q, forms in P[lang].items())
             lines.append(f'    <plurals name="{name}">\n{items}\n    </plurals>')
         for k, v in zip(("link_none", "link_failed", "link_downloading"), LINK[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
+        assert len(SETTINGS[lang]) == len(SETTINGS_KEYS), (lang, "settings")
+        for k, v in zip(SETTINGS_KEYS, SETTINGS[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')

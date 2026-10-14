@@ -65,4 +65,14 @@
     <string name="link_none">Aucun lien dans le presse-papiers. Copiez un lien vers une image et touchez à nouveau.</string>
     <string name="link_failed">Impossible de télécharger la photo depuis le lien.</string>
     <string name="link_downloading">Téléchargement de la photo…</string>
+    <string name="settings_title">Réglages</string>
+    <string name="settings_processing">Traitement</string>
+    <string name="settings_app">Application</string>
+    <string name="settings_gpu">Accélération GPU</string>
+    <string name="settings_gpu_sub">Vulkan · %1$s</string>
+    <string name="settings_language">Langue</string>
+    <string name="settings_language_sub">Comme le système ou propre à KARTUN</string>
+    <string name="info_gpu_text">Le réseau calcule sur la puce graphique du téléphone via Vulkan — environ 15 fois plus vite que sur le processeur.</string>
+    <string name="info_gpu_list">• Activé — le mode normal.\n• Désactivé — le processeur seul : lent, mais utile si la puce graphique de ce téléphone défaille.</string>
+    <string name="info_language_text">La liste système des langues de KARTUN s’ouvre : la langue de l’appli peut différer de celle du téléphone.</string>
 </resources>

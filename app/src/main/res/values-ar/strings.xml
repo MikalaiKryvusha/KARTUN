@@ -71,6 +71,16 @@
     <string name="link_none">لا يوجد رابط في الحافظة. انسخ رابط صورة واضغط مرة أخرى.</string>
     <string name="link_failed">تعذّر تنزيل الصورة من الرابط.</string>
     <string name="link_downloading">جارٍ تنزيل الصورة…</string>
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_processing">المعالجة</string>
+    <string name="settings_app">التطبيق</string>
+    <string name="settings_gpu">تسريع GPU</string>
+    <string name="settings_gpu_sub">Vulkan · %1$s</string>
+    <string name="settings_language">اللغة</string>
+    <string name="settings_language_sub">مثل النظام أو لغة خاصة بـ KARTUN</string>
+    <string name="info_gpu_text">تعمل الشبكة على شريحة رسوم الهاتف عبر Vulkan — أسرع بنحو 15 مرة من المعالج.</string>
+    <string name="info_gpu_list">• تشغيل — الوضع العادي.\n• إيقاف — المعالج فقط: أبطأ، لكنه يفيد إذا تعطّلت شريحة رسوم هذا الهاتف.</string>
+    <string name="info_language_text">ستُفتح قائمة النظام بلغات KARTUN: يمكن أن تختلف لغة التطبيق عن لغة الهاتف.</string>
     <string name="arrow">←</string>
     <string name="size_to">%1$s ← %2$s</string>
 </resources>

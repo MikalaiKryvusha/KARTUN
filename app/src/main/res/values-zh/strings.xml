@@ -61,4 +61,14 @@
     <string name="link_none">剪贴板中没有链接。请复制图片链接后再点一次。</string>
     <string name="link_failed">无法通过链接下载照片。</string>
     <string name="link_downloading">正在下载照片…</string>
+    <string name="settings_title">设置</string>
+    <string name="settings_processing">处理</string>
+    <string name="settings_app">应用</string>
+    <string name="settings_gpu">GPU 加速</string>
+    <string name="settings_gpu_sub">Vulkan · %1$s</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_language_sub">跟随系统或为 KARTUN 单独设置</string>
+    <string name="info_gpu_text">神经网络通过 Vulkan 在手机图形芯片上运算——比处理器快约 15 倍。</string>
+    <string name="info_gpu_list">• 开启——常规模式。\n• 关闭——只用处理器：较慢，但当这部手机的图形芯片出错时有用。</string>
+    <string name="info_language_text">将打开系统中 KARTUN 的语言列表：应用语言可以与手机语言不同。</string>
 </resources>
