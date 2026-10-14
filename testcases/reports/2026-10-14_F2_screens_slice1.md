@@ -38,6 +38,7 @@ tap` at the screen coordinates read from screenshots — taps, not intents; the 
 | 15 | 2026-10-14 19:00 +03:00 | path of run 2 → `uiautomator dump`; tap the x4plus card → dump; back to the fast card → «Улучшить» → dump on the result | «Улучшить · ≈ 7 секунд», «Улучшить · ≈ 1 минута 49 секунд», «8 секунд · GPU · Vulkan» — durations in whole words with plural forms |
 | 16 | 2026-10-14 19:02 +03:00 | build with the pull-down (plans/03 step 9) → path of run 2 → `input swipe 800 1400 800 2300 1500` (on the settings) → `input swipe 800 1200 800 1900 400` | the photo opens full screen on black; the vertical swipe closes it back to «Улучшение» |
 | 17 | 2026-10-14 19:05 +03:00 | build with the draggable preview → `input swipe 800 500 800 1300 1500` (on the photo) → `input keyevent 4` → `input swipe 800 1000 800 300 800` (photo up) | pull on the photo opens full screen (empty dump), Back closes it; dragging the photo up shrinks it; FATAL count 0 |
+| 18 | 2026-10-14 19:08 +03:00 | icon with random tile tones (`python tools/make-vector-icon.py --apply`, run twice: drawable sha256 `f0901210a0cbc2ef…` both times) → build → splash `screencap` 0.15 s after `am start`, app list | chaotic bright/dark glass tiles on the splash and in the app list (`design/icon/compare_vector_chaos.png`) |
 
 ## 4. Checks
 

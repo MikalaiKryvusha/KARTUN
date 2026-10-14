@@ -13,6 +13,7 @@ Usage (from the project root): python tools/make-vector-icon.py [--apply]
   without --apply: writes design/icon/heart_vector.svg and res/drawable/ic_launcher_heart*.xml (not referenced yet);
   with --apply:    also points res/mipmap-anydpi/ic_launcher*.xml at the vector drawables.
 """
+import random
 import sys
 from pathlib import Path
 
@@ -27,12 +28,17 @@ RIGHT_HALF = "M54,0 H108 V108 H54 Z"
 
 PINK = "#FF1A8C"
 TILE = 4.0                      # checker glass square, dp
-TILE_A, TILE_B = "#FF3D9E", "#B8005F"   # the two glass tones of the checker
+# Glass tones of the tiles, dark to bright. Each tile takes one at random - the owner, 2026-10-14 ≈ 19:10: «пиксели слева
+# нужно рандомно ярче темнее хаос». The seed is fixed, so every rebuild draws the same chaos (no drift between runs).
+TILE_TONES = ["#6E0038", "#8E0049", "#B8005F", "#E0087A", "#FF3D9E", "#FF6BB5", "#FF9ACB"]
+TILE_SEED = 14
 GLOW = "#FF1A8C"
 
 
 def squares():
-    """Checker squares covering the left half of the heart's bounding box (clipped to the heart later)."""
+    """Glass squares covering the left half of the heart's bounding box (clipped to the heart later), each of a random
+    tone; a fresh seeded generator per call, so every caller gets the same tiles in the same order."""
+    rnd = random.Random(TILE_SEED)
     out = []
     y = 28.0
     row = 0
@@ -40,7 +46,7 @@ def squares():
         x = 26.0
         col = 0
         while x < 54:
-            out.append((x, y, TILE_A if (row + col) % 2 == 0 else TILE_B))
+            out.append((x, y, rnd.choice(TILE_TONES)))
             x += TILE
             col += 1
         y += TILE

@@ -49,7 +49,7 @@ Slice 1 (this session):
    «Поделиться» shown disabled until phase 3.
 7. [~] Titan run by touch per criteria 1–4 → run report; sheet «mockup | build» for the owner.
 
-8. [x] Own vector icon (2026-10-14 19:00 +03:00: `tools/make-vector-icon.py`, applied, seen on the Titan's splash and app list — sheet `design/icon/compare_vector.png`; the look is the owner's verdict) — the owner's order in chat 2026-10-14 ≈ 18:33 +03:00, verbatim: «Нарисуй вообще свою векторную
+8. [x] Own vector icon (2026-10-14 19:00 +03:00: `tools/make-vector-icon.py`, applied, seen on the Titan's splash and app list — sheet `design/icon/compare_vector.png`; the look is the owner's verdict; ≈ 19:07 the owner: «пиксели слева нужно рандомно ярче темнее хаос» → random tones, run 18, sheet `design/icon/compare_vector_chaos.png`) — the owner's order in chat 2026-10-14 ≈ 18:33 +03:00, verbatim: «Нарисуй вообще свою векторную
    иконку. Сердце, как нам ГПТ пытался рисовать. И правая и левая части гладкие. Стеклянные. Но левая - покрыта
    шахматными квадратиками стекла - а левая идеально гладкая, блеслящая». Reading (said in chat, awaiting correction):
    the right half is the smooth shiny one (his earlier «слева пиксели, справа от черты-лазера - гладкое»). A
