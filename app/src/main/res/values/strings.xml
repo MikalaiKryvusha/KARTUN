@@ -15,9 +15,9 @@
     <string name="setup_other_short">Another photo</string>
     <string name="label_model">Model</string>
     <string name="label_scale">Scale</string>
-    <string name="model_fast_name">Real-ESRGAN General v3</string>
+    <string name="model_fast_name" translatable="false">Real-ESRGAN General v3</string>
     <string name="model_fast_desc">Fast · for photos</string>
-    <string name="model_max_name">Real-ESRGAN x4plus</string>
+    <string name="model_max_name" translatable="false">Real-ESRGAN x4plus</string>
     <string name="model_max_desc">Maximum · rich texture</string>
     <string name="licence_bsd">Commercial use · BSD-3</string>
     <string name="scale_default">default</string>
@@ -38,8 +38,8 @@
     <string name="working_tiles">Tile %1$d of %2$d · ≈ %3$s left</string>
     <string name="working_starting">≈ %1$s left</string>
     <string name="cancel">Cancel</string>
-    <string name="backend_gpu">GPU · Vulkan</string>
-    <string name="backend_cpu">CPU</string>
+    <string name="backend_gpu" translatable="false">GPU · Vulkan</string>
+    <string name="backend_cpu" translatable="false">CPU</string>
 
     <string name="before">Before</string>
     <string name="after">After</string>
