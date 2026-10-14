@@ -44,6 +44,12 @@ licence text beside it; the non-commercial ones stay there only while KARTUN is 
 
 ## Steps
 
+0. [ ] (owner, chat 2026-10-14 ≈ 22:33 +03:00, after the close) «да, чем больше моделей, тем лучше. Смотрим на ЛУЧШИЕ, которые ОЧЕНЬ хвалят в интернете и на хаггинг фейс» — UltraMix and Remacri are in (own RRDB
+   conversion from `.pth`, served from the release with the NC badge). FIRST a recon doc in `researches/` of the models the
+   community rates highest — OpenModelDB ratings, Hugging Face downloads and likes, Reddit/forum praise — with licence,
+   architecture (our engine runs ESRGAN/RRDB and SRVGG today; SwinIR/HAT/DAT/SPAN need a check) and a ready-ncnn flag;
+   the catalogue grows from that list, best first.
+
 1. [x] Prove a catalogue model on our engine: UltraSharp fp16 from the author's HF — blob names match, GPU run 5 431 ms at
    256² (`engine/third_party/testdata/out_4x-UltraSharp-fp16_gpu_t200_test256.png`), comparison sheet with General v3 and x4plus.
 2. [~] `docs/model-catalogue.json` (in the repo, the single source): id, name, author, licence, commercial flag, files with
