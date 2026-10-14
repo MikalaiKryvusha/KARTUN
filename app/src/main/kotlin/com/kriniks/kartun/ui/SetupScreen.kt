@@ -157,7 +157,7 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                 }
             }
         }
-        SetupOverlays(src.bitmap, fullscreen, { fullscreen = false }, info, { info = null })
+        SetupOverlays(src.bitmap, fullscreen, { fullscreen = false }, info, { info = null }, vm::openManual)
         return
     }
 
@@ -202,7 +202,7 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
         }
         UpscaleButton(vm, Modifier.align(Alignment.BottomCenter))
     }
-    SetupOverlays(src.bitmap, fullscreen, { fullscreen = false }, info, { info = null })
+    SetupOverlays(src.bitmap, fullscreen, { fullscreen = false }, info, { info = null }, vm::openManual)
 }
 
 /** Back button and the screen title (the same in both orientations). */
@@ -212,7 +212,8 @@ private fun SetupTopBar(vm: UpscaleViewModel) {
         RoundIconButton(R.drawable.ic_back, onClick = vm::back)
         Text(stringResource(R.string.setup_title), Modifier.weight(1f), style = MaterialTheme.typography.titleLarge,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-        Spacer(Modifier.size(44.dp))
+        // The gear of the mockup ('A-setup'): the settings, and Back returns here.
+        RoundIconButton(R.drawable.ic_gear, onClick = vm::openSettings)
     }
 }
 
@@ -263,11 +264,11 @@ private fun UpscaleButton(vm: UpscaleViewModel, modifier: Modifier, sidePadding:
 
 /** The full-screen photo and the (i) dialogs, over either layout. */
 @Composable
-private fun SetupOverlays(bitmap: android.graphics.Bitmap, fullscreen: Boolean, closeFull: () -> Unit, info: Int?, closeInfo: () -> Unit) {
+private fun SetupOverlays(bitmap: android.graphics.Bitmap, fullscreen: Boolean, closeFull: () -> Unit, info: Int?, closeInfo: () -> Unit, openGuide: () -> Unit) {
     if (fullscreen) FullPhoto(bitmap, closeFull)
     when (info) {
-        R.string.label_scale -> InfoDialog(stringResource(R.string.label_scale), stringResource(R.string.info_scale_text), stringResource(R.string.info_scale_list), closeInfo)
-        R.string.label_model -> InfoDialog(stringResource(R.string.label_model), stringResource(R.string.info_model_text), stringResource(R.string.info_model_list), closeInfo)
+        R.string.label_scale -> InfoDialog(stringResource(R.string.label_scale), stringResource(R.string.info_scale_text), stringResource(R.string.info_scale_list), onGuide = { closeInfo(); openGuide() }, onClose = closeInfo)
+        R.string.label_model -> InfoDialog(stringResource(R.string.label_model), stringResource(R.string.info_model_text), stringResource(R.string.info_model_list), onGuide = { closeInfo(); openGuide() }, onClose = closeInfo)
     }
 }
 

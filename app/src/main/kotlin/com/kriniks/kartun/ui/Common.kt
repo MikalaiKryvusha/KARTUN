@@ -126,7 +126,7 @@ fun InfoButton(onClick: () -> Unit) {
  * not a bottom sheet: the owner's word in chat 2026-10-14 ≈ 18:48 «Инфо открывать диалогами, а не ботом шитами».
  */
 @Composable
-fun InfoDialog(title: String, text: String, list: String, onClose: () -> Unit) {
+fun InfoDialog(title: String, text: String, list: String, onGuide: (() -> Unit)? = null, onClose: () -> Unit) {
     Dialog(onDismissRequest = onClose) {
         Column(
             Modifier.fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(MaterialTheme.colorScheme.surfaceContainerLow)
@@ -135,7 +135,18 @@ fun InfoDialog(title: String, text: String, list: String, onClose: () -> Unit) {
         ) {
             Text(title, style = MaterialTheme.typography.titleLarge)
             Text(text, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onBackground)
-            Text(list, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (list.isNotEmpty()) Text(list, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            // «Открыть руководство полностью ›» (mockup 'info-scale' .row-link): the (i) is an excerpt of the guide.
+            if (onGuide != null) {
+                Row(
+                    Modifier.fillMaxWidth().clip(MaterialTheme.shapes.medium).background(MaterialTheme.colorScheme.surfaceContainer)
+                        .clickable(onClick = onGuide).padding(horizontal = 16.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(stringResource(R.string.info_open_guide), Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                    Text("›", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                }
+            }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Pill(stringResource(R.string.info_close), on = true, onClick = onClose)
             }

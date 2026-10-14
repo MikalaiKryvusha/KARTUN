@@ -96,4 +96,5 @@
     <string name="manual_title">Guide</string>
     <string name="settings_manual">User guide</string>
     <string name="settings_manual_sub">How to use KARTUN and its models</string>
+    <string name="info_open_guide">Open the full guide</string>
 </resources>

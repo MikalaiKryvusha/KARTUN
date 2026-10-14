@@ -102,4 +102,5 @@
     <string name="manual_title">Руководство</string>
     <string name="settings_manual">Руководство пользователя</string>
     <string name="settings_manual_sub">Как пользоваться KARTUN и моделями</string>
+    <string name="info_open_guide">Открыть руководство полностью</string>
 </resources>

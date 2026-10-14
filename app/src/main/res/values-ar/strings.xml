@@ -84,6 +84,7 @@
     <string name="manual_title">الدليل</string>
     <string name="settings_manual">دليل المستخدم</string>
     <string name="settings_manual_sub">كيف تستخدم KARTUN ونماذجه</string>
+    <string name="info_open_guide">افتح الدليل كاملًا</string>
     <string name="arrow">←</string>
     <string name="size_to">%1$s ← %2$s</string>
 </resources>

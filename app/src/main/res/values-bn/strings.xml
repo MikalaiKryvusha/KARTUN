@@ -76,4 +76,5 @@
     <string name="manual_title">নির্দেশিকা</string>
     <string name="settings_manual">ব্যবহারকারী নির্দেশিকা</string>
     <string name="settings_manual_sub">KARTUN ও এর মডেল কীভাবে ব্যবহার করবেন</string>
+    <string name="info_open_guide">পুরো নির্দেশিকা খুলুন</string>
 </resources>

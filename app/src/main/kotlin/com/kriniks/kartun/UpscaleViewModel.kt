@@ -127,7 +127,10 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
     fun openSettings() { beforeSettings = screen; screen = Screen.Settings }
 
-    fun openManual() { screen = Screen.Manual }
+    private var beforeManual = Screen.Settings
+
+    /** The guide, from the settings or from an (i) window; Back returns where it was opened. */
+    fun openManual() { beforeManual = screen; screen = Screen.Manual }
 
     /** True while «Вставить ссылку» downloads the picture. */
     var downloading by mutableStateOf(false); private set
@@ -344,7 +347,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
             Screen.Working -> cancel()
             Screen.Result -> { screen = Screen.Setup; result = null; saveMessage = null }
             Screen.Settings -> { screen = beforeSettings; if (screen == Screen.Setup) preload() }
-            Screen.Manual -> screen = Screen.Settings
+            Screen.Manual -> screen = beforeManual
             Screen.Home -> Unit
         }
     }

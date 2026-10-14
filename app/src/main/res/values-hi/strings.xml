@@ -76,4 +76,5 @@
     <string name="manual_title">गाइड</string>
     <string name="settings_manual">उपयोगकर्ता गाइड</string>
     <string name="settings_manual_sub">KARTUN और उसके मॉडल कैसे इस्तेमाल करें</string>
+    <string name="info_open_guide">पूरी गाइड खोलें</string>
 </resources>

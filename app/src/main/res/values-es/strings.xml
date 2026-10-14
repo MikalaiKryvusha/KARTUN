@@ -78,4 +78,5 @@
     <string name="manual_title">Guía</string>
     <string name="settings_manual">Guía del usuario</string>
     <string name="settings_manual_sub">Cómo usar KARTUN y sus modelos</string>
+    <string name="info_open_guide">Abrir la guía completa</string>
 </resources>

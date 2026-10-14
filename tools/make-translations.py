@@ -236,6 +236,10 @@ GUIDE = {
     "ar": ("الدليل", "دليل المستخدم", "كيف تستخدم KARTUN ونماذجه"),
 }
 
+# «Открыть руководство полностью» in the (i) windows.
+OPEN_GUIDE = {"es": "Abrir la guía completa", "pt": "Abrir o guia completo", "fr": "Ouvrir le guide complet", "de": "Die ganze Anleitung öffnen",
+              "zh": "打开完整指南", "hi": "पूरी गाइड खोलें", "bn": "পুরো নির্দেশিকা খুলুন", "ar": "افتح الدليل كاملًا"}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -259,6 +263,7 @@ def main():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in zip(("manual_title", "settings_manual", "settings_manual_sub"), GUIDE[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
+        lines.append(f'    <string name="info_open_guide">{xml_text(OPEN_GUIDE[lang])}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         body = "\n".join(lines)
