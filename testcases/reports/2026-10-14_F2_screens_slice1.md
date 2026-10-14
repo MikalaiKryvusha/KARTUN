@@ -34,6 +34,8 @@ tap` at the screen coordinates read from screenshots — taps, not intents; the 
 | 11 | 2026-10-14 18:50 +03:00 | build with the owner's three remarks (collapsing preview, (i) dialogs, model preload) → `pm clear` → path of run 2 → `input swipe 800 2000 800 1700 400`, `input swipe 800 2100 800 1100 500`, `input swipe 800 1100 800 2100 500` | 4 frames: preview 330 dp → shrunk with the settings following it → compact row → full again; no jump; the fast model ready (tick) 0.6 s after the photo |
 | 12 | 2026-10-14 18:54 +03:00 | build with the centred «Фото → Поделиться → KARTUN» → home screenshot → path of run 2 → `input tap 1478 1335` | home row centred; (i) opens a centred dialog «Модель» with «Закрыть»; FATAL/SIGSEGV count 0 |
 | 13 | 2026-10-14 18:53 +03:00 | Google Photos: `am start -a VIEW -d content://media/external/images/media/63257 -p com.google.android.apps.photos` → tap «Поделиться» → «Оригинал» → «Поделиться» → swipe the chooser → tap «Debug KARTUN» | KARTUN opens «Улучшение» with «960 × 1280 · 1,2 Мп» — share-in works on the user's path |
+| 14 | 2026-10-14 18:59 +03:00 | build with the vector icon (`python tools/make-vector-icon.py --apply`) → `am start` + `screencap` 0.15 s later; `input keyevent 3`, swipe up to the app list | splash: the vector glass heart on the dark field; app list: «Debug KARTUN» with the heart in the OS circle (`design/icon/compare_vector.png`) |
+| 15 | 2026-10-14 19:00 +03:00 | path of run 2 → `uiautomator dump`; tap the x4plus card → dump; back to the fast card → «Улучшить» → dump on the result | «Улучшить · ≈ 7 секунд», «Улучшить · ≈ 1 минута 49 секунд», «8 секунд · GPU · Vulkan» — durations in whole words with plural forms |
 
 ## 4. Checks
 
@@ -53,6 +55,7 @@ dumps (`captures/`, local only), the divider position READ from screenshot pixel
 | C7 pinch zoom and pan | not run | `adb shell input` has no multi-touch; left for the owner's hands or a later instrumented test |
 | C8 photo over 12.5 MP, the «слишком большое» notice | not run | no such photo in the test set |
 | C9 share-in from another app | pass | run 13 (Google Photos); run 10 is an adb limit, not a defect |
+| C11 durations in whole words (owner, ≈ 18:58) | pass | run 15 |
 | C10 owner's remarks 18:48–18:50 | pass | run 11 (no jump, preload), run 12 (dialogs, centred row) — the look stays his verdict |
 
 ## 5. Found

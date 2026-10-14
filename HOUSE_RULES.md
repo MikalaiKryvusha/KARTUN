@@ -91,6 +91,7 @@
 | `node tools/shoot-mockups.mjs` | снимает экраны `design/kartun-mockups.html` в `design/flow-map/screens/` (вне git) | лист KUIPS из устаревших кадров |
 | `node D:/work/ai_sandbox/ndim/tools/build-flow-map.mjs` (из корня KARTUN) | собирает лист KUIPS `design/flow-map.html` сборщиком NDim на месте (код AGPL не копируется, лист вне git) | — |
 | `python tools/make-icon.py` (системный Python с Pillow; `-I` не годится — Pillow стоит в пользовательских пакетах) | собирает адаптивную иконку Android (`app/src/main/res/mipmap-*`), `design/icon/store_512.png` и превью масок `design/icon/preview_masks.png` из картинок владельца в `design/icon/` | ручная правка производных файлов иконки; сердце, срезанное маской лаунчера |
+| `python tools/make-vector-icon.py [--apply]` | рисует своё векторное стеклянное сердце (`res/drawable/ic_launcher_heart*.xml`, SVG-двойник `design/icon/heart_vector.svg`); `--apply` переключает адаптивную иконку на него, растр `icon_v3` остаётся в `mipmap-*` | ручная правка сгенерированных drawable |
 | `node tools/stamp-guard.mjs --staged` (git-хук `.git/hooks/pre-commit` этого клона) | отказывает коммиту с отметкой времени позже текущего момента | время, написанное на глаз (EXP-0004, EXP-0005) |
 
 ## 7. Знания о продукте

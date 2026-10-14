@@ -49,7 +49,7 @@ Slice 1 (this session):
    «Поделиться» shown disabled until phase 3.
 7. [~] Titan run by touch per criteria 1–4 → run report; sheet «mockup | build» for the owner.
 
-8. [ ] Own vector icon — the owner's order in chat 2026-10-14 ≈ 18:33 +03:00, verbatim: «Нарисуй вообще свою векторную
+8. [x] Own vector icon (2026-10-14 19:00 +03:00: `tools/make-vector-icon.py`, applied, seen on the Titan's splash and app list — sheet `design/icon/compare_vector.png`; the look is the owner's verdict) — the owner's order in chat 2026-10-14 ≈ 18:33 +03:00, verbatim: «Нарисуй вообще свою векторную
    иконку. Сердце, как нам ГПТ пытался рисовать. И правая и левая части гладкие. Стеклянные. Но левая - покрыта
    шахматными квадратиками стекла - а левая идеально гладкая, блеслящая». Reading (said in chat, awaiting correction):
    the right half is the smooth shiny one (his earlier «слева пиксели, справа от черты-лазера - гладкое»). A
@@ -60,6 +60,11 @@ Owner's remarks on the build, chat 2026-10-14 ≈ 18:48–18:50 (verbatim), all 
 - [x] «Инфо открывать диалогами, а не ботом шитами» → `InfoDialog` in `ui/Common.kt`.
 - [x] «модель качать на экране улучшение, а не на прогрессе» → `UpscaleViewModel.preload()` on entering the screen and on a card tap.
 - [x] «Фото - Поделиться - Кртун - выровнять по центру» → the row centred in the share hint card.
+- [x] «минут секунд в кнопке улучшения писать целым слвом» (≈ 18:58) → `durationText` with `plurals` («7 секунд», «1 минута 49 секунд»), run 15.
+
+9. [ ] Pull-down to full screen — the owner in chat 2026-10-14 ≈ 18:57 +03:00, verbatim: «На экране Улучшения свайпом внижз
+   было бы здорово раскрывать вью картинки на весь экран». A downward pull past the full preview opens the photo full
+   screen on black, pinch zoom inside; a swipe up or Back returns to the settings.
 
 Slice 2 (next): foreground service `mediaProcessing` with a notification; the probe activity moves to a debug-only entry.
 

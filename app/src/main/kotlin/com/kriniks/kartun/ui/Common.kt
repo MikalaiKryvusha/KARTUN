@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -162,11 +163,22 @@ private fun group(n: Int): String =
 /** Megapixels with one decimal in the user's locale ("1,2" in Russian). */
 fun mpText(mp: Float): String = String.format(Locale.getDefault(), "%.1f", mp)
 
-/** A duration for people: "7 с" under a minute, "1:45" from a minute on. */
+/**
+ * A duration for people in whole words with the language's plural forms: «7 секунд», «1 минута 50 секунд», «2 минуты»
+ * (the owner, 2026-10-14: «минут секунд в кнопке улучшения писать целым слвом»).
+ */
 @Composable
 fun durationText(ms: Long): String {
-    val s = ((ms + 500) / 1000).coerceAtLeast(1)
-    return if (s < 60) stringResource(R.string.seconds, s.toInt()) else String.format(Locale.ROOT, "%d:%02d", s / 60, s % 60)
+    val total = ((ms + 500) / 1000).coerceAtLeast(1).toInt()
+    val m = total / 60
+    val s = total % 60
+    val sec = pluralStringResource(R.plurals.duration_seconds, s, s)
+    val min = pluralStringResource(R.plurals.duration_minutes, m, m)
+    return when {
+        m == 0 -> sec
+        s == 0 -> min
+        else -> "$min $sec"
+    }
 }
 
 /** Transparent-to-background fade above a pinned bottom button (.cta::before). */

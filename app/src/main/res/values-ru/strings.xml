@@ -53,7 +53,19 @@
     <string name="error_decode">Не удалось открыть это фото.</string>
     <string name="error_model">Не удалось загрузить модель. Переустановите приложение.</string>
     <string name="error_engine">Нейросеть не смогла обработать фото.</string>
-    <string name="seconds">%1$d с</string>
+    <!-- Durations in whole words - the owner in chat 2026-10-14 ≈ 18:58: «минут секунд в кнопке улучшения писать целым слвом». -->
+    <plurals name="duration_seconds">
+        <item quantity="one">%1$d секунда</item>
+        <item quantity="few">%1$d секунды</item>
+        <item quantity="many">%1$d секунд</item>
+        <item quantity="other">%1$d секунды</item>
+    </plurals>
+    <plurals name="duration_minutes">
+        <item quantity="one">%1$d минута</item>
+        <item quantity="few">%1$d минуты</item>
+        <item quantity="many">%1$d минут</item>
+        <item quantity="other">%1$d минуты</item>
+    </plurals>
     <string name="size_to">%1$s → %2$s</string>
     <string name="percent">%1$d%%</string>
     <string name="arrow">→</string>
