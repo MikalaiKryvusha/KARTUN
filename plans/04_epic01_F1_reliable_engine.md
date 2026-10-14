@@ -29,6 +29,9 @@ never becomes a crash. Avoid: a result too large for memory reaching the engine 
 2. [~] (built 2026-10-14 ≈ 19:22: `UpscaleViewModel.withFallback`, each step logged with tag `KARTUN`; the ring maps each pass's own done/total onto its share, so 100 px tiles do not overrun it; the forced-failure run on the device waits for the owner) Fallback ladder in `UpscaleViewModel`: on a native failure retry with tile 100, then CPU, then the error.
 3. [ ] Tiles to disk for results over the limit (phase 1's large-photo goal) — research first (`researches/`): a PNG/JPEG
    encoder fed by rows, without one bitmap of the whole result.
+   Recon done 2026-10-14 ≈ 19:24: `researches/05_large_results_streaming.md` — a strip writer (one tile row of output)
+   into libpng / libjpeg-turbo, the result shown through `BitmapRegionDecoder` tiles; the FORK (native vs PNGJ) is decided
+   at this step with a measurement.
 4. [ ] The 10-photo series on the Titan with `dumpsys meminfo` → run report.
 
 ## Risks
