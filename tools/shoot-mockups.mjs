@@ -13,7 +13,7 @@ const PAGE = pathToFileURL(resolve('design/kartun-mockups.html')).href;
 const OUT = 'design/flow-map/screens';
 const W = 390;
 const H = 900;
-const SCREENS = ['A-home', 'A-setup', 'B-steps', 'C-home', 'C-setup', 'D-home', 'D-setup', 'processing', 'result', 'save', 'settings'];
+const SCREENS = ['A-home', 'A-setup', 'A-setup-scrolled', 'info-scale', 'processing', 'result', 'save', 'settings', 'models', 'manual', 'manual-models', 'B-steps', 'C-home', 'C-setup', 'D-home', 'D-setup'];
 const FONTS = ['manrope', 'nunito', 'unbounded', 'alternates'];
 const FONT_SCREEN = 'A-setup';
 

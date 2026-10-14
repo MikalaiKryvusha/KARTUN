@@ -170,6 +170,63 @@
   .tg.on { background: var(--pink); } .tg.on::after { left: 21px; background: #fff; }
   .val { color: var(--sub); font-size: 14px; }
 
+  /* v2: share hint on the home screen */
+  .share-hint { background: var(--card); border-radius: 22px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .share-hint .h { font: 700 15px var(--font-head); display: flex; align-items: center; gap: 8px; }
+  .share-hint .h svg { width: 18px; height: 18px; stroke: var(--pink); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .share-hint .flow { display: flex; align-items: center; gap: 6px; font: 600 12px var(--font); color: var(--sub); flex-wrap: wrap; }
+  .share-hint .flow b { background: var(--card2); color: var(--text); border-radius: var(--r-pill); padding: 5px 10px; font-weight: 600; }
+  .share-hint .flow b.k { background: var(--pink); color: #fff; }
+
+  /* v2: scrollable setup with a pinned, collapsing preview */
+  .scroller { position: absolute; top: 108px; left: 0; right: 0; bottom: 0; overflow-y: auto; scrollbar-width: none; padding: 0 20px 120px; }
+  .scroller::-webkit-scrollbar { display: none; }
+  .hero { position: sticky; top: 0; z-index: 4; background: var(--bg); padding-bottom: 12px; }
+  .hero .photo { height: var(--hh, 330px); transition: height .15s; }
+  .hero .swap { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 6px; padding: 8px 14px;
+    border-radius: var(--r-pill); background: rgba(13,13,13,.72); backdrop-filter: blur(8px); font: 700 13px var(--font); }
+  .hero .swap svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2; }
+  .hero .mini { display: none; align-items: center; gap: 12px; }
+  .hero.compact .photo { display: none; }
+  .hero.compact .mini { display: flex; background: var(--card); border-radius: 20px; padding: 8px; }
+  .hero .mini .photo { display: block; width: 64px; height: 64px; border-radius: 14px; flex: none; }
+  .hero .mini .t { flex: 1; } .hero .mini .t b { display: block; font: 700 15px var(--font-head); } .hero .mini .t span { color: var(--sub); font-size: 13px; }
+  .hero .mini .pill { font-size: 13px; padding: 7px 12px; }
+  .stack { display: flex; flex-direction: column; gap: 16px; }
+  .cta { position: absolute; left: 20px; right: 20px; bottom: 30px; z-index: 5; }
+  .cta::before { content: ''; position: absolute; left: -20px; right: -20px; bottom: -30px; height: 130px; background: linear-gradient(transparent, var(--bg) 45%); z-index: -1; }
+  .row-link { display: flex; align-items: center; justify-content: space-between; background: var(--card); border-radius: 18px; padding: 14px 16px; }
+  .row-link .a { font: 600 15px var(--font); } .row-link .b { color: var(--sub); font-size: 13px; margin-top: 2px; }
+  .row-link .go { color: var(--pink); font: 700 14px var(--font); }
+
+  /* v2: model catalogue */
+  .mcard { background: var(--card); border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 8px; border: 2px solid transparent; }
+  .mcard.on { border-color: var(--pink); }
+  .mcard .top1 { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .mcard .n { font: 700 16px var(--font-head); } .mcard .d { color: var(--sub); font-size: 13px; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge { font: 700 11px var(--font); letter-spacing: .3px; padding: 4px 9px; border-radius: var(--r-pill); }
+  .badge.os { background: rgba(61,220,132,.14); color: #3ddc84; }
+  .badge.by { background: rgba(120,170,255,.14); color: #8fb8ff; }
+  .badge.nc { background: rgba(255,170,0,.16); color: #ffb020; }
+  .badge.dev { background: var(--card2); color: var(--sub); }
+  .state { flex: none; font: 700 13px var(--font); padding: 8px 12px; border-radius: var(--r-pill); display: flex; align-items: center; gap: 6px; }
+  .state svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .state.have { color: #3ddc84; background: rgba(61,220,132,.12); }
+  .state.get { color: #fff; background: var(--pink); }
+  .state.dl { color: var(--pink); background: var(--pink-soft); }
+  .bar { height: 5px; border-radius: 3px; background: var(--card2); overflow: hidden; } .bar i { display: block; height: 100%; background: var(--pink); }
+
+  /* v2: user manual */
+  .guide { display: flex; gap: 14px; background: var(--card); border-radius: 22px; padding: 14px; }
+  .guide .pic { width: 96px; height: 112px; border-radius: 16px; flex: none; position: relative; overflow: hidden; background: var(--card2); display: grid; place-items: center; }
+  .guide .pic svg { width: 40px; height: 40px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .guide .pic.pink { background: linear-gradient(150deg, var(--pink), var(--pink-d)); }
+  .guide .num { font: 800 12px var(--font); color: var(--pink); letter-spacing: 1px; }
+  .guide .h { font: 700 16px var(--font-head); margin: 2px 0 4px; } .guide .p { color: var(--sub); font-size: 13px; line-height: 1.45; }
+  .manual-hero { border-radius: 26px; padding: 18px; background: radial-gradient(120% 100% at 100% 0%, rgba(255,26,140,.35), var(--card) 65%); }
+  .manual-hero .h { font: 800 22px var(--font-head); } .manual-hero .p { color: var(--sub); font-size: 14px; margin-top: 6px; }
+
   body.shot { background: var(--bg); }
   body.shot .page-head, body.shot .row h2, body.shot .row p.note, body.shot .cap { display: none; }
   body.shot .row { padding: 0; }
@@ -181,9 +238,8 @@
 <body data-font="manrope">
 
 <div class="page-head">
-  <h1><b>KARTUN</b> — макеты MVP, черновик v1</h1>
-  <p>Четыре подхода к главному пути (ряды A–D), общие экраны обработки, результата, сохранения и настроек,
-    и ряд шрифтов. Фирменный розовый <b style="color:var(--pink)">#FF1A8C</b>, скругления 20–32 px, одно главное действие на экране.
+  <h1><b>KARTUN</b> — макеты MVP, версия 2</h1>
+  <p>Версия 2 по правкам владельца: главный путь — вариант A, экран «Фото выбрано» прокручивается со сворачивающимся превью, каталог моделей, руководство пользователя, окна (i). Ниже — отложенные варианты B–D. Фирменный розовый <b style="color:var(--pink)">#FF1A8C</b>, скругления 20–32 px, одно главное действие на экране.
     Шрифт переключается кнопками ниже на всех экранах сразу. На экране результата ползунок «до/после» можно таскать мышью в любом месте картинки.</p>
   <div class="fonts" id="fonts">
     <button data-f="manrope" class="on">Manrope</button>
@@ -215,6 +271,10 @@ const I = {
   globe: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
   about: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
   model: '<svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>',
+  book: '<svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21a2 2 0 0 1 2-2h13"/><path d="M9 7h6M9 11h4"/></svg>',
+  dl: '<svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>',
+  ok: '<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>',
+  hand: '<svg viewBox="0 0 24 24"><path d="M8 13V5a1.5 1.5 0 0 1 3 0v6M11 11V4a1.5 1.5 0 0 1 3 0v7M14 11V5.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-1a6 6 0 0 1-5.3-3.2L3 13.5a1.5 1.5 0 0 1 2.6-1.5L8 15"/></svg>',
 };
 const LOCAL = 'mockups/local/';
 const bg = (f) => `background-image:url('${LOCAL}${f}'), linear-gradient(160deg,#5b7fa6,#2f4d3a 55%,#6d5a3e)`;
@@ -228,16 +288,82 @@ const modelCards = () => `<div class="models">
 const scale = () => `<div class="seg"><div>2×</div><div class="on">4×</div></div>`;
 const summary = () => `<div class="sum"><span>960 × 1280 → <b>3840 × 5120</b></span><span>PNG</span></div>`;
 
+// v2 (owner's edits 2026-10-14): the setup screen scrolls; the preview stays pinned on top and shrinks to a small
+// square while scrolling down, and grows back when scrolling up. Every setting carries an (i) button.
+const info = '<div class="info">i</div>';
+const sh = (t) => `<div style="display:flex;align-items:center;justify-content:space-between;margin:4px 4px -6px"><span class="label" style="margin:0">${t}</span>${info}</div>`;
+function setupScreen(scrolled) {
+  return `${status()}${topBack('Улучшение')}<div class="scroller" data-collapse${scrolled ? ' data-start="430"' : ''}>
+    <div class="hero${scrolled ? ' compact' : ''}">
+      <div class="photo" style="${bg('preview.jpg')}"><div class="chip">960 × 1280 · 1,2 Мп</div><div class="swap">${I.img}Выбрать другое фото</div></div>
+      <div class="mini"><div class="photo" style="${bg('preview.jpg')}"></div><div class="t"><b>IMG_20260317.jpg</b><span>960 × 1280 → 3840 × 5120</span></div><div class="pill out">Другое фото</div></div>
+    </div>
+    <div class="stack">
+      ${sh('Модель')}${modelCards()}
+      <div class="row-link"><div><div class="a">Все модели</div><div class="b">10 моделей · 2 на устройстве</div></div><div class="go">Выбрать ›</div></div>
+      ${sh('Масштаб')}${scale()}${summary()}
+      ${sh('Формат результата')}<div class="chips" style="flex-wrap:wrap"><div class="pill on">PNG</div><div class="pill">JPEG</div><div class="pill">WebP</div><div class="pill">HEIC</div><div class="pill">AVIF</div></div>
+      ${sh('Качество · 92')}<div class="slider"><i style="width:92%"></i><b style="right:auto;left:calc(92% - 11px)"></b></div>
+      ${sh('Дополнительно')}<div class="group">
+        <div class="item"><div class="tx"><div class="a">Ускорение GPU</div><div class="b">Vulkan · Mali-G615</div></div><div class="tg on"></div>${info}</div>
+        <div class="item"><div class="tx"><div class="a">Размер тайла</div><div class="b">Авто</div></div><span class="val">›</span>${info}</div>
+        <div class="item"><div class="tx"><div class="a">Сохранить данные снимка (EXIF)</div><div class="b">дата, камера</div></div><div class="tg on"></div>${info}</div>
+      </div>
+    </div></div>
+    <div class="cta"><div class="btn primary">${I.spark}Улучшить · ≈ 7 с</div></div>${gesture}`;
+}
+
 const S = {
   'A-home': () => `${status()}${topHome()}<div class="body">
-    <div class="drop"><div class="big">${I.img}</div><h3>Выберите фото</h3><div class="muted center">или отправьте его в KARTUN<br>через «Поделиться»</div></div>
-    <div class="btn ghost">${I.link}Вставить ссылку</div>
-    <div class="foot-note"><i></i>Обработка на устройстве, без сети</div></div>${gesture}`,
-  'A-setup': () => `${status()}${topBack('Улучшение')}<div class="body">
-    <div class="photo" style="height:330px;${bg('preview.jpg')}"><div class="chip">960 × 1280 · 1,2 Мп</div></div>
-    <div class="label">Модель</div>${modelCards()}
-    <div class="label">Масштаб</div>${scale()}${summary()}
-    <div class="btn primary" style="margin-top:auto;margin-bottom:32px">${I.spark}Улучшить</div></div>${gesture}`,
+    <div class="drop" style="max-height:380px"><div class="big">${I.img}</div><h3>Выберите фото</h3><div class="muted center">из галереи телефона</div></div>
+    <div class="btn ghost">${I.link}Вставить ссылку на фото</div>
+    <div class="share-hint"><div class="h">${I.share}Или отправьте фото из другого приложения</div>
+      <div class="muted" style="font-size:13px">Откройте фото в галерее, Telegram или браузере, нажмите «Поделиться» и выберите KARTUN — фото сразу откроется здесь для улучшения.</div>
+      <div class="flow"><b>Галерея · Telegram · Браузер</b>→<b>Поделиться</b>→<b class="k">KARTUN</b></div></div>
+    <div class="foot-note" style="padding-bottom:24px"><i></i>Обработка на устройстве, без сети</div></div>${gesture}`,
+  'A-setup': () => setupScreen(false),
+  'A-setup-scrolled': () => setupScreen(true),
+  'models': () => {
+    const m = (n, d, badges, state, on) => `<div class="mcard${on ? ' on' : ''}"><div class="top1"><div><div class="n">${n}</div><div class="d">${d}</div></div>${state}</div><div class="badges">${badges}</div></div>`;
+    const have = `<div class="state have">${I.ok}На устройстве</div>`;
+    const get = (s) => `<div class="state get">${I.dl}${s}</div>`;
+    const os = (l) => `<span class="badge os">Open source · ${l}</span>`;
+    const by = (a) => `<span class="badge by">CC BY 4.0 · автор ${a}</span>`;
+    const nc = (a) => `<span class="badge nc">Не для коммерческого использования · ${a}</span>`;
+    return `${status()}${topBack('Модели', I.book)}<div class="body" style="gap:10px;overflow:hidden">
+      <div class="chips" style="flex-wrap:wrap"><div class="pill on">Все</div><div class="pill">Фото</div><div class="pill">Арт и аниме</div><div class="pill">На устройстве</div></div>
+      ${m('Быстрая', 'Фото · ≈ 7 с на этом устройстве · 2,4 МБ', os('BSD-3') + '<span class="badge dev">Real-ESRGAN</span>', have, true)}
+      ${m('Максимум', 'Фото · ≈ 1:45 · 33,4 МБ', os('BSD-3') + '<span class="badge dev">Real-ESRGAN x4plus</span>', have)}
+      ${m('Арт и аниме', 'Рисунки и аниме · 8,9 МБ', os('BSD-3'), `<div class="state dl">42%</div>`)}
+      <div class="bar" style="margin:-4px 14px 2px"><i style="width:42%"></i></div>
+      ${m('Высокая точность', 'Фото, детали · 33,4 МБ', by('Phhofm'), get('33 МБ'))}
+      ${m('UltraSharp', 'Фото, резкость · 33,4 МБ', nc('Kim2091'), get('33 МБ'))}
+      ${m('Remacri', 'Природа, детали · 33,4 МБ', nc('Foolhardy'), get('33 МБ'))}
+      </div>${gesture}`;
+  },
+  'manual': () => {
+    const g = (n, h, p, pic) => `<div class="guide"><div class="pic ${pic.cls || ''}" style="${pic.bg || ''}">${pic.icon || ''}</div><div><div class="num">ШАГ ${n}</div><div class="h">${h}</div><div class="p">${p}</div></div></div>`;
+    return `${status()}${topBack('Руководство', I.about)}<div class="body" style="gap:10px;overflow:hidden">
+      <div class="manual-hero"><div class="h">Как пользоваться KARTUN</div><div class="p">Нейросеть увеличивает фото в 4 раза прямо на телефоне. Пошагово — от выбора фото до сохранения результата.</div></div>
+      ${g(1, 'Выберите фото', 'Большая розовая карточка на главном экране открывает галерею.', { cls: 'pink', icon: I.img })}
+      ${g(2, 'Или поделитесь из другого приложения', 'В Telegram, галерее или браузере: «Поделиться» → KARTUN.', { cls: 'pink', icon: I.share })}
+      ${g(3, 'Выберите модель и масштаб', 'Быстрая — для повседневных фото, «Максимум» — для самых важных.', { bg: bg('preview.jpg') + ';background-size:cover' })}
+      ${g(4, 'Сравните «до» и «после»', 'Ведите пальцем по картинке — граница движется за ним.', { bg: bg('after.jpg') + ';background-size:cover', icon: I.hand })}
+      </div>${gesture}`;
+  },
+  'manual-models': () => {
+    const row = (badge, text) => `<div class="guide" style="flex-direction:column;gap:8px"><div>${badge}</div><div class="p" style="color:var(--text)">${text}</div></div>`;
+    return `${status()}${topBack('Руководство · модели', I.about)}<div class="body" style="gap:10px;overflow:hidden">
+      <div class="manual-hero"><div class="h">Какую модель выбрать</div><div class="p">Модель — это обученная нейросеть. Разные модели лучше справляются с разными снимками.</div></div>
+      <div class="guide"><div class="pic pink">${I.spark}</div><div><div class="h">Быстрая</div><div class="p">Для большинства фото. Секунды на снимок, края чёткие.</div></div></div>
+      <div class="guide"><div class="pic" style="${bg('after.jpg')};background-size:cover"></div><div><div class="h">Максимум</div><div class="p">Для важных снимков: естественная фактура, обработка дольше.</div></div></div>
+      <div class="label">Пометки моделей</div>
+      ${row('<span class="badge os">Open source</span>', 'Модель открыта, ей можно пользоваться для любых целей.')}
+      ${row('<span class="badge by">CC BY 4.0</span>', 'Свободная модель; KARTUN называет её автора.')}
+      ${row('<span class="badge nc">Не для коммерческого использования</span>', 'Автор разрешает только личное использование: для работы на заказ и продажи такие результаты брать нельзя.')}
+      ${row(`<div class="state get">${I.dl}Скачать</div>`, 'Модель не входит в приложение; скачайте её один раз, дальше она работает без сети.')}
+      </div>${gesture}`;
+  },
   'B-steps': () => `${status()}${topHome()}<div class="body" style="gap:14px">
     <div class="step"><div class="num done">1</div><div class="c"><div class="h">Фото</div><div class="thumbrow"><div class="photo" style="${bg('preview.jpg')}"></div>
       <div><div style="font-weight:600">IMG_20260317.jpg</div><div class="muted">960 × 1280 · 1,2 Мп</div></div><div class="pill out" style="margin-left:auto">Сменить</div></div></div></div>
@@ -283,22 +409,32 @@ const S = {
       <div class="label">Качество · 92</div><div class="slider"><i style="width:92%"></i><b style="right:auto;left:calc(92% - 11px)"></b></div>
       <div class="muted">Папка: Pictures/KARTUN · оригинал не меняется</div>
       <div class="btn primary">${I.save}Сохранить · 3,1 МБ</div></div>`,
+  'info-scale': () => `${setupScreen(false)}<div class="dim"></div><div class="sheet" style="max-height:640px;overflow:hidden">
+      <div class="grab"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between"><div style="font:700 20px var(--font-head)">Масштаб</div><div class="pill">Закрыть</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="photo" style="height:120px;${bg('before.jpg')}"><div class="chip">2× · 1920 × 2560</div></div>
+        <div class="photo" style="height:120px;${bg('after.jpg')}"><div class="chip">4× · 3840 × 5120</div></div></div>
+      <div class="muted" style="color:var(--text);line-height:1.5">Масштаб — во сколько раз вырастут ширина и высота фото. При 4× фото 960 × 1280 станет 3840 × 5120: пикселей в 16 раз больше.</div>
+      <div class="muted" style="line-height:1.5">• 2× — быстрее и меньше файл, хватает для экрана телефона.<br>• 4× — для печати и крупных фрагментов.<br>• Нейросеть всегда работает в 4×; для 2× результат аккуратно уменьшается.</div>
+      <div class="row-link"><div class="a">Открыть руководство полностью</div><div class="go">›</div></div>
+    </div>`,
   'settings': () => {
     const row = (ic, a, b, right) => `<div class="item"><div class="ico">${I[ic]}</div><div class="tx"><div class="a">${a}</div>${b ? `<div class="b">${b}</div>` : ''}</div>${right}<div class="info">i</div></div>`;
     return `${status()}${topBack('Настройки', I.about)}<div class="body" style="gap:10px;overflow:hidden">
-      <div class="label">Обработка</div><div class="group">${row('model', 'Модель по умолчанию', 'Быстрая', '<span class="val">›</span>')}${row('cpu', 'Ускорение GPU', 'Vulkan · Mali-G615', '<div class="tg on"></div>')}</div>
-      <div class="label">Сохранение</div><div class="group">${row('file', 'Формат', 'PNG', '<span class="val">›</span>')}${row('save', 'Качество JPEG и WebP', '92', '<span class="val">›</span>')}</div>
+      <div class="manual-hero" style="display:flex;align-items:center;gap:14px;padding:14px"><div class="guide" style="padding:0;background:none"><div class="pic pink" style="width:52px;height:52px">${I.book}</div></div><div style="flex:1"><div style="font:700 16px var(--font-head)">Руководство пользователя</div><div class="muted" style="font-size:13px">Как пользоваться KARTUN и моделями</div></div><span class="val">›</span></div>
+      <div class="label">Обработка</div><div class="group">${row('model', 'Модели', '10 моделей · 2 на устройстве', '<span class="val">›</span>')}${row('cpu', 'Ускорение GPU', 'Vulkan · Mali-G615', '<div class="tg on"></div>')}</div>
+      <div class="label">Сохранение</div><div class="group">${row('file', 'Формат', 'PNG', '<span class="val">›</span>')}</div>
       <div class="label">Для ИИ-агентов</div><div class="group">${row('term', 'Режим ADB', 'Задания по кабелю', '<div class="tg on"></div>')}${row('wifi', 'Сервер в локальной сети', 'HTTPS · выключен', '<div class="tg"></div>')}</div>
       <div class="label">Приложение</div><div class="group">${row('globe', 'Язык', 'Русский', '<span class="val">›</span>')}</div></div>${gesture}`;
   },
 };
 
 const ROWS = [
-  { id: 'A', name: '<span>A</span> · Одна кнопка', note: 'Главный экран — одна большая кнопка «Выберите фото». После выбора — экран настройки: превью, две карточки моделей, масштаб, «Улучшить».', screens: [['A-home', 'Главный'], ['A-setup', 'Фото выбрано']] },
-  { id: 'B', name: '<span>B</span> · Шаги, как в Upscayl', note: 'Один экран с шагами 1–2–3–4, как левая панель десктопного Upscayl. Всё видно сразу, ничего не прячется.', screens: [['B-steps', 'Главный с выбранным фото']] },
-  { id: 'C', name: '<span>C</span> · Фото во весь экран', note: 'Самый минималистичный: на старте одна розовая кнопка «+», после выбора фото на весь экран и выдвижная панель снизу.', screens: [['C-home', 'Главный'], ['C-setup', 'Фото выбрано']] },
-  { id: 'D', name: '<span>D</span> · Галерея улучшений', note: 'Главный экран — лента прошлых результатов и плавающая кнопка «Улучшить фото». Настройка — выдвижная панель поверх ленты.', screens: [['D-home', 'Главный'], ['D-setup', 'Фото выбрано']] },
-  { id: 'S', name: 'Общие экраны', note: 'Для любого варианта: обработка с прогрессом по тайлам, результат с ползунком «до/после» (таскается в любом месте), сохранение с форматом и качеством, настройки с кнопками [i].', screens: [['processing', 'Обработка'], ['result', 'Результат'], ['save', 'Сохранение'], ['settings', 'Настройки']] },
+  { id: 'A', name: '<span>Главный путь</span> · вариант A (выбран владельцем, правки v2)', note: 'Главный экран: «Выберите фото», «Вставить ссылку на фото», пояснение «Поделиться → KARTUN». Экран «Фото выбрано» прокручивается: превью закреплено вверху и при прокрутке сворачивается в квадратик (на живой странице — прокрутите колесом). У каждой настройки кнопка (i).', screens: [['A-home', 'Главный'], ['A-setup', 'Фото выбрано'], ['A-setup-scrolled', 'Фото выбрано, прокручено вниз'], ['info-scale', 'Окно (i): масштаб']] },
+  { id: 'S', name: 'Обработка, результат, сохранение', note: 'Без изменений — владелец: «остальные экраны, которые общие — суппер».', screens: [['processing', 'Обработка'], ['result', 'Результат'], ['save', 'Сохранение']] },
+  { id: 'M', name: 'Настройки, модели, руководство', note: 'Каталог моделей: на устройстве / скачать / скачивается, пометки Open source, CC BY и «Не для коммерческого использования». Руководство пользователя: про приложение и про модели.', screens: [['settings', 'Настройки'], ['models', 'Модели'], ['manual', 'Руководство'], ['manual-models', 'Руководство · модели']] },
+  { id: 'old', name: 'Отложенные варианты (история выбора)', note: 'Варианты B, C, D из черновика v1; владелец выбрал A.', screens: [['B-steps', 'B · Шаги'], ['C-home', 'C · Главный'], ['C-setup', 'C · Фото во весь экран'], ['D-home', 'D · Галерея'], ['D-setup', 'D · Новое фото']] },
 ];
 
 const params = new URLSearchParams(location.search);
@@ -311,6 +447,18 @@ if (shot) {
   document.body.classList.add('shot');
   const t = document.querySelector(`.phone-wrap[data-id="${shot}"]`);
   if (t) t.classList.add('target');
+}
+// Pinned preview: shrinks while scrolling down, becomes a small square past 190 px, grows back on the way up.
+for (const sc of document.querySelectorAll('[data-collapse]')) {
+  const hero = sc.querySelector('.hero');
+  const apply = () => {
+    const st = sc.scrollTop;
+    hero.style.setProperty('--hh', Math.max(140, 330 - st) + 'px');
+    hero.classList.toggle('compact', st > 190);
+  };
+  sc.addEventListener('scroll', apply);
+  if (sc.dataset.start) sc.scrollTop = +sc.dataset.start;
+  apply();
 }
 for (const b of document.querySelectorAll('#fonts button')) {
   b.addEventListener('click', () => {
