@@ -188,9 +188,12 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
      * Estimated wall time of a run with the current choices: the megapixels each pass feeds the network x the learned
      * rate of this device. 8× adds a second pass over the 2× image (4 x the input MP), 16× over the 4× image (16 x).
      */
-    fun estimateMs(): Long {
+    fun estimateMs(): Long = estimateMs(model)
+
+    /** The same estimate for [m] - the model cards show it next to each model (mockup: «Быстрая · для фото · ≈ 7 с»). */
+    fun estimateMs(m: Model): Long {
         val src = source ?: return 0
-        val rate = prefs.getFloat(model.file, model.msPerMp)
+        val rate = prefs.getFloat(m.file, m.msPerMp)
         return (src.megapixels * passFactor(scale) * rate).toLong()
     }
 

@@ -241,7 +241,7 @@ private fun PhotoCard(src: UpscaleViewModel.Source, onOpen: () -> Unit, onPickOt
 private fun SettingsBlock(vm: UpscaleViewModel, onInfo: (Int) -> Unit) {
     vm.error?.let { (res, arg) -> Notice(if (arg != null) stringResource(res, arg) else stringResource(res), vm::dismissError) }
     SectionLabel(stringResource(R.string.label_model)) { onInfo(R.string.label_model) }
-    UpscaleViewModel.Model.entries.forEach { m -> ModelCard(m, m == vm.model, m == vm.model && vm.modelLoading) { vm.chooseModel(m) } }
+    UpscaleViewModel.Model.entries.forEach { m -> ModelCard(m, m == vm.model, m == vm.model && vm.modelLoading, durationText(vm.estimateMs(m))) { vm.chooseModel(m) } }
     SectionLabel(stringResource(R.string.label_scale)) { onInfo(R.string.label_scale) }
     ScaleSlider(vm)
 }
@@ -273,7 +273,7 @@ private fun SetupOverlays(bitmap: android.graphics.Bitmap, fullscreen: Boolean, 
 
 /** A model card (.mrow): name, what it is for with the estimate, the licence badge; pink border + tick when chosen. */
 @Composable
-private fun ModelCard(m: UpscaleViewModel.Model, on: Boolean, loading: Boolean, onClick: () -> Unit) {
+private fun ModelCard(m: UpscaleViewModel.Model, on: Boolean, loading: Boolean, estimate: String, onClick: () -> Unit) {
     val c = MaterialTheme.colorScheme
     val shape = MaterialTheme.shapes.medium
     Row(
@@ -285,7 +285,7 @@ private fun ModelCard(m: UpscaleViewModel.Model, on: Boolean, loading: Boolean, 
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(stringResource(m.title), style = MaterialTheme.typography.titleSmall)
-            Text(stringResource(m.desc), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
+            Text(stringResource(R.string.model_desc_with_estimate, stringResource(m.desc), estimate), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
             Text(
                 stringResource(R.string.licence_bsd),
                 Modifier.clip(CircleShape).background(c.tertiary.copy(alpha = 0.14f)).padding(horizontal = 9.dp, vertical = 4.dp),

@@ -90,4 +90,6 @@
     <string name="info_gpu_text">The network runs on the phone\'s graphics chip through Vulkan — about 15 times faster than on the processor.</string>
     <string name="info_gpu_list">• On — the normal mode.\n• Off — the processor only: slow, but it helps if this phone\'s graphics chip fails.</string>
     <string name="info_language_text">The system list of KARTUN\'s languages opens: the app\'s language can differ from the phone\'s.</string>
+    <!-- The model card line: what the model is for, then the estimate (mockup .mrow .f). Language-neutral glue. -->
+    <string name="model_desc_with_estimate" translatable="false">%1$s · ≈ %2$s</string>
 </resources>

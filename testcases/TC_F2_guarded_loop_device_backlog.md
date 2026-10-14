@@ -59,6 +59,7 @@ test photo copied to `Pictures/KARTUN_test/` and removed after (R1 of HOUSE_RULE
 | C16 | Settings → Apps → Debug KARTUN → Language → the list shows the 10 languages; picking «Español» switches KARTUN without changing the system language | state | [NOT-TESTED] |
 | C17 | copy `https://upload.wikimedia.org/wikipedia/commons/3/3f/JPEG_example_flower.jpg` in Chrome → KARTUN home → «Вставить ссылку на фото» → «Скачиваем фото…» → «Улучшение» with the flower; then with plain text in the clipboard → «В буфере обмена нет ссылки…»; then airplane mode → upscale still works | use case | [NOT-TESTED] |
 | C18 | home → gear → «Настройки»: «Ускорение GPU» shows «Vulkan · Mali-G615 MC6»; switch off → «Улучшить» → the pill says «CPU», the 1 MP run takes ≈ 85 s; switch on again; «Язык» → the system per-app language list | state | [NOT-TESTED] |
+| C19 | «Улучшение» with the 960×1280 photo at 2× → the cards read «Быстрая · для фото · ≈ 7 секунд» and «Максимум · живая фактура · ≈ 1 минута 49 секунд»; at 8× both grow ≈ 5× | state | [NOT-TESTED] |
 | C14 | debug build: `node tools/titan-probe.mjs --in test256.png --model realesr-general-x4v3 --gpu true --tile 200` → JSON line as before | regression | [NOT-TESTED] |
 
 ## 5. Control cases — MUST
