@@ -92,6 +92,7 @@ the rows were added. ✅ caught by reading the commit's own `--stat`; rows added
 **Repro:** in every edit script: `assert t.count(anchor) == 1, anchor` before `t.replace(...)`; then `git diff --cached --stat` lists every file the commit message names.
 **Trigger:** writing a script that edits a document → the `rep()` helper with the count assert, never a bare `replace`.
 **Not for:** the Edit tool — it already refuses a missing `old_string`.
+none-cheap: the edit scripts are throwaway files in the session scratchpad, no repository guard sees them; the second net is reading `git diff --cached --stat` against the commit message before every commit
 
 ### EXP-0007 · 2026-10-14 · ❌→✅ · #android #icon #splash #titan
 class: platform-layer-unseen
