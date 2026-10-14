@@ -11,7 +11,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.layout.onSizeChanged
@@ -74,9 +73,13 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import androidx.compose.animation.core.animate
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import android.content.Intent
+import android.util.Log
 import com.kriniks.kartun.UpscaleViewModel
 
 private const val MAX_ZOOM = 8f
@@ -84,6 +87,9 @@ private const val MAX_ZOOM = 8f
 private const val TAP_ZOOM = 2.5f
 /** How close to the divider a finger must land to grab it, each side. */
 private val DIVIDER_GRAB = 36.dp
+/** An invisible round grab zone around the pink knob, wider than the knob itself (52 dp): the owner, chat 2026-10-14
+ *  ≈ 23:05 +03:00: «вокруг драга до после нужно сделать невидимую более широкую область, за которую его можно хватать». */
+private val KNOB_GRAB = 72.dp
 /** The share of the divider's length that fades in at the top and out at the bottom. */
 private const val DIVIDER_FADE = 0.12f
 /** The divider's gap from the status bar above and the navigation bar below. */
@@ -129,9 +135,24 @@ fun ResultScreen(vm: UpscaleViewModel) {
     // его можно обратно раскрыть»): a sideways swipe on the panel hides it, the arrow tab at the edge (tap or swipe) brings it back.
     var screenW by remember { mutableFloatStateOf(0f) }
     var panelH by remember { mutableFloatStateOf(0f) }
-    val panelShift = remember { Animatable(0f) } // px to the right: 0 = shown, screenW = hidden
-    fun settle(show: Boolean) { scope.launch { panelShift.animateTo(if (show) 0f else screenW) } }
-    val panelDrag = rememberDraggableState { d -> scope.launch { panelShift.snapTo((panelShift.value + d).coerceIn(0f, screenW)) } }
+    // px to the right: 0 = shown, screenW = hidden. The finger moves it SYNCHRONOUSLY; only the release animates. The first
+    // version launched a coroutine per drag delta, a late one cancelled the release animation or fed it a stale value - the
+    // owner saw the panel stop half way (chat 2026-10-14 ≈ 22:51 +03:00: «виджет сводки зависает на половине»); a 500 px drag
+    // on the Titan came back instead of hiding.
+    var panelShift by remember { mutableFloatStateOf(0f) }
+    var settleJob by remember { mutableStateOf<Job?>(null) }
+    // «Hidden» flips only when a release animation ENDS - never in the middle of a gesture (see the tab below).
+    var panelHidden by remember { mutableStateOf(false) }
+    fun settle(show: Boolean) {
+        settleJob?.cancel()
+        Log.d("KARTUN_PANEL", "settle show=$show from=$panelShift screenW=$screenW")
+        settleJob = scope.launch {
+            animate(panelShift, if (show) 0f else screenW) { v, _ -> panelShift = v }
+            panelHidden = !show
+        }
+    }
+    val panelDrag = rememberDraggableState { d -> panelShift = (panelShift + d).coerceIn(0f, screenW) }
+    val stopSettle: suspend CoroutineScope.(Offset) -> Unit = { settleJob?.cancel() }
 
     Box(Modifier.fillMaxSize().background(c.background).onSizeChanged { screenW = it.width.toFloat() }) {
         BoxWithConstraints(
@@ -144,7 +165,9 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 }
                 awaitEachGesture {
                     val first = awaitFirstDown(requireUnconsumed = false)
-                    val onDivider = kotlin.math.abs(first.position.x - split * size.width) <= DIVIDER_GRAB.toPx()
+                    val knob = Offset(split * size.width, size.height / 2f) // the knob sits at the vertical centre
+                    val onDivider = kotlin.math.abs(first.position.x - split * size.width) <= DIVIDER_GRAB.toPx() ||
+                        (first.position - knob).getDistance() <= KNOB_GRAB.toPx()
                     var pinching = false
                     do {
                         val event = awaitPointerEvent()
@@ -223,9 +246,10 @@ fun ResultScreen(vm: UpscaleViewModel) {
             // (the owner: «лендскейп нужно поддерживать тоже»). [NOT-TESTED: landscape - built only; the device run waits for the owner («потом потестируем»)]
             // bottom 8 dp, was 28 (the owner, chat 2026-10-14 ≈ 21:01 +03:00: «виджет сводки чуть ниже сместить»).
             Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(start = 12.dp, end = 12.dp, bottom = 8.dp)
-                .offset { IntOffset(panelShift.value.roundToInt(), 0) }.onSizeChanged { panelH = it.height.toFloat() }
-                .draggable(panelDrag, Orientation.Horizontal, onDragStopped = { v ->
-                    settle(show = panelShift.value < screenW * PANEL_HIDE_AT && v < PANEL_FLING)
+                .offset { IntOffset(panelShift.roundToInt(), 0) }.onSizeChanged { panelH = it.height.toFloat() }
+                .draggable(panelDrag, Orientation.Horizontal, onDragStarted = stopSettle, onDragStopped = { v ->
+                    Log.d("KARTUN_PANEL", "panel released at $panelShift v=$v")
+                    settle(show = panelShift < screenW * PANEL_HIDE_AT && v < PANEL_FLING)
                 })
                 .widthIn(max = 600.dp).fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow.copy(alpha = 0.94f)).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
@@ -252,21 +276,32 @@ fun ResultScreen(vm: UpscaleViewModel) {
             }
         }
         // The arrow tab the panel hid into: on the right edge at the panel's height; tap or swipe left brings it back.
-        if (panelShift.value > screenW / 2) {
-            val tabH = 72.dp
+        // ALWAYS composed, faded by the panel's position: it used to leave the composition once the pulled panel passed
+        // the middle, its drag died under the finger with no release, and the panel stayed half out (the owner, chat
+        // 2026-10-14 ≈ 22:53 +03:00: «когда он спрятан, и тянешь свайпом его» · «то он на половине становится» · «не
+        // вытягивается полностью»). Its gestures switch on and off only when a release animation ends (panelHidden).
+        run {
+            // Smaller since the owner's word (chat 2026-10-14 ≈ 22:52 +03:00: «в закрытом состоянии меньше стрелку»): 28 x 56 dp.
+            val tabH = 56.dp
             Box(
                 Modifier.align(Alignment.BottomEnd).navigationBarsPadding()
-                    .padding(bottom = 8.dp + with(LocalDensity.current) { (panelH / 2).toDp() } - tabH / 2)
-                    .size(width = 40.dp, height = tabH)
+                    // Never below zero: before the panel is measured panelH is 0 and the sum is -20 dp - Compose throws
+                    // «Padding must be non-negative» (crash on the Titan 2026-10-14 23:22:42, the owner: «креш»).
+                    .padding(bottom = (8.dp + with(LocalDensity.current) { (panelH / 2).toDp() } - tabH / 2).coerceAtLeast(0.dp))
+                    .size(width = 28.dp, height = tabH)
                     // The tab sits on the edge where Android's gesture navigation reads a swipe as «Back» (seen on the
                     // Titan 21:11: a swipe left on the tab left the screen); the standard opt-out for this strip.
                     .systemGestureExclusion()
-                    .clip(RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp))
+                    .alpha(if (screenW > 0f) ((panelShift / screenW - 0.5f) * 2f).coerceIn(0f, 1f) else 0f)
+                    .clip(RoundedCornerShape(topStart = 14.dp, bottomStart = 14.dp))
                     .background(c.surfaceContainerHigh.copy(alpha = 0.85f))
-                    .clickable { settle(show = true) }
-                    .draggable(panelDrag, Orientation.Horizontal, onDragStopped = { settle(show = panelShift.value < screenW * (1 - PANEL_HIDE_AT)) }),
+                    .clickable(enabled = panelHidden) { settle(show = true) }
+                    .draggable(panelDrag, Orientation.Horizontal, enabled = panelHidden, onDragStarted = stopSettle, onDragStopped = { v ->
+                        Log.d("KARTUN_PANEL", "tab released at $panelShift v=$v")
+                        settle(show = panelShift < screenW * (1 - PANEL_HIDE_AT))
+                    }),
                 contentAlignment = Alignment.Center,
-            ) { Icon(painterResource(R.drawable.ic_back), null, Modifier.size(22.dp), tint = c.onBackground) }
+            ) { Icon(painterResource(R.drawable.ic_back), null, Modifier.size(16.dp), tint = c.onBackground) }
         }
     }
     if (saveOpen) SaveDialog(vm, res.full) { saveOpen = false }
