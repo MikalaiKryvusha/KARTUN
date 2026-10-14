@@ -49,8 +49,9 @@
 и `…\Telegram автозагрузка - на разбор` (224 повтора — `<inbox>\_дубликаты`, журнал `moved.json`). По слову владельца удалены с
 Титана `Pictures/Screenshots`, `Movies/Instagram`, `Movies/inshot` (23:27) и `Download` (2026-10-15 00:05; перед этим 28 своих
 кадров скопированы и разложены по сезонам; ⚠ три видео из `Download/Quick Share` удалены без копии — EXP-0013). Свободно 53 ГБ.
-`DCIM/Camera` (277 файлов, 2,09 ГБ): опись сделана, копирование прервано ради переноса `D:\Android` — дотянуть
-`node offload.mjs config-camera.json pullmissing`, затем `verify` и раскладка в корень сезона (`<inbox>\camera\`).
+`DCIM/Camera` (277 файлов, 2,09 ГБ) скопирована и сверена — 277 из 277 (2026-10-15 00:41; хвост — по локальной сети через
+mDNS `adb-DHF8256GB25442874-…`, когда Tailscale до Титана пропал) и разложена 00:45: 270 файлов в корень сезонов 2026, 7 файлов
+из корзины Android (`.trashed-…`) — в `<inbox>\camera\_корзина_Титана`. С Титана НЕ удалена — ждёт «да» владельца.
 
 **`D:\Android` перенесён в `C:\Android`** 2026-10-15 00:16 (71 273 файла, 8,95 ГБ, сверено); пути в KARTUN и KAST переписаны.
 Ждёт владельца: удалить `D:\Android` (агенту удаление этого пути запрещено) и заменить в NordVPN → Split tunneling исключение
@@ -72,8 +73,8 @@
    `adb push` перед пробой и удалять после (R1). Набор `testcases/TC_F2_guarded_loop_device_backlog.md` по порядку →
    `testcases/reports/<дата>_F2_guarded_loop_device_run.md`.
 3. **Фаза 1, шаг 3** (`plans/04`): запись больших результатов полосами по `researches/05` — сначала замер.
-4. **Медиа Титана** — `DCIM/Camera`: после правки NordVPN `node <inbox>\_state\tool\offload.mjs config-camera.json pullmissing`,
-   `verify`, раскладка (`savedSubdir` пустой — корень сезона), итог владельцу; удаление с Титана — только по его «да».
+4. **Медиа Титана** — удалить `DCIM/Camera` с Титана по «да» владельца: `node <inbox>\_state\tool\offload.mjs config-camera.json
+   delete --yes` (`verified.json` без `.trashed-…`; полный список — `verified-all.json`).
 
 ---
 
