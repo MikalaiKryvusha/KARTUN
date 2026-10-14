@@ -46,8 +46,11 @@ licence text beside it; the non-commercial ones stay there only while KARTUN is 
 
 1. [x] Prove a catalogue model on our engine: UltraSharp fp16 from the author's HF — blob names match, GPU run 5 431 ms at
    256² (`engine/third_party/testdata/out_4x-UltraSharp-fp16_gpu_t200_test256.png`), comparison sheet with General v3 and x4plus.
-2. [ ] `docs/model-catalogue.json` (in the repo, the single source): id, name, author, licence, commercial flag, files with
+2. [~] `docs/model-catalogue.json` (in the repo, the single source): id, name, author, licence, commercial flag, files with
    SHA-256 and size, preview file, the release URL. A generator writes the app's copy; `--check` guards the pair.
+   Started 2026-10-14 22:15: three entries (x4plus anime, AnimeVideo v3, UltraSharp) with hashes and sizes re-read from the
+   files (3 models, 6 files, 0 mismatches); `published: false` until the release upload. Next: Phhofm's two models, previews,
+   the generator for the app's copy.
 3. [ ] Previews: one fixed crop of one fixed sample (the BSD-3 beach `input2.jpg`, and a drawing for anime models) run
    through every model on the Titan with `tools/titan-probe.mjs`; 320 px WebP per model, uploaded with the model.
 4. [ ] The release `models`: upload files + licence texts with `gh release upload`; a tool `tools/publish-models.mjs`

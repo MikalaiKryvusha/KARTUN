@@ -1,0 +1,48 @@
+{
+  "_comment": "KARTUN model catalogue - the single source for downloadable models (plans/05_model_catalogue.md step 2). Files are served from the GitHub release `models` of MikalaiKryvusha/KARTUN (the owner's variant B, 2026-10-14 22:04); every file carries its SHA-256 and size, the app refuses a download whose hash differs. `published: false` = not uploaded to the release yet. Licences: researches/03 section C. The models belong to their authors.",
+  "release": "https://github.com/MikalaiKryvusha/KARTUN/releases/download/models/",
+  "models": [
+    {
+      "id": "realesrgan-x4plus-anime",
+      "name": "Real-ESRGAN x4plus anime",
+      "author": "Xintao Wang",
+      "licence": "BSD-3-Clause",
+      "commercial": true,
+      "source": "xinntao/Real-ESRGAN release v0.2.5.0, realesrgan-ncnn-vulkan-20220424-windows.zip, models/ (unchanged)",
+      "purpose": "anime and drawings",
+      "files": [
+        { "name": "realesrgan-x4plus-anime.param", "sha256": "2b8fb6e0ae4d2d85704ca08c119a2f5ea40add4f2ecd512eb7f4cd44b6127ed4", "bytes": 30290 },
+        { "name": "realesrgan-x4plus-anime.bin", "sha256": "fe01c269cfd10cdef8e018ab66ebe750cf79c7af4d1f9c16c737e1295229bacc", "bytes": 8943500 }
+      ],
+      "published": false
+    },
+    {
+      "id": "realesr-animevideov3-x4",
+      "name": "Real-ESRGAN AnimeVideo v3",
+      "author": "Xintao Wang",
+      "licence": "BSD-3-Clause",
+      "commercial": true,
+      "source": "xinntao/Real-ESRGAN release v0.2.5.0, realesrgan-ncnn-vulkan-20220424-windows.zip, models/ (unchanged)",
+      "purpose": "anime frames, fast",
+      "files": [
+        { "name": "realesr-animevideov3-x4.param", "sha256": "850a248e7c14c27e5bd8cf7265113a9441036a7db63963bb8aa5169d788a435e", "bytes": 3077 },
+        { "name": "realesr-animevideov3-x4.bin", "sha256": "548a36f9c3f4ab8da56cd3b13badf23968bee207b396dad14d04b830e5f2ab2d", "bytes": 1247368 }
+      ],
+      "published": false
+    },
+    {
+      "id": "4x-UltraSharp-fp16",
+      "name": "4x-UltraSharp",
+      "author": "Kim2091",
+      "licence": "CC-BY-NC-SA-4.0",
+      "commercial": false,
+      "source": "huggingface.co/Kim2091/UltraSharp, NCNN/4x-UltraSharp-fp16.param and .bin (the author's own ncnn files, unchanged)",
+      "purpose": "photos, crisp detail",
+      "files": [
+        { "name": "4x-UltraSharp-fp16.param", "sha256": "0332002123306541c803cd675280eee7f9cdd96f0804a47129f86ebbf9ed4174", "bytes": 165579 },
+        { "name": "4x-UltraSharp-fp16.bin", "sha256": "713ce69a8642b1907cc24da7573560dcc933faf0c74e48ab0b3b379245618701", "bytes": 33424520 }
+      ],
+      "published": false
+    }
+  ]
+}
