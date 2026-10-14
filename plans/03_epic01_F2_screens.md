@@ -162,6 +162,12 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
     in the guide's reader; six sections - the app as is, models belong to their authors, your photos, your device, the result,
     liability. `[AI]` text, waiting for the owner's read-through; the model-author line lands with the catalogue cards.
 
+41. [ ] (owner, chat 2026-10-14 ≈ 22:41 +03:00) «как ползунок качества сделал - по дизайну современного андроид. Так и сделай в
+    таком стиле выбор масштаба» · «нативным элементом ползунка» — the scale picker becomes the Material 3 `Slider` with 4 steps
+    (5 values), like the quality slider of the save dialog.
+42. [ ] (owner, chat 2026-10-14 ≈ 22:42 +03:00) «"сохранено в" -» · «это позитивный успех - зелёным цветом об успехе говорят, а не
+    жёлтым» — the save message shows as a green success notice; the amber notice stays for warnings and errors.
+
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel
     keeps owning the engine job; the service keeps the process alive and mirrors `ProcessingState.progress` in a silent
