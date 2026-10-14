@@ -160,12 +160,15 @@ fun InfoDialog(title: String, text: String, list: String, onGuide: (() -> Unit)?
 
 /** A dismissible amber notice for user-facing errors (understandable words, never exception codes - GOAL.md §3). */
 @Composable
-fun Notice(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun Notice(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, success: Boolean = false) {
+    // Amber for warnings and errors; green for a success (the owner, chat 2026-10-14 ≈ 22:42 +03:00: «это позитивный успех -
+    // зелёным цветом об успехе говорят, а не жёлтым»).
+    val tone = if (success) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error
     Text(
         text,
-        modifier.fillMaxWidth().clip(MaterialTheme.shapes.small).background(MaterialTheme.colorScheme.error.copy(alpha = 0.14f))
+        modifier.fillMaxWidth().clip(MaterialTheme.shapes.small).background(tone.copy(alpha = 0.14f))
             .clickable(onClick = onClick).padding(horizontal = 14.dp, vertical = 12.dp),
-        style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.error,
+        style = MaterialTheme.typography.labelMedium, color = tone,
     )
 }
 

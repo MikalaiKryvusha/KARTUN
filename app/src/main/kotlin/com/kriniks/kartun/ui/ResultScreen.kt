@@ -243,7 +243,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 Text(stringResource(R.string.result_time, durationText(res.ms), stringResource(if (res.gpu) R.string.backend_gpu else R.string.backend_cpu)),
                     style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
             }
-            vm.saveMessage?.let { Notice(stringResource(it), vm::dismissSaveMessage) }
+            vm.saveMessage?.let { Notice(stringResource(it), vm::dismissSaveMessage, success = it == R.string.saved) }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 PrimaryButton(stringResource(if (vm.saving) R.string.saving else R.string.save), R.drawable.ic_save, onClick = { saveOpen = true },
                     modifier = Modifier.weight(1f), enabled = !vm.saving, height = 54)

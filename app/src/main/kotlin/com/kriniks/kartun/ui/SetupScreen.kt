@@ -27,6 +27,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -360,7 +362,7 @@ private fun ModelCard(m: UpscaleViewModel.Model, on: Boolean, loading: Boolean, 
 }
 
 /**
- * Scale slider (.kscale): five steps 1×, 2× (default), 4×, 8×, 16× with a value bubble, the step marks, the resulting
+ * Scale slider: the native Material 3 slider with five steps 1×, 2× (default), 4×, 8×, 16×, the step marks (the chosen one lit), the resulting
  * size and megapixels; 8× and 16× show the notice that they come with phase 1. [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
  */
 @Composable
@@ -369,34 +371,14 @@ private fun ScaleSlider(vm: UpscaleViewModel) {
     val c = MaterialTheme.colorScheme
     val last = UpscaleViewModel.SCALES.lastIndex
     Column(Modifier.padding(horizontal = 6.dp)) {
-        // Track 8 dp, pink fill, white 26 dp thumb with a pink halo, the value bubble above (.kscale of the mockup);
-        // a tap or a drag anywhere on the track snaps to the nearest of the five steps.
-        BoxWithConstraints(Modifier.fillMaxWidth().padding(top = 34.dp)) {
-            val fraction = vm.scaleIndex.toFloat() / last
-            val x = maxWidth * fraction
-            val snap = { px: Float, width: Int -> vm.scaleIndex = ((px / width) * last).roundToInt().coerceIn(0, last) }
-            Box(
-                Modifier.fillMaxWidth().height(36.dp)
-                    .pointerInput(Unit) { detectTapGestures { snap(it.x, size.width) } }
-                    .pointerInput(Unit) { detectHorizontalDragGestures { change, _ -> snap(change.position.x, size.width) } },
-                contentAlignment = Alignment.CenterStart,
-            ) {
-                Box(Modifier.fillMaxWidth().height(8.dp).clip(CircleShape).background(c.surfaceContainerHigh))
-                Box(Modifier.width(x).height(8.dp).clip(CircleShape).background(c.primary))
-                Box(Modifier.offset(x = x - 20.dp).size(40.dp).clip(CircleShape).background(c.primaryContainer), contentAlignment = Alignment.Center) {
-                    Box(Modifier.size(26.dp).shadow(4.dp, CircleShape).clip(CircleShape).background(c.onBackground))
-                }
-            }
-            // The bubble stays inside the track: centred over the thumb, but held at the edges at 1× and 16× (plan 03 step 36:
-            // at 1× it stuck out past the screen's left edge). 52 dp holds «16×».
-            val bubbleW = 52.dp
-            Text(
-                "${vm.scale}×",
-                Modifier.offset(x = (x - bubbleW / 2).coerceIn(0.dp, maxWidth - bubbleW), y = (-34).dp).width(bubbleW).clip(CircleShape).background(c.primary).padding(vertical = 4.dp),
-                style = MaterialTheme.typography.titleSmall, color = c.onPrimary,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            )
-        }
+        // The native Material 3 slider, styled like the quality slider of the save dialog (the owner, chat 2026-10-14
+        // ≈ 22:41 +03:00: «как ползунок качества сделал - по дизайну современного андроид. Так и сделай в таком стиле выбор
+        // масштаба» · «нативным элементом ползунка»): five positions, the chosen one lit in the marks below.
+        Slider(
+            value = vm.scaleIndex.toFloat(), onValueChange = { vm.scaleIndex = it.roundToInt().coerceIn(0, last) },
+            valueRange = 0f..last.toFloat(), steps = last - 1,
+            colors = SliderDefaults.colors(thumbColor = c.onBackground, activeTrackColor = c.primary, inactiveTrackColor = c.surfaceContainerHigh),
+        )
         // Step marks at 0, 25, 50, 75, 100 % - the first left-aligned, the last right-aligned, the rest centred.
         Box(Modifier.fillMaxWidth().padding(top = 6.dp)) {
             UpscaleViewModel.SCALES.forEachIndexed { i, s ->
@@ -409,7 +391,8 @@ private fun ScaleSlider(vm: UpscaleViewModel) {
                         val left = when (i) { 0 -> 0; last -> at - pl.width; else -> at - pl.width / 2 }
                         layout(constraints.maxWidth, pl.height) { pl.place(left, 0) }
                     },
-                    style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant,
+                    style = if (i == vm.scaleIndex) MaterialTheme.typography.titleSmall else MaterialTheme.typography.bodySmall,
+                    color = if (i == vm.scaleIndex) c.primary else c.onSurfaceVariant,
                 )
             }
         }
