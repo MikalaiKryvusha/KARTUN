@@ -1,0 +1,65 @@
+# Plan 05 — The model catalogue: many models, downloaded on demand from KARTUN's own GitHub release
+
+> **Создан:** 2026-10-14 (agent, autonomous window 21:56–22:26; the owner's orders in chat)
+> **Родитель:** `plans/03_epic01_F2_screens.md` step 22 («В экране выбора всех моделей нужно картинку показывать превью по каждой модели» · «моделей нужно сильно больше добавить») and step 40 (ToU); `MASTER_PLAN.md` phase 4 («каталог моделей со скачиванием на устройство») and the decision-log row 2026-10-14 ≈ 22:04 (variant B); interview #002 (licence badges as Upscayl shows them)
+> **Статус:** 📝 planned 2026-10-14 22:12 +03:00 — step 1 (UltraSharp on our engine) already proved on the Titan
+> **Вовне:** the owner — which non-commercial models without ready ncnn files to take (UltraMix, Remacri); the GitHub release `models` is created on the first upload
+
+## Goal vector
+
+Achieve: the user sees a catalogue of many models — each with a preview picture, its author, its licence badge
+(«Разрешена для коммерческого использования» / «Не для коммерческого использования») and its size — downloads the ones
+they want on demand, and uses them on «Улучшение» like the two built-in ones. Avoid: a file of unknown origin on the
+device (every download is hash-checked), and a model shown as KARTUN's own (every card names its author).
+
+## Acceptance criteria
+
+1. **Downloads are verified.** A catalogue entry carries the SHA-256 of its `.param` and `.bin`; a file whose hash differs
+   is deleted and the card says the download failed. Check: a unit test on the verifier with a tampered byte → refused.
+2. **The card tells the truth.** Every card shows name, author, licence badge, size in MB and a preview; the badge text is
+   the owner's wording (plan 03 step 35). Check: a screenshot of the catalogue on the Titan, read card by card.
+3. **A downloaded model runs.** After a download the model appears on «Улучшение» and a run finishes on the GPU. Check:
+   one run per downloaded model on the Titan, the result's size read from the result panel.
+4. **Recency still rules «Улучшение».** The two last used models stand on top (plan 03 step 18); the rest are reached
+   through «Все модели». Check: run model X from the catalogue → X is the top card.
+5. **Built-in models stay offline.** The two models in the APK need no network.
+
+## Sources and licences (from `researches/03` §C, plus the 22:00 run)
+
+| Model | Author | Licence | Commercial | Source of the ncnn files | Note |
+|---|---|---|---|---|---|
+| Real-ESRGAN General v3 | Xintao Wang | BSD-3 | ✅ | built into the APK | own conversion |
+| Real-ESRGAN x4plus | Xintao Wang | BSD-3 | ✅ | built into the APK | xinntao zip v0.2.5.0 |
+| Real-ESRGAN x4plus anime | Xintao Wang | BSD-3 | ✅ | xinntao zip v0.2.5.0 `models/` | 8.9 MB |
+| realesr-animevideov3 | Xintao Wang | BSD-3 | ✅ | xinntao zip v0.2.5.0 `models/` | 1.2 MB, already probed (237 ms at 256²) |
+| 4xHFA2k | Philip Hofmann (Phhofm) | CC BY 4.0 | ✅ with credit | Phhofm/models `*_fp16.bin` | anime |
+| 4xNomos8kSC | Philip Hofmann (Phhofm) | CC BY 4.0 | ✅ with credit | Phhofm/models | photos |
+| 4x-UltraSharp | Kim2091 | CC BY-NC-SA 4.0 | ❌ | HF `Kim2091/UltraSharp` `NCNN/4x-UltraSharp-fp16.*` | proved 2026-10-14 22:00: blobs `data`/`output`, 5 431 ms at 256² on the GPU, 33.4 MB |
+| 4x-UltraMix Balanced | Kim2091 | CC BY-NC-SA 4.0 | ❌ | only `.pth` in `Interpolations/` → our RRDB conversion | needs the owner's yes |
+| 4x-Remacri | FoolhardyVEVO | CC BY-NC-SA 4.0 | ❌ | OpenModelDB → `.pth` → our conversion | needs the owner's yes |
+| Real-CUGAN | bilibili (nihui port) | MIT | ✅ | realcugan-ncnn-vulkan | its own pre/post-processing — an engine change, later |
+
+Per the owner's variant B every catalogue file is uploaded to the release `models` of `MikalaiKryvusha/KARTUN` with its
+licence text beside it; the non-commercial ones stay there only while KARTUN is free (`researches/03` §C risk, MASTER_PLAN row).
+
+## Steps
+
+1. [x] Prove a catalogue model on our engine: UltraSharp fp16 from the author's HF — blob names match, GPU run 5 431 ms at
+   256² (`engine/third_party/testdata/out_4x-UltraSharp-fp16_gpu_t200_test256.png`), comparison sheet with General v3 and x4plus.
+2. [ ] `docs/model-catalogue.json` (in the repo, the single source): id, name, author, licence, commercial flag, files with
+   SHA-256 and size, preview file, the release URL. A generator writes the app's copy; `--check` guards the pair.
+3. [ ] Previews: one fixed crop of one fixed sample (the BSD-3 beach `input2.jpg`, and a drawing for anime models) run
+   through every model on the Titan with `tools/titan-probe.mjs`; 320 px WebP per model, uploaded with the model.
+4. [ ] The release `models`: upload files + licence texts with `gh release upload`; a tool `tools/publish-models.mjs`
+   checks every hash against the catalogue before upload.
+5. [ ] The app: a downloader (resume-safe, hash-verified, into app storage), the «Все модели» screen with cards
+   (preview, author, badge, size, «Скачать» / «Удалить»), downloaded models on «Улучшение» by recency.
+6. [ ] The ToU line on each card: «Модель принадлежит автору: <name>» (plan 03 step 40).
+7. [ ] Titan run of criteria 1–4 → run report.
+
+## Risks
+
+- The release serves non-commercial models: allowed under CC BY-NC-SA while KARTUN is free; if KARTUN is ever sold, the
+  NC files must leave the release first (named in the MASTER_PLAN decision log).
+- RRDB models are ~33 MB each and ~15× slower than General v3 on the Titan: the card's time estimate must say so.
+- `.pth` conversion of RRDB (UltraMix, Remacri) needs the old-ESRGAN key mapping — not done yet; UltraSharp avoided it.
