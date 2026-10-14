@@ -18,6 +18,7 @@ import androidx.lifecycle.viewModelScope
 import com.kriniks.kartun.engine.NcnnUpscaler
 import com.kriniks.kartun.engine.TileListener
 import com.kriniks.kartun.engine.UpscaleCancelledException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,7 +53,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         val megapixels get() = width.toFloat() * height / 1_000_000f
     }
 
-    class Result(val full: Bitmap, val display: Bitmap, val before: Bitmap, val ms: Long, val gpu: Boolean)
+    class Result(val full: Bitmap, val display: Bitmap, val before: Bitmap, val ms: Long, val gpu: Boolean, val model: Model, val scale: Int)
 
     /** Tile progress of the running job; [total] is 0 until the engine reports its first tile. */
     data class Progress(val done: Int = 0, val total: Int = 0, val elapsedMs: Long = 0, val estimateMs: Long = 0, val gpu: Boolean = true)
@@ -67,6 +68,14 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     var result by mutableStateOf<Result?>(null); private set
     /** A user-facing error: the string resource and its argument (or null). */
     var error by mutableStateOf<Pair<Int, String?>?>(null); private set
+
+    /** Save settings (mockup 'save'): the format and the quality of JPEG/WebP; 92 is the mockup's value. */
+    var saveFormat by mutableStateOf(ResultStore.Format.Png)
+    var saveQuality by mutableStateOf(DEFAULT_QUALITY)
+    /** True while a save or a share copy is being encoded. */
+    var saving by mutableStateOf(false); private set
+    /** One-line outcome of the last save for the result screen («Сохранено в Pictures/KARTUN»), as a string resource. */
+    var saveMessage by mutableStateOf<Int?>(null); private set
 
     private val _progress = MutableStateFlow(Progress())
     val progress: StateFlow<Progress> = _progress
@@ -201,7 +210,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                         }
                         val display = fitForDisplay(full)
                         val before = Bitmap.createScaledBitmap(src.bitmap, display.width, display.height, true)
-                        Result(full, display, before, SystemClock.elapsedRealtime() - t0, gpuUsed)
+                        Result(full, display, before, SystemClock.elapsedRealtime() - t0, gpuUsed, chosen, target)
                     }
                 }
             }
@@ -219,6 +228,39 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun cancel() { ProcessingState.cancelRequested = true }
+
+    /** Saves the result into the gallery as a new file (plans/01 §2.8); the encoder runs off the main thread. */
+    fun save() {
+        val res = result ?: return
+        val src = source ?: return
+        if (saving) return
+        saving = true
+        saveMessage = null
+        val format = saveFormat
+        val quality = saveQuality
+        viewModelScope.launch {
+            val ok = withContext(Dispatchers.IO) {
+                runCatching {
+                    ResultStore.saveToGallery(getApplication(), res.full, ResultStore.fileName(src.name, res.model.file, res.scale, format.ext), format, quality)
+                }.onFailure { Log.w(TAG, "save failed", it) }.isSuccess
+            }
+            saving = false
+            saveMessage = if (ok) R.string.saved else R.string.save_failed
+        }
+    }
+
+    /** A PNG copy of the result for the share sheet (plans/01 §2.9); null when it could not be written. */
+    suspend fun shareUri(): Uri? {
+        val res = result ?: return null
+        val src = source ?: return null
+        saving = true
+        return withContext(Dispatchers.IO) {
+            runCatching { ResultStore.shareCopy(getApplication(), res.full, ResultStore.fileName(src.name, res.model.file, res.scale, "png")) }
+                .onFailure { Log.w(TAG, "share copy failed", it) }.getOrNull()
+        }.also { saving = false }
+    }
+
+    fun dismissSaveMessage() { saveMessage = null }
 
     /**
      * Engine thread only. One 4× pass with the fallback ladder of plans/04 step 2 (research 03 §B lessons 2 and 4: device
@@ -260,7 +302,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                 viewModelScope.launch { withContext(engineThread) { release() } }
             }
             Screen.Working -> cancel()
-            Screen.Result -> { screen = Screen.Setup; result = null }
+            Screen.Result -> { screen = Screen.Setup; result = null; saveMessage = null }
             Screen.Home -> Unit
         }
     }
@@ -299,6 +341,8 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         const val TILE_PX = 200
         /** [AI] slice 1 input limit: 12.5 MP keeps the 4x output under 200 MP in one bitmap; phase 1 lifts it. */
         const val MAX_INPUT_MP = 12.5f
+        /** JPEG/WebP quality by default - the value the accepted mockup 'save' shows («Качество · 92»). */
+        const val DEFAULT_QUALITY = 92
         /** [AI] output limit, plans/04 step 1: the size the 4× of a 12.5 MP photo already reached in phase 2 slice 1. */
         const val MAX_OUTPUT_MP = 200f
 

@@ -32,6 +32,14 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
+        <!-- «Поделиться»: the result's PNG copy in the cache, readable by the app the user picks (ResultStore.shareCopy). -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/share_paths" />
+        </provider>
         <service
             android:name=".UpscaleService"
             android:exported="false"

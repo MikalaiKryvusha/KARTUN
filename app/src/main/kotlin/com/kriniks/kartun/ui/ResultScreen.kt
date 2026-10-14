@@ -50,6 +50,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kriniks.kartun.R
+import com.kriniks.kartun.ResultStore
+import kotlin.math.roundToInt
+import androidx.compose.ui.draw.alpha
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Slider
+import androidx.compose.ui.window.Dialog
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import android.content.Intent
 import com.kriniks.kartun.UpscaleViewModel
 
 private const val MAX_ZOOM = 8f
@@ -67,6 +77,19 @@ fun ResultScreen(vm: UpscaleViewModel) {
     val res = vm.result ?: return
     val c = MaterialTheme.colorScheme
     BackHandler { vm.back() }
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var saveOpen by remember { mutableStateOf(false) }
+    // «Поделиться»: a PNG copy in the cache, then the system share sheet (plans/01 §2.9).
+    val share: () -> Unit = {
+        scope.launch {
+            vm.shareUri()?.let { uri ->
+                val send = Intent(Intent.ACTION_SEND).setType("image/png").putExtra(Intent.EXTRA_STREAM, uri)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                ctx.startActivity(Intent.createChooser(send, ctx.getString(R.string.share)))
+            }
+        }
+    }
     var split by remember { mutableFloatStateOf(0.5f) }
     var zoom by remember { mutableFloatStateOf(1f) }
     var pan by remember { mutableStateOf(Offset.Zero) }
@@ -115,7 +138,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
             Row(Modifier.fillMaxWidth()) {
                 RoundIconButton(R.drawable.ic_back, onClick = vm::back, translucent = true)
                 Spacer(Modifier.weight(1f))
-                RoundIconButton(R.drawable.ic_share, onClick = {}, translucent = true, enabled = false)
+                RoundIconButton(R.drawable.ic_share, onClick = share, translucent = true, enabled = !vm.saving)
             }
             Row(Modifier.fillMaxWidth().padding(top = 16.dp)) {
                 Pill(stringResource(R.string.before), translucent = true)
@@ -137,10 +160,57 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 Text(stringResource(R.string.result_time, durationText(res.ms), stringResource(if (res.gpu) R.string.backend_gpu else R.string.backend_cpu)),
                     style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
             }
+            vm.saveMessage?.let { Notice(stringResource(it), vm::dismissSaveMessage) }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                PrimaryButton(stringResource(R.string.save), R.drawable.ic_save, onClick = {}, modifier = Modifier.weight(1f), enabled = false, height = 54)
-                SecondaryButton(stringResource(R.string.share), R.drawable.ic_share, onClick = {}, modifier = Modifier.weight(1f), outlined = false, enabled = false, height = 54)
+                PrimaryButton(stringResource(if (vm.saving) R.string.saving else R.string.save), R.drawable.ic_save, onClick = { saveOpen = true },
+                    modifier = Modifier.weight(1f), enabled = !vm.saving, height = 54)
+                SecondaryButton(stringResource(R.string.share), R.drawable.ic_share, onClick = share, modifier = Modifier.weight(1f),
+                    outlined = false, enabled = !vm.saving, height = 54)
             }
         }
     }
+    if (saveOpen) SaveDialog(vm, res.full) { saveOpen = false }
 }
+
+/**
+ * «Сохранить в галерею» (mockup 'save': format chips, the quality slider, the folder line, the pink button). A centred
+ * dialog rather than the mockup's sheet - `[AI]` by analogy with the owner's word on the (i) windows («Инфо открывать
+ * диалогами, а не ботом шитами»). WebP is off for results over 16 383 px. [NOT-TESTED: device run deferred by the owner]
+ */
+@Composable
+private fun SaveDialog(vm: UpscaleViewModel, full: android.graphics.Bitmap, onClose: () -> Unit) {
+    val c = MaterialTheme.colorScheme
+    Dialog(onDismissRequest = onClose) {
+        Column(
+            Modifier.fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow).padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Text(stringResource(R.string.save_title), style = MaterialTheme.typography.titleLarge)
+            SectionLabelPlain(stringResource(R.string.label_format))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                ResultStore.Format.entries.forEach { f ->
+                    val ok = ResultStore.fits(f, full)
+                    Pill(f.name.uppercase(), on = vm.saveFormat == f, modifier = Modifier.alpha(if (ok) 1f else 0.4f),
+                        onClick = if (ok) ({ vm.saveFormat = f }) else null)
+                }
+            }
+            if (!ResultStore.fits(ResultStore.Format.Webp, full)) {
+                Text(stringResource(R.string.webp_too_big), style = MaterialTheme.typography.bodySmall, color = c.error)
+            }
+            if (vm.saveFormat.hasQuality) {
+                SectionLabelPlain(stringResource(R.string.label_quality, vm.saveQuality))
+                Slider(
+                    value = vm.saveQuality.toFloat(), onValueChange = { vm.saveQuality = it.roundToInt() }, valueRange = 50f..100f,
+                    colors = SliderDefaults.colors(thumbColor = c.onBackground, activeTrackColor = c.primary, inactiveTrackColor = c.surfaceContainerHigh),
+                )
+            }
+            Text(stringResource(R.string.save_folder), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
+            PrimaryButton(stringResource(R.string.save), R.drawable.ic_save, onClick = { vm.save(); onClose() })
+        }
+    }
+}
+
+/** A pink upper-case label without the (i) button (the save dialog's own settings need no explanation window). */
+@Composable
+private fun SectionLabelPlain(text: String) =
+    Text(text.uppercase(java.util.Locale.getDefault()), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)

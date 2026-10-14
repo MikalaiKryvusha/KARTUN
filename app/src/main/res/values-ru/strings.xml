@@ -74,4 +74,13 @@
     <string name="notif_channel">Обработка</string>
     <string name="notif_progress">Готово %1$d%%</string>
     <string name="notif_starting">Запускаем нейросеть…</string>
+    <!-- Save and share (plans/01 §2.8–2.9); title, labels and folder line from the accepted mockup 'save'. -->
+    <string name="save_title">Сохранить в галерею</string>
+    <string name="label_format">Формат</string>
+    <string name="label_quality">Качество · %1$d</string>
+    <string name="save_folder">Папка: Pictures/KARTUN · оригинал не меняется</string>
+    <string name="saved">Сохранено в Pictures/KARTUN</string>
+    <string name="save_failed">Не удалось сохранить фото.</string>
+    <string name="saving">Сохраняем…</string>
+    <string name="webp_too_big">WebP — до 16 383 px по стороне, для этого результата выберите PNG или JPEG</string>
 </resources>

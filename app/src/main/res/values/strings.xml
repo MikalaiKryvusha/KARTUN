@@ -66,4 +66,13 @@
     <string name="notif_channel">Processing</string>
     <string name="notif_progress">%1$d%% done</string>
     <string name="notif_starting">Starting the network…</string>
+    <!-- Save and share (plans/01 §2.8–2.9); title, labels and folder line from the accepted mockup 'save'. -->
+    <string name="save_title">Save to the gallery</string>
+    <string name="label_format">Format</string>
+    <string name="label_quality">Quality · %1$d</string>
+    <string name="save_folder">Folder: Pictures/KARTUN · the original stays as it is</string>
+    <string name="saved">Saved to Pictures/KARTUN</string>
+    <string name="save_failed">Could not save the photo.</string>
+    <string name="saving">Saving…</string>
+    <string name="webp_too_big">WebP holds up to 16 383 px per side; choose PNG or JPEG for this result</string>
 </resources>
