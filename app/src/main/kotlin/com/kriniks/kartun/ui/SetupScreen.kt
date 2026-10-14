@@ -37,6 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -71,6 +73,9 @@ private val HERO_MIN = 80.dp
 private val PULL_OPEN = 90.dp
 /** The stretch never grows beyond this - the rubber band of the pull. */
 private val PULL_MAX = 160.dp
+/** Zoom of a double tap inside the preview, and of a hold on the un-zoomed photo (room to move it). */
+private const val PREVIEW_ZOOM = 2.5f
+private const val PREVIEW_HOLD_ZOOM = 1.6f
 
 /**
  * «Фото выбрано» (mockups 'A-setup' / 'A-setup-scrolled', interview #002 Q1): the preview stays on top and shrinks while
@@ -181,16 +186,16 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                     }
                 } else {
                     // The photo itself is a handle too: dragging it feeds the same collapse/stretch as the settings do.
-                    PhotoCard(src, onOpen = { fullscreen = true }, onPickOther = onPickOther, modifier = Modifier.fillMaxWidth().height(heroDp)
-                        .draggable(
-                            rememberDraggableState { d ->
-                                val delta = Offset(0f, d)
-                                if (d < 0) collapse.onPreScroll(delta, NestedScrollSource.UserInput)
-                                else collapse.onPostScroll(Offset.Zero, delta, NestedScrollSource.UserInput)
-                            },
-                            Orientation.Vertical,
-                            onDragStopped = { collapse.onPreFling(Velocity.Zero) },
-                        ))
+                    val pull = rememberDraggableState { d ->
+                        val delta = Offset(0f, d)
+                        if (d < 0) collapse.onPreScroll(delta, NestedScrollSource.UserInput)
+                        else collapse.onPostScroll(Offset.Zero, delta, NestedScrollSource.UserInput)
+                    }
+                    Column {
+                        PhotoCard(src, onOpen = { fullscreen = true }, onPickOther = onPickOther, modifier = Modifier.fillMaxWidth().height(heroDp)
+                            .draggable(pull, Orientation.Vertical, onDragStopped = { collapse.onPreFling(Velocity.Zero) }))
+                        DragHandle(Modifier.draggable(pull, Orientation.Vertical, onDragStopped = { collapse.onPreFling(Velocity.Zero) }))
+                    }
                 }
             }
             Column(
@@ -221,8 +226,42 @@ private fun SetupTopBar(vm: UpscaleViewModel) {
 @Composable
 private fun PhotoCard(src: UpscaleViewModel.Source, onOpen: () -> Unit, onPickOther: () -> Unit, modifier: Modifier) {
     val c = MaterialTheme.colorScheme
-    Box(modifier.clip(MaterialTheme.shapes.large).background(c.surfaceContainer).clickable(onClick = onOpen)) {
-        Image(src.bitmap.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+    // Inside the preview (the owner, chat 2026-10-14 ≈ 20:16: «превью фото можно тапом и удержанием двигать и перемещать
+    // прямо во вьюшке превью» · «даблтап увеличивает»): a double tap zooms ×PREVIEW_ZOOM at the tapped point and back; a
+    // long press then a drag moves the photo inside the card; a single tap opens it full screen. A plain drag (no hold)
+    // stays the collapse/expand handle of the card - the hold is what tells the two apart.
+    // [NOT-TESTED: built 2026-10-14 ≈ 20:16, installed on the Titan, not walked - the next chat starts with it]
+    var zoom by remember { mutableFloatStateOf(1f) }
+    var pan by remember { mutableStateOf(Offset.Zero) }
+    Box(
+        modifier.clip(MaterialTheme.shapes.large).background(c.surfaceContainer)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { onOpen() },
+                    onDoubleTap = { at ->
+                        if (zoom > 1f) { zoom = 1f; pan = Offset.Zero }
+                        else {
+                            zoom = PREVIEW_ZOOM
+                            // keep the tapped point under the finger: move the centre towards it
+                            val centre = Offset(size.width / 2f, size.height / 2f)
+                            pan = clampPan((centre - at) * (PREVIEW_ZOOM - 1f), zoom, size.width.toFloat(), size.height.toFloat())
+                        }
+                    },
+                )
+            }
+            .pointerInput(Unit) {
+                detectDragGesturesAfterLongPress { change, drag ->
+                    change.consume()
+                    if (zoom == 1f) zoom = PREVIEW_HOLD_ZOOM // a hold on the un-zoomed photo zooms a little so there is room to move
+                    pan = clampPan(pan + drag, zoom, size.width.toFloat(), size.height.toFloat())
+                }
+            },
+    ) {
+        Image(
+            src.bitmap.asImageBitmap(), null,
+            Modifier.fillMaxSize().graphicsLayer { scaleX = zoom; scaleY = zoom; translationX = pan.x; translationY = pan.y },
+            contentScale = ContentScale.Crop,
+        )
         Pill("${sizeText(src.width, src.height)} · ${stringResource(R.string.megapixels, mpText(src.megapixels))}",
             Modifier.align(Alignment.BottomStart).padding(12.dp), translucent = true)
         Row(
@@ -234,6 +273,22 @@ private fun PhotoCard(src: UpscaleViewModel.Source, onOpen: () -> Unit, onPickOt
             Spacer(Modifier.width(6.dp))
             Text(stringResource(R.string.setup_other_photo), style = MaterialTheme.typography.labelMedium.copy(fontSize = MaterialTheme.typography.bodySmall.fontSize))
         }
+    }
+}
+
+/** Keeps the zoomed photo covering the card: the shift is bounded by how much the zoom enlarged it. */
+private fun clampPan(p: Offset, zoom: Float, w: Float, h: Float): Offset {
+    val mx = w * (zoom - 1f) / 2f
+    val my = h * (zoom - 1f) / 2f
+    return Offset(p.x.coerceIn(-mx, mx), p.y.coerceIn(-my, my))
+}
+
+/** The drag handle under the preview (the owner: «под превью фото нужно добавить драг-хендл»): the grab bar of an
+ *  Android sheet - it tells that the photo can be pulled - and it pulls exactly like the photo does. */
+@Composable
+private fun DragHandle(modifier: Modifier) {
+    Box(modifier.fillMaxWidth().padding(vertical = 8.dp), contentAlignment = Alignment.Center) {
+        Box(Modifier.size(width = 40.dp, height = 5.dp).clip(CircleShape).background(MaterialTheme.colorScheme.outlineVariant))
     }
 }
 

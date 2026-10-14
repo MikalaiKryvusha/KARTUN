@@ -72,6 +72,21 @@ Owner's remarks on the build, chat 2026-10-14 ≈ 18:48–18:50 (verbatim), all 
     them; processing — photo left, ring panel right; result — the panel capped at 600 dp. Open: walk all four on the
     Titan rotated («потом потестируем»).
 
+Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of the next chat:
+17. [~] «и под превью фото нужно добавить драг-хендл, чтобы было понятно, что там можно хватать, и двигать превь фото» ·
+    «а превью фото можно тапом и удержанием двигать и перемещать прямо во вьюшке преввью» · «даблтам увеличивает» →
+    `DragHandle` + `PhotoCard` gestures built ≈ 20:16 (double tap ×2.5, long press + drag pans, single tap full screen);
+    NOT walked on the Titan yet.
+18. [ ] «в выборе моделей на экране Улучшение нужно показывать две последние использованные модели. Вверху последнюю
+    использованную, ниже предпоследнюю».
+19. [ ] «описание модели на экране Улучшение сделать подробнее. Слово - Максимум - странное, и ни о чем не говорит».
+20. [ ] «в кольце прогресса цифры процентов пляшут, вероятно из-за разной ширины цифр. Нужен там или моноширинный шрифт, или
+    как-то закрепить, чтобы не плясали цифры» (tabular figures: `fontFeatureSettings = "tnum"`).
+21. [ ] «в настройках нужно будет сделать секцию о приложении и авторе, как в KrinikCam, ссослаться на вжохновителей -
+    репозиторий Upscayl, и репозиторий движка, и моделей (если они отдельными репами)» — read KrinikCam's about first.
+22. [ ] «В экране выбора всех моделей нужно картинку показывать превью по каждой модели» · «моделей нужно сильно больше
+    добавить» — the model catalogue (phase 4 pulled forward; mockup 'models', licence badges as accepted in interview #002).
+
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel
     keeps owning the engine job; the service keeps the process alive and mirrors `ProcessingState.progress` in a silent
