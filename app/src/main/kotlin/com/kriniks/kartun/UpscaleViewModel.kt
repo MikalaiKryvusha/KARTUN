@@ -87,6 +87,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     val largestFittingScale get() = source?.let { s -> SCALES.lastOrNull { fits(s.megapixels, it) } } ?: SCALES.first()
 
     private val engineThread = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    // One preferences file for the learned speed AND the remembered settings (its name predates the settings).
     private val prefs = app.getSharedPreferences("estimates", Context.MODE_PRIVATE)
     private var job: Job? = null
     private var preload: Job? = null
@@ -115,7 +116,15 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     var useGpu by mutableStateOf(true); private set
     private var beforeSettings = Screen.Home
 
-    init { useGpu = prefs.getBoolean(PREF_GPU, true) }
+    // GOAL.md §3: «Сохранять настройки между запусками» - the GPU switch, the model, the scale, the save format and quality
+    // come back as the user left them.
+    init {
+        useGpu = prefs.getBoolean(PREF_GPU, true)
+        model = Model.entries.firstOrNull { it.name == prefs.getString(PREF_MODEL, null) } ?: Model.Fast
+        scaleIndex = prefs.getInt(PREF_SCALE, DEFAULT_SCALE_INDEX).coerceIn(0, SCALES.lastIndex)
+        saveFormat = ResultStore.Format.entries.firstOrNull { it.name == prefs.getString(PREF_FORMAT, null) } ?: ResultStore.Format.Png
+        saveQuality = prefs.getInt(PREF_QUALITY, DEFAULT_QUALITY)
+    }
 
     fun chooseGpu(on: Boolean) {
         if (on == useGpu) return
@@ -156,6 +165,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     fun chooseModel(m: Model) {
         if (m == model) return
         model = m
+        prefs.edit { putString(PREF_MODEL, m.name) }
         preload()
     }
 
@@ -209,6 +219,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         if (!scaleSupported) return
         ProcessingState.cancelRequested = false
         error = null
+        prefs.edit { putInt(PREF_SCALE, scaleIndex) }
         val chosen = model
         val target = scale
         publish(Progress(estimateMs = estimateMs()))
@@ -283,6 +294,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         saveMessage = null
         val format = saveFormat
         val quality = saveQuality
+        prefs.edit { putString(PREF_FORMAT, format.name); putInt(PREF_QUALITY, quality) }
         viewModelScope.launch {
             val ok = withContext(Dispatchers.IO) {
                 runCatching {
@@ -381,6 +393,10 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     companion object {
         private const val TAG = "KARTUN"
         private const val PREF_GPU = "use_gpu"
+        private const val PREF_MODEL = "model"
+        private const val PREF_SCALE = "scale_index"
+        private const val PREF_FORMAT = "save_format"
+        private const val PREF_QUALITY = "save_quality"
         /** The owner's scale steps: «x1, x2 (по умолчанию), x4, x8, x16» (interview #002). */
         val SCALES = listOf(1, 2, 4, 8, 16)
         const val DEFAULT_SCALE_INDEX = 1
