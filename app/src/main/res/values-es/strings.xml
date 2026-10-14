@@ -73,7 +73,7 @@
     <string name="settings_language_sub">Como el sistema o uno propio para KARTUN</string>
     <string name="info_gpu_text">La red calcula en el chip gráfico del teléfono con Vulkan: unas 15 veces más rápido que en el procesador.</string>
     <string name="info_gpu_list">• Activado — el modo normal.\n• Desactivado — solo el procesador: lento, pero ayuda si el chip gráfico de este teléfono falla.</string>
-    <string name="info_language_text">Se abre la lista del sistema con los idiomas de KARTUN: el idioma de la app puede ser distinto del del teléfono.</string>
+    <string name="info_language_text">Se abre la lista del sistema con los idiomas de KARTUN: el idioma de la app puede ser distinto al del teléfono.</string>
     <string name="manual_title">Guía</string>
     <string name="settings_manual">Guía del usuario</string>
     <string name="settings_manual_sub">Cómo usar KARTUN y sus modelos</string>

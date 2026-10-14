@@ -193,7 +193,7 @@ SETTINGS = {
     "es": ["Ajustes", "Procesamiento", "Aplicación", "Aceleración GPU", "Vulkan · %1$s", "Idioma", "Como el sistema o uno propio para KARTUN",
            "La red calcula en el chip gráfico del teléfono con Vulkan: unas 15 veces más rápido que en el procesador.",
            "• Activado — el modo normal.\\n• Desactivado — solo el procesador: lento, pero ayuda si el chip gráfico de este teléfono falla.",
-           "Se abre la lista del sistema con los idiomas de KARTUN: el idioma de la app puede ser distinto del del teléfono."],
+           "Se abre la lista del sistema con los idiomas de KARTUN: el idioma de la app puede ser distinto al del teléfono."],
     "pt": ["Configurações", "Processamento", "App", "Aceleração por GPU", "Vulkan · %1$s", "Idioma", "Como o sistema ou um próprio para o KARTUN",
            "A rede calcula no chip gráfico do telefone via Vulkan — cerca de 15 vezes mais rápido que no processador.",
            "• Ligado — o modo normal.\\n• Desligado — só o processador: lento, mas ajuda se o chip gráfico deste telefone falhar.",
