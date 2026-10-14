@@ -32,6 +32,11 @@ never becomes a crash. Avoid: a result too large for memory reaching the engine 
    Recon done 2026-10-14 ≈ 19:24: `researches/05_large_results_streaming.md` — a strip writer (one tile row of output)
    into libpng / libjpeg-turbo, the result shown through `BitmapRegionDecoder` tiles; the FORK (native vs PNGJ) is decided
    at this step with a measurement.
+   The measurement (written 2026-10-14 19:49, before any code): on the Titan, encode the SAME 16× strip set of the
+   960×1280 photo (15 360 × 20 480 px, 26 strips of 800 rows) to PNG by (a) PNGJ in Kotlin fed strip by strip through
+   JNI and (b) libpng in C++ inside the engine; record wall time, peak `dumpsys meminfo` PSS and the APK size delta.
+   Decide by: peak memory under 300 MB for both → the faster one; one over → the other. Write the result into
+   `researches/05` and the `FORK:` line of this step.
 4. [ ] The 10-photo series on the Titan with `dumpsys meminfo` → run report.
 
 ## Risks
