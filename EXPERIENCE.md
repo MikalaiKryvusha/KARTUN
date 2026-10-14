@@ -82,6 +82,17 @@
 
 ## Entries
 
+### EXP-0009 · 2026-10-14 · ❌→✅ · #docs #numbers #claim
+class: claim-before-evidence
+**Context:** writing a device test case (tile counts of an 8× run) and an interview's archaeology line (grep hit count) late in a loop.
+**Tried / did:** typed the numbers from a mental estimate: «175 / 140 tiles», «14 hits».
+**Result:** ❌ both wrong — 165 (35 + 130) and 33; ✅ caught by recomputing with a one-line script before anyone ran them (`03bdfdd`, interview 004).
+**Lesson:** a number in a document is a measurement, not a recollection — print it with a script in the same call that writes it.
+**Repro:** `python -c "import math;print(math.ceil(960/200)*math.ceil(1280/200), math.ceil(1920/200)*math.ceil(2560/200))"` → `35 130`; `grep … | wc -l` for hit counts.
+**Trigger:** about to write a count, a size or a duration into a test case, a plan or an interview → run the command first.
+**Not for:** numbers copied verbatim from a run report that already printed them.
+none-cheap: a count in prose has no single producing tool to guard - the stamp guard covers moments only and the review door attests the archaeology FORM, not its number; the Repro command run in the same call is the check
+
 ### EXP-0008 · 2026-10-14 · ❌→✅ · #docs #script #edit #claim
 class: silent-noop-edit
 **Context:** inserting rows into a test-case document with a throwaway Python `t.replace(anchor, rows + anchor, 1)`.
