@@ -26,7 +26,7 @@ never becomes a crash. Avoid: a result too large for memory reaching the engine 
    (the intermediate stays at 2× instead of 16× — a quarter of the memory); 16× = two 4× passes. Progress counts the
    tiles of both passes; the estimate adds the second pass's megapixels. Output limit `MAX_OUTPUT_MP = 200` — the size
    the 4× of a 12.5 MP photo already reaches in slice 1 of phase 2 — checked before the run.
-2. [ ] Fallback ladder in `UpscaleViewModel`: on a native failure retry with tile 100, then CPU, then the error.
+2. [~] (built 2026-10-14 ≈ 19:22: `UpscaleViewModel.withFallback`, each step logged with tag `KARTUN`; the ring maps each pass's own done/total onto its share, so 100 px tiles do not overrun it; the forced-failure run on the device waits for the owner) Fallback ladder in `UpscaleViewModel`: on a native failure retry with tile 100, then CPU, then the error.
 3. [ ] Tiles to disk for results over the limit (phase 1's large-photo goal) — research first (`researches/`): a PNG/JPEG
    encoder fed by rows, without one bitmap of the whole result.
 4. [ ] The 10-photo series on the Titan with `dumpsys meminfo` → run report.

@@ -7,6 +7,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.SystemClock
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,6 +16,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.kriniks.kartun.engine.NcnnUpscaler
+import com.kriniks.kartun.engine.TileListener
 import com.kriniks.kartun.engine.UpscaleCancelledException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -169,15 +171,22 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                         // Tiles of both passes are known up front, so the ring runs 0..100 % once across the whole run.
                         val mid = secondPassInput(target)
                         val pass1 = tiles(src.width, src.height)
-                        val grand = pass1 + (mid?.let { tiles(src.width * it, src.height * it) } ?: 0)
-                        val report = { offset: Int ->
-                            com.kriniks.kartun.engine.TileListener { done, _ ->
-                                publish(_progress.value.copy(done = offset + done, total = grand, elapsedMs = SystemClock.elapsedRealtime() - t0))
+                        val pass2 = mid?.let { tiles(src.width * it, src.height * it) } ?: 0
+                        val grand = pass1 + pass2
+                        // The ring counts in 200 px tiles; a retry with smaller tiles reports more of them, so each
+                        // pass maps its own done/total onto its share of the ring.
+                        val report = { offset: Int, share: Int ->
+                            TileListener { done, total ->
+                                publish(_progress.value.copy(done = offset + done * share / total, total = grand, elapsedMs = SystemClock.elapsedRealtime() - t0))
                                 !ProcessingState.cancelRequested
                             }
                         }
+                        var gpuUsed = u.usesGpu
+                        val pass = { input: Bitmap, listener: TileListener ->
+                            withFallback(chosen, u, input, listener).also { (_, gpu) -> gpuUsed = gpuUsed && gpu }.first
+                        }
                         val tRun = SystemClock.elapsedRealtime()
-                        val out4 = u.upscale(src.bitmap, ENGINE_SCALE, TILE_PX, report(0))
+                        val out4 = pass(src.bitmap, report(0, pass1))
                         learnRate(chosen, src.megapixels, SystemClock.elapsedRealtime() - tRun)
                         val full = when {
                             target == ENGINE_SCALE -> out4
@@ -187,12 +196,12 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                                 // 16×: the 4× result itself does (4 x 4 = 16). [AI] plans/04 step 1.
                                 // [NOT-TESTED: two passes on the device - deferred by the owner; PassPlanTest covers the plan only]
                                 val input = if (mid == ENGINE_SCALE) out4 else downscale(out4, src.width * mid, src.height * mid)
-                                u.upscale(input, ENGINE_SCALE, TILE_PX, report(pass1)).also { input.recycle() }
+                                pass(input, report(pass1, pass2)).also { input.recycle() }
                             }
                         }
                         val display = fitForDisplay(full)
                         val before = Bitmap.createScaledBitmap(src.bitmap, display.width, display.height, true)
-                        Result(full, display, before, SystemClock.elapsedRealtime() - t0, u.usesGpu)
+                        Result(full, display, before, SystemClock.elapsedRealtime() - t0, gpuUsed)
                     }
                 }
             }
@@ -210,6 +219,33 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun cancel() { ProcessingState.cancelRequested = true }
+
+    /**
+     * Engine thread only. One 4× pass with the fallback ladder of plans/04 step 2 (research 03 §B lessons 2 and 4: device
+     * lost on large tiles is the most common failure of Android upscalers): the loaded net with 200 px tiles → the same
+     * net with 100 px tiles → a CPU net → an honest error. A cancel is never retried. Returns the bitmap and whether the
+     * GPU did the work. [NOT-TESTED: the forced GPU failure on the device - deferred by the owner]
+     */
+    private fun withFallback(m: Model, u: NcnnUpscaler, input: Bitmap, listener: TileListener): Pair<Bitmap, Boolean> {
+        try {
+            return u.upscale(input, ENGINE_SCALE, TILE_PX, listener) to u.usesGpu
+        } catch (e: IllegalStateException) {
+            Log.w(TAG, "pass failed with tile $TILE_PX (${e.message}); retry with ${TILE_PX / 2}")
+        }
+        try {
+            return u.upscale(input, ENGINE_SCALE, TILE_PX / 2, listener) to u.usesGpu
+        } catch (e: IllegalStateException) {
+            Log.w(TAG, "pass failed with tile ${TILE_PX / 2} (${e.message}); retry on the CPU")
+        }
+        if (!u.usesGpu) throw EngineFailed()
+        publish(_progress.value.copy(gpu = false))
+        val (param, bin) = ModelStore.files(getApplication(), m.file)
+        val cpu = NcnnUpscaler.load(param.path, bin.path, useGpu = false) ?: throw EngineFailed()
+        return cpu.use {
+            try { it.upscale(input, ENGINE_SCALE, TILE_PX, listener) to false }
+            catch (e: IllegalStateException) { Log.w(TAG, "CPU pass failed too (${e.message})"); throw EngineFailed() }
+        }
+    }
 
     /** One progress value for the screen and for the notification of [UpscaleService]. */
     private fun publish(p: Progress) {
@@ -250,8 +286,10 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
     private class TooBig : RuntimeException()
     private class ModelLoadFailed : RuntimeException()
+    private class EngineFailed : RuntimeException()
 
     companion object {
+        private const val TAG = "KARTUN"
         /** The owner's scale steps: «x1, x2 (по умолчанию), x4, x8, x16» (interview #002). */
         val SCALES = listOf(1, 2, 4, 8, 16)
         const val DEFAULT_SCALE_INDEX = 1
