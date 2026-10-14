@@ -169,9 +169,7 @@ fun mpText(mp: Float): String = String.format(Locale.getDefault(), "%.1f", mp)
  */
 @Composable
 fun durationText(ms: Long): String {
-    val total = ((ms + 500) / 1000).coerceAtLeast(1).toInt()
-    val m = total / 60
-    val s = total % 60
+    val (m, s) = durationParts(ms)
     val sec = pluralStringResource(R.plurals.duration_seconds, s, s)
     val min = pluralStringResource(R.plurals.duration_minutes, m, m)
     return when {
@@ -179,6 +177,12 @@ fun durationText(ms: Long): String {
         s == 0 -> min
         else -> "$min $sec"
     }
+}
+
+/** Whole minutes and seconds of [ms], rounded to the nearest second and never below 1 s (a run is never «0 секунд»). */
+fun durationParts(ms: Long): Pair<Int, Int> {
+    val total = ((ms + 500) / 1000).coerceAtLeast(1).toInt()
+    return total / 60 to total % 60
 }
 
 /** Transparent-to-background fade above a pinned bottom button (.cta::before). */
