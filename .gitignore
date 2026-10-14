@@ -64,3 +64,6 @@ __pycache__/
 
 # Model files staged into the APK by tools/stage-models.mjs from engine/third_party/ (provenance: docs/model-licenses.md).
 app/src/main/assets/models/
+
+# backup written by tools/unwire-owner-word-hooks.mjs
+.claude/settings.json.bak
