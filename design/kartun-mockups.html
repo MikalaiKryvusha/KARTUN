@@ -174,7 +174,7 @@
   .share-hint { background: var(--card); border-radius: 22px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
   .share-hint .h { font: 700 15px var(--font-head); display: flex; align-items: center; gap: 8px; }
   .share-hint .h svg { width: 18px; height: 18px; stroke: var(--pink); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .share-hint .flow { display: flex; align-items: center; gap: 6px; font: 600 12px var(--font); color: var(--sub); flex-wrap: wrap; }
+  .share-hint .flow { display: flex; align-items: center; gap: 8px; font: 600 12px var(--font); color: var(--sub); flex-wrap: nowrap; white-space: nowrap; }
   .share-hint .flow b { background: var(--card2); color: var(--text); border-radius: var(--r-pill); padding: 5px 10px; font-weight: 600; }
   .share-hint .flow b.k { background: var(--pink); color: #fff; }
 
@@ -338,7 +338,7 @@ const S = {
     <div class="btn ghost">${I.link}Вставить ссылку на фото</div>
     <div class="share-hint"><div class="h">${I.share}Или отправьте фото из другого приложения</div>
       <div class="muted" style="font-size:13px">Откройте фото в галерее, Telegram или браузере, нажмите «Поделиться» и выберите KARTUN — фото сразу откроется здесь для улучшения.</div>
-      <div class="flow"><b>Галерея · Telegram · Браузер</b>→<b>Поделиться</b>→<b class="k">KARTUN</b></div></div>
+      <div class="flow"><b>Фото</b>→<b>Поделиться</b>→<b class="k">KARTUN</b></div></div>
     <div class="foot-note" style="padding-bottom:24px"><i></i>Обработка на устройстве, без сети</div></div>${gesture}`,
   'A-setup': () => setupScreen(false),
   'A-setup-scrolled': () => setupScreen(true),
