@@ -68,6 +68,21 @@ fun SettingsScreen(vm: UpscaleViewModel, onBack: () -> Unit) {
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).widthIn(max = 720.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
+            // The guide first, as on the mockup's pink hero row (.manual-hero).
+            Row(
+                Modifier.fillMaxWidth().clip(RoundedCornerShape(26.dp)).background(c.primaryContainer).clickable(onClick = vm::openManual)
+                    .padding(14.dp),
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                Box(Modifier.size(52.dp).clip(RoundedCornerShape(16.dp)).background(c.primary), contentAlignment = Alignment.Center) {
+                    Icon(painterResource(R.drawable.ic_book), null, Modifier.size(26.dp), tint = c.onPrimary)
+                }
+                Column(Modifier.weight(1f)) {
+                    Text(stringResource(R.string.settings_manual), style = MaterialTheme.typography.titleSmall)
+                    Text(stringResource(R.string.settings_manual_sub), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
+                }
+                Text("›", style = MaterialTheme.typography.titleMedium, color = c.onSurfaceVariant)
+            }
             Text(stringResource(R.string.settings_processing).uppercase(), Modifier.padding(start = 4.dp, top = 4.dp),
                 style = MaterialTheme.typography.labelSmall, color = c.primary)
             Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp)).background(c.surfaceContainer)) {

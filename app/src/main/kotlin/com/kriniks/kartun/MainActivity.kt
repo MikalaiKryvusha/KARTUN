@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.kriniks.kartun.ui.HomeScreen
+import com.kriniks.kartun.ui.ManualScreen
 import com.kriniks.kartun.ui.ResultScreen
 import com.kriniks.kartun.ui.SettingsScreen
 import com.kriniks.kartun.ui.SetupScreen
@@ -70,5 +71,6 @@ private fun KartunApp(vm: UpscaleViewModel) {
         UpscaleViewModel.Screen.Working -> WorkingScreen(vm)
         UpscaleViewModel.Screen.Result -> ResultScreen(vm)
         UpscaleViewModel.Screen.Settings -> SettingsScreen(vm, onBack = vm::back)
+        UpscaleViewModel.Screen.Manual -> ManualScreen(onBack = vm::back)
     }
 }

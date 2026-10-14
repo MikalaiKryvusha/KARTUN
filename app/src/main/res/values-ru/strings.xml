@@ -98,4 +98,8 @@
     <string name="info_gpu_text">Нейросеть считает на видеочипе телефона через Vulkan — так в 15 раз быстрее, чем на процессоре.</string>
     <string name="info_gpu_list">• Включено — обычный режим.\n• Выключено — только процессор: медленно, но помогает, если на этом телефоне видеочип даёт сбои.</string>
     <string name="info_language_text">Откроется системный список языков KARTUN: язык приложения можно выбрать отдельно от языка телефона.</string>
+    <!-- The user guide (mockups 'settings' / 'manual'); the Russian lines are the mockup's. -->
+    <string name="manual_title">Руководство</string>
+    <string name="settings_manual">Руководство пользователя</string>
+    <string name="settings_manual_sub">Как пользоваться KARTUN и моделями</string>
 </resources>
