@@ -62,4 +62,7 @@
         <item quantity="many">%1$d minutes</item>
         <item quantity="other">%1$d minutes</item>
     </plurals>
+    <string name="link_none">Aucun lien dans le presse-papiers. Copiez un lien vers une image et touchez à nouveau.</string>
+    <string name="link_failed">Impossible de télécharger la photo depuis le lien.</string>
+    <string name="link_downloading">Téléchargement de la photo…</string>
 </resources>

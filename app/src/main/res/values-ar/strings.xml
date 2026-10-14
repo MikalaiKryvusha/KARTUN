@@ -68,6 +68,9 @@
         <item quantity="many">%1$d دقيقة</item>
         <item quantity="other">%1$d دقيقة</item>
     </plurals>
+    <string name="link_none">لا يوجد رابط في الحافظة. انسخ رابط صورة واضغط مرة أخرى.</string>
+    <string name="link_failed">تعذّر تنزيل الصورة من الرابط.</string>
+    <string name="link_downloading">جارٍ تنزيل الصورة…</string>
     <string name="arrow">←</string>
     <string name="size_to">%1$s ← %2$s</string>
 </resources>

@@ -173,6 +173,18 @@ P = {
            "few": ("%1$d ثوانٍ", "%1$d دقائق"), "many": ("%1$d ثانية", "%1$d دقيقة"), "other": ("%1$d ثانية", "%1$d دقيقة")},
 }
 
+# «Вставить ссылку» strings (added after the first batch): link_none · link_failed · link_downloading.
+LINK = {
+    "es": ("No hay ningún enlace en el portapapeles. Copia un enlace a una imagen y toca de nuevo.", "No se pudo descargar la foto del enlace.", "Descargando la foto…"),
+    "pt": ("Não há link na área de transferência. Copie um link de imagem e toque de novo.", "Não foi possível baixar a foto do link.", "Baixando a foto…"),
+    "fr": ("Aucun lien dans le presse-papiers. Copiez un lien vers une image et touchez à nouveau.", "Impossible de télécharger la photo depuis le lien.", "Téléchargement de la photo…"),
+    "de": ("Kein Link in der Zwischenablage. Kopiere einen Bild-Link und tippe erneut.", "Das Foto ließ sich nicht über den Link laden.", "Foto wird geladen…"),
+    "zh": ("剪贴板中没有链接。请复制图片链接后再点一次。", "无法通过链接下载照片。", "正在下载照片…"),
+    "hi": ("क्लिपबोर्ड में कोई लिंक नहीं है। किसी तस्वीर का लिंक कॉपी करें और फिर दबाएँ।", "लिंक से फ़ोटो डाउनलोड नहीं हो सकी।", "फ़ोटो डाउनलोड हो रही है…"),
+    "bn": ("ক্লিপবোর্ডে কোনো লিংক নেই। একটি ছবির লিংক কপি করে আবার চাপুন।", "লিংক থেকে ছবি ডাউনলোড করা যায়নি।", "ছবি ডাউনলোড হচ্ছে…"),
+    "ar": ("لا يوجد رابط في الحافظة. انسخ رابط صورة واضغط مرة أخرى.", "تعذّر تنزيل الصورة من الرابط.", "جارٍ تنزيل الصورة…"),
+}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -189,6 +201,8 @@ def main():
         for name, idx in (("duration_seconds", 0), ("duration_minutes", 1)):
             items = "\n".join(f'        <item quantity="{q}">{xml_text(forms[idx])}</item>' for q, forms in P[lang].items())
             lines.append(f'    <plurals name="{name}">\n{items}\n    </plurals>')
+        for k, v in zip(("link_none", "link_failed", "link_downloading"), LINK[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         body = "\n".join(lines)

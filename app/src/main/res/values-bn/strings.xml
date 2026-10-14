@@ -60,4 +60,7 @@
         <item quantity="one">%1$d মিনিট</item>
         <item quantity="other">%1$d মিনিট</item>
     </plurals>
+    <string name="link_none">ক্লিপবোর্ডে কোনো লিংক নেই। একটি ছবির লিংক কপি করে আবার চাপুন।</string>
+    <string name="link_failed">লিংক থেকে ছবি ডাউনলোড করা যায়নি।</string>
+    <string name="link_downloading">ছবি ডাউনলোড হচ্ছে…</string>
 </resources>

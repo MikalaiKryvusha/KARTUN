@@ -62,4 +62,7 @@
         <item quantity="many">%1$d minutos</item>
         <item quantity="other">%1$d minutos</item>
     </plurals>
+    <string name="link_none">Não há link na área de transferência. Copie um link de imagem e toque de novo.</string>
+    <string name="link_failed">Não foi possível baixar a foto do link.</string>
+    <string name="link_downloading">Baixando a foto…</string>
 </resources>

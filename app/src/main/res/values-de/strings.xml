@@ -60,4 +60,7 @@
         <item quantity="one">%1$d Minute</item>
         <item quantity="other">%1$d Minuten</item>
     </plurals>
+    <string name="link_none">Kein Link in der Zwischenablage. Kopiere einen Bild-Link und tippe erneut.</string>
+    <string name="link_failed">Das Foto ließ sich nicht über den Link laden.</string>
+    <string name="link_downloading">Foto wird geladen…</string>
 </resources>

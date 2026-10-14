@@ -60,4 +60,7 @@
         <item quantity="one">%1$d मिनट</item>
         <item quantity="other">%1$d मिनट</item>
     </plurals>
+    <string name="link_none">क्लिपबोर्ड में कोई लिंक नहीं है। किसी तस्वीर का लिंक कॉपी करें और फिर दबाएँ।</string>
+    <string name="link_failed">लिंक से फ़ोटो डाउनलोड नहीं हो सकी।</string>
+    <string name="link_downloading">फ़ोटो डाउनलोड हो रही है…</string>
 </resources>

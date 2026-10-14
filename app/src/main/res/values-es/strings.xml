@@ -62,4 +62,7 @@
         <item quantity="many">%1$d minutos</item>
         <item quantity="other">%1$d minutos</item>
     </plurals>
+    <string name="link_none">No hay ningún enlace en el portapapeles. Copia un enlace a una imagen y toca de nuevo.</string>
+    <string name="link_failed">No se pudo descargar la foto del enlace.</string>
+    <string name="link_downloading">Descargando la foto…</string>
 </resources>

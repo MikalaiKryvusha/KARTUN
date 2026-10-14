@@ -58,4 +58,7 @@
     <plurals name="duration_minutes">
         <item quantity="other">%1$d 分钟</item>
     </plurals>
+    <string name="link_none">剪贴板中没有链接。请复制图片链接后再点一次。</string>
+    <string name="link_failed">无法通过链接下载照片。</string>
+    <string name="link_downloading">正在下载照片…</string>
 </resources>
