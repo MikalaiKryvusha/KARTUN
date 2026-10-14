@@ -12,6 +12,16 @@ KARTUN upscales on the device: the picture never leaves the phone, and processin
 2. **Another app.** Open a photo in Telegram, the gallery or a browser, tap “Share” and pick KARTUN.
 3. **Link.** Copy a link to a picture and tap “Paste a photo link”.
 
+## 3 Setting up
+
+On the “Enhance” screen the photo is pinned on top. Swipe up — the photo folds into a row and shows the settings; pull down — the photo opens full screen.
+
+- **Model.** Fast suits most photos; “Maximum” gives a richer texture and takes about 15 times longer. The model loads as soon as you choose it.
+- **Scale.** A slider from 1× to 16×; the result's size is shown under it.
+- **Enhance.** The button shows an estimate of the time. It learns from your previous runs.
+
+> Every setting has an (i) button that briefly explains what it does.
+
 ## 4 Scale
 
 **Scale** is how many times the width and height grow. The number of pixels grows as the square of the scale: at 4× there are 16 times more.
@@ -24,6 +34,14 @@ KARTUN upscales on the device: the picture never leaves the phone, and processin
 | 16× | 2 | 15 360 × 20 480 |
 
 > The network always enlarges the picture exactly 4 times in one pass. Scales 1× and 2× come from scaling the result down, 8× and 16× from a second pass.
+
+## 5 Compare and save
+
+1. **Compare.** Touch the picture anywhere and move your finger: “before” on the left, “after” on the right. Two fingers zoom and move the picture.
+2. **Save.** Pick a format — PNG without loss, JPEG or WebP with a quality setting. The file lands in Pictures/KARTUN as a new picture; the original stays as it is.
+3. **Share.** Send the result to any app through the system menu.
+
+> KARTUN can be left while it works: the progress is in the notification, with “Cancel” there too.
 
 ## 6 Models
 
