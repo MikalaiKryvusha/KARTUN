@@ -105,6 +105,9 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
     on the result the divider moves only when grabbed on the line or its knob (±36 dp); a finger elsewhere pans the photo;
     a double tap zooms ×2.5 at the point and back (as the preview, step 17).
 31. [ ] (owner, chat 2026-10-14 ≈ 21:01 +03:00) «виджет сводки чуть ниже сместить» — the result panel's bottom gap 28 → 8 dp.
+32. [ ] (owner, chat 2026-10-14 ≈ 21:05 +03:00) «и полоса до после зачем-то у тебя от края экрана до края экрана, перекрывает вверху
+    статус бар ОС. Нужно её начинать мягкий фейдом и ззаканчивать мягим фейдом в прозрачность на концах» — the divider spans
+    the picture's fitted rect inside the system bars, with a 12 % transparent fade at each end.
 
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel

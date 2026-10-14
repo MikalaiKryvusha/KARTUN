@@ -14,7 +14,13 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -68,6 +74,8 @@ private const val MAX_ZOOM = 8f
 private const val TAP_ZOOM = 2.5f
 /** How close to the divider a finger must land to grab it, each side. */
 private val DIVIDER_GRAB = 36.dp
+/** The share of the divider's length that fades in at the top and out at the bottom. */
+private const val DIVIDER_FADE = 0.12f
 
 /**
  * Result (mockup 'result'): before/after over the whole screen. The divider moves only when the finger lands ON it (the
@@ -153,7 +161,18 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 Image(res.display.asImageBitmap(), null, layer, contentScale = ContentScale.Fit)
             }
             val x = maxWidth * split
-            Box(Modifier.offset(x = x - 1.5.dp).width(3.dp).fillMaxHeight().background(c.primary))
+            // The divider spans the PICTURE (its 1× fitted rect), never the system bars, and fades to transparent at both
+            // ends (the owner, chat 2026-10-14 ≈ 21:05 +03:00: «полоса до после зачем-то у тебя от края экрана до края
+            // экрана, перекрывает вверху статус бар ОС. Нужно её начинать мягкий фейдом и заканчивать мягим фейдом»).
+            val bars = WindowInsets.systemBars.asPaddingValues()
+            val picH = minOf(maxHeight, maxWidth * res.display.height.toFloat() / res.display.width)
+            val lineTop = maxOf((maxHeight - picH) / 2, bars.calculateTopPadding())
+            val lineBottom = minOf((maxHeight + picH) / 2, maxHeight - bars.calculateBottomPadding())
+            Box(
+                Modifier.offset(x = x - 1.5.dp, y = lineTop).width(3.dp).height(lineBottom - lineTop).background(
+                    Brush.verticalGradient(0f to Color.Transparent, DIVIDER_FADE to c.primary, 1f - DIVIDER_FADE to c.primary, 1f to Color.Transparent),
+                ),
+            )
             Box(
                 Modifier.align(Alignment.CenterStart).offset(x = x - 26.dp).size(52.dp).shadow(10.dp, CircleShape).clip(CircleShape).background(c.primary),
                 contentAlignment = Alignment.Center,
