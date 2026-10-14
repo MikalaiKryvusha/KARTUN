@@ -1,7 +1,6 @@
 package com.kriniks.kartun.ui
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -36,6 +35,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.kriniks.kartun.R
 import com.kriniks.kartun.engine.NcnnUpscaler
 
@@ -124,7 +124,7 @@ private fun LinkGroup(title: String, links: List<Pair<String, String>>, header: 
         links.forEachIndexed { i, (label, url) ->
             Row(
                 Modifier.fillMaxWidth().clickable {
-                    runCatching { ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
+                    runCatching { ctx.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
                 }.padding(horizontal = 16.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
