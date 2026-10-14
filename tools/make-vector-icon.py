@@ -9,7 +9,7 @@ viewport, the OS mask shows the inner 72 dp) and an SVG twin used only for the p
 The heart reaches 27 dp from the centre - the size the owner picked («B», 2026-10-14 ≈ 15:37).
 [TESTED: 2026-10-14 · rendered by Android on the Titan, splash and app list - testcases/reports/2026-10-14_F2_screens_slice1.md run 14]
 
-Usage (from the project root): python tools/make-vector-icon.py [--apply]
+Usage (from the project root): python tools/make-vector-icon.py [--apply | --check]
   without --apply: writes design/icon/heart_vector.svg and res/drawable/ic_launcher_heart*.xml (not referenced yet);
   with --apply:    also points res/mipmap-anydpi/ic_launcher*.xml at the vector drawables.
 """
@@ -214,6 +214,13 @@ ADAPTIVE = """<?xml version="1.0" encoding="utf-8"?>
 
 
 def main():
+    if "--check" in sys.argv:
+        # The pair «this script ↔ the generated drawables»: a hand edit of a generated file reddens here.
+        drawable = ROOT / "app" / "src" / "main" / "res" / "drawable"
+        drift = [n for n, body in (("ic_launcher_heart.xml", foreground_xml()), ("ic_launcher_heart_mono.xml", monochrome_xml()))
+                 if (drawable / n).read_text(encoding="utf-8") != body]
+        print("DRIFT " + ", ".join(drift) if drift else "the vector icon matches the script")
+        sys.exit(1 if drift else 0)
     apply = "--apply" in sys.argv
     out = ROOT / "design" / "icon"
     (out / "heart_vector.svg").write_text(svg(), encoding="utf-8", newline="\n")
