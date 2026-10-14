@@ -16,5 +16,11 @@
   "canonArtifacts": [],
   "build": "a63c651356bc",
   "prerelease": "2.9",
-  "projectName": "KARTUN"
+  "projectName": "KARTUN",
+  "archives": {
+    "GOAL.md": {
+      "digest": "researches/04_goal_digest.md",
+      "owner": "chat 2026-10-14 ≈ 15:44 +03:00, answer «а» (option A: declare GOAL.md the owner's archive) — recorded in researches/04_goal_digest.md header and MASTER_PLAN.md decision log"
+    }
+  }
 }

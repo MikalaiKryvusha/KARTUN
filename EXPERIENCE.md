@@ -56,7 +56,7 @@
 > <!-- classes: question-already-answered, guard-not-proven-against-threat, shown-as-link,
 >      claim-before-evidence, owner-decision-not-applied, text-in-agents-world,
 >      etalon-from-dirty-tree, shell-lied, escaping-layer, twins-missed,
->      field-dropped-in-rebuild -->
+>      field-dropped-in-rebuild, platform-layer-unseen -->
 >
 > | Class slug | The failure it names |
 > |---|---|
@@ -71,6 +71,7 @@
 > | `escaping-layer` | one escaping level lost between the tool and the file |
 > | `twins-missed` | one of two layers/copies moved and the twin stayed behind |
 > | `field-dropped-in-rebuild` | a field or section silently lost when an artifact was regenerated |
+> | `platform-layer-unseen` | the platform renders an asset in a place the agent never looked at (splash, themed icon, dark mode) |
 >
 > The `#tags` are **trigger-tags**: before a task, grep by the task's tags and QUOTE the relevant
 > lessons in your report (id + one line) — or state "no relevant lessons". An unquoted recall is
@@ -79,6 +80,31 @@
 > Skill: `/experience` (capture a lesson · recall relevant lessons).
 
 ## Entries
+
+### EXP-0007 · 2026-10-14 · ❌→✅ · #android #icon #splash #titan
+class: platform-layer-unseen
+**Context:** adaptive launcher icon whose foreground layer carries the picture with its glass faded to transparent.
+**Tried / did:** checked the icon on the home screen only; the owner opened the app and saw the launch splash.
+**Result:** ❌ "на сплеш экране ужас… нет фона под сердцем" — the Android 12+ splash draws only the FOREGROUND layer on the
+theme's window colour (grey), so the faded glass became a dark blob. ✅ `Theme.KARTUN` sets `windowSplashScreenBackground`,
+`windowSplashScreenIconBackgroundColor` and `windowBackground` to `@color/ic_launcher_background`.   → link: app/src/main/res/values/themes.xml
+**Lesson:** an icon is seen in three places — home screen, splash, themed (monochrome) — check all three on the device.
+**Repro:** `adb shell "am force-stop com.kriniks.kartun.debug; am start -n com.kriniks.kartun.debug/com.kriniks.kartun.MainActivity >/dev/null; sleep 0.15; screencap -p /data/local/tmp/s.png"` then pull and look (MSYS_NO_PATHCONV=1 in Git Bash).
+**Trigger:** changing anything in `app/src/main/res/mipmap-*` or the theme → capture the splash as above.
+**Not for:** icons that are opaque edge to edge (no fade) — there the default splash is merely plain, not broken.
+none-cheap: the splash exists only on a running device for ~0.5 s; the Repro command above is the check, a PC-side guard cannot see it
+
+### EXP-0006 · 2026-10-14 · ❌→✅ · #icon #geometry #report
+class: claim-before-evidence
+**Context:** fitting the owner's `icon_v3` (heart on a glass plate) into the Android circle mask.
+**Tried / did:** estimated the heart's farthest pixel by eye (463 px) and told the owner the circle could not both crop inside
+the plate and keep the heart whole.
+**Result:** ❌ the measurement printed by `tools/make-icon.py` was 386 px — both held at full size; the claim was withdrawn in chat.
+**Lesson:** a geometric "impossible" is a number; say it only after the script printed it.   → link: tools/make-icon.py
+**Repro:** `python tools/make-icon.py --preview-only --preview <png>` prints "heart farthest pixel = N dp from the centre".
+**Trigger:** about to tell the owner a layout/crop is impossible or will clip → run the measuring command first.
+**Not for:** taste judgements (how it looks) — those stay the owner's eye.
+mechanized: tools/make-icon.py (prints the measured heart extent in dp on every run)
 
 ### EXP-0005 · 2026-10-14 · ❌→✅ · #report #time #guard
 class: claim-before-evidence
