@@ -87,50 +87,50 @@ fun HomeScreen(onPick: () -> Unit, onSettings: () -> Unit, onPasteLink: () -> Un
 @Composable
 private fun PickCard(onPick: () -> Unit, modifier: Modifier) {
     val c = MaterialTheme.colorScheme
-            Column(
-                modifier.clip(MaterialTheme.shapes.extraLarge)
-                    .drawBehind {
-                        // radial-gradient(120% 80% at 50% 0%, pink .18, card 60%) of the mockup: the glow comes from the top edge.
-                        drawRect(c.surfaceContainer)
-                        drawRect(Brush.radialGradient(listOf(c.primary.copy(alpha = 0.18f), Color.Transparent), center = Offset(size.width / 2, 0f), radius = size.width * 0.72f))
-                    }
-                    .border(1.5.dp, c.primary.copy(alpha = 0.45f), MaterialTheme.shapes.extraLarge)
-                    .clickable(onClick = onPick),
-                horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
-            ) {
-                Box(
-                    Modifier.size(96.dp).shadow(24.dp, RoundedCornerShape(32.dp), ambientColor = c.primary, spotColor = c.primary)
-                        .clip(RoundedCornerShape(32.dp)).background(c.primary),
-                    contentAlignment = Alignment.Center,
-                ) { Icon(painterResource(R.drawable.ic_image), null, Modifier.size(44.dp), tint = c.onPrimary) }
-                Spacer(Modifier.height(14.dp))
-                Text(stringResource(R.string.home_pick_title), style = MaterialTheme.typography.headlineSmall)
-                Spacer(Modifier.height(6.dp))
-                Text(stringResource(R.string.home_pick_sub), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
+    Column(
+        modifier.clip(MaterialTheme.shapes.extraLarge)
+            .drawBehind {
+                // radial-gradient(120% 80% at 50% 0%, pink .18, card 60%) of the mockup: the glow comes from the top edge.
+                drawRect(c.surfaceContainer)
+                drawRect(Brush.radialGradient(listOf(c.primary.copy(alpha = 0.18f), Color.Transparent), center = Offset(size.width / 2, 0f), radius = size.width * 0.72f))
             }
+            .border(1.5.dp, c.primary.copy(alpha = 0.45f), MaterialTheme.shapes.extraLarge)
+            .clickable(onClick = onPick),
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
+    ) {
+        Box(
+            Modifier.size(96.dp).shadow(24.dp, RoundedCornerShape(32.dp), ambientColor = c.primary, spotColor = c.primary)
+                .clip(RoundedCornerShape(32.dp)).background(c.primary),
+            contentAlignment = Alignment.Center,
+        ) { Icon(painterResource(R.drawable.ic_image), null, Modifier.size(44.dp), tint = c.onPrimary) }
+        Spacer(Modifier.height(14.dp))
+        Text(stringResource(R.string.home_pick_title), style = MaterialTheme.typography.headlineSmall)
+        Spacer(Modifier.height(6.dp))
+        Text(stringResource(R.string.home_pick_sub), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
+    }
 }
 
 /** Share hint (.share-hint): how to send a photo here from another app. */
 @Composable
 private fun ShareHint() {
     val c = MaterialTheme.colorScheme
-            Column(
-                Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(c.surfaceContainer).padding(horizontal = 16.dp, vertical = 14.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(painterResource(R.drawable.ic_share), null, Modifier.size(18.dp), tint = c.primary)
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.home_share_title), style = MaterialTheme.typography.titleSmall)
-                }
-                Text(stringResource(R.string.home_share_text), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
-                // Centred in the card - the owner's word in chat 2026-10-14 ≈ 18:50: «Фото - Поделиться - Кртун - выровнять по центру».
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)) {
-                    FlowChip(stringResource(R.string.flow_photo), false); Arrow()
-                    FlowChip(stringResource(R.string.flow_share), false); Arrow()
-                    FlowChip("KARTUN", true)
-                }
-            }
+    Column(
+        Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(c.surfaceContainer).padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(painterResource(R.drawable.ic_share), null, Modifier.size(18.dp), tint = c.primary)
+            Spacer(Modifier.width(8.dp))
+            Text(stringResource(R.string.home_share_title), style = MaterialTheme.typography.titleSmall)
+        }
+        Text(stringResource(R.string.home_share_text), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
+        // Centred in the card - the owner's word in chat 2026-10-14 ≈ 18:50: «Фото - Поделиться - Кртун - выровнять по центру».
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)) {
+            FlowChip(stringResource(R.string.flow_photo), false); Arrow()
+            FlowChip(stringResource(R.string.flow_share), false); Arrow()
+            FlowChip("KARTUN", true)
+        }
+    }
 }
 
 /** Foot note with the green dot: the promise of on-device processing. */

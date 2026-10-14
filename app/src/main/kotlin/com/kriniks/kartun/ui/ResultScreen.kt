@@ -79,6 +79,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
     BackHandler { vm.back() }
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
+    val shareTitle = stringResource(R.string.share)
     var saveOpen by remember { mutableStateOf(false) }
     // «Поделиться»: a PNG copy in the cache, then the system share sheet (plans/01 §2.9).
     val share: () -> Unit = {
@@ -86,7 +87,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
             vm.shareUri()?.let { uri ->
                 val send = Intent(Intent.ACTION_SEND).setType("image/png").putExtra(Intent.EXTRA_STREAM, uri)
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                ctx.startActivity(Intent.createChooser(send, ctx.getString(R.string.share)))
+                ctx.startActivity(Intent.createChooser(send, shareTitle))
             }
         }
     }
@@ -213,4 +214,4 @@ private fun SaveDialog(vm: UpscaleViewModel, full: android.graphics.Bitmap, onCl
 /** A pink upper-case label without the (i) button (the save dialog's own settings need no explanation window). */
 @Composable
 private fun SectionLabelPlain(text: String) =
-    Text(text.uppercase(java.util.Locale.getDefault()), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+    Text(text.uppercase(androidx.compose.ui.platform.LocalConfiguration.current.locales[0]), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)

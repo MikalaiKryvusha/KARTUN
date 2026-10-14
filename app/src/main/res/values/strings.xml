@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- English UI strings (the default locale; plans/01 §4.7). Russian twins: values-ru/strings.xml. -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="home_pick_title">Choose a photo</string>
     <string name="home_pick_sub">from your phone\'s gallery</string>
     <string name="home_paste_link">Paste a photo link</string>
@@ -45,7 +45,7 @@
     <string name="after">After</string>
     <string name="save">Save</string>
     <string name="share">Share</string>
-    <string name="result_time">%1$s · %2$s</string>
+    <string name="result_time" tools:ignore="MissingTranslation">%1$s · %2$s</string>
 
     <string name="error_too_big">Photos over %1$s MP are not supported yet: large photos arrive together with processing in parts.</string>
     <string name="error_decode">Could not open this photo.</string>
@@ -59,9 +59,9 @@
         <item quantity="one">%1$d minute</item>
         <item quantity="other">%1$d minutes</item>
     </plurals>
-    <string name="size_to">%1$s → %2$s</string>
-    <string name="percent">%1$d%%</string>
-    <string name="arrow">→</string>
+    <string name="size_to" tools:ignore="MissingTranslation">%1$s → %2$s</string>
+    <string name="percent" tools:ignore="MissingTranslation">%1$d%%</string>
+    <string name="arrow" tools:ignore="MissingTranslation">→</string>
     <!-- [AI] the notification of the processing service (plans/03 slice 2). -->
     <string name="notif_channel">Processing</string>
     <string name="notif_progress">%1$d%% done</string>
