@@ -53,6 +53,9 @@ BODY_PINK_MIN = 120     # R - G for the heart body
 LASER_LUMA_MIN = 200    # the white core of the laser line
 LASER_BAND = 30         # px either side of the laser line ignored when measuring the heart (its glow is pink too)
 OPEN_PX = 9             # odd px window that opens away the thin spark strokes (heart pixels are ~35 px squares)
+DISC_FEATHER = 0.93     # a --disc stays opaque inside 93 % of its radius, then fades to the background colour
+DISC_RING = 0.85        # the background colour is the average glass in the ring 85..100 % of the disc radius
+GLASS_PINK_MAX = 30     # R - G below this = bare glass, not the heart's glow
 EDGE_STRIP = 24         # px of the picture's border averaged for the background colour
 MEASURE_INSET = 0.17    # fraction of the side ignored at each edge when looking for the heart: icon_v2/v3 carry a
                         # pink neon rim around the plate at ~0.14 of the side; the hearts start at ~0.19
@@ -132,13 +135,29 @@ def border_colour(rgb):
     return tuple(round(t / n) for t in total)
 
 
-def feathered(img, side):
-    """The scaled picture with its outer ring faded to transparent, so its square edge never shows on the
-    background layer even where the colours differ by a unit or two."""
+def ring_colour(rgb, r_in, r_out):
+    """Average colour of the ring r_in..r_out px around the picture's centre - the glass at the disc's edge; pink
+    pixels (the heart's glow, the laser) are skipped, so the colour is the bare glass."""
+    w, h = rgb.size
+    c = (w - 1) / 2
+    px = rgb.load()
+    total, n = [0, 0, 0], 0
+    for y in range(0, h, 2):
+        for x in range(0, w, 2):
+            v = px[x, y]
+            if r_in <= math.hypot(x - c, y - c) <= r_out and v[0] - v[1] < GLASS_PINK_MAX:
+                total[0] += v[0]; total[1] += v[1]; total[2] += v[2]
+                n += 1
+    return tuple(round(t / n) for t in total)
+
+
+def feathered(img, side, r_zero_frac=0.5, r_full_frac=0.40):
+    """The picture with its outer ring faded to transparent, so its edge never shows on the background layer.
+    Default: opaque inside 80 % of the side, zero at the edge circle. A disc cut (--disc) fades at the disc's edge."""
     alpha = Image.new('L', (side, side), 0)
     draw = ImageDraw.Draw(alpha)
     steps = 64
-    r_full, r_zero = side * 0.40, side * 0.5          # opaque inside 80 % of the side, zero at the edge circle
+    r_full, r_zero = side * r_full_frac, side * r_zero_frac
     for i in range(steps, -1, -1):
         rr = r_zero - (r_zero - r_full) * i / steps
         draw.ellipse((side / 2 - rr, side / 2 - rr, side / 2 + rr, side / 2 + rr), fill=int(255 * i / steps))
@@ -176,6 +195,11 @@ def main():
                     help='where to write the mask preview sheet')
     ap.add_argument('--inset', type=float, default=DEFAULT_INSET,
                     help='edge fraction ignored when looking for the heart (0.21 for icon_v3: its rim glows inward)')
+    ap.add_argument('--heart-dp', type=float,
+                    help='place the heart so its farthest pixel is this many dp from the centre (visible circle 36 dp)')
+    ap.add_argument('--disc', type=float,
+                    help='cut a glass disc of this radius (fraction of the picture side) out of the plate and fill the '
+                         'rest with the disc edge colour - keeps the plate rim out of the circle when the heart shrinks')
     ap.add_argument('--preview-only', action='store_true', help='write only the preview, leave app resources alone')
     args = ap.parse_args()
 
@@ -192,6 +216,11 @@ def main():
     scale = min(scale, 1.0)
     if args.scale:
         scale = args.scale
+    if args.heart_dp:
+        scale = args.heart_dp * w / (far * LAYER_DP)
+    if args.disc:
+        r = args.disc * w
+        bg = ring_colour(heart, r * DISC_RING, r)
     print(f'source {os.path.relpath(args.src, ROOT)}; heart farthest pixel = '
           f'{far / w * scale * LAYER_DP:.1f} dp from the centre (safe circle {SAFE_RADIUS_DP} dp, visible circle '
           f'{VISIBLE_DP // 2} dp)')
@@ -199,7 +228,7 @@ def main():
           f'background #{bg[0]:02X}{bg[1]:02X}{bg[2]:02X}; picture scale {scale:.3f} of the layer '
           f'(heart width {(bbox[2] - bbox[0]) / w * scale * LAYER_DP:.1f} dp of {VISIBLE_DP} dp visible)')
 
-    fg_src = feathered(heart, w)
+    fg_src = feathered(heart, w, args.disc, args.disc * DISC_FEATHER) if args.disc else feathered(heart, w)
     mono_src = Image.new('RGBA', (w, h), (255, 255, 255, 0))
     mono_src.putalpha(silhouette(body, laser_x))
 
