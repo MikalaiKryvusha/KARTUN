@@ -387,9 +387,12 @@ private fun ScaleSlider(vm: UpscaleViewModel) {
                     Box(Modifier.size(26.dp).shadow(4.dp, CircleShape).clip(CircleShape).background(c.onBackground))
                 }
             }
+            // The bubble stays inside the track: centred over the thumb, but held at the edges at 1× and 16× (plan 03 step 36:
+            // at 1× it stuck out past the screen's left edge). 52 dp holds «16×».
+            val bubbleW = 52.dp
             Text(
                 "${vm.scale}×",
-                Modifier.offset(x = x - 22.dp, y = (-34).dp).width(44.dp).clip(CircleShape).background(c.primary).padding(vertical = 4.dp),
+                Modifier.offset(x = (x - bubbleW / 2).coerceIn(0.dp, maxWidth - bubbleW), y = (-34).dp).width(bubbleW).clip(CircleShape).background(c.primary).padding(vertical = 4.dp),
                 style = MaterialTheme.typography.titleSmall, color = c.onPrimary,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             )

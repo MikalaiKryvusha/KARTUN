@@ -133,8 +133,10 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
     не разрешены - "Не для комерческого использования"» — `licence_bsd` reads «Разрешена для коммерческого использования · BSD-3»
     (EN «Commercial use allowed · BSD-3», 8 drafts regenerated); fits one line on the Titan 21:44. The «Не для коммерческого
     использования» badge has no model to stand on yet: it lands with the catalogue (step 22) and its non-commercial models.
-36. [ ] BUG (seen by the agent on the Titan 21:44) the scale bubble at 1× sticks out past the left screen edge (at 16× it
+36. [x] BUG (seen by the agent on the Titan 21:44) the scale bubble at 1× sticks out past the left screen edge (at 16× it
     reached the right edge too) - clamp the bubble inside the track's width.
+    Done ≈ 21:47: the bubble (52 dp) is clamped to the track; on the Titan at 1× it starts at the track's left end, at 16× it
+    ends at the right end.
 
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel
