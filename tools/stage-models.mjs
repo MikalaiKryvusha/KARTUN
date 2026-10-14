@@ -23,8 +23,13 @@ const MODELS = {
 };
 
 const sha = (p) => createHash('sha256').update(readFileSync(p)).digest('hex');
-mkdirSync(OUT, { recursive: true });
 let bad = 0;
+// The pair «docs/model-licenses.md ↔ this script»: every hash here must stand in the provenance document too.
+const doc = readFileSync(join(ROOT, 'docs', 'model-licenses.md'), 'utf8');
+for (const [name, [, hParam, hBin]] of Object.entries(MODELS)) {
+  for (const h of [hParam, hBin]) if (!doc.includes(h)) { console.error(`DRIFT ${name}: ${h.slice(0, 8)}… is not in docs/model-licenses.md`); bad++; }
+}
+mkdirSync(OUT, { recursive: true });
 for (const [name, [dir, hParam, hBin]] of Object.entries(MODELS)) {
   for (const [ext, want] of [['param', hParam], ['bin', hBin]]) {
     const src = join(dir, `${name}.${ext}`);
