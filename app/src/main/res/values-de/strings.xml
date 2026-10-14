@@ -77,4 +77,10 @@
     <string name="settings_manual">Benutzeranleitung</string>
     <string name="settings_manual_sub">So nutzt du KARTUN und seine Modelle</string>
     <string name="info_open_guide">Die ganze Anleitung öffnen</string>
+    <string name="about_title">Über</string>
+    <string name="about_tagline">Version %1$s · Open Source · offline · KI auf dem Gerät</string>
+    <string name="about_device">Gerät</string>
+    <string name="about_model">Gerätemodell</string>
+    <string name="about_engine">Engine</string>
+    <string name="about_licences">Lizenzen</string>
 </resources>

@@ -79,4 +79,10 @@
     <string name="settings_manual">Guía del usuario</string>
     <string name="settings_manual_sub">Cómo usar KARTUN y sus modelos</string>
     <string name="info_open_guide">Abrir la guía completa</string>
+    <string name="about_title">Acerca de</string>
+    <string name="about_tagline">Versión %1$s · código abierto · sin conexión · IA en el dispositivo</string>
+    <string name="about_device">Dispositivo</string>
+    <string name="about_model">Modelo del dispositivo</string>
+    <string name="about_engine">Motor</string>
+    <string name="about_licences">Licencias</string>
 </resources>

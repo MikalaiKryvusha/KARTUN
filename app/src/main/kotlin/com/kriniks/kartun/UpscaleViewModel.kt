@@ -35,7 +35,7 @@ import kotlin.math.roundToInt
  */
 class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
-    enum class Screen { Home, Setup, Working, Result, Settings, Manual }
+    enum class Screen { Home, Setup, Working, Result, Settings, Manual, About }
 
     /**
      * The two models shipped in the APK. [msPerMp] is the starting estimate for the time per input megapixel, measured
@@ -128,6 +128,8 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     fun openSettings() { beforeSettings = screen; screen = Screen.Settings }
 
     private var beforeManual = Screen.Settings
+
+    fun openAbout() { screen = Screen.About }
 
     /** The guide, from the settings or from an (i) window; Back returns where it was opened. */
     fun openManual() { beforeManual = screen; screen = Screen.Manual }
@@ -348,6 +350,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
             Screen.Result -> { screen = Screen.Setup; result = null; saveMessage = null }
             Screen.Settings -> { screen = beforeSettings; if (screen == Screen.Setup) preload() }
             Screen.Manual -> screen = beforeManual
+            Screen.About -> screen = Screen.Settings
             Screen.Home -> Unit
         }
     }

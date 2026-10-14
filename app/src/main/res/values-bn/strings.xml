@@ -77,4 +77,10 @@
     <string name="settings_manual">ব্যবহারকারী নির্দেশিকা</string>
     <string name="settings_manual_sub">KARTUN ও এর মডেল কীভাবে ব্যবহার করবেন</string>
     <string name="info_open_guide">পুরো নির্দেশিকা খুলুন</string>
+    <string name="about_title">অ্যাপ সম্পর্কে</string>
+    <string name="about_tagline">সংস্করণ %1$s · ওপেন সোর্স · অফলাইন · ডিভাইসে AI</string>
+    <string name="about_device">ডিভাইস</string>
+    <string name="about_model">ডিভাইসের মডেল</string>
+    <string name="about_engine">ইঞ্জিন</string>
+    <string name="about_licences">লাইসেন্স</string>
 </resources>

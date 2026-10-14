@@ -62,6 +62,7 @@ test photo copied to `Pictures/KARTUN_test/` and removed after (R1 of HOUSE_RULE
 | C19 | «Улучшение» with the 960×1280 photo at 2× → the cards read «Быстрая · для фото · ≈ 7 секунд» and «Максимум · живая фактура · ≈ 1 минута 49 секунд»; at 8× both grow ≈ 5× | state | [NOT-TESTED] |
 | C20 | «Настройки» → «Руководство пользователя» → the guide: pink section numbers, the numbered list of ways to bring a photo, the scale table with «2× · по умолч.» in bold, the pink-edged note; Back → «Настройки»; English system language → the English guide | state | [NOT-TESTED] |
 | C21 | «Улучшение» → (i) of «Масштаб» → «Открыть руководство полностью» → the guide; Back → «Улучшение»; the gear in its top bar → «Настройки»; Back → «Улучшение» with the model ready | state | [NOT-TESTED] |
+| C22 | «Настройки» → the (i)-circle icon top right → «О приложении»: version 0.1 (1), «HEADWOLF F8» or the real model, Android 16 (API 36), the GPU line with Mali-G615 MC6, ncnn 20260526, five licence rows | state | [NOT-TESTED] |
 | C14 | debug build: `node tools/titan-probe.mjs --in test256.png --model realesr-general-x4v3 --gpu true --tile 200` → JSON line as before | regression | [NOT-TESTED] |
 
 ## 5. Control cases — MUST

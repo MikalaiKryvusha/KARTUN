@@ -240,6 +240,19 @@ GUIDE = {
 OPEN_GUIDE = {"es": "Abrir la guía completa", "pt": "Abrir o guia completo", "fr": "Ouvrir le guide complet", "de": "Die ganze Anleitung öffnen",
               "zh": "打开完整指南", "hi": "पूरी गाइड खोलें", "bn": "পুরো নির্দেশিকা খুলুন", "ar": "افتح الدليل كاملًا"}
 
+# «О приложении»: about_title · about_tagline · about_device · about_model · about_engine · about_licences.
+ABOUT_KEYS = ["about_title", "about_tagline", "about_device", "about_model", "about_engine", "about_licences"]
+ABOUT = {
+    "es": ["Acerca de", "Versión %1$s · código abierto · sin conexión · IA en el dispositivo", "Dispositivo", "Modelo del dispositivo", "Motor", "Licencias"],
+    "pt": ["Sobre", "Versão %1$s · código aberto · offline · IA no dispositivo", "Dispositivo", "Modelo do dispositivo", "Motor", "Licenças"],
+    "fr": ["À propos", "Version %1$s · open source · hors ligne · IA sur l’appareil", "Appareil", "Modèle de l’appareil", "Moteur", "Licences"],
+    "de": ["Über", "Version %1$s · Open Source · offline · KI auf dem Gerät", "Gerät", "Gerätemodell", "Engine", "Lizenzen"],
+    "zh": ["关于", "版本 %1$s · 开源 · 离线 · 设备端 AI", "设备", "设备型号", "引擎", "许可证"],
+    "hi": ["ऐप के बारे में", "संस्करण %1$s · ओपन सोर्स · ऑफ़लाइन · डिवाइस पर AI", "डिवाइस", "डिवाइस मॉडल", "इंजन", "लाइसेंस"],
+    "bn": ["অ্যাপ সম্পর্কে", "সংস্করণ %1$s · ওপেন সোর্স · অফলাইন · ডিভাইসে AI", "ডিভাইস", "ডিভাইসের মডেল", "ইঞ্জিন", "লাইসেন্স"],
+    "ar": ["حول التطبيق", "الإصدار %1$s · مفتوح المصدر · دون اتصال · ذكاء اصطناعي على الجهاز", "الجهاز", "طراز الجهاز", "المحرك", "التراخيص"],
+}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -264,6 +277,9 @@ def main():
         for k, v in zip(("manual_title", "settings_manual", "settings_manual_sub"), GUIDE[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="info_open_guide">{xml_text(OPEN_GUIDE[lang])}</string>')
+        assert len(ABOUT[lang]) == len(ABOUT_KEYS), (lang, "about")
+        for k, v in zip(ABOUT_KEYS, ABOUT[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         body = "\n".join(lines)

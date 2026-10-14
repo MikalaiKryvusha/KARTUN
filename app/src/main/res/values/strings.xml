@@ -97,4 +97,11 @@
     <string name="settings_manual">User guide</string>
     <string name="settings_manual_sub">How to use KARTUN and its models</string>
     <string name="info_open_guide">Open the full guide</string>
+    <!-- [AI] «О приложении» (plans/01 §2.14; the tagline echoes GOAL.md «Open-source · Offline · AI-powered»). -->
+    <string name="about_title">About</string>
+    <string name="about_tagline">Version %1$s · open source · offline · AI on the device</string>
+    <string name="about_device">Device</string>
+    <string name="about_model">Device model</string>
+    <string name="about_engine">Engine</string>
+    <string name="about_licences">Licences</string>
 </resources>
