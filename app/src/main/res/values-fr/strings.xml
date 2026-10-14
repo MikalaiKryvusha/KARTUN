@@ -17,7 +17,7 @@
     <string name="label_scale">Échelle</string>
     <string name="model_fast_desc">Rapide · pour les photos</string>
     <string name="model_max_desc">Maximum · texture vivante</string>
-    <string name="licence_bsd">Usage commercial · BSD-3</string>
+    <string name="licence_bsd">Usage commercial autorisé · BSD-3</string>
     <string name="megapixels">%1$s Mpx</string>
     <string name="scale_too_big">Le résultat dépasserait %1$s Mpx — pour cette photo, choisissez jusqu’à %2$d×</string>
     <string name="scale_two_pass">2 passes · plus long · gros fichier</string>

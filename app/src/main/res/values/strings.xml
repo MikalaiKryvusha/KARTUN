@@ -19,7 +19,7 @@
     <string name="model_fast_desc">Fast · for photos</string>
     <string name="model_max_name" translatable="false">Real-ESRGAN x4plus</string>
     <string name="model_max_desc">Maximum · rich texture</string>
-    <string name="licence_bsd">Commercial use · BSD-3</string>
+    <string name="licence_bsd">Commercial use allowed · BSD-3</string>
     <string name="megapixels">%1$s MP</string>
     <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
     <string name="scale_too_big">The result would exceed %1$s MP — for this photo choose up to %2$d×</string>

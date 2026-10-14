@@ -17,7 +17,7 @@
     <string name="label_scale">Maßstab</string>
     <string name="model_fast_desc">Schnell · für Fotos</string>
     <string name="model_max_desc">Maximum · lebendige Textur</string>
-    <string name="licence_bsd">Kommerzielle Nutzung · BSD-3</string>
+    <string name="licence_bsd">Kommerzielle Nutzung erlaubt · BSD-3</string>
     <string name="megapixels">%1$s MP</string>
     <string name="scale_too_big">Das Ergebnis würde %1$s MP überschreiten – für dieses Foto bis %2$d× wählen</string>
     <string name="scale_two_pass">2 Durchgänge · länger · große Datei</string>

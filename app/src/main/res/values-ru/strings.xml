@@ -20,7 +20,7 @@
     <string name="model_fast_desc">Быстрая · для фото</string>
     <string name="model_max_name">Real-ESRGAN x4plus</string>
     <string name="model_max_desc">Максимум · живая фактура</string>
-    <string name="licence_bsd">Для коммерции · BSD-3</string>
+    <string name="licence_bsd">Разрешена для коммерческого использования · BSD-3</string>
     <string name="megapixels">%1$s Мп</string>
     <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
     <string name="scale_too_big">Результат больше %1$s Мп — для этого фото подойдёт масштаб до %2$d×</string>
