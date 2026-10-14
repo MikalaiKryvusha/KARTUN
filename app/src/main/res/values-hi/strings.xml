@@ -18,7 +18,6 @@
     <string name="model_fast_desc">तेज़ · फ़ोटो के लिए</string>
     <string name="model_max_desc">अधिकतम · जीवंत बनावट</string>
     <string name="licence_bsd">व्यावसायिक उपयोग · BSD-3</string>
-    <string name="scale_default">डिफ़ॉल्ट</string>
     <string name="megapixels">%1$s MP</string>
     <string name="scale_too_big">नतीजा %1$s MP से बड़ा होगा — इस फ़ोटो के लिए %2$d× तक चुनें</string>
     <string name="scale_two_pass">2 बार · ज़्यादा समय · बड़ी फ़ाइल</string>

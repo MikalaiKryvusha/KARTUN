@@ -18,7 +18,6 @@
     <string name="model_fast_desc">দ্রুত · ছবির জন্য</string>
     <string name="model_max_desc">সর্বোচ্চ · জীবন্ত টেক্সচার</string>
     <string name="licence_bsd">বাণিজ্যিক ব্যবহার · BSD-3</string>
-    <string name="scale_default">ডিফল্ট</string>
     <string name="megapixels">%1$s MP</string>
     <string name="scale_too_big">ফলাফল %1$s MP ছাড়িয়ে যাবে — এই ছবির জন্য %2$d× পর্যন্ত বেছে নিন</string>
     <string name="scale_two_pass">২ বার · বেশি সময় · বড় ফাইল</string>

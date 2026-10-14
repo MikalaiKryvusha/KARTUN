@@ -18,7 +18,6 @@
     <string name="model_fast_desc">快速 · 适合照片</string>
     <string name="model_max_desc">最佳 · 生动纹理</string>
     <string name="licence_bsd">可商用 · BSD-3</string>
-    <string name="scale_default">默认</string>
     <string name="megapixels">%1$s 百万像素</string>
     <string name="scale_too_big">结果将超过 %1$s 百万像素——这张照片最多可选 %2$d×</string>
     <string name="scale_two_pass">2 次处理 · 更慢 · 文件很大</string>

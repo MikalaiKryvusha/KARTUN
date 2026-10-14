@@ -88,6 +88,8 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
     добавить» — the model catalogue (phase 4 pulled forward; mockup 'models', licence badges as accepted in interview #002).
 23. [ ] (owner, chat 2026-10-14 ≈ 20:49 +03:00, looking at the «Улучшение» screenshot) «убрать строчку По умолч» — the
     «2× · по умолч.» tick label under the scale slider becomes plain «2×».
+24. [ ] (owner, chat 2026-10-14 ≈ 20:50 +03:00) «в настройки пускать только с главного экрана приложения» — the gear leaves
+    the «Улучшение» top bar (the only other screen that had it); the home screen keeps it.
 
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel

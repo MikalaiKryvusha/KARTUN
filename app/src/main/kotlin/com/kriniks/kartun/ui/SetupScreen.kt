@@ -217,8 +217,9 @@ private fun SetupTopBar(vm: UpscaleViewModel) {
         RoundIconButton(R.drawable.ic_back, onClick = vm::back)
         Text(stringResource(R.string.setup_title), Modifier.weight(1f), style = MaterialTheme.typography.titleLarge,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-        // The gear of the mockup ('A-setup'): the settings, and Back returns here.
-        RoundIconButton(R.drawable.ic_gear, onClick = vm::openSettings)
+        // No gear here: the settings open from the home screen only (the owner, chat 2026-10-14 ≈ 20:50 +03:00:
+        // «в настройки пускать только с главного экрана приложения»); an empty box of the button's size keeps the title centred.
+        Spacer(Modifier.size(44.dp))
     }
 }
 
@@ -396,9 +397,9 @@ private fun ScaleSlider(vm: UpscaleViewModel) {
         // Step marks at 0, 25, 50, 75, 100 % - the first left-aligned, the last right-aligned, the rest centred.
         Box(Modifier.fillMaxWidth().padding(top = 6.dp)) {
             UpscaleViewModel.SCALES.forEachIndexed { i, s ->
-                val label = if (i == UpscaleViewModel.DEFAULT_SCALE_INDEX) "$s× · ${stringResource(R.string.scale_default)}" else "$s×"
+                // Plain «2×», no «по умолч.» (the owner, chat 2026-10-14 ≈ 20:49 +03:00: «убрать строчку По умолч»).
                 Text(
-                    label,
+                    "$s×",
                     Modifier.layout { measurable, constraints ->
                         val pl = measurable.measure(constraints.copy(minWidth = 0))
                         val at = constraints.maxWidth * i / last

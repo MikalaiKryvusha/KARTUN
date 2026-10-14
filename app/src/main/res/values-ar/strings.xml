@@ -18,7 +18,6 @@
     <string name="model_fast_desc">سريع · للصور</string>
     <string name="model_max_desc">أقصى جودة · ملمس حي</string>
     <string name="licence_bsd">للاستخدام التجاري · BSD-3</string>
-    <string name="scale_default">افتراضي</string>
     <string name="megapixels">%1$s ميغابكسل</string>
     <string name="scale_too_big">ستتجاوز النتيجة %1$s ميغابكسل — اختر لهذه الصورة حتى %2$d×</string>
     <string name="scale_two_pass">مرّتان · أطول · ملف كبير</string>
