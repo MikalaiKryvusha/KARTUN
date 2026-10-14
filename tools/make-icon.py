@@ -2,8 +2,9 @@
 
 [NOT-TESTED] - fresh; becomes TESTED after the icon is seen on the Titan's home screen.
 
-Inputs (the owner's originals, never edited): design/icon/heart_neon.png - the heart without a plate (the owner's
-verdict 2026-10-14 15:11: the icon is this picture as is), design/icon/icon_v2.png - the version with a glass plate.
+Inputs (the owner's originals, never edited): design/icon/icon_v3.png - the launcher picture (redrawn by the owner for
+the OS circle crop, 2026-10-14 15:30); design/icon/heart_neon.png - the earlier heart without a plate (verdict 15:11,
+superseded by icon_v3); design/icon/icon_v2.png - the store picture.
 
 Outputs:
   app/src/main/res/mipmap-{m,h,xh,xxh,xxxh}dpi/ic_launcher_foreground.png  - the picture, scaled so the heart sits
@@ -22,6 +23,7 @@ streak above and below the heart may be cut by a mask - it fades out there anywa
 Run from the project root:  python tools/make-icon.py
 (needs Pillow only; the system Python of this machine has it - HOUSE_RULES.md section 6)
 """
+import argparse
 import math
 import os
 import sys
@@ -29,7 +31,12 @@ import sys
 from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC_HEART = os.path.join(ROOT, 'design', 'icon', 'heart_neon.png')
+# The launcher picture: icon_v3 - the owner's redraw for the OS circle crop (2026-10-14 15:30: "я просил перерисовать
+# так, чтобы в круге ОС кропало сердце так, чтобы оно по центру оказывалось"). Used full-bleed (scale 1.0): the circle
+# cuts inside the glass plate and the heart sits on the safe circle. heart_neon.png: --src ... --inset 0.17 (auto scale).
+SRC_HEART = os.path.join(ROOT, 'design', 'icon', 'icon_v3.png')
+DEFAULT_SCALE = 1.0
+DEFAULT_INSET = 0.21
 SRC_PLATE = os.path.join(ROOT, 'design', 'icon', 'icon_v2.png')
 RES = os.path.join(ROOT, 'app', 'src', 'main', 'res')
 
@@ -47,6 +54,8 @@ LASER_LUMA_MIN = 200    # the white core of the laser line
 LASER_BAND = 30         # px either side of the laser line ignored when measuring the heart (its glow is pink too)
 OPEN_PX = 9             # odd px window that opens away the thin spark strokes (heart pixels are ~35 px squares)
 EDGE_STRIP = 24         # px of the picture's border averaged for the background colour
+MEASURE_INSET = 0.17    # fraction of the side ignored at each edge when looking for the heart: icon_v2/v3 carry a
+                        # pink neon rim around the plate at ~0.14 of the side; the hearts start at ~0.19
 
 
 def laser_column(rgb):
@@ -61,12 +70,17 @@ def laser_column(rgb):
     return best_x
 
 
-def body_mask(rgb, laser_x):
+def body_mask(rgb, laser_x, inset=MEASURE_INSET):
     """Hard mask of the heart BODY: saturated pink, with the laser band blanked (its pink glow runs far above and
     below the heart and would otherwise set the size) and the thin spark strokes around the laser opened away."""
     r, g, _ = rgb.split()
     body = ImageChops.subtract(r, g).point(lambda v: 255 if v > BODY_PINK_MIN else 0)
-    ImageDraw.Draw(body).rectangle((laser_x - LASER_BAND, 0, laser_x + LASER_BAND, rgb.size[1]), fill=0)
+    draw = ImageDraw.Draw(body)
+    draw.rectangle((laser_x - LASER_BAND, 0, laser_x + LASER_BAND, rgb.size[1]), fill=0)
+    w, h = rgb.size
+    m = round(w * inset)                          # the plate's neon rim (icon_v2/v3) lies outside this box
+    for box in ((0, 0, w, m), (0, h - m, w, h), (0, 0, m, h), (w - m, 0, w, h)):
+        draw.rectangle(box, fill=0)
     return body.filter(ImageFilter.MinFilter(OPEN_PX)).filter(ImageFilter.MaxFilter(OPEN_PX))
 
 
@@ -154,17 +168,33 @@ def squircle_mask(size, n=4.0):
 
 
 def main():
-    heart = Image.open(SRC_HEART).convert('RGB')
+    ap = argparse.ArgumentParser(description='Build the KARTUN launcher icon from an owner picture in design/icon/.')
+    ap.add_argument('--src', default=SRC_HEART, help='owner picture for the launcher icon (default icon_v3.png)')
+    ap.add_argument('--scale', type=float, default=DEFAULT_SCALE,
+                    help='picture side / layer side; 0 = auto: the heart fits the safe circle')
+    ap.add_argument('--preview', default=os.path.join(ROOT, 'design', 'icon', 'preview_masks.png'),
+                    help='where to write the mask preview sheet')
+    ap.add_argument('--inset', type=float, default=DEFAULT_INSET,
+                    help='edge fraction ignored when looking for the heart (0.21 for icon_v3: its rim glows inward)')
+    ap.add_argument('--preview-only', action='store_true', help='write only the preview, leave app resources alone')
+    args = ap.parse_args()
+
+    heart = Image.open(args.src).convert('RGB')
     w, h = heart.size
     if w != h:
         sys.exit(f'heart picture is not square: {w}x{h}')
     laser_x = laser_column(heart)
-    body = body_mask(heart, laser_x)
+    body = body_mask(heart, laser_x, args.inset)
     bbox, far = body_extent(body)
     bg = border_colour(heart)
     # scale = picture side / layer side, chosen so the farthest heart pixel lands on the safe circle.
     scale = SAFE_MARGIN * (SAFE_RADIUS_DP / LAYER_DP) * w / far
     scale = min(scale, 1.0)
+    if args.scale:
+        scale = args.scale
+    print(f'source {os.path.relpath(args.src, ROOT)}; heart farthest pixel = '
+          f'{far / w * scale * LAYER_DP:.1f} dp from the centre (safe circle {SAFE_RADIUS_DP} dp, visible circle '
+          f'{VISIBLE_DP // 2} dp)')
     print(f'laser x {laser_x}; heart body bbox {bbox}, farthest pixel {far:.1f} px of half-side {w / 2}; '
           f'background #{bg[0]:02X}{bg[1]:02X}{bg[2]:02X}; picture scale {scale:.3f} of the layer '
           f'(heart width {(bbox[2] - bbox[0]) / w * scale * LAYER_DP:.1f} dp of {VISIBLE_DP} dp visible)')
@@ -172,6 +202,12 @@ def main():
     fg_src = feathered(heart, w)
     mono_src = Image.new('RGBA', (w, h), (255, 255, 255, 0))
     mono_src.putalpha(silhouette(body, laser_x))
+
+    write_preview(fg_src, mono_src, scale, bg, args.preview)
+    if args.preview_only:
+        print('preview only:', args.preview)
+        return
+    src_name = os.path.relpath(args.src, ROOT).replace('\\', '/')
 
     for name, k in DENSITIES.items():
         px = round(LAYER_DP * k)
@@ -183,7 +219,7 @@ def main():
     os.makedirs(os.path.join(RES, 'values'), exist_ok=True)
     with open(os.path.join(RES, 'values', 'ic_launcher_background.xml'), 'w', encoding='utf-8', newline='\n') as f:
         f.write('<?xml version="1.0" encoding="utf-8"?>\n'
-                '<!-- Generated by tools/make-icon.py: the border colour of design/icon/heart_neon.png. -->\n'
+                f'<!-- Generated by tools/make-icon.py: the border colour of {src_name}. -->\n'
                 '<resources>\n'
                 f'    <color name="ic_launcher_background">#{bg[0]:02X}{bg[1]:02X}{bg[2]:02X}</color>\n'
                 '</resources>\n')
@@ -202,9 +238,12 @@ def main():
 
     Image.open(SRC_PLATE).convert('RGB').resize((STORE_SIDE, STORE_SIDE), Image.LANCZOS).save(
         os.path.join(ROOT, 'design', 'icon', 'store_512.png'), optimize=True)
+    print('written: mipmaps for', ', '.join(DENSITIES), '+ store_512.png + preview')
 
-    # Preview: the launcher icon as a phone shows it - 192 px of visible area under three mask shapes,
-    # then the themed (monochrome) icon tinted pink on a dark tonal disc.
+
+def write_preview(fg_src, mono_src, scale, bg, path):
+    """The launcher icon as a phone shows it - 192 px of visible area under three mask shapes,
+    then the themed (monochrome) icon tinted pink on a dark tonal disc."""
     vis = 192
     lay = round(vis * LAYER_DP / VISIBLE_DP)
     full = Image.new('RGBA', (lay, lay), bg + (255,))
@@ -229,8 +268,7 @@ def main():
         cell = Image.new('RGBA', (vis, vis), (0, 0, 0, 0))
         cell.paste(t, (0, 0), m)
         sheet.alpha_composite(cell, (gap + i * (vis + gap), gap))
-    sheet.save(os.path.join(ROOT, 'design', 'icon', 'preview_masks.png'), optimize=True)
-    print('written: mipmaps for', ', '.join(DENSITIES), '+ store_512.png + preview_masks.png')
+    sheet.save(path, optimize=True)
 
 
 if __name__ == '__main__':
