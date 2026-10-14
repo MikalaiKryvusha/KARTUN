@@ -39,6 +39,7 @@ tap` at the screen coordinates read from screenshots — taps, not intents; the 
 | 16 | 2026-10-14 19:02 +03:00 | build with the pull-down (plans/03 step 9) → path of run 2 → `input swipe 800 1400 800 2300 1500` (on the settings) → `input swipe 800 1200 800 1900 400` | the photo opens full screen on black; the vertical swipe closes it back to «Улучшение» |
 | 17 | 2026-10-14 19:05 +03:00 | build with the draggable preview → `input swipe 800 500 800 1300 1500` (on the photo) → `input keyevent 4` → `input swipe 800 1000 800 300 800` (photo up) | pull on the photo opens full screen (empty dump), Back closes it; dragging the photo up shrinks it; FATAL count 0 |
 | 18 | 2026-10-14 19:08 +03:00 | icon with random tile tones (`python tools/make-vector-icon.py --apply`, run twice: drawable sha256 `f0901210a0cbc2ef…` both times) → build → splash `screencap` 0.15 s after `am start`, app list | chaotic bright/dark glass tiles on the splash and in the app list (`design/icon/compare_vector_chaos.png`) |
+| 19 | 2026-10-14 19:12 +03:00 | «умный рандом» tones (`python tools/make-vector-icon.py --apply`, twice: sha256 `f71a537b571c5ea7…` both) → build → splash `screencap` after `am force-stop` + `am start` (Titan in landscape, 2560×1600), home screen | the left half reads as the glossy half in pixels: bright under the mirrored highlight, darker to the tip, jittered; no two equal neighbours (`design/icon/compare_vector_smart.png`) |
 
 ## 4. Checks
 

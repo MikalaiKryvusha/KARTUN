@@ -28,29 +28,59 @@ RIGHT_HALF = "M54,0 H108 V108 H54 Z"
 
 PINK = "#FF1A8C"
 TILE = 4.0                      # checker glass square, dp
-# Glass tones of the tiles, dark to bright. Each tile takes one at random - the owner, 2026-10-14 ≈ 19:10: «пиксели слева
-# нужно рандомно ярче темнее хаос». The seed is fixed, so every rebuild draws the same chaos (no drift between runs).
+# Glass tones of the tiles, dark to bright. The tone of a tile is a SMART random (the owner, 2026-10-14: «пиксели слева
+# нужно рандомно ярче темнее хаос», then «умный рандом»): the left half is the glossy right half seen "in pixels" - each
+# tile takes the light of the mirrored point of the smooth half (bright under the highlight, dark towards the tip), plus a
+# seeded jitter of one tone, and never repeats the tone of its left or upper neighbour. The seed is fixed, so every
+# rebuild draws the same tiles.
 TILE_TONES = ["#6E0038", "#8E0049", "#B8005F", "#E0087A", "#FF3D9E", "#FF6BB5", "#FF9ACB"]
 TILE_SEED = 14
 GLOW = "#FF1A8C"
+# The smooth half's light, mirrored onto the left: gloss runs from (52,30) bright to (32,74) dark, the highlight sits
+# at (40,36.5) - the mirror images of the right half's gradient axis and specular spot about x = 54.
+GLOSS_FROM, GLOSS_TO = (52.0, 30.0), (32.0, 74.0)
+SPOT, SPOT_R = (40.0, 36.5), 9.0
+
+
+def light(cx, cy):
+    """0..1 brightness of the smooth half at the mirrored point (cx, cy): the gloss gradient plus the highlight."""
+    (x0, y0), (x1, y1) = GLOSS_FROM, GLOSS_TO
+    dx, dy = x1 - x0, y1 - y0
+    t = ((cx - x0) * dx + (cy - y0) * dy) / (dx * dx + dy * dy)
+    base = 1.0 - min(max(t, 0.0), 1.0)
+    d = ((cx - SPOT[0]) ** 2 + (cy - SPOT[1]) ** 2) ** 0.5
+    spot = max(0.0, 1.0 - d / SPOT_R)
+    return min(1.0, 0.15 + 0.7 * base + 0.45 * spot)
 
 
 def squares():
-    """Glass squares covering the left half of the heart's bounding box (clipped to the heart later), each of a random
-    tone; a fresh seeded generator per call, so every caller gets the same tiles in the same order."""
+    """Glass squares covering the left half of the heart's bounding box (clipped to the heart later), toned by the
+    smart random above; a fresh seeded generator per call, so every caller gets the same tiles in the same order."""
     rnd = random.Random(TILE_SEED)
+    last = len(TILE_TONES) - 1
     out = []
+    prev_row = {}
     y = 28.0
-    row = 0
     while y < 80:
         x = 26.0
         col = 0
+        left = None
+        row = {}
         while x < 54:
-            out.append((x, y, rnd.choice(TILE_TONES)))
+            i = round(light(x + TILE / 2, y + TILE / 2) * last) + rnd.choice((-1, 0, 0, 1))
+            i = min(max(i, 0), last)
+            # Never the same tone as the left or upper neighbour: step towards the light the tile should have.
+            for _ in range(3):
+                if i != left and i != prev_row.get(col):
+                    break
+                i = i + 1 if i < last and rnd.random() < 0.5 else max(i - 1, 0)
+            out.append((x, y, TILE_TONES[i]))
+            row[col] = i
+            left = i
             x += TILE
             col += 1
+        prev_row = row
         y += TILE
-        row += 1
     return out
 
 
