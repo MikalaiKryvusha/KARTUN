@@ -21,3 +21,19 @@ Run: `testcases/reports/2026-10-14_F0_own_fast_model.md`.
 
 ncnn `20260526` (Tencent, BSD 3-Clause) — prebuilt `ncnn-20260526-android-vulkan.zip`, fetched and hash-checked by
 `tools/fetch-ncnn.mjs`.
+
+## Catalogue models (downloaded on demand, not in the APK)
+
+Served from the GitHub release `models` of this repository; the files, their SHA-256 and sizes live in one place —
+[model-catalogue.json](model-catalogue.json). **The models belong to their authors**; KARTUN claims no ownership and
+passes on no rights beyond each author's licence.
+
+| Model | Author | Licence | Commercial use | Original source |
+|---|---|---|---|---|
+| Real-ESRGAN x4plus anime | Xintao Wang | BSD 3-Clause | allowed | xinntao/Real-ESRGAN release v0.2.5.0 |
+| Real-ESRGAN AnimeVideo v3 | Xintao Wang | BSD 3-Clause | allowed | xinntao/Real-ESRGAN release v0.2.5.0 |
+| 4xNomos8kSC | Philip Hofmann (Phhofm) | CC BY 4.0 | allowed, with credit | [Phhofm/models](https://github.com/Phhofm/models) release 4xNomos8kSC, ncnn fp16 files unchanged |
+| 4xHFA2k | Philip Hofmann (Phhofm) | CC BY 4.0 | allowed, with credit | [Phhofm/models](https://github.com/Phhofm/models) release 4xHFA2k, ncnn fp16 files unchanged |
+| 4x-UltraSharp | Kim2091 | CC BY-NC-SA 4.0 | **not allowed** | [huggingface.co/Kim2091/UltraSharp](https://huggingface.co/Kim2091/UltraSharp), `NCNN/` fp16 files unchanged |
+
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/ · CC BY-NC-SA 4.0: https://creativecommons.org/licenses/by-nc-sa/4.0/
