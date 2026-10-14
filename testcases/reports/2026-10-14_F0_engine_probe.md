@@ -21,7 +21,7 @@ baseline `magick -filter Catrom -resize 400%` → `bicubic256x4.png`. Not produc
 
 ## 3. Runs
 
-Moments: the output file mtime on the device (end of the run), probed 2026-10-14 14:10 with `ls --full-time`; runs 2 and 8 left no own file (overwritten / none), so they carry `≈`. Corrected 2026-10-14 ≈ 14:11: the table first stood with moments 14:08–14:16 written by feel.
+Moments: the output file mtime on the device (end of the run), probed with `ls --full-time` at 2026-10-14 14:10 and 14:30; run 1 — the logcat timestamp of its `KARTUN_PROBE` line (`10-14 14:01:53.559`, its file was overwritten by run 3); runs 2 and 8 left no own file, so they carry `≈`. Corrected in commit `ce288aa` (2026-10-14 14:10:43 +03:00): the table first stood with moments 14:08–14:16 written by feel. Runs 9–11 added 2026-10-14 14:31 +03:00 after the judge pass found them missing.
 
 | # | Moment | Command | Exit / outcome |
 |---|---|---|---|
@@ -33,6 +33,11 @@ Moments: the output file mtime on the device (end of the run), probed 2026-10-14
 | 6 | 2026-10-14 14:08:25 +03:00 | `node tools/titan-probe.mjs --in test1mp.png --model realesrgan-x4plus --gpu true --tile 200` | ok · 4096×4096 · **88 717 ms** |
 | 7 | 2026-10-14 14:08:44 +03:00 | `node tools/titan-probe.mjs --in test1mp.png --model realesr-animevideov3-x4 --gpu true --tile 200` | ok · 4096×4096 · **3 140 ms** |
 | 8 | ≈ 2026-10-14 14:09 +03:00 | `node tools/titan-probe.mjs --in test256.png --model no-such-model --gpu true --tile 128` | `{"ok":false,"error":"model load failed: no-such-model"}` · 0 FATAL/SIGSEGV in logcat · process alive |
+| 9 | 2026-10-14 14:12:24 +03:00 | `node tools/titan-probe.mjs --in test1mp.png --model upscayl-lite-4x --gpu true --tile 200` | ok · 4096×4096 · **5 828 ms** |
+| 10 | 2026-10-14 14:13:52 +03:00 | `node tools/titan-probe.mjs --in photo1.jpg --model upscayl-lite-4x --gpu true --tile 200` | ok · 960×1280 → 3840×5120 · **6 569 ms** |
+| 11 | 2026-10-14 14:15:51 +03:00 | `node tools/titan-probe.mjs --in photo1.jpg --model realesrgan-x4plus --gpu true --tile 200` | ok · 960×1280 → 3840×5120 · **104 805 ms** |
+
+Runs 9–10 model file: `upscayl-lite-4x.{param,bin}` from the owner's local Upscayl 2.15.0 install (`C:Program FilesUpscaylesourcesmodels`), pushed to the Titan for MEASUREMENT ONLY — not in the repo, not in any APK. It is the ncnn conversion of `realesr-general-x4v3` (BSD-3, xinntao) by the Upscayl team (equivalence: upscayl commit `801755c`, `researches/03` §C); KARTUN must ship its own conversion from the original `.pth` (`tools/convert-model.py`, not run yet) and re-measure. `photo1.jpg` = the owner's photo `IMG_20260317_180718_424.jpg` from the Titan's Telegram media (960×1280), local only.
 
 ## 4. Checks
 
@@ -46,7 +51,7 @@ pulled and READ by `magick compare -metric PSNR`; logcat lines READ for every ru
 | C2 output size 4× | pass | 256→1024 and 1024→4096 in every run |
 | C3 real network, not interpolation | pass | PSNR vs bicubic 31.1 dB, vs PC reference 39.2 dB (run 5); interior block 300..500 px of run 1: 43.0 dB vs reference |
 | C4 GPU = CPU result | pass | runs 3 and 4: 36.32 vs 36.34 dB to the same reference — fp16 storage on Mali does not degrade the output |
-| C5 time per 1 MP recorded | pass | x4plus 88.7 s, animevideov3 3.1 s (GPU, tile 200, first run after app start incl. shader warm-up) |
+| C5 time per 1 MP recorded | pass | test image 1024×1024: x4plus 88.7 s, animevideov3 3.1 s, upscayl-lite-4x 5.8 s; real photo 960×1280: upscayl-lite-4x 6.6 s, x4plus 104.8 s (GPU, tile 200, first run after app start incl. shader warm-up) |
 | C6 honest failure without a model | pass | run 8 |
 
 ## 5. Found
@@ -68,4 +73,4 @@ logcat tag `KARTUN_PROBE` (JSON lines quoted above); harness `tools/titan-probe.
 
 partial — the engine works on the Titan (Vulkan and CPU, correct 4× output, honest failure), the phase 0 gate criteria
 2.4 and 2.6 of `plans/01_EPIC_mvp.md` are met by the probe; `partial` because the product's user path does not exist
-yet and `realesr-general-x4v3` (the fast photo model) is not converted/measured.
+yet and our own conversion of `realesr-general-x4v3` (the fast photo model) is not done — only the Upscayl-converted equivalent was measured (runs 9–10). Combinations NOT run: animevideov3 on CPU, any model on CPU at 1 MP, animevideov3 at 256×256.

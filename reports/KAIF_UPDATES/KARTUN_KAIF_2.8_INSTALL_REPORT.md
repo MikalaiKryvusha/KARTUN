@@ -57,3 +57,13 @@ extension), model Claude Opus 5.5. Source pinned to the origin commit of the 2.9
 - Judge pass: self-audit against the claims above — every number is a command output quoted in §1; no separate
   `/fable-judge` subagent run yet (the owner switched the session to another task mid-install; the verdict line will be
   appended after `verify-final`).
+
+## 5. Judge verdict (appended 2026-10-14 14:34 +0300)
+
+- `/fable-judge` pass by a separate subagent over this session's claims: the install itself — **VERIFIED WITH CAVEATS**
+  (`gh issue view 143` OPEN; upstream `kaif-manifest.json` at `610b18a` → sourceTree `a63c651356bc`, prerelease 2.9;
+  `git hash-object .kaif/kaif-core.mjs` = upstream blob `967c670f…`; installer files absent and never committed;
+  caveat: `verify-final` self-cleans, so its pass is evidenced only indirectly — `kaif-core check` → "manifest
+  satisfied: 104 files + 152 agent artifacts").
+- The same pass REFUTED other session claims (stale status lines, a cited run report missing runs, a voice-lint miss);
+  all were corrected in the project before this append. No new KAIF defect found by the judge.

@@ -25,7 +25,7 @@ interviews/decisions/*.lock
 AUTHOR_STYLOMETRY.md
 
 # Signing keys and secrets for stage and prod builds - they live on the owner's machine in the
-# project root, never in git (owner's word 2026-10-14, chat). Only a value-free .env.example ships.
+# project root, never in git (owner's word 2026-10-14, chat). Only a value-free .env.example may ship.
 .env
 .env.*
 !.env.example
@@ -45,3 +45,16 @@ captures/
 
 # Third-party native packages downloaded by tools/fetch-ncnn.mjs (pinned by SHA-256 in the script).
 engine/third_party/
+
+# Python environment for model conversion (tools/convert-model.py) - local only.
+.venv-convert/
+
+# Mockup images cut from the owner's own photos - local only, never in the public repo.
+design/mockups/local/
+
+# Node dependencies (playwright for the mockup shooter).
+node_modules/
+
+# KUIPS sheet built by the NDim builder (AGPL-3.0 code embedded) and screen shots with the owner's photos - local only.
+design/flow-map.html
+design/flow-map/screens/

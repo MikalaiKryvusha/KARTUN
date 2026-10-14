@@ -91,6 +91,7 @@ probe in the same call as the write, or a mtime/log line — never typed by feel
 **Repro:** `date '+%Y-%m-%d %H:%M:%S %z'` in the same tool call that writes the report row; for past runs `adb shell ls -la --full-time <outputs>`.
 **Trigger:** writing a `Moment` cell or a `Created:` stamp → run `date` in that same call.
 **Not for:** dates of external events (a vendor release) — those are dates, not moments of our work.
+none-cheap: a moment typed by feel and a probed one look the same to a script; the Trigger line at the write is the carrier
 
 ### EXP-0003 · 2026-10-14 · ❌→✅ · #shell #heredoc #windows #paths
 class: escaping-layer
@@ -103,6 +104,7 @@ and build Windows paths with `path.join` / forward slashes, never with escaped b
 **Repro:** `grep -n "\\\\\\\\" tools/*.mjs` after writing a script — any `\\` you intended must be there; better, `grep -n "C:\\\\" tools/*.mjs` shows none.
 **Trigger:** writing a code file that contains a Windows path → Write tool + `path.join`, not a heredoc.
 **Not for:** prose in Markdown, where a single backslash in a path is the intended text.
+none-cheap: the loss happens in the tool layer before the file exists; the Write tool and `path.join` avoid the class
 
 ### EXP-0002 · 2026-10-14 · ❌→✅ · #adb #device #shell #titan
 class: shell-lied
@@ -116,6 +118,7 @@ Tailscale (DERP relay): 4.2 MB/s (20 MB in 4.8 s, 2026-10-14).   → link: ideas
 **Repro:** `export MSYS_NO_PATHCONV=1; D:/Android/Sdk/platform-tools/adb.exe shell ls -la /data/local/tmp` — prints the device dir, not a Windows error.
 **Trigger:** writing an `adb pull|push|shell <path>` command in the Bash tool → prefix `MSYS_NO_PATHCONV=1`.
 **Not for:** PowerShell and Node scripts — they do not rewrite argv.
+mechanized: tools/titan-probe.mjs (drives adb through Node spawnSync, so device paths never pass through Git Bash)
 
 ### EXP-0001 · 2026-01-01 · ✅ · #example #meta
 **Context:** first task after KAIF was deployed into this project (example entry — replace with real ones).

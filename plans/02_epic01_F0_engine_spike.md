@@ -19,6 +19,8 @@ tolerance, differs from a bicubic resize by more than that tolerance, and the wa
    Changed from the proposed 40 dB on 2026-10-14 after the first runs: with the reference's tile (200) the Titan output
    is 39.22 dB to the PC reference (interior block 43.0 dB; divergence at the image edge and tile seams; ncnn 2022 vs
    20260526) while bicubic sits at 31.1 dB — 38 dB keeps a 7 dB margin above bicubic. Run report: run 5.
+   FORK: options <keep 40 dB and chase the 0.8 dB | 38 dB> · price of error <a too-loose gate lets a broken net pass; too tight
+   fails a correct engine> · consulted <measurement: interior 43.0 dB, bicubic 31.1 dB; upstream ncnn differs (2022)>
 3. CPU run: the same with `use_vulkan_compute=false`.
 4. Timing: ms per run for 256×256 and for a 1 MP image (1024×1024) on Vulkan and CPU, both models — written to a run
    report `testcases/reports/<date>_F0_engine_probe.md`.
@@ -46,7 +48,9 @@ tolerance, differs from a bicubic resize by more than that tolerance, and the wa
    the PNG and a JSON line (ms, backend, tile, gpu name) to logcat; driven with `adb shell am start … --es in … --ez gpu true`.
 7. [x] PC reference: run the same model with the desktop `realesrgan-ncnn-vulkan` (MIT, v0.2.0 release) on the same
    input → `testdata/ref_*.png`; a node script computes PSNR (sharp/pngjs or ImageMagick `magick compare -metric PSNR`).
-8. [x] Run on the Titan: Vulkan and CPU, both models, 256×256 and 1 MP; pull outputs; compare; write the run report.
+8. [~] Run on the Titan: Vulkan and CPU, both models, 256×256 and 1 MP; pull outputs; compare; write the run report.
+   Done: x4plus GPU+CPU at 256, x4plus GPU at 1 MP, animevideov3 GPU at 1 MP, upscayl-lite (measurement only) GPU at 1 MP
+   and on the owner's photo. NOT run: animevideov3 on CPU, any model on CPU at 1 MP, animevideov3 at 256×256.
 9. [x] Control case: delete the model file → expect the error path (criterion 5).
 10. [ ] Close: update `STATUS.md`, `MASTER_PLAN.md` phase 0 status, report the timing to the owner, write the phase 1 plan.
 

@@ -1,0 +1,335 @@
+<!doctype html>
+<!--
+  KARTUN - mockups of the MVP screens (draft v1, 2026-10-14). Owner's brief (chat, 2026-10-14): his pink brand colour,
+  rounded elements, a beautiful font, minimalist laconic UI/UX; four variants to choose from (his rule from NDIM).
+  Every screen is a 390x900 phone canvas. `?shot=<id>&font=<key>` shows one screen alone - the KUIPS shooter uses it.
+  Photos come from design/mockups/local/ (cut from the owner's own photo, gitignored); without them a gradient stands in.
+-->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KARTUN — макеты MVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800;900&family=Unbounded:wght@500;600;700&family=Montserrat+Alternates:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D0D0D; --surface: #151516; --card: #1C1C1E; --card2: #262628; --line: #2E2E31;
+    --text: #F5F5F7; --sub: #A1A1A6; --mute: #6E6E73;
+    --pink: #FF1A8C; --pink-d: #CC0070; --pink-soft: rgba(255, 26, 140, .14); --pink-line: rgba(255, 26, 140, .45);
+    --r-card: 24px; --r-big: 28px; --r-pill: 999px;
+    --font: 'Manrope', system-ui, sans-serif; --font-head: var(--font);
+  }
+  body[data-font="nunito"] { --font: 'Nunito', system-ui, sans-serif; --font-head: var(--font); }
+  body[data-font="unbounded"] { --font: 'Manrope', system-ui, sans-serif; --font-head: 'Unbounded', var(--font); }
+  body[data-font="alternates"] { --font: 'Montserrat Alternates', system-ui, sans-serif; --font-head: var(--font); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #070707; color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+  .page-head { padding: 28px 32px 8px; max-width: 1400px; }
+  .page-head h1 { font: 700 28px/1.2 var(--font-head); }
+  .page-head h1 b { color: var(--pink); }
+  .page-head p { color: var(--sub); margin-top: 8px; max-width: 900px; line-height: 1.5; }
+  .fonts { display: flex; gap: 8px; margin: 16px 0 4px; flex-wrap: wrap; }
+  .fonts button { background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: var(--r-pill);
+    padding: 8px 16px; font: 600 14px var(--font); cursor: pointer; }
+  .fonts button.on { background: var(--pink); border-color: var(--pink); }
+  .row { padding: 24px 32px 8px; }
+  .row h2 { font: 700 18px var(--font-head); margin-bottom: 4px; }
+  .row h2 span { color: var(--pink); }
+  .row p.note { color: var(--sub); font-size: 14px; margin-bottom: 16px; max-width: 900px; }
+  .phones { display: flex; gap: 28px; flex-wrap: wrap; }
+  .phone-wrap .cap { color: var(--mute); font-size: 13px; margin: 0 0 8px 6px; }
+
+  /* ---- phone canvas 390x900 ---- */
+  .screen { width: 390px; height: 900px; background: var(--bg); border-radius: 44px; overflow: hidden; position: relative;
+    box-shadow: 0 0 0 10px #1a1a1a, 0 0 0 11px #2b2b2b; display: flex; flex-direction: column; }
+  .status { height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
+    font: 600 14px var(--font); color: var(--text); flex: none; position: relative; z-index: 5; }
+  .status .dots { display: flex; gap: 6px; align-items: center; }
+  .status .dots i { width: 16px; height: 10px; border-radius: 3px; background: var(--text); opacity: .9; display: block; }
+  .status .dots i:first-child { width: 10px; border-radius: 50%; }
+  .gesture { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 120px; height: 5px;
+    border-radius: 3px; background: rgba(255,255,255,.55); z-index: 6; }
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px 12px; flex: none; position: relative; z-index: 5; }
+  .logo { font: 800 24px var(--font-head); letter-spacing: .5px; }
+  .logo b { color: var(--pink); }
+  .icon-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--card); display: grid; place-items: center; }
+  .icon-btn svg, .ico svg { width: 22px; height: 22px; stroke: var(--text); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .title { font: 700 20px var(--font-head); }
+  .body { flex: 1; padding: 0 20px; display: flex; flex-direction: column; gap: 16px; position: relative; }
+  .label { font: 700 12px var(--font); letter-spacing: 1.4px; text-transform: uppercase; color: var(--pink); margin: 4px 4px -6px; }
+  .muted { color: var(--sub); font-size: 14px; }
+  .center { text-align: center; }
+
+  .btn { height: 60px; border-radius: var(--r-pill); display: flex; align-items: center; justify-content: center; gap: 10px;
+    font: 700 18px var(--font); letter-spacing: .3px; }
+  .btn.primary { background: var(--pink); color: #fff; box-shadow: 0 10px 30px rgba(255,26,140,.35); }
+  .btn.ghost { border: 1.5px solid var(--line); color: var(--text); background: transparent; }
+  .btn.soft { background: var(--card); color: var(--text); }
+  .btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .photo { border-radius: var(--r-card); background: linear-gradient(160deg, #5b7fa6, #2f4d3a 55%, #6d5a3e); background-size: cover; background-position: center; position: relative; overflow: hidden; }
+  .chip { position: absolute; left: 12px; bottom: 12px; background: rgba(13,13,13,.72); backdrop-filter: blur(8px);
+    padding: 6px 12px; border-radius: var(--r-pill); font: 600 13px var(--font); }
+  .chip.r { left: auto; right: 12px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--r-pill); background: var(--card); font: 600 14px var(--font); color: var(--text); }
+  .pill.on { background: var(--pink); color: #fff; }
+  .pill.out { background: transparent; border: 1.5px solid var(--line); }
+
+  .models { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .model { background: var(--card); border-radius: 20px; padding: 14px; border: 2px solid transparent; position: relative; }
+  .model.on { border-color: var(--pink); background: linear-gradient(180deg, var(--pink-soft), var(--card) 70%); }
+  .model .n { font: 700 16px var(--font-head); }
+  .model .t { color: var(--sub); font-size: 13px; margin-top: 4px; }
+  .model .tick { position: absolute; top: 12px; right: 12px; width: 22px; height: 22px; border-radius: 50%; background: var(--pink); display: grid; place-items: center; }
+  .model .tick svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 3; }
+  .seg { display: flex; background: var(--card); border-radius: var(--r-pill); padding: 4px; }
+  .seg div { flex: 1; text-align: center; padding: 10px 0; border-radius: var(--r-pill); font: 700 15px var(--font); color: var(--sub); }
+  .seg div.on { background: var(--pink); color: #fff; }
+  .sum { display: flex; justify-content: space-between; align-items: center; color: var(--sub); font-size: 14px; padding: 0 4px; }
+  .sum b { color: var(--text); font-weight: 700; }
+
+  /* home A */
+  .drop { flex: 1; max-height: 470px; border-radius: var(--r-big); background: radial-gradient(120% 80% at 50% 0%, rgba(255,26,140,.18), var(--card) 60%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; border: 1.5px solid var(--pink-line); }
+  .drop .big { width: 96px; height: 96px; border-radius: 32px; background: var(--pink); display: grid; place-items: center; box-shadow: 0 16px 40px rgba(255,26,140,.4); }
+  .drop .big svg { width: 44px; height: 44px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .drop h3 { font: 700 24px var(--font-head); }
+  .foot-note { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--mute); font-size: 13px; margin-top: auto; padding-bottom: 28px; }
+  .foot-note i { width: 8px; height: 8px; border-radius: 50%; background: #3ddc84; display: block; }
+
+  /* steps B */
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .step .num { flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--pink-soft); color: var(--pink); display: grid; place-items: center; font: 800 15px var(--font); }
+  .step .num.done { background: var(--pink); color: #fff; }
+  .step .c { flex: 1; background: var(--card); border-radius: 20px; padding: 14px; }
+  .step .c .h { font: 700 15px var(--font-head); margin-bottom: 8px; }
+  .thumbrow { display: flex; gap: 12px; align-items: center; }
+  .thumbrow .photo { width: 56px; height: 72px; border-radius: 14px; flex: none; }
+  .slider { height: 6px; border-radius: 3px; background: var(--card2); position: relative; margin: 14px 4px 8px; }
+  .slider i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; border-radius: 3px; background: var(--pink); }
+  .slider b { position: absolute; right: -11px; top: -8px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 6px var(--pink-soft); }
+  .ticks { display: flex; justify-content: space-between; color: var(--sub); font-size: 12px; }
+
+  /* full-bleed C */
+  .bleed { position: absolute; inset: 0; background-size: cover; background-position: center; }
+  .bleed::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.45), transparent 22%, transparent 50%, rgba(0,0,0,.6)); }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(21,21,22,.96); backdrop-filter: blur(18px);
+    border-radius: 32px 32px 0 0; padding: 12px 20px 40px; display: flex; flex-direction: column; gap: 16px; z-index: 4; }
+  .sheet .grab { width: 40px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto 4px; }
+  .chips { display: flex; gap: 8px; overflow: hidden; }
+
+  /* gallery D */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid .photo { height: 200px; }
+  .grid .photo:nth-child(2) { height: 150px; } .grid .photo:nth-child(3) { height: 170px; margin-top: -50px; }
+  .grid .photo:nth-child(5) { margin-top: -30px; }
+  .fab { position: absolute; right: 20px; bottom: 44px; height: 60px; padding: 0 22px 0 18px; border-radius: var(--r-pill); background: var(--pink);
+    display: flex; align-items: center; gap: 10px; font: 700 16px var(--font); box-shadow: 0 12px 30px rgba(255,26,140,.45); z-index: 4; }
+  .fab svg { width: 24px; height: 24px; stroke: #fff; fill: none; stroke-width: 2.4; stroke-linecap: round; }
+  .dim { position: absolute; inset: 0; background: rgba(0,0,0,.55); z-index: 3; }
+
+  /* processing */
+  .tiles { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(8, 1fr); }
+  .tiles i { border: .5px solid rgba(255,255,255,.08); background: rgba(13,13,13,.62); display: block; }
+  .tiles i.done { background: transparent; }
+  .tiles i.now { background: rgba(255,26,140,.28); border-color: var(--pink); }
+  .ring { width: 150px; height: 150px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto;
+    background: conic-gradient(var(--pink) 0 47%, var(--card2) 47% 100%); }
+  .ring div { width: 128px; height: 128px; border-radius: 50%; background: var(--bg); display: grid; place-items: center; font: 800 34px var(--font-head); }
+
+  /* compare */
+  .compare { position: absolute; inset: 0; cursor: ew-resize; touch-action: none; }
+  .compare .img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+  .compare .after { clip-path: inset(0 0 0 50%); }
+  .compare .line { position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; margin-left: -1.5px; background: var(--pink); box-shadow: 0 0 12px rgba(255,26,140,.7); }
+  .compare .knob { position: absolute; top: 50%; left: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%; background: var(--pink);
+    display: grid; place-items: center; box-shadow: 0 6px 20px rgba(0,0,0,.5); }
+  .compare .knob svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .tag { position: absolute; top: 112px; padding: 6px 14px; border-radius: var(--r-pill); background: rgba(13,13,13,.7); backdrop-filter: blur(8px); font: 700 13px var(--font); z-index: 3; }
+  .tag.l { left: 16px; } .tag.r { right: 16px; color: #fff; background: rgba(255,26,140,.85); }
+  .result-panel { position: absolute; left: 12px; right: 12px; bottom: 28px; background: rgba(21,21,22,.94); backdrop-filter: blur(18px);
+    border-radius: 28px; padding: 16px; display: flex; flex-direction: column; gap: 14px; z-index: 4; }
+  .result-panel .meta { display: flex; justify-content: space-between; font-size: 14px; color: var(--sub); }
+  .result-panel .meta b { color: var(--text); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* settings */
+  .group { background: var(--card); border-radius: 22px; overflow: hidden; }
+  .item { display: flex; align-items: center; gap: 14px; padding: 15px 16px; border-bottom: 1px solid var(--line); }
+  .item:last-child { border-bottom: 0; }
+  .item .ico { width: 36px; height: 36px; border-radius: 12px; background: var(--pink-soft); display: grid; place-items: center; flex: none; }
+  .item .ico svg { stroke: var(--pink); width: 19px; height: 19px; }
+  .item .tx { flex: 1; }
+  .item .tx .a { font: 600 15px var(--font); }
+  .item .tx .b { color: var(--sub); font-size: 13px; margin-top: 2px; }
+  .info { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--mute); color: var(--mute); display: grid; place-items: center; font: 700 12px var(--font); flex: none; }
+  .tg { width: 46px; height: 28px; border-radius: 14px; background: var(--card2); position: relative; flex: none; }
+  .tg::after { content: ''; position: absolute; left: 3px; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: #8a8a8e; }
+  .tg.on { background: var(--pink); } .tg.on::after { left: 21px; background: #fff; }
+  .val { color: var(--sub); font-size: 14px; }
+
+  body.shot { background: var(--bg); }
+  body.shot .page-head, body.shot .row h2, body.shot .row p.note, body.shot .cap { display: none; }
+  body.shot .row { padding: 0; }
+  body.shot .phone-wrap { display: none; }
+  body.shot .phone-wrap.target { display: block; }
+  body.shot .screen { border-radius: 0; box-shadow: none; }
+</style>
+</head>
+<body data-font="manrope">
+
+<div class="page-head">
+  <h1><b>KARTUN</b> — макеты MVP, черновик v1</h1>
+  <p>Четыре подхода к главному пути (ряды A–D), общие экраны обработки, результата, сохранения и настроек,
+    и ряд шрифтов. Фирменный розовый <b style="color:var(--pink)">#FF1A8C</b>, скругления 20–32 px, одно главное действие на экране.
+    Шрифт переключается кнопками ниже на всех экранах сразу. На экране результата ползунок «до/после» можно таскать мышью в любом месте картинки.</p>
+  <div class="fonts" id="fonts">
+    <button data-f="manrope" class="on">Manrope</button>
+    <button data-f="nunito">Nunito</button>
+    <button data-f="unbounded">Unbounded + Manrope</button>
+    <button data-f="alternates">Montserrat Alternates</button>
+  </div>
+</div>
+
+<div id="rows"></div>
+
+<script>
+// Inline icons (stroke paths, 24x24).
+const I = {
+  gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+  back: '<svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>',
+  img: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>',
+  spark: '<svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>',
+  link: '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>',
+  share: '<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>',
+  save: '<svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>',
+  plus: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+  lr: '<svg viewBox="0 0 24 24"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></svg>',
+  tick: '<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>',
+  cpu: '<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg>',
+  file: '<svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>',
+  term: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9l3 3-3 3M12 15h5"/></svg>',
+  wifi: '<svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".6"/></svg>',
+  globe: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+  about: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
+  model: '<svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>',
+};
+const LOCAL = 'mockups/local/';
+const bg = (f) => `background-image:url('${LOCAL}${f}'), linear-gradient(160deg,#5b7fa6,#2f4d3a 55%,#6d5a3e)`;
+const status = () => `<div class="status"><span>14:32</span><span class="dots"><i></i><i></i><i></i></span></div>`;
+const gesture = '<div class="gesture"></div>';
+const topHome = () => `<div class="top"><div class="logo"><b>K</b>ARTUN</div><div class="icon-btn">${I.gear}</div></div>`;
+const topBack = (t, right = I.gear) => `<div class="top"><div class="icon-btn">${I.back}</div><div class="title">${t}</div><div class="icon-btn">${right}</div></div>`;
+const modelCards = () => `<div class="models">
+  <div class="model on"><div class="tick">${I.tick}</div><div class="n">Быстрая</div><div class="t">≈ 7 с · чёткие края</div></div>
+  <div class="model"><div class="n">Максимум</div><div class="t">≈ 1:45 · живая фактура</div></div></div>`;
+const scale = () => `<div class="seg"><div>2×</div><div class="on">4×</div></div>`;
+const summary = () => `<div class="sum"><span>960 × 1280 → <b>3840 × 5120</b></span><span>PNG</span></div>`;
+
+const S = {
+  'A-home': () => `${status()}${topHome()}<div class="body">
+    <div class="drop"><div class="big">${I.img}</div><h3>Выберите фото</h3><div class="muted center">или отправьте его в KARTUN<br>через «Поделиться»</div></div>
+    <div class="btn ghost">${I.link}Вставить ссылку</div>
+    <div class="foot-note"><i></i>Обработка на устройстве, без сети</div></div>${gesture}`,
+  'A-setup': () => `${status()}${topBack('Улучшение')}<div class="body">
+    <div class="photo" style="height:330px;${bg('preview.jpg')}"><div class="chip">960 × 1280 · 1,2 Мп</div></div>
+    <div class="label">Модель</div>${modelCards()}
+    <div class="label">Масштаб</div>${scale()}${summary()}
+    <div class="btn primary" style="margin-top:auto;margin-bottom:32px">${I.spark}Улучшить</div></div>${gesture}`,
+  'B-steps': () => `${status()}${topHome()}<div class="body" style="gap:14px">
+    <div class="step"><div class="num done">1</div><div class="c"><div class="h">Фото</div><div class="thumbrow"><div class="photo" style="${bg('preview.jpg')}"></div>
+      <div><div style="font-weight:600">IMG_20260317.jpg</div><div class="muted">960 × 1280 · 1,2 Мп</div></div><div class="pill out" style="margin-left:auto">Сменить</div></div></div></div>
+    <div class="step"><div class="num done">2</div><div class="c"><div class="h">Модель</div><div style="display:flex;gap:8px"><div class="pill on">Быстрая</div><div class="pill">Максимум</div><div class="pill">Арт</div></div></div></div>
+    <div class="step"><div class="num done">3</div><div class="c"><div class="h">Масштаб · 4×</div><div class="slider"><i></i><b></b></div><div class="ticks"><span>2×</span><span>3×</span><span>4×</span></div></div></div>
+    <div class="step"><div class="num">4</div><div class="c"><div class="h">Готово к улучшению</div><div class="muted">960 × 1280 → 3840 × 5120 · PNG · ≈ 7 с</div></div></div>
+    <div class="btn primary" style="margin-top:auto;margin-bottom:32px">${I.spark}Улучшить</div></div>${gesture}`,
+  'C-home': () => `${status()}${topHome()}<div class="body" style="justify-content:center;align-items:center;gap:22px">
+    <div style="width:180px;height:180px;border-radius:56px;background:var(--pink);display:grid;place-items:center;box-shadow:0 24px 60px rgba(255,26,140,.45)">
+      <svg viewBox="0 0 24 24" style="width:80px;height:80px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M12 5v14M5 12h14"/></svg></div>
+    <div style="font:800 26px var(--font-head)">Улучшить фото</div><div class="muted center" style="max-width:260px">Нейросеть увеличит снимок в 4 раза прямо на телефоне</div>
+    <div class="pill out" style="margin-top:18px">${I.link.replace('<svg','<svg style="width:18px;height:18px;stroke:var(--text);fill:none;stroke-width:2"')} Вставить ссылку</div></div>${gesture}`,
+  'C-setup': () => `<div class="bleed" style="${bg('preview.jpg')}"></div>${status()}
+    <div class="top"><div class="icon-btn" style="background:rgba(13,13,13,.55)">${I.back}</div><div class="pill" style="background:rgba(13,13,13,.55)">960 × 1280</div><div class="icon-btn" style="background:rgba(13,13,13,.55)">${I.gear}</div></div>
+    <div class="sheet"><div class="grab"></div>
+      <div class="chips"><div class="pill on">Быстрая · 7 с</div><div class="pill">Максимум · 1:45</div><div class="pill">Арт</div></div>
+      ${scale()}<div class="btn primary">${I.spark}Улучшить до 3840 × 5120</div></div>${gesture}`,
+  'D-home': () => `${status()}${topHome()}<div class="body"><div style="font:700 22px var(--font-head);margin:4px 4px 0">Мои улучшения</div>
+    <div class="grid"><div class="photo" style="${bg('after.jpg')}"><div class="chip r">4×</div></div><div class="photo" style="${bg('preview.jpg')}"><div class="chip r">4×</div></div>
+      <div class="photo" style="${bg('after_fast.jpg')}"><div class="chip r">2×</div></div><div class="photo" style="${bg('before.jpg')}"><div class="chip r">4×</div></div>
+      <div class="photo" style="${bg('preview.jpg')}"><div class="chip r">4×</div></div><div class="photo" style="${bg('after.jpg')}"><div class="chip r">4×</div></div></div></div>
+    <div class="fab">${I.plus}Улучшить фото</div>${gesture}`,
+  'D-setup': () => `${S['D-home']()}<div class="dim"></div><div class="sheet"><div class="grab"></div>
+      <div class="thumbrow"><div class="photo" style="width:72px;height:96px;${bg('preview.jpg')}"></div><div><div style="font:700 17px var(--font-head)">Новое фото</div><div class="muted">960 × 1280 → 3840 × 5120</div></div></div>
+      ${modelCards()}${scale()}<div class="btn primary">${I.spark}Улучшить</div></div>`,
+  'processing': () => `<div class="bleed" style="${bg('preview.jpg')}"><div class="tiles">${Array.from({ length: 48 }, (_, i) => `<i class="${i < 22 ? 'done' : i === 22 ? 'now' : ''}"></i>`).join('')}</div></div>
+    ${status()}<div class="sheet" style="padding-bottom:40px;gap:14px"><div class="grab"></div>
+      <div class="ring"><div>47%</div></div>
+      <div class="center" style="font:700 18px var(--font-head)">Нейросеть улучшает фото</div>
+      <div class="center muted">Тайл 23 из 48 · осталось ≈ 4 с</div>
+      <div style="display:flex;justify-content:center"><div class="pill">${I.cpu.replace('<svg','<svg style="width:16px;height:16px;stroke:var(--pink);fill:none;stroke-width:2"')} GPU · Vulkan</div></div>
+      <div class="btn ghost">Отменить</div></div>${gesture}`,
+  'result': () => `<div class="compare" data-compare><div class="img" style="${bg('before.jpg')}"></div><div class="img after" style="${bg('after.jpg')}"></div>
+      <div class="line"></div><div class="knob">${I.lr}</div></div>
+    ${status()}<div class="top"><div class="icon-btn" style="background:rgba(13,13,13,.55)">${I.back}</div><div></div><div class="icon-btn" style="background:rgba(13,13,13,.55)">${I.share}</div></div>
+    <div class="tag l">До</div><div class="tag r">После</div>
+    <div class="result-panel"><div class="meta"><span>960 × 1280 → <b>3840 × 5120</b></span><span><b>6,6 с</b> · GPU</span></div>
+      <div class="two"><div class="btn primary" style="height:54px;font-size:16px">${I.save}Сохранить</div><div class="btn soft" style="height:54px;font-size:16px">${I.share}Поделиться</div></div></div>${gesture}`,
+  'save': () => `${S.result()}<div class="dim"></div><div class="sheet"><div class="grab"></div>
+      <div style="font:700 20px var(--font-head)">Сохранить в галерею</div>
+      <div class="label" style="margin-top:4px">Формат</div>
+      <div class="chips" style="flex-wrap:wrap"><div class="pill">PNG</div><div class="pill on">JPEG</div><div class="pill">WebP</div><div class="pill">HEIC</div><div class="pill">AVIF</div></div>
+      <div class="label">Качество · 92</div><div class="slider"><i style="width:92%"></i><b style="right:auto;left:calc(92% - 11px)"></b></div>
+      <div class="muted">Папка: Pictures/KARTUN · оригинал не меняется</div>
+      <div class="btn primary">${I.save}Сохранить · 3,1 МБ</div></div>`,
+  'settings': () => {
+    const row = (ic, a, b, right) => `<div class="item"><div class="ico">${I[ic]}</div><div class="tx"><div class="a">${a}</div>${b ? `<div class="b">${b}</div>` : ''}</div>${right}<div class="info">i</div></div>`;
+    return `${status()}${topBack('Настройки', I.about)}<div class="body" style="gap:10px;overflow:hidden">
+      <div class="label">Обработка</div><div class="group">${row('model', 'Модель по умолчанию', 'Быстрая', '<span class="val">›</span>')}${row('cpu', 'Ускорение GPU', 'Vulkan · Mali-G615', '<div class="tg on"></div>')}</div>
+      <div class="label">Сохранение</div><div class="group">${row('file', 'Формат', 'PNG', '<span class="val">›</span>')}${row('save', 'Качество JPEG и WebP', '92', '<span class="val">›</span>')}</div>
+      <div class="label">Для ИИ-агентов</div><div class="group">${row('term', 'Режим ADB', 'Задания по кабелю', '<div class="tg on"></div>')}${row('wifi', 'Сервер в локальной сети', 'HTTPS · выключен', '<div class="tg"></div>')}</div>
+      <div class="label">Приложение</div><div class="group">${row('globe', 'Язык', 'Русский', '<span class="val">›</span>')}</div></div>${gesture}`;
+  },
+};
+
+const ROWS = [
+  { id: 'A', name: '<span>A</span> · Одна кнопка', note: 'Главный экран — одна большая кнопка «Выберите фото». После выбора — экран настройки: превью, две карточки моделей, масштаб, «Улучшить».', screens: [['A-home', 'Главный'], ['A-setup', 'Фото выбрано']] },
+  { id: 'B', name: '<span>B</span> · Шаги, как в Upscayl', note: 'Один экран с шагами 1–2–3–4, как левая панель десктопного Upscayl. Всё видно сразу, ничего не прячется.', screens: [['B-steps', 'Главный с выбранным фото']] },
+  { id: 'C', name: '<span>C</span> · Фото во весь экран', note: 'Самый минималистичный: на старте одна розовая кнопка «+», после выбора фото на весь экран и выдвижная панель снизу.', screens: [['C-home', 'Главный'], ['C-setup', 'Фото выбрано']] },
+  { id: 'D', name: '<span>D</span> · Галерея улучшений', note: 'Главный экран — лента прошлых результатов и плавающая кнопка «Улучшить фото». Настройка — выдвижная панель поверх ленты.', screens: [['D-home', 'Главный'], ['D-setup', 'Фото выбрано']] },
+  { id: 'S', name: 'Общие экраны', note: 'Для любого варианта: обработка с прогрессом по тайлам, результат с ползунком «до/после» (таскается в любом месте), сохранение с форматом и качеством, настройки с кнопками [i].', screens: [['processing', 'Обработка'], ['result', 'Результат'], ['save', 'Сохранение'], ['settings', 'Настройки']] },
+];
+
+const params = new URLSearchParams(location.search);
+const shot = params.get('shot');
+const font = params.get('font');
+if (font) document.body.dataset.font = font;
+document.getElementById('rows').innerHTML = ROWS.map((r) => `<section class="row"><h2>${r.name}</h2><p class="note">${r.note}</p><div class="phones">${
+  r.screens.map(([id, cap]) => `<div class="phone-wrap" data-id="${id}"><div class="cap">${cap}</div><div class="screen">${S[id]()}</div></div>`).join('')}</div></section>`).join('');
+if (shot) {
+  document.body.classList.add('shot');
+  const t = document.querySelector(`.phone-wrap[data-id="${shot}"]`);
+  if (t) t.classList.add('target');
+}
+for (const b of document.querySelectorAll('#fonts button')) {
+  b.addEventListener('click', () => {
+    document.body.dataset.font = b.dataset.f;
+    document.querySelectorAll('#fonts button').forEach((x) => x.classList.toggle('on', x === b));
+  });
+}
+// Before/after: the whole picture is the handle - press anywhere and drag (the owner's ask from the desktop Upscayl).
+for (const c of document.querySelectorAll('[data-compare]')) {
+  const set = (e) => {
+    const r = c.getBoundingClientRect();
+    const p = Math.min(100, Math.max(0, ((e.clientX - r.left) / r.width) * 100));
+    c.querySelector('.after').style.clipPath = `inset(0 0 0 ${p}%)`;
+    c.querySelector('.line').style.left = `${p}%`;
+    c.querySelector('.knob').style.left = `${p}%`;
+  };
+  c.addEventListener('pointerdown', (e) => { c.setPointerCapture(e.pointerId); set(e); c.onpointermove = set; });
+  c.addEventListener('pointerup', () => { c.onpointermove = null; });
+}
+</script>
+</body>
+</html>
