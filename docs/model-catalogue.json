@@ -31,6 +31,34 @@
       "published": false
     },
     {
+      "id": "4xNomos8kSC_fp16",
+      "name": "4xNomos8kSC",
+      "author": "Philip Hofmann (Phhofm)",
+      "licence": "CC-BY-4.0",
+      "commercial": true,
+      "source": "github.com/Phhofm/models release 4xNomos8kSC, 4xNomos8kSC_fp16.param and .bin (the author's own ncnn files, unchanged)",
+      "purpose": "photos",
+      "files": [
+        { "name": "4xNomos8kSC_fp16.param", "sha256": "6b0453ae46db55f6194574ac462ac88400d18e9917c488298bc4e2f15310b1e3", "bytes": 165618 },
+        { "name": "4xNomos8kSC_fp16.bin", "sha256": "109d4765bc8ac733e424010f869cabdf7060f2b4855be2829342802984da451a", "bytes": 33424520 }
+      ],
+      "published": false
+    },
+    {
+      "id": "4xHFA2k_fp16",
+      "name": "4xHFA2k",
+      "author": "Philip Hofmann (Phhofm)",
+      "licence": "CC-BY-4.0",
+      "commercial": true,
+      "source": "github.com/Phhofm/models release 4xHFA2k, 4xHFA2k_fp16.param and .bin (the author's own ncnn files, unchanged)",
+      "purpose": "anime and drawings",
+      "files": [
+        { "name": "4xHFA2k_fp16.param", "sha256": "6b0453ae46db55f6194574ac462ac88400d18e9917c488298bc4e2f15310b1e3", "bytes": 165618 },
+        { "name": "4xHFA2k_fp16.bin", "sha256": "45f90b75c6044fb00a83b046b782a7b3fa4aee1f174d8993cbf1dbb8f04e511a", "bytes": 33424520 }
+      ],
+      "published": false
+    },
+    {
       "id": "4x-UltraSharp-fp16",
       "name": "4x-UltraSharp",
       "author": "Kim2091",

@@ -51,6 +51,9 @@ licence text beside it; the non-commercial ones stay there only while KARTUN is 
    Started 2026-10-14 22:15: three entries (x4plus anime, AnimeVideo v3, UltraSharp) with hashes and sizes re-read from the
    files (3 models, 6 files, 0 mismatches); `published: false` until the release upload. Next: Phhofm's two models, previews,
    the generator for the app's copy.
+   22:18: + 4xNomos8kSC and 4xHFA2k from Phhofm's own ncnn files (blobs `data`/`output`), GPU runs on the Titan 5 396 and
+   5 285 ms at 256²; 5 models, 0 mismatches. Six-model comparison sheet (Bicubic, General v3, x4plus, UltraSharp, Nomos8kSC,
+   HFA2k) - the first draft of the previews.
 3. [ ] Previews: one fixed crop of one fixed sample (the BSD-3 beach `input2.jpg`, and a drawing for anime models) run
    through every model on the Titan with `tools/titan-probe.mjs`; 320 px WebP per model, uploaded with the model.
 4. [ ] The release `models`: upload files + licence texts with `gh release upload`; a tool `tools/publish-models.mjs`
