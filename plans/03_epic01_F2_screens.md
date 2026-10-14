@@ -81,6 +81,7 @@ Slice 2:
     `[AI]` POST_NOTIFICATIONS is NOT requested: without it Android 13+ still lists the run in the task manager, a
     permission dialog is a UX decision for the owner.
 13. [~] (phase 3 work pulled forward, `[AI]`: phase 1 steps 3–4 need a native library decision and the device) «Сохранить» and «Поделиться» on the result screen — `ResultStore.kt` (MediaStore `Pictures/KARTUN`, pending until written; FileProvider copy for the share sheet), a centred save dialog (format PNG/JPEG/WebP, quality 92 by default from the mockup, WebP off over 16 383 px), `FileNameTest` 4/4 (it caught a double underscore in «Фото мамы (1)» first). Built 2026-10-14 ≈ 19:25; the device run waits for the owner.
+14. [~] Settings (mockup 'settings'), the working rows only: «Ускорение GPU» (kept between launches; off = CPU nets) and «Язык» (the system per-app language list); the gear on the home screen. Built 2026-10-14 ≈ 19:34; device case C18.
 12. [x] The adb engine probe runs only in debuggable builds (`BuildConfig.DEBUG` in `MainActivity`, 2026-10-14 ≈ 19:19; release `BuildConfig.DEBUG = false` read from the generated file). Device check of the probe in the debug build — with the next Titan session.
 
 ## Risks

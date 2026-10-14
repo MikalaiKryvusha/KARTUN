@@ -47,15 +47,16 @@ import com.kriniks.kartun.R
  * works (MainActivity's ACTION_SEND filter). [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
  */
 @Composable
-fun HomeScreen(onPick: () -> Unit, onPasteLink: () -> Unit, downloading: Boolean, error: String?, onDismissError: () -> Unit) {
+fun HomeScreen(onPick: () -> Unit, onSettings: () -> Unit, onPasteLink: () -> Unit, downloading: Boolean, error: String?, onDismissError: () -> Unit) {
     val c = MaterialTheme.colorScheme
     Column(Modifier.fillMaxSize().background(c.background).systemBarsPadding().padding(horizontal = 20.dp)) {
-        // Logo: «K» in pink, the rest white (.logo b). The gear (settings) arrives with the settings screen.
+        // Logo: «K» in pink, the rest white (.logo b); the gear opens the settings (mockup 'A-home').
         Row(Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(
                 buildAnnotatedString { withStyle(SpanStyle(color = c.primary)) { append("K") }; append("ARTUN") },
                 Modifier.weight(1f).padding(vertical = 10.dp), style = MaterialTheme.typography.displaySmall,
             )
+            RoundIconButton(R.drawable.ic_gear, onClick = onSettings)
         }
         // Portrait: one column as on the mockup. Landscape (the owner, 2026-10-14 ≈ 19:12: «лендскейп нужно поддерживать
         // тоже»): the pick card on the left at full height, the link button, the share hint and the note on the right. [NOT-TESTED: landscape - built only; the device run waits for the owner («потом потестируем»)]

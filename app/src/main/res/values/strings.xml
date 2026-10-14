@@ -79,4 +79,15 @@
     <string name="link_none">No link in the clipboard. Copy a link to a picture and tap again.</string>
     <string name="link_failed">Could not download the photo from the link.</string>
     <string name="link_downloading">Downloading the photo…</string>
+    <!-- [AI] Settings (mockup 'settings'): only the working rows. -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_processing">Processing</string>
+    <string name="settings_app">App</string>
+    <string name="settings_gpu">GPU acceleration</string>
+    <string name="settings_gpu_sub">Vulkan · %1$s</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_sub">As the system or KARTUN\'s own</string>
+    <string name="info_gpu_text">The network runs on the phone\'s graphics chip through Vulkan — about 15 times faster than on the processor.</string>
+    <string name="info_gpu_list">• On — the normal mode.\n• Off — the processor only: slow, but it helps if this phone\'s graphics chip fails.</string>
+    <string name="info_language_text">The system list of KARTUN\'s languages opens: the app\'s language can differ from the phone\'s.</string>
 </resources>

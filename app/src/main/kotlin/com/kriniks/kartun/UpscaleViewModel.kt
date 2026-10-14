@@ -35,7 +35,7 @@ import kotlin.math.roundToInt
  */
 class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
-    enum class Screen { Home, Setup, Working, Result }
+    enum class Screen { Home, Setup, Working, Result, Settings }
 
     /**
      * The two models shipped in the APK. [msPerMp] is the starting estimate for the time per input megapixel, measured
@@ -111,6 +111,22 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** «Ускорение GPU» of the settings; off = the CPU path. Kept between launches. */
+    var useGpu by mutableStateOf(true); private set
+    private var beforeSettings = Screen.Home
+
+    init { useGpu = prefs.getBoolean(PREF_GPU, true) }
+
+    fun chooseGpu(on: Boolean) {
+        if (on == useGpu) return
+        useGpu = on
+        prefs.edit { putBoolean(PREF_GPU, on) }
+        // The loaded net was built for the other backend: drop it, the next screen loads the right one.
+        viewModelScope.launch { withContext(engineThread) { release() } }
+    }
+
+    fun openSettings() { beforeSettings = screen; screen = Screen.Settings }
+
     /** True while «Вставить ссылку» downloads the picture. */
     var downloading by mutableStateOf(false); private set
 
@@ -155,7 +171,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         loaded?.let { if (loadedModel == m) return it }
         release()
         val (param, bin) = ModelStore.files(getApplication(), m.file)
-        val up = NcnnUpscaler.load(param.path, bin.path, useGpu = true) ?: throw ModelLoadFailed()
+        val up = NcnnUpscaler.load(param.path, bin.path, useGpu = useGpu) ?: throw ModelLoadFailed()
         loaded = up
         loadedModel = m
         return up
@@ -322,6 +338,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
             }
             Screen.Working -> cancel()
             Screen.Result -> { screen = Screen.Setup; result = null; saveMessage = null }
+            Screen.Settings -> { screen = beforeSettings; if (screen == Screen.Setup) preload() }
             Screen.Home -> Unit
         }
     }
@@ -351,6 +368,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         private const val TAG = "KARTUN"
+        private const val PREF_GPU = "use_gpu"
         /** The owner's scale steps: «x1, x2 (по умолчанию), x4, x8, x16» (interview #002). */
         val SCALES = listOf(1, 2, 4, 8, 16)
         const val DEFAULT_SCALE_INDEX = 1

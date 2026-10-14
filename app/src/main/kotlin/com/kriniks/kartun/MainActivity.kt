@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.kriniks.kartun.ui.HomeScreen
 import com.kriniks.kartun.ui.ResultScreen
+import com.kriniks.kartun.ui.SettingsScreen
 import com.kriniks.kartun.ui.SetupScreen
 import com.kriniks.kartun.ui.WorkingScreen
 import com.kriniks.kartun.ui.theme.KartunTheme
@@ -60,6 +61,7 @@ private fun KartunApp(vm: UpscaleViewModel) {
             val clipboard = LocalContext.current.getSystemService(ClipboardManager::class.java)
             HomeScreen(
                 onPick = pick,
+                onSettings = vm::openSettings,
                 onPasteLink = { vm.openLink(clipboard.primaryClip?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.text) },
                 downloading = vm.downloading, error = err, onDismissError = vm::dismissError,
             )
@@ -67,5 +69,6 @@ private fun KartunApp(vm: UpscaleViewModel) {
         UpscaleViewModel.Screen.Setup -> SetupScreen(vm, onPickOther = pick)
         UpscaleViewModel.Screen.Working -> WorkingScreen(vm)
         UpscaleViewModel.Screen.Result -> ResultScreen(vm)
+        UpscaleViewModel.Screen.Settings -> SettingsScreen(vm, onBack = vm::back)
     }
 }

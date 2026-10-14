@@ -87,4 +87,15 @@
     <string name="link_none">В буфере обмена нет ссылки. Скопируйте ссылку на картинку и нажмите ещё раз.</string>
     <string name="link_failed">Не удалось скачать фото по ссылке.</string>
     <string name="link_downloading">Скачиваем фото…</string>
+    <!-- [AI] Settings (mockup 'settings'): only the working rows. -->
+    <string name="settings_title">Настройки</string>
+    <string name="settings_processing">Обработка</string>
+    <string name="settings_app">Приложение</string>
+    <string name="settings_gpu">Ускорение GPU</string>
+    <string name="settings_gpu_sub">Vulkan · %1$s</string>
+    <string name="settings_language">Язык</string>
+    <string name="settings_language_sub">Как в системе или свой для KARTUN</string>
+    <string name="info_gpu_text">Нейросеть считает на видеочипе телефона через Vulkan — так в 15 раз быстрее, чем на процессоре.</string>
+    <string name="info_gpu_list">• Включено — обычный режим.\n• Выключено — только процессор: медленно, но помогает, если на этом телефоне видеочип даёт сбои.</string>
+    <string name="info_language_text">Откроется системный список языков KARTUN: язык приложения можно выбрать отдельно от языка телефона.</string>
 </resources>
