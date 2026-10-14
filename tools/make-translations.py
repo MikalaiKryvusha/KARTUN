@@ -202,6 +202,21 @@ def main():
 </resources>
 """, encoding="utf-8", newline="\n")
         print(f"written values-{lang}/strings.xml ({len(KEYS)} strings)")
+    check_locale_config()
+
+
+def check_locale_config():
+    """The pair «res/values-* folders ↔ res/xml/locales_config.xml»: the system's language list must name every shipped
+    language and nothing else (EN is the unqualified values/). Exits 1 on drift."""
+    import re
+    import sys
+    res = ROOT / "app" / "src" / "main" / "res"
+    shipped = {"en"} | {d.name[len("values-"):] for d in res.glob("values-*") if (d / "strings.xml").exists()}
+    listed = set(re.findall(r'<locale android:name="([^"]+)"', (res / "xml" / "locales_config.xml").read_text(encoding="utf-8")))
+    if shipped != listed:
+        print(f"DRIFT locales_config.xml: missing {sorted(shipped - listed)}, extra {sorted(listed - shipped)}")
+        sys.exit(1)
+    print(f"locales_config.xml matches the {len(shipped)} shipped languages")
 
 
 if __name__ == "__main__":
