@@ -241,17 +241,20 @@ GUIDE = {
 OPEN_GUIDE = {"es": "Abrir la guía completa", "pt": "Abrir o guia completo", "fr": "Ouvrir le guide complet", "de": "Die ganze Anleitung öffnen",
               "zh": "打开完整指南", "hi": "पूरी गाइड खोलें", "bn": "পুরো নির্দেশিকা খুলুন", "ar": "افتح الدليل كاملًا"}
 
-# «О приложении»: about_title · about_tagline · about_device · about_model · about_engine · about_licences.
-ABOUT_KEYS = ["about_title", "about_tagline", "about_device", "about_model", "about_engine", "about_licences"]
+# «О приложении»: about_title · about_tagline · about_device · about_model · about_engine · about_licences ·
+# about_project · about_inspired · about_author · about_source (the owner, chat 2026-10-14 ≈ 20:58 +03:00: «о приложении
+# и авторе нужна и ссылка на наш GH»; plan 03 step 21).
+ABOUT_KEYS = ["about_title", "about_tagline", "about_device", "about_model", "about_engine", "about_licences",
+              "about_project", "about_inspired", "about_author", "about_source"]
 ABOUT = {
-    "es": ["Acerca de", "Versión %1$s · código abierto · sin conexión · IA en el dispositivo", "Dispositivo", "Modelo del dispositivo", "Motor", "Licencias"],
-    "pt": ["Sobre", "Versão %1$s · código aberto · offline · IA no dispositivo", "Dispositivo", "Modelo do dispositivo", "Motor", "Licenças"],
-    "fr": ["À propos", "Version %1$s · open source · hors ligne · IA sur l’appareil", "Appareil", "Modèle de l’appareil", "Moteur", "Licences"],
-    "de": ["Über", "Version %1$s · Open Source · offline · KI auf dem Gerät", "Gerät", "Gerätemodell", "Engine", "Lizenzen"],
-    "zh": ["关于", "版本 %1$s · 开源 · 离线 · 设备端 AI", "设备", "设备型号", "引擎", "许可证"],
-    "hi": ["ऐप के बारे में", "संस्करण %1$s · ओपन सोर्स · ऑफ़लाइन · डिवाइस पर AI", "डिवाइस", "डिवाइस मॉडल", "इंजन", "लाइसेंस"],
-    "bn": ["অ্যাপ সম্পর্কে", "সংস্করণ %1$s · ওপেন সোর্স · অফলাইন · ডিভাইসে AI", "ডিভাইস", "ডিভাইসের মডেল", "ইঞ্জিন", "লাইসেন্স"],
-    "ar": ["حول التطبيق", "الإصدار %1$s · مفتوح المصدر · دون اتصال · ذكاء اصطناعي على الجهاز", "الجهاز", "طراز الجهاز", "المحرك", "التراخيص"],
+    "es": ["Acerca de", "Versión %1$s · código abierto · sin conexión · IA en el dispositivo", "Dispositivo", "Modelo del dispositivo", "Motor", "Licencias", "Proyecto", "Inspiración y motor", "Autor", "Código fuente en GitHub"],
+    "pt": ["Sobre", "Versão %1$s · código aberto · offline · IA no dispositivo", "Dispositivo", "Modelo do dispositivo", "Motor", "Licenças", "Projeto", "Inspiração e motor", "Autor", "Código-fonte no GitHub"],
+    "fr": ["À propos", "Version %1$s · open source · hors ligne · IA sur l’appareil", "Appareil", "Modèle de l’appareil", "Moteur", "Licences", "Projet", "Inspiration et moteur", "Auteur", "Code source sur GitHub"],
+    "de": ["Über", "Version %1$s · Open Source · offline · KI auf dem Gerät", "Gerät", "Gerätemodell", "Engine", "Lizenzen", "Projekt", "Inspiration und Engine", "Autor", "Quellcode auf GitHub"],
+    "zh": ["关于", "版本 %1$s · 开源 · 离线 · 设备端 AI", "设备", "设备型号", "引擎", "许可证", "项目", "灵感与引擎", "作者", "GitHub 上的源代码"],
+    "hi": ["ऐप के बारे में", "संस्करण %1$s · ओपन सोर्स · ऑफ़लाइन · डिवाइस पर AI", "डिवाइस", "डिवाइस मॉडल", "इंजन", "लाइसेंस", "प्रोजेक्ट", "प्रेरणा और इंजन", "लेखक", "GitHub पर सोर्स कोड"],
+    "bn": ["অ্যাপ সম্পর্কে", "সংস্করণ %1$s · ওপেন সোর্স · অফলাইন · ডিভাইসে AI", "ডিভাইস", "ডিভাইসের মডেল", "ইঞ্জিন", "লাইসেন্স", "প্রকল্প", "অনুপ্রেরণা ও ইঞ্জিন", "লেখক", "GitHub-এ সোর্স কোড"],
+    "ar": ["حول التطبيق", "الإصدار %1$s · مفتوح المصدر · دون اتصال · ذكاء اصطناعي على الجهاز", "الجهاز", "طراز الجهاز", "المحرك", "التراخيص", "المشروع", "الإلهام والمحرك", "المؤلف", "الشيفرة المصدرية على GitHub"],
 }
 
 # «Фото готово» notification: notif_done · notif_done_text.

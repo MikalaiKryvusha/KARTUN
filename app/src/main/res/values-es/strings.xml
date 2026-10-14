@@ -94,4 +94,8 @@
     <string name="about_model">Modelo del dispositivo</string>
     <string name="about_engine">Motor</string>
     <string name="about_licences">Licencias</string>
+    <string name="about_project">Proyecto</string>
+    <string name="about_inspired">Inspiración y motor</string>
+    <string name="about_author">Autor</string>
+    <string name="about_source">Código fuente en GitHub</string>
 </resources>

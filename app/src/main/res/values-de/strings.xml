@@ -92,4 +92,8 @@
     <string name="about_model">Gerätemodell</string>
     <string name="about_engine">Engine</string>
     <string name="about_licences">Lizenzen</string>
+    <string name="about_project">Projekt</string>
+    <string name="about_inspired">Inspiration und Engine</string>
+    <string name="about_author">Autor</string>
+    <string name="about_source">Quellcode auf GitHub</string>
 </resources>

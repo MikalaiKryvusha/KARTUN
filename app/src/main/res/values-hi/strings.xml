@@ -92,4 +92,8 @@
     <string name="about_model">डिवाइस मॉडल</string>
     <string name="about_engine">इंजन</string>
     <string name="about_licences">लाइसेंस</string>
+    <string name="about_project">प्रोजेक्ट</string>
+    <string name="about_inspired">प्रेरणा और इंजन</string>
+    <string name="about_author">लेखक</string>
+    <string name="about_source">GitHub पर सोर्स कोड</string>
 </resources>

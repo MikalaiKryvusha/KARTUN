@@ -118,6 +118,12 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
     (`systemGestureExclusion`: on the Titan 21:11 a swipe left on it left the screen). ≈ 21:13: «в что виджет сводки можно
     смахнуть - нукто не догадается, ему нужен или драг хендл или кнопочка-стрелочка» — a round «›» button in the panel's top
     right corner hides it.
+34. [~] (owner, chat 2026-10-14 ≈ 20:58 +03:00) «м в настройках в пункте о приложении и авторе нужна и ссылка на наш GH, и ссылка
+    на николая нотификейшен алертс, где можно ему донат отправить» — done with step 21's half: «О приложении» gains «Проект»
+    (our GitHub), «Вдохновители и движок» (Upscayl, ncnn, Real-ESRGAN) and «Автор» (KrinikCam's set: GitHub, Telegram,
+    YouTube, Instagram @kotkrinik); the GPU row reads the name only. Walked on the Titan 21:29: a link opens the GitHub app.
+    Open: the DonationAlerts address - in no project on disk and not in KrinikCam; asked in chat 21:25, the row comes with
+    the owner's URL.
 
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel

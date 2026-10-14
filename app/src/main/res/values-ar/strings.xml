@@ -100,6 +100,10 @@
     <string name="about_model">طراز الجهاز</string>
     <string name="about_engine">المحرك</string>
     <string name="about_licences">التراخيص</string>
+    <string name="about_project">المشروع</string>
+    <string name="about_inspired">الإلهام والمحرك</string>
+    <string name="about_author">المؤلف</string>
+    <string name="about_source">الشيفرة المصدرية على GitHub</string>
     <string name="arrow">←</string>
     <string name="size_to">%1$s ← %2$s</string>
 </resources>
