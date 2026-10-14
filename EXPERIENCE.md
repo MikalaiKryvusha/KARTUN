@@ -80,6 +80,19 @@
 
 ## Entries
 
+### EXP-0002 · 2026-10-14 · ❌→✅ · #adb #device #shell #titan
+class: shell-lied
+**Context:** measuring `adb pull` speed to the Titan from Git Bash with a device path `/data/local/tmp/…`.
+**Tried / did:** `adb pull /data/local/tmp/x.bin …` and `adb shell rm -f /data/local/tmp/x.bin` as separate argv words.
+**Result:** ❌ Git Bash (MSYS) rewrote the device path into `C:/Program Files/Git/data/local/tmp/…` — the pull failed and
+the `rm` silently missed the file; paths INSIDE one quoted `adb shell "…"` string were untouched. ✅ with `MSYS_NO_PATHCONV=1`.
+**Lesson:** any argv word that starts with `/` is a Windows path to Git Bash; device paths passed to `adb` from Git Bash
+need `MSYS_NO_PATHCONV=1` (or call adb from PowerShell / Node `spawnSync`, which pass argv untouched). Measured speed over
+Tailscale (DERP relay): 4.2 MB/s (20 MB in 4.8 s, 2026-10-14).   → link: ideas/01, HOUSE_RULES.md §3
+**Repro:** `export MSYS_NO_PATHCONV=1; D:/Android/Sdk/platform-tools/adb.exe shell ls -la /data/local/tmp` — prints the device dir, not a Windows error.
+**Trigger:** writing an `adb pull|push|shell <path>` command in the Bash tool → prefix `MSYS_NO_PATHCONV=1`.
+**Not for:** PowerShell and Node scripts — they do not rewrite argv.
+
 ### EXP-0001 · 2026-01-01 · ✅ · #example #meta
 **Context:** first task after KAIF was deployed into this project (example entry — replace with real ones).
 **Tried / did:** wrote the first real lesson here in the canonical format.

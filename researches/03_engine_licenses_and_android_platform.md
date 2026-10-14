@@ -135,6 +135,23 @@ legally unsettled whether such terms reach the released weights; industry practi
 - **Play (verified):** target API 36 required from 2026-08-31 (extension to 2026-11-01); 16 KB pages required (NDK r28+,
   AGP 8.5.1+); developer verification for installs (incl. sideload) starts 2026-09-30 in BR/ID/SG/TH, global in 2027.
 
+- **Android 17 (API 37) — added 2026-10-14 from the platform subagent (sources: developer.android.com 17 pages):**
+  stable since 2026-06-16 → plan `minSdk 36` / `targetSdk 37`. **Memory Limiter** (all apps; Pixel first, other OEMs over
+  the coming year): anon RSS + swap soft limit by device RAM — 12 GB device: 8192 MiB visible / **4096 MiB not visible**
+  (an FGS process counts as not visible); kill shows as `REASON_OTHER` "MemoryLimiter:AnonSwap". Implicit URI grants for
+  `SEND`/`SEND_MULTIPLE` end in Android 18 → grant explicitly. `System.load()`ed files must be read-only (APK `.so` and
+  model files unaffected). WorkManager long-running workers can exhaust the job quota on Android 16 → start the
+  `mediaProcessing` FGS directly from the user's tap; hold a `PARTIAL_WAKE_LOCK` only while tiles run (Play vitals flags
+  ≥ 2 h/24 h). `ProgressStyle` notification + Cancel action; Live Updates promotion is a poor fit.
+- **Vulkan floor:** AOSP says devices launching with Android 16 must support Vulkan 1.4, but the 16 CDD only REQUIRES
+  1.1 (1.3 strongly recommended) → treat 1.1 as the floor; check features at runtime (ncnn does).
+- **Decoders:** `ImageDecoder` returns HARDWARE bitmaps by default (`ALLOCATOR_SOFTWARE` for pixel access); RAW formats
+  decode the embedded JPEG preview; JPEG XL is not in the platform; `androidx.exifinterface` writes EXIF only to JPEG,
+  PNG, WebP. Encoders: `Bitmap.CompressFormat` has no HEIF/AVIF/JXL through API 37; AVIF via `androidx.heifwriter`
+  `AvifWriter` (1.1.0 stable) needs an AV1 encoder on the device; HEIC via `HeifWriter` (grid tiles, HEVC encoder).
+- **Preview of huge outputs:** non-HARDWARE bitmaps above `max(ro.hwui.max_texture_allocation_size, 150 MB)` cannot be
+  drawn → downsampled preview + region tiles (library `telephoto`, Apache-2.0, sub-sampling zoom for Compose).
+
 ## E. Per-app language
 
 `generateLocaleConfig = true` (AGP 8.1+) + `res/resources.properties`; `AppCompatDelegate.setApplicationLocales()` or the
