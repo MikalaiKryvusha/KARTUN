@@ -86,6 +86,8 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
     репозиторий Upscayl, и репозиторий движка, и моделей (если они отдельными репами)» — read KrinikCam's about first.
 22. [ ] «В экране выбора всех моделей нужно картинку показывать превью по каждой модели» · «моделей нужно сильно больше
     добавить» — the model catalogue (phase 4 pulled forward; mockup 'models', licence badges as accepted in interview #002).
+23. [ ] (owner, chat 2026-10-14 ≈ 20:49 +03:00, looking at the «Улучшение» screenshot) «убрать строчку По умолч» — the
+    «2× · по умолч.» tick label under the scale slider becomes plain «2×».
 
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel
