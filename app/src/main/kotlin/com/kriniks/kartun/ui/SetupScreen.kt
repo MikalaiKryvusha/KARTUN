@@ -358,9 +358,16 @@ private fun ScaleSlider(vm: UpscaleViewModel) {
             Text(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(w, h)), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = c.onBackground)
             Text(stringResource(R.string.megapixels, mpText(w.toFloat() * h / 1_000_000f)), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
         }
-        if (!vm.scaleSupported) {
+        // 8× and 16× run two passes (plans/04 step 1): the mockup's amber «2 прохода · дольше · большой файл»; a result over
+        // the output limit is refused with the largest scale that fits this photo.
+        val notice = when {
+            !vm.scaleSupported -> stringResource(R.string.scale_too_big, UpscaleViewModel.MAX_OUTPUT_MP.toInt().toString(), vm.largestFittingScale)
+            vm.scale > UpscaleViewModel.ENGINE_SCALE -> stringResource(R.string.scale_two_pass)
+            else -> null
+        }
+        if (notice != null) {
             Text(
-                stringResource(R.string.scale_soon),
+                notice,
                 Modifier.padding(top = 10.dp).clip(CircleShape).background(c.error.copy(alpha = 0.14f)).padding(horizontal = 12.dp, vertical = 5.dp),
                 style = MaterialTheme.typography.labelMedium.copy(fontSize = MaterialTheme.typography.bodySmall.fontSize), color = c.error,
             )

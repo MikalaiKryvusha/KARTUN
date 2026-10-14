@@ -22,7 +22,9 @@
     <string name="licence_bsd">Commercial use · BSD-3</string>
     <string name="scale_default">default</string>
     <string name="megapixels">%1$s MP</string>
-    <string name="scale_soon">8× and 16× arrive together with large-photo processing</string>
+    <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
+    <string name="scale_too_big">The result would exceed %1$s MP — for this photo choose up to %2$d×</string>
+    <string name="scale_two_pass">2 passes · longer · a large file</string>
     <string name="upscale">Enhance</string>
     <string name="upscale_with_estimate">Enhance · ≈ %1$s</string>
 

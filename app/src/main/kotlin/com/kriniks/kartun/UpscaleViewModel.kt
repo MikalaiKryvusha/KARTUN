@@ -70,7 +70,10 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     val progress: StateFlow<Progress> = _progress
 
     val scale get() = SCALES[scaleIndex]
-    val scaleSupported get() = scale <= ENGINE_SCALE
+    /** The result of the chosen scale fits the output limit (plans/04 step 1). */
+    val scaleSupported get() = source?.let { fits(it.megapixels, scale) } ?: false
+    /** The largest scale of the slider whose result fits the limit for the picked photo (for the notice). */
+    val largestFittingScale get() = source?.let { s -> SCALES.lastOrNull { fits(s.megapixels, it) } } ?: SCALES.first()
 
     private val engineThread = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private val prefs = app.getSharedPreferences("estimates", Context.MODE_PRIVATE)
@@ -135,11 +138,14 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         loadedModel = null
     }
 
-    /** Estimated wall time of a run with the current choices: input MP x the learned rate of this device. */
+    /**
+     * Estimated wall time of a run with the current choices: the megapixels each pass feeds the network x the learned
+     * rate of this device. 8× adds a second pass over the 2× image (4 x the input MP), 16× over the 4× image (16 x).
+     */
     fun estimateMs(): Long {
         val src = source ?: return 0
         val rate = prefs.getFloat(model.file, model.msPerMp)
-        return (src.megapixels * rate).toLong()
+        return (src.megapixels * passFactor(scale) * rate).toLong()
     }
 
     fun start() {
@@ -160,13 +166,30 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                     // Normally already loaded by preload(); a start during loading waits for it on this same thread.
                     ensureLoaded(chosen).let { u ->
                         publish(_progress.value.copy(gpu = u.usesGpu))
-                        val tRun = SystemClock.elapsedRealtime()
-                        val out4 = u.upscale(src.bitmap, ENGINE_SCALE, TILE_PX) { done, total ->
-                            publish(_progress.value.copy(done = done, total = total, elapsedMs = SystemClock.elapsedRealtime() - t0))
-                            !ProcessingState.cancelRequested
+                        // Tiles of both passes are known up front, so the ring runs 0..100 % once across the whole run.
+                        val mid = secondPassInput(target)
+                        val pass1 = tiles(src.width, src.height)
+                        val grand = pass1 + (mid?.let { tiles(src.width * it, src.height * it) } ?: 0)
+                        val report = { offset: Int ->
+                            com.kriniks.kartun.engine.TileListener { done, _ ->
+                                publish(_progress.value.copy(done = offset + done, total = grand, elapsedMs = SystemClock.elapsedRealtime() - t0))
+                                !ProcessingState.cancelRequested
+                            }
                         }
+                        val tRun = SystemClock.elapsedRealtime()
+                        val out4 = u.upscale(src.bitmap, ENGINE_SCALE, TILE_PX, report(0))
                         learnRate(chosen, src.megapixels, SystemClock.elapsedRealtime() - tRun)
-                        val full = if (target == ENGINE_SCALE) out4 else downscale(out4, src.width * target, src.height * target)
+                        val full = when {
+                            target == ENGINE_SCALE -> out4
+                            mid == null -> downscale(out4, src.width * target, src.height * target)
+                            else -> {
+                                // 8×: the 4× result scaled down to 2× feeds the second 4× pass (2 x 4 = 8);
+                                // 16×: the 4× result itself does (4 x 4 = 16). [AI] plans/04 step 1.
+                                // [NOT-TESTED: two passes on the device - deferred by the owner; PassPlanTest covers the plan only]
+                                val input = if (mid == ENGINE_SCALE) out4 else downscale(out4, src.width * mid, src.height * mid)
+                                u.upscale(input, ENGINE_SCALE, TILE_PX, report(pass1)).also { input.recycle() }
+                            }
+                        }
                         val display = fitForDisplay(full)
                         val before = Bitmap.createScaledBitmap(src.bitmap, display.width, display.height, true)
                         Result(full, display, before, SystemClock.elapsedRealtime() - t0, u.usesGpu)
@@ -235,9 +258,23 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         /** The shipped models are 4x; 1x and 2x are the 4x result scaled down (plans/01 §4.5.1). */
         const val ENGINE_SCALE = 4
         /** Tile edge in px - the value of every phase 0 run on the Titan (plans/02). */
-        private const val TILE_PX = 200
+        const val TILE_PX = 200
         /** [AI] slice 1 input limit: 12.5 MP keeps the 4x output under 200 MP in one bitmap; phase 1 lifts it. */
         const val MAX_INPUT_MP = 12.5f
+        /** [AI] output limit, plans/04 step 1: the size the 4× of a 12.5 MP photo already reached in phase 2 slice 1. */
+        const val MAX_OUTPUT_MP = 200f
+
+        /** The result of a [mp]-megapixel photo at [scale] fits the output limit. */
+        fun fits(mp: Float, scale: Int) = mp * scale * scale <= MAX_OUTPUT_MP
+
+        /** The scale of the image the second 4× pass works on: 2 for 8×, 4 for 16×; null for one-pass scales. */
+        fun secondPassInput(scale: Int): Int? = if (scale > ENGINE_SCALE) scale / ENGINE_SCALE else null
+
+        /** Input megapixels of all passes, in units of the photo's own megapixels: 1, plus 4 for 8×, plus 16 for 16×. */
+        fun passFactor(scale: Int): Float = 1f + (secondPassInput(scale)?.let { (it * it).toFloat() } ?: 0f)
+
+        /** The tile count of one pass - the same count the native loop reports as `total`. */
+        fun tiles(w: Int, h: Int) = ((w + TILE_PX - 1) / TILE_PX) * ((h + TILE_PX - 1) / TILE_PX)
         /** Longest side of the bitmap the compare screen draws (Android refuses to draw bitmaps over ~100 MB). */
         private const val DISPLAY_MAX_SIDE = 4096
         private const val MIN_MP_TO_LEARN = 0.2f

@@ -23,8 +23,9 @@
     <string name="licence_bsd">Для коммерции · BSD-3</string>
     <string name="scale_default">по умолч.</string>
     <string name="megapixels">%1$s Мп</string>
-    <!-- [AI] 8x and 16x need the second pass and the megapixel limit of phase 1 (plans/03 step 4). -->
-    <string name="scale_soon">8× и 16× появятся вместе с обработкой больших фото</string>
+    <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
+    <string name="scale_too_big">Результат больше %1$s Мп — для этого фото подойдёт масштаб до %2$d×</string>
+    <string name="scale_two_pass">2 прохода · дольше · большой файл</string>
     <string name="upscale">Улучшить</string>
     <string name="upscale_with_estimate">Улучшить · ≈ %1$s</string>
 
