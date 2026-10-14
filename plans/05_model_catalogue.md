@@ -54,8 +54,10 @@ licence text beside it; the non-commercial ones stay there only while KARTUN is 
    22:18: + 4xNomos8kSC and 4xHFA2k from Phhofm's own ncnn files (blobs `data`/`output`), GPU runs on the Titan 5 396 and
    5 285 ms at 256²; 5 models, 0 mismatches. Six-model comparison sheet (Bicubic, General v3, x4plus, UltraSharp, Nomos8kSC,
    HFA2k) - the first draft of the previews.
-3. [ ] Previews: one fixed crop of one fixed sample (the BSD-3 beach `input2.jpg`, and a drawing for anime models) run
+3. [~] Previews: one fixed crop of one fixed sample (the BSD-3 beach `input2.jpg`, and a drawing for anime models) run
    through every model on the Titan with `tools/titan-probe.mjs`; 320 px WebP per model, uploaded with the model.
+   22:20: the beach crop for all 7 models (2 built-in + 5 catalogue; x4plus anime run 22:19 on the Titan GPU) in
+   `docs/model-previews/<id>.webp`, 9–19 KB each, linked from the catalogue; a drawing sample for anime models still to do.
 4. [ ] The release `models`: upload files + licence texts with `gh release upload`; a tool `tools/publish-models.mjs`
    checks every hash against the catalogue before upload.
 5. [ ] The app: a downloader (resume-safe, hash-verified, into app storage), the «Все модели» screen with cards
