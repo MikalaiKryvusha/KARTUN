@@ -49,8 +49,6 @@ import com.kriniks.kartun.UpscaleViewModel
 import kotlin.math.ceil
 import kotlin.math.min
 
-/** Tile edge the engine uses - the grid over the photo mirrors the engine's real tiles. */
-private const val TILE_PX = 200
 /** Width of the side panel with the ring in landscape. */
 private val PANEL_WIDTH = 420.dp
 
@@ -68,6 +66,13 @@ fun WorkingScreen(vm: UpscaleViewModel) {
     val fraction = if (p.total > 0) p.done.toFloat() / p.total else 0f
     // Remaining time: from the real pace once tiles report, from the estimate before that.
     val leftMs = if (p.done > 0) p.elapsedMs * (p.total - p.done) / p.done else p.estimateMs
+    // 8× and 16× run a second pass over the 2× / 4× image (plans/04 step 1): its tiles are smaller on the photo, and the
+    // grid starts over for it. pass1 = the photo's own tiles; anything above them belongs to pass 2.
+    val mid = UpscaleViewModel.secondPassInput(vm.scale)
+    val pass1 = UpscaleViewModel.tiles(src.width, src.height)
+    val inPass2 = mid != null && p.done >= pass1
+    val tileOnPhoto = if (inPass2) UpscaleViewModel.TILE_PX.toFloat() / mid!! else UpscaleViewModel.TILE_PX.toFloat()
+    val doneInPass = if (inPass2) p.done - pass1 else p.done
 
     // Portrait: a column - the photo takes the space above the sheet, so no tile hides under it (seen on the Titan
     // 2026-10-14 18:41 - a fixed bottom padding was shorter than the sheet). Landscape (the owner: «лендскейп нужно
@@ -81,22 +86,22 @@ fun WorkingScreen(vm: UpscaleViewModel) {
             val h = (src.height * k).dp
             Box(Modifier.align(Alignment.Center).size(w, h)) {
                 Image(src.bitmap.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
-                val cols = ceil(src.width / TILE_PX.toFloat()).toInt()
-                val rows = ceil(src.height / TILE_PX.toFloat()).toInt()
+                val cols = ceil(src.width / tileOnPhoto).toInt()
+                val rows = ceil(src.height / tileOnPhoto).toInt()
                 val shade = c.background.copy(alpha = 0.62f)
                 val now = c.primary.copy(alpha = 0.28f)
                 val line = c.onBackground.copy(alpha = 0.08f)
                 val pink = c.primary
                 Canvas(Modifier.fillMaxSize()) {
-                    val tw = size.width * TILE_PX / src.width
-                    val th = size.height * TILE_PX / src.height
+                    val tw = size.width * tileOnPhoto / src.width
+                    val th = size.height * tileOnPhoto / src.height
                     for (r in 0 until rows) for (col in 0 until cols) {
                         val i = r * cols + col
                         val o = Offset(col * tw, r * th)
                         val s = Size(min(tw, size.width - o.x), min(th, size.height - o.y))
                         when {
-                            i < p.done -> Unit
-                            i == p.done -> { drawRect(now, o, s); drawRect(pink, o, s, style = Stroke(1.dp.toPx())) }
+                            i < doneInPass -> Unit
+                            i == doneInPass -> { drawRect(now, o, s); drawRect(pink, o, s, style = Stroke(1.dp.toPx())) }
                             else -> drawRect(shade, o, s)
                         }
                         drawRect(line, o, s, style = Stroke(0.5.dp.toPx()))
@@ -121,7 +126,8 @@ fun WorkingScreen(vm: UpscaleViewModel) {
             }
             Text(stringResource(R.string.working_title), style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp), textAlign = TextAlign.Center)
             Text(
-                if (p.total > 0) stringResource(R.string.working_tiles, p.done, p.total, durationText(leftMs))
+                if (p.total > 0 && mid != null) stringResource(R.string.working_pass, if (inPass2) 2 else 1, p.done, p.total, durationText(leftMs))
+                else if (p.total > 0) stringResource(R.string.working_tiles, p.done, p.total, durationText(leftMs))
                 else stringResource(R.string.working_starting, durationText(p.estimateMs)),
                 style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant, textAlign = TextAlign.Center,
             )

@@ -75,6 +75,7 @@
     <string name="settings_manual">用户指南</string>
     <string name="settings_manual_sub">如何使用 KARTUN 及其模型</string>
     <string name="info_open_guide">打开完整指南</string>
+    <string name="working_pass">第 %1$d / 2 次 · 第 %2$d / %3$d 块 · 剩余约 %4$s</string>
     <string name="notif_done">照片已完成</string>
     <string name="notif_done_text">点按以对比处理前后</string>
     <string name="about_title">关于</string>

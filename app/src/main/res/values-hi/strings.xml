@@ -77,6 +77,7 @@
     <string name="settings_manual">उपयोगकर्ता गाइड</string>
     <string name="settings_manual_sub">KARTUN और उसके मॉडल कैसे इस्तेमाल करें</string>
     <string name="info_open_guide">पूरी गाइड खोलें</string>
+    <string name="working_pass">पास %1$d / 2 · टाइल %2$d / %3$d · बाक़ी ≈ %4$s</string>
     <string name="notif_done">आपकी फ़ोटो तैयार है</string>
     <string name="notif_done_text">पहले और बाद की तुलना के लिए दबाएँ</string>
     <string name="about_title">ऐप के बारे में</string>

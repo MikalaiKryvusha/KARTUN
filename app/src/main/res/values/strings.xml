@@ -106,4 +106,5 @@
     <string name="about_licences">Licences</string>
     <string name="notif_done">Your photo is ready</string>
     <string name="notif_done_text">Tap to compare before and after</string>
+    <string name="working_pass">Pass %1$d of 2 · tile %2$d of %3$d · ≈ %4$s left</string>
 </resources>

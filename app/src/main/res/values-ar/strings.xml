@@ -85,6 +85,7 @@
     <string name="settings_manual">دليل المستخدم</string>
     <string name="settings_manual_sub">كيف تستخدم KARTUN ونماذجه</string>
     <string name="info_open_guide">افتح الدليل كاملًا</string>
+    <string name="working_pass">المرور %1$d من 2 · البلاطة %2$d من %3$d · المتبقي ≈ %4$s</string>
     <string name="notif_done">صورتك جاهزة</string>
     <string name="notif_done_text">اضغط للمقارنة بين قبل وبعد</string>
     <string name="about_title">حول التطبيق</string>

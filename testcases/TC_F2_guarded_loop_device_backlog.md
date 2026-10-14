@@ -65,6 +65,7 @@ test photo copied to `Pictures/KARTUN_test/` and removed after (R1 of HOUSE_RULE
 | C22 | «Настройки» → the (i)-circle icon top right → «О приложении»: version 0.1 (1), «HEADWOLF F8» or the real model, Android 16 (API 36), the GPU line with Mali-G615 MC6, ncnn 20260526, five licence rows | state | [NOT-TESTED] |
 | C23 | choose x4plus, 4×, save as JPEG q80 → `am force-stop` → reopen, pick a photo → x4plus and 4× are chosen; the save dialog shows JPEG · 80 | state | [NOT-TESTED] |
 | C24 | x4plus run → Home key → wait for the end → notification «Фото готово» → tap → the result screen; the same run with KARTUN on the screen → no «Фото готово» | state | [NOT-TESTED] |
+| C25 | 8× on the 960×1280 photo → the line reads «Проход 1 из 2 · тайл N из 175…», the grid has 35 tiles; then «Проход 2 из 2», the grid restarts with 140 smaller tiles (100 px on the photo) | state | [NOT-TESTED] |
 | C14 | debug build: `node tools/titan-probe.mjs --in test256.png --model realesr-general-x4v3 --gpu true --tile 200` → JSON line as before | regression | [NOT-TESTED] |
 
 ## 5. Control cases — MUST

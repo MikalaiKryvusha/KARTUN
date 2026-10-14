@@ -77,6 +77,7 @@
     <string name="settings_manual">Benutzeranleitung</string>
     <string name="settings_manual_sub">So nutzt du KARTUN und seine Modelle</string>
     <string name="info_open_guide">Die ganze Anleitung öffnen</string>
+    <string name="working_pass">Durchgang %1$d von 2 · Kachel %2$d von %3$d · noch ≈ %4$s</string>
     <string name="notif_done">Dein Foto ist fertig</string>
     <string name="notif_done_text">Tippe, um Vorher und Nachher zu vergleichen</string>
     <string name="about_title">Über</string>

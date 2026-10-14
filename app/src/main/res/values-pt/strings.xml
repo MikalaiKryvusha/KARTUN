@@ -79,6 +79,7 @@
     <string name="settings_manual">Guia do usuário</string>
     <string name="settings_manual_sub">Como usar o KARTUN e seus modelos</string>
     <string name="info_open_guide">Abrir o guia completo</string>
+    <string name="working_pass">Passagem %1$d de 2 · bloco %2$d de %3$d · faltam ≈ %4$s</string>
     <string name="notif_done">Sua foto está pronta</string>
     <string name="notif_done_text">Toque para comparar antes e depois</string>
     <string name="about_title">Sobre</string>

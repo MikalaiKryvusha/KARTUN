@@ -259,6 +259,12 @@ DONE = {"es": ("Tu foto está lista", "Toca para comparar antes y después"), "p
         "zh": ("照片已完成", "点按以对比处理前后"), "hi": ("आपकी फ़ोटो तैयार है", "पहले और बाद की तुलना के लिए दबाएँ"),
         "bn": ("আপনার ছবি প্রস্তুত", "আগে ও পরে তুলনা করতে চাপুন"), "ar": ("صورتك جاهزة", "اضغط للمقارنة بين قبل وبعد")}
 
+# The processing line of the two-pass scales (8×, 16×).
+PASS = {"es": "Pasada %1$d de 2 · mosaico %2$d de %3$d · quedan ≈ %4$s", "pt": "Passagem %1$d de 2 · bloco %2$d de %3$d · faltam ≈ %4$s",
+        "fr": "Passe %1$d sur 2 · tuile %2$d sur %3$d · reste ≈ %4$s", "de": "Durchgang %1$d von 2 · Kachel %2$d von %3$d · noch ≈ %4$s",
+        "zh": "第 %1$d / 2 次 · 第 %2$d / %3$d 块 · 剩余约 %4$s", "hi": "पास %1$d / 2 · टाइल %2$d / %3$d · बाक़ी ≈ %4$s",
+        "bn": "পাস %1$d / ২ · টাইল %2$d / %3$d · বাকি ≈ %4$s", "ar": "المرور %1$d من 2 · البلاطة %2$d من %3$d · المتبقي ≈ %4$s"}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -283,6 +289,7 @@ def main():
         for k, v in zip(("manual_title", "settings_manual", "settings_manual_sub"), GUIDE[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="info_open_guide">{xml_text(OPEN_GUIDE[lang])}</string>')
+        lines.append(f'    <string name="working_pass">{xml_text(PASS[lang])}</string>')
         for k, v in zip(("notif_done", "notif_done_text"), DONE[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         assert len(ABOUT[lang]) == len(ABOUT_KEYS), (lang, "about")
