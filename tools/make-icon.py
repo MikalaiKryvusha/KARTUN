@@ -37,6 +37,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_HEART = os.path.join(ROOT, 'design', 'icon', 'icon_v3.png')
 DEFAULT_SCALE = 1.0
 DEFAULT_INSET = 0.21
+# The owner's pick 2026-10-14 ("B", after "сликом близко края сердечка к краям круга"): the heart's farthest pixel
+# 27 dp from the centre (visible circle 36 dp), the plate rim faded into bare glass at 0.343 of the side.
+DEFAULT_HEART_DP = 27.0
+DEFAULT_DISC = 0.30     # fade ends at 376 px - before the rim's pink inner glow, which starts at ~400 px
 SRC_PLATE = os.path.join(ROOT, 'design', 'icon', 'icon_v2.png')
 RES = os.path.join(ROOT, 'app', 'src', 'main', 'res')
 
@@ -53,7 +57,9 @@ BODY_PINK_MIN = 120     # R - G for the heart body
 LASER_LUMA_MIN = 200    # the white core of the laser line
 LASER_BAND = 30         # px either side of the laser line ignored when measuring the heart (its glow is pink too)
 OPEN_PX = 9             # odd px window that opens away the thin spark strokes (heart pixels are ~35 px squares)
-DISC_FEATHER = 0.93     # a --disc stays opaque inside 93 % of its radius, then fades to the background colour
+DISC_FEATHER = 0.85     # a --disc stays opaque inside 85 % of its radius, then fades to the background colour
+HOLD_GROW = 21          # px the heart's silhouette grows to keep its glow opaque through the fade (odd window 43)
+HOLD_BLUR = 8           # px softening of that held zone's edge
 DISC_RING = 0.85        # the background colour is the average glass in the ring 85..100 % of the disc radius
 GLASS_PINK_MAX = 30     # R - G below this = bare glass, not the heart's glow
 EDGE_STRIP = 24         # px of the picture's border averaged for the background colour
@@ -136,22 +142,23 @@ def border_colour(rgb):
 
 
 def ring_colour(rgb, r_in, r_out):
-    """Average colour of the ring r_in..r_out px around the picture's centre - the glass at the disc's edge; pink
-    pixels (the heart's glow, the laser) are skipped, so the colour is the bare glass."""
+    """Median colour of the ring r_in..r_out px around the picture's centre - the bare glass at the disc's edge.
+    Pink pixels (the heart's glow, the laser) are skipped; the median, not the mean, so the lighter glass sheen in
+    the plate's top-left corner does not lift the colour above the dark glass that surrounds the heart."""
     w, h = rgb.size
     c = (w - 1) / 2
     px = rgb.load()
-    total, n = [0, 0, 0], 0
+    chans = ([], [], [])
     for y in range(0, h, 2):
         for x in range(0, w, 2):
             v = px[x, y]
             if r_in <= math.hypot(x - c, y - c) <= r_out and v[0] - v[1] < GLASS_PINK_MAX:
-                total[0] += v[0]; total[1] += v[1]; total[2] += v[2]
-                n += 1
-    return tuple(round(t / n) for t in total)
+                for i in range(3):
+                    chans[i].append(v[i])
+    return tuple(sorted(ch)[len(ch) // 2] for ch in chans)
 
 
-def feathered(img, side, r_zero_frac=0.5, r_full_frac=0.40):
+def feathered(img, side, r_zero_frac=0.5, r_full_frac=0.40, hold=None):
     """The picture with its outer ring faded to transparent, so its edge never shows on the background layer.
     Default: opaque inside 80 % of the side, zero at the edge circle. A disc cut (--disc) fades at the disc's edge."""
     alpha = Image.new('L', (side, side), 0)
@@ -163,6 +170,8 @@ def feathered(img, side, r_zero_frac=0.5, r_full_frac=0.40):
         draw.ellipse((side / 2 - rr, side / 2 - rr, side / 2 + rr, side / 2 + rr), fill=int(255 * i / steps))
     draw.ellipse((side / 2 - r_full, side / 2 - r_full, side / 2 + r_full, side / 2 + r_full), fill=255)
     out = img.convert('RGBA')
+    if hold is not None:                                  # the heart with its glow stays opaque whatever the fade
+        alpha = ImageChops.lighter(alpha, hold)
     out.putalpha(ImageChops.multiply(alpha, img.convert('RGBA').split()[3]))
     return out
 
@@ -195,9 +204,9 @@ def main():
                     help='where to write the mask preview sheet')
     ap.add_argument('--inset', type=float, default=DEFAULT_INSET,
                     help='edge fraction ignored when looking for the heart (0.21 for icon_v3: its rim glows inward)')
-    ap.add_argument('--heart-dp', type=float,
+    ap.add_argument('--heart-dp', type=float, default=DEFAULT_HEART_DP,
                     help='place the heart so its farthest pixel is this many dp from the centre (visible circle 36 dp)')
-    ap.add_argument('--disc', type=float,
+    ap.add_argument('--disc', type=float, default=DEFAULT_DISC,
                     help='cut a glass disc of this radius (fraction of the picture side) out of the plate and fill the '
                          'rest with the disc edge colour - keeps the plate rim out of the circle when the heart shrinks')
     ap.add_argument('--preview-only', action='store_true', help='write only the preview, leave app resources alone')
@@ -228,9 +237,16 @@ def main():
           f'background #{bg[0]:02X}{bg[1]:02X}{bg[2]:02X}; picture scale {scale:.3f} of the layer '
           f'(heart width {(bbox[2] - bbox[0]) / w * scale * LAYER_DP:.1f} dp of {VISIBLE_DP} dp visible)')
 
-    fg_src = feathered(heart, w, args.disc, args.disc * DISC_FEATHER) if args.disc else feathered(heart, w)
+    sil = silhouette(body, laser_x)
+    if args.disc:
+        # Keep the heart and a band of its glow opaque (the silhouette grown by HOLD_GROW px, softened), so the
+        # radial fade can end before the plate rim's inner glow without eating the heart's pixel corners.
+        hold = sil.filter(ImageFilter.MaxFilter(HOLD_GROW * 2 + 1)).filter(ImageFilter.GaussianBlur(HOLD_BLUR))
+        fg_src = feathered(heart, w, args.disc, args.disc * DISC_FEATHER, hold)
+    else:
+        fg_src = feathered(heart, w)
     mono_src = Image.new('RGBA', (w, h), (255, 255, 255, 0))
-    mono_src.putalpha(silhouette(body, laser_x))
+    mono_src.putalpha(sil)
 
     write_preview(fg_src, mono_src, scale, bg, args.preview)
     if args.preview_only:
