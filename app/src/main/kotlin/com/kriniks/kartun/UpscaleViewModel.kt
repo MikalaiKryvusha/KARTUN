@@ -10,6 +10,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.edit
@@ -64,14 +65,14 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     var model by mutableStateOf(Model.Fast); private set
     /** True while the chosen model is being copied out of the APK and loaded into the engine. */
     var modelLoading by mutableStateOf(false); private set
-    var scaleIndex by mutableStateOf(DEFAULT_SCALE_INDEX)
+    var scaleIndex by mutableIntStateOf(DEFAULT_SCALE_INDEX)
     var result by mutableStateOf<Result?>(null); private set
     /** A user-facing error: the string resource and its argument (or null). */
     var error by mutableStateOf<Pair<Int, String?>?>(null); private set
 
     /** Save settings (mockup 'save'): the format and the quality of JPEG/WebP; 92 is the mockup's value. */
     var saveFormat by mutableStateOf(ResultStore.Format.Png)
-    var saveQuality by mutableStateOf(DEFAULT_QUALITY)
+    var saveQuality by mutableIntStateOf(DEFAULT_QUALITY)
     /** True while a save or a share copy is being encoded. */
     var saving by mutableStateOf(false); private set
     /** One-line outcome of the last save for the result screen («Сохранено в Pictures/KARTUN»), as a string resource. */
