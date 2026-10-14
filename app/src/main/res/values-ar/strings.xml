@@ -105,6 +105,8 @@
     <string name="about_author">المؤلف</string>
     <string name="about_source">الشيفرة المصدرية على GitHub</string>
     <string name="settings_about_sub">الإصدار، الجهاز، المؤلف، التراخيص</string>
+    <string name="terms_title">شروط الاستخدام</string>
+    <string name="terms_sub">حقوق النماذج والمسؤولية</string>
     <string name="arrow">←</string>
     <string name="size_to">%1$s ← %2$s</string>
 </resources>

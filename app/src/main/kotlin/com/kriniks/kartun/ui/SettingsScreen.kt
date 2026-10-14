@@ -118,6 +118,11 @@ fun SettingsScreen(vm: UpscaleViewModel, onBack: () -> Unit) {
                     R.drawable.ic_about, stringResource(R.string.about_title), stringResource(R.string.settings_about_sub),
                     onInfo = null, onClick = vm::openAbout,
                 ) { Text("›", style = MaterialTheme.typography.titleMedium, color = c.onSurfaceVariant) }
+                // «Условия использования»: model ownership, the user's rights to photos, the device, the result (plan 03 step 40).
+                SettingRow(
+                    R.drawable.ic_book, stringResource(R.string.terms_title), stringResource(R.string.terms_sub),
+                    onInfo = null, onClick = vm::openTerms,
+                ) { Text("›", style = MaterialTheme.typography.titleMedium, color = c.onSurfaceVariant) }
             }
         }
     }

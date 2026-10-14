@@ -80,5 +80,6 @@ private fun KartunApp(vm: UpscaleViewModel) {
         UpscaleViewModel.Screen.Settings -> SettingsScreen(vm, onBack = vm::back)
         UpscaleViewModel.Screen.Manual -> ManualScreen(onBack = vm::back)
         UpscaleViewModel.Screen.About -> AboutScreen(onBack = vm::back)
+        UpscaleViewModel.Screen.Terms -> ManualScreen(onBack = vm::back, raw = R.raw.terms, title = R.string.terms_title)
     }
 }

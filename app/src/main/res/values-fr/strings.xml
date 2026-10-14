@@ -99,4 +99,6 @@
     <string name="about_author">Auteur</string>
     <string name="about_source">Code source sur GitHub</string>
     <string name="settings_about_sub">Version, appareil, auteur, licences</string>
+    <string name="terms_title">Conditions d’utilisation</string>
+    <string name="terms_sub">Droits des modèles et responsabilité</string>
 </resources>

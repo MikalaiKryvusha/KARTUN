@@ -97,4 +97,6 @@
     <string name="about_author">লেখক</string>
     <string name="about_source">GitHub-এ সোর্স কোড</string>
     <string name="settings_about_sub">সংস্করণ, ডিভাইস, লেখক, লাইসেন্স</string>
+    <string name="terms_title">ব্যবহারের শর্তাবলি</string>
+    <string name="terms_sub">মডেলের অধিকার ও দায়</string>
 </resources>

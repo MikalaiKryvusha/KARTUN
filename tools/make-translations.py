@@ -245,16 +245,16 @@ OPEN_GUIDE = {"es": "Abrir la guía completa", "pt": "Abrir o guia completo", "f
 # about_project · about_inspired · about_author · about_source (the owner, chat 2026-10-14 ≈ 20:58 +03:00: «о приложении
 # и авторе нужна и ссылка на наш GH»; plan 03 step 21).
 ABOUT_KEYS = ["about_title", "about_tagline", "about_device", "about_model", "about_engine", "about_licences",
-              "about_project", "about_inspired", "about_author", "about_source", "settings_about_sub"]
+              "about_project", "about_inspired", "about_author", "about_source", "settings_about_sub", "terms_title", "terms_sub"]
 ABOUT = {
-    "es": ["Acerca de", "Versión %1$s", "Dispositivo", "Modelo del dispositivo", "Motor", "Licencias", "Proyecto", "Inspiración y motor", "Autor", "Código fuente en GitHub", "Versión, dispositivo, autor, licencias"],
-    "pt": ["Sobre", "Versão %1$s", "Dispositivo", "Modelo do dispositivo", "Motor", "Licenças", "Projeto", "Inspiração e motor", "Autor", "Código-fonte no GitHub", "Versão, dispositivo, autor, licenças"],
-    "fr": ["À propos", "Version %1$s", "Appareil", "Modèle de l’appareil", "Moteur", "Licences", "Projet", "Inspiration et moteur", "Auteur", "Code source sur GitHub", "Version, appareil, auteur, licences"],
-    "de": ["Über", "Version %1$s", "Gerät", "Gerätemodell", "Engine", "Lizenzen", "Projekt", "Inspiration und Engine", "Autor", "Quellcode auf GitHub", "Version, Gerät, Autor, Lizenzen"],
-    "zh": ["关于", "版本 %1$s", "设备", "设备型号", "引擎", "许可证", "项目", "灵感与引擎", "作者", "GitHub 上的源代码", "版本、设备、作者、许可证"],
-    "hi": ["ऐप के बारे में", "संस्करण %1$s", "डिवाइस", "डिवाइस मॉडल", "इंजन", "लाइसेंस", "प्रोजेक्ट", "प्रेरणा और इंजन", "लेखक", "GitHub पर सोर्स कोड", "संस्करण, डिवाइस, लेखक, लाइसेंस"],
-    "bn": ["অ্যাপ সম্পর্কে", "সংস্করণ %1$s", "ডিভাইস", "ডিভাইসের মডেল", "ইঞ্জিন", "লাইসেন্স", "প্রকল্প", "অনুপ্রেরণা ও ইঞ্জিন", "লেখক", "GitHub-এ সোর্স কোড", "সংস্করণ, ডিভাইস, লেখক, লাইসেন্স"],
-    "ar": ["حول التطبيق", "الإصدار %1$s", "الجهاز", "طراز الجهاز", "المحرك", "التراخيص", "المشروع", "الإلهام والمحرك", "المؤلف", "الشيفرة المصدرية على GitHub", "الإصدار، الجهاز، المؤلف، التراخيص"],
+    "es": ["Acerca de", "Versión %1$s", "Dispositivo", "Modelo del dispositivo", "Motor", "Licencias", "Proyecto", "Inspiración y motor", "Autor", "Código fuente en GitHub", "Versión, dispositivo, autor, licencias", "Condiciones de uso", "Derechos de los modelos y responsabilidad"],
+    "pt": ["Sobre", "Versão %1$s", "Dispositivo", "Modelo do dispositivo", "Motor", "Licenças", "Projeto", "Inspiração e motor", "Autor", "Código-fonte no GitHub", "Versão, dispositivo, autor, licenças", "Termos de uso", "Direitos dos modelos e responsabilidade"],
+    "fr": ["À propos", "Version %1$s", "Appareil", "Modèle de l’appareil", "Moteur", "Licences", "Projet", "Inspiration et moteur", "Auteur", "Code source sur GitHub", "Version, appareil, auteur, licences", "Conditions d’utilisation", "Droits des modèles et responsabilité"],
+    "de": ["Über", "Version %1$s", "Gerät", "Gerätemodell", "Engine", "Lizenzen", "Projekt", "Inspiration und Engine", "Autor", "Quellcode auf GitHub", "Version, Gerät, Autor, Lizenzen", "Nutzungsbedingungen", "Rechte an Modellen und Haftung"],
+    "zh": ["关于", "版本 %1$s", "设备", "设备型号", "引擎", "许可证", "项目", "灵感与引擎", "作者", "GitHub 上的源代码", "版本、设备、作者、许可证", "使用条款", "模型权利与责任"],
+    "hi": ["ऐप के बारे में", "संस्करण %1$s", "डिवाइस", "डिवाइस मॉडल", "इंजन", "लाइसेंस", "प्रोजेक्ट", "प्रेरणा और इंजन", "लेखक", "GitHub पर सोर्स कोड", "संस्करण, डिवाइस, लेखक, लाइसेंस", "उपयोग की शर्तें", "मॉडलों के अधिकार और ज़िम्मेदारी"],
+    "bn": ["অ্যাপ সম্পর্কে", "সংস্করণ %1$s", "ডিভাইস", "ডিভাইসের মডেল", "ইঞ্জিন", "লাইসেন্স", "প্রকল্প", "অনুপ্রেরণা ও ইঞ্জিন", "লেখক", "GitHub-এ সোর্স কোড", "সংস্করণ, ডিভাইস, লেখক, লাইসেন্স", "ব্যবহারের শর্তাবলি", "মডেলের অধিকার ও দায়"],
+    "ar": ["حول التطبيق", "الإصدار %1$s", "الجهاز", "طراز الجهاز", "المحرك", "التراخيص", "المشروع", "الإلهام والمحرك", "المؤلف", "الشيفرة المصدرية على GitHub", "الإصدار، الجهاز، المؤلف، التراخيص", "شروط الاستخدام", "حقوق النماذج والمسؤولية"],
 }
 
 # «Фото готово» notification: notif_done · notif_done_text.

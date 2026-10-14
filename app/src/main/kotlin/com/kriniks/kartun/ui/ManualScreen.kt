@@ -46,16 +46,17 @@ import com.kriniks.kartun.R
  * guide's next revision. [NOT-TESTED: device run deferred by the owner («потом потестируем»)]
  */
 @Composable
-fun ManualScreen(onBack: () -> Unit) {
+fun ManualScreen(onBack: () -> Unit, raw: Int = R.raw.manual, title: Int = R.string.manual_title) {
     val c = MaterialTheme.colorScheme
     val ctx = LocalContext.current
     BackHandler(onBack = onBack)
-    val lines = remember { ctx.resources.openRawResource(R.raw.manual).bufferedReader().readLines() }
+    // The same reader shows the guide and the terms of use (raw/terms.md - plan 03 step 40).
+    val lines = remember(raw) { ctx.resources.openRawResource(raw).bufferedReader().readLines() }
 
     Column(Modifier.fillMaxSize().background(c.background).systemBarsPadding()) {
         Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
             RoundIconButton(R.drawable.ic_back, onClick = onBack)
-            Text(stringResource(R.string.manual_title), Modifier.weight(1f), style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
+            Text(stringResource(title), Modifier.weight(1f), style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
             Spacer(Modifier.size(44.dp))
         }
         Column(

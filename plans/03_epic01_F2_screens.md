@@ -151,10 +151,13 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
 39. [x] (owner, chat 2026-10-14 ≈ 22:00 +03:00) «а О приложении - отдельным пуктом в настройках, а не i скромной на экране
     настроек» — the corner icon gone; «О приложении · Версия, устройство, автор, лицензии» is a row of «Приложение» (no (i):
     not a setting). Seen on the Titan 22:06.
-40. [ ] (owner, chat 2026-10-14 ≈ 22:04 +03:00) «помечаем, что модели принадлежит их авторам, мы не претендуем на владение. Нужно в
+40. [~] (owner, chat 2026-10-14 ≈ 22:04 +03:00) «помечаем, что модели принадлежит их авторам, мы не претендуем на владение. Нужно в
     настройках сделать ToU секцию со снятием с нас ответственности за владение, авторские права и целостность устройства
     пользователя и за удовлетворённость резулттатом улучшения фото» — an «Условия использования» row in settings with the
     text (an `[AI]` draft to the owner first - legal text in his name), and an «автор модели» line on every catalogue card.
+    Built ≈ 22:11: «Условия использования · Права на модели и ответственность» in «Приложение» opens `res/raw*/terms.md` (EN + RU)
+    in the guide's reader; six sections - the app as is, models belong to their authors, your photos, your device, the result,
+    liability. `[AI]` text, waiting for the owner's read-through; the model-author line lands with the catalogue cards.
 
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel

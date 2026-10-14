@@ -114,6 +114,8 @@
     <string name="about_author">Автор</string>
     <string name="about_source">Исходный код на GitHub</string>
     <string name="settings_about_sub">Версия, устройство, автор, лицензии</string>
+    <string name="terms_title">Условия использования</string>
+    <string name="terms_sub">Права на модели и ответственность</string>
     <string name="notif_done">Фото готово</string>
     <string name="notif_done_text">Нажмите, чтобы сравнить «до» и «после»</string>
     <string name="working_pass">Проход %1$d из 2 · тайл %2$d из %3$d · осталось ≈ %4$s</string>

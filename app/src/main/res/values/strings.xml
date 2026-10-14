@@ -108,6 +108,8 @@
     <string name="about_author">Author</string>
     <string name="about_source">Source code on GitHub</string>
     <string name="settings_about_sub">Version, device, author, licences</string>
+    <string name="terms_title">Terms of use</string>
+    <string name="terms_sub">Model rights and liability</string>
     <string name="notif_done">Your photo is ready</string>
     <string name="notif_done_text">Tap to compare before and after</string>
     <string name="working_pass">Pass %1$d of 2 · tile %2$d of %3$d · ≈ %4$s left</string>
