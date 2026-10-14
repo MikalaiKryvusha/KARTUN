@@ -17,10 +17,27 @@ android {
         ndk { abiFilters += "arm64-v8a" }
     }
 
+    // App names on the phone (owner's rule R3, HOUSE_RULES.md): stage builds carry "Stage KARTUN", prod is just "KARTUN".
+    // Each type has its own applicationId suffix, so debug, stage and prod install side by side on the Titan.
     buildTypes {
-        debug { applicationIdSuffix = ".debug" }
+        debug {
+            applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "Debug KARTUN")
+        }
+        create("stage") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".stage"
+            resValue("string", "app_name", "Stage KARTUN")
+            matchingFallbacks += listOf("debug")
+        }
+        release {
+            resValue("string", "app_name", "KARTUN")
+        }
     }
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        resValues = true
+    }
 }
 
 dependencies {
