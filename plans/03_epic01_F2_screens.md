@@ -80,7 +80,7 @@ Slice 2:
     Open: the device run — start, leave the app, watch the notification, «Отменить» from it («потом потестируем»).
     `[AI]` POST_NOTIFICATIONS is NOT requested: without it Android 13+ still lists the run in the task manager, a
     permission dialog is a UX decision for the owner.
-12. [ ] The probe activity moves to a debug-only entry.
+12. [x] The adb engine probe runs only in debuggable builds (`BuildConfig.DEBUG` in `MainActivity`, 2026-10-14 ≈ 19:19; release `BuildConfig.DEBUG = false` read from the generated file). Device check of the probe in the debug build — with the next Titan session.
 
 ## Risks
 

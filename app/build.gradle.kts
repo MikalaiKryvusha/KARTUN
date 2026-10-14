@@ -42,6 +42,8 @@ android {
     buildFeatures {
         compose = true
         resValues = true
+        // BuildConfig.DEBUG gates the adb engine probe out of release builds (plans/03 step 12).
+        buildConfig = true
     }
 }
 

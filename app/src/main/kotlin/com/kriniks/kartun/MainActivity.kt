@@ -30,7 +30,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        if (EngineProbe.runIfRequested(this, intent)) return
+        // The phase 0 adb probe exists only in debuggable builds (debug, stage); a release ignores the `in` extra.
+        if (BuildConfig.DEBUG && EngineProbe.runIfRequested(this, intent)) return
         if (savedInstanceState == null) sharedImage(intent)?.let(vm::open)
         setContent { KartunTheme { KartunApp(vm) } }
     }

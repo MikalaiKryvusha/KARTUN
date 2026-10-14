@@ -13,7 +13,7 @@ import java.util.concurrent.Executors
 /**
  * Phase 0 engine probe (plans/02), kept for tools/titan-probe.mjs: an adb `am start` with the extra `in` runs one engine
  * upscale on files in the app's external files dir and logs a JSON line (tag KARTUN_PROBE). Without that extra the app
- * shows its normal screens. Moves to a debug-only entry in plans/03 slice 2.
+ * shows its normal screens. Debuggable builds only: MainActivity calls it under BuildConfig.DEBUG (plans/03 step 12).
  * [TESTED: 2026-10-14 · 13 probe runs on the Titan - testcases/reports/2026-10-14_F0_own_fast_model.md]
  *
  * adb shell am start -n com.kriniks.kartun.debug/com.kriniks.kartun.MainActivity \
