@@ -79,6 +79,8 @@
     <string name="settings_manual">Guia do usuário</string>
     <string name="settings_manual_sub">Como usar o KARTUN e seus modelos</string>
     <string name="info_open_guide">Abrir o guia completo</string>
+    <string name="notif_done">Sua foto está pronta</string>
+    <string name="notif_done_text">Toque para comparar antes e depois</string>
     <string name="about_title">Sobre</string>
     <string name="about_tagline">Versão %1$s · código aberto · offline · IA no dispositivo</string>
     <string name="about_device">Dispositivo</string>

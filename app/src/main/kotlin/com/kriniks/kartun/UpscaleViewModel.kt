@@ -271,7 +271,10 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
             ProcessingState.progress.value = null // the run is over: the service stops itself
-            outcome.onSuccess { result = it; screen = Screen.Result }
+            outcome.onSuccess {
+                result = it; screen = Screen.Result
+                if (!ProcessingState.appVisible) UpscaleService.notifyDone(getApplication())
+            }
                 .onFailure {
                     screen = Screen.Setup
                     error = when (it) {

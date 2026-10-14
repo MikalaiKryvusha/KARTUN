@@ -41,6 +41,10 @@ class MainActivity : ComponentActivity() {
         setContent { KartunTheme { KartunApp(vm) } }
     }
 
+    override fun onStart() { super.onStart(); ProcessingState.appVisible = true }
+
+    override fun onStop() { ProcessingState.appVisible = false; super.onStop() }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         sharedImage(intent)?.let(vm::open)

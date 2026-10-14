@@ -26,6 +26,8 @@ object ProcessingState {
     val progress = MutableStateFlow<UpscaleViewModel.Progress?>(null)
     /** Set by «Отменить» in the app or in the notification; the engine's tile listener reads it between tiles. */
     @Volatile var cancelRequested = false
+    /** True while KARTUN is on the screen (MainActivity onStart/onStop): a finished run left in the background gets «Фото готово». */
+    @Volatile var appVisible = false
 }
 
 /**
@@ -71,12 +73,39 @@ class UpscaleService : Service() {
         super.onDestroy()
     }
 
-    private fun ensureChannel() {
-        val nm = getSystemService(NotificationManager::class.java)
+    private fun ensureChannel() = ensureChannel(this)
+
+    companion object {
+        private const val CHANNEL_ID = "processing"
+        private const val NOTIFICATION_ID = 1
+        private const val DONE_ID = 2
+        private const val ACTION_CANCEL = "com.kriniks.kartun.CANCEL"
+
+        fun start(context: Context) = context.startForegroundService(Intent(context, UpscaleService::class.java))
+
+        /** «Фото готово» for a run that finished while KARTUN was not on the screen; a tap opens the result. */
+        fun notifyDone(context: Context) {
+            ensureChannel(context)
+            val open = PendingIntent.getActivity(
+                context, 2, Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE,
+            )
+            val n = Notification.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_heart_mono)
+                .setContentTitle(context.getString(R.string.notif_done))
+                .setContentText(context.getString(R.string.notif_done_text))
+                .setContentIntent(open)
+                .setAutoCancel(true)
+                .build()
+            context.getSystemService(NotificationManager::class.java).notify(DONE_ID, n)
+        }
+
+        private fun ensureChannel(context: Context) {
+            val nm = context.getSystemService(NotificationManager::class.java)
         if (nm.getNotificationChannel(CHANNEL_ID) == null) {
             // Low importance: a silent progress notification, no sound or heads-up for a run the user started.
-            nm.createNotificationChannel(NotificationChannel(CHANNEL_ID, getString(R.string.notif_channel), NotificationManager.IMPORTANCE_LOW))
+            nm.createNotificationChannel(NotificationChannel(CHANNEL_ID, context.getString(R.string.notif_channel), NotificationManager.IMPORTANCE_LOW))
         }
+    }
     }
 
     private fun build(p: UpscaleViewModel.Progress?): Notification {
@@ -103,11 +132,4 @@ class UpscaleService : Service() {
             .build()
     }
 
-    companion object {
-        private const val CHANNEL_ID = "processing"
-        private const val NOTIFICATION_ID = 1
-        private const val ACTION_CANCEL = "com.kriniks.kartun.CANCEL"
-
-        fun start(context: Context) = context.startForegroundService(Intent(context, UpscaleService::class.java))
-    }
 }

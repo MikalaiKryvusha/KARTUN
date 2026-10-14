@@ -85,6 +85,8 @@
     <string name="settings_manual">دليل المستخدم</string>
     <string name="settings_manual_sub">كيف تستخدم KARTUN ونماذجه</string>
     <string name="info_open_guide">افتح الدليل كاملًا</string>
+    <string name="notif_done">صورتك جاهزة</string>
+    <string name="notif_done_text">اضغط للمقارنة بين قبل وبعد</string>
     <string name="about_title">حول التطبيق</string>
     <string name="about_tagline">الإصدار %1$s · مفتوح المصدر · دون اتصال · ذكاء اصطناعي على الجهاز</string>
     <string name="about_device">الجهاز</string>

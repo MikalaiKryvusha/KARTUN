@@ -110,4 +110,6 @@
     <string name="about_model">Модель устройства</string>
     <string name="about_engine">Движок</string>
     <string name="about_licences">Лицензии</string>
+    <string name="notif_done">Фото готово</string>
+    <string name="notif_done_text">Нажмите, чтобы сравнить «до» и «после»</string>
 </resources>

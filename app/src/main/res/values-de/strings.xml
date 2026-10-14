@@ -77,6 +77,8 @@
     <string name="settings_manual">Benutzeranleitung</string>
     <string name="settings_manual_sub">So nutzt du KARTUN und seine Modelle</string>
     <string name="info_open_guide">Die ganze Anleitung öffnen</string>
+    <string name="notif_done">Dein Foto ist fertig</string>
+    <string name="notif_done_text">Tippe, um Vorher und Nachher zu vergleichen</string>
     <string name="about_title">Über</string>
     <string name="about_tagline">Version %1$s · Open Source · offline · KI auf dem Gerät</string>
     <string name="about_device">Gerät</string>

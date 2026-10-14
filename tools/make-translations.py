@@ -253,6 +253,12 @@ ABOUT = {
     "ar": ["حول التطبيق", "الإصدار %1$s · مفتوح المصدر · دون اتصال · ذكاء اصطناعي على الجهاز", "الجهاز", "طراز الجهاز", "المحرك", "التراخيص"],
 }
 
+# «Фото готово» notification: notif_done · notif_done_text.
+DONE = {"es": ("Tu foto está lista", "Toca para comparar antes y después"), "pt": ("Sua foto está pronta", "Toque para comparar antes e depois"),
+        "fr": ("Votre photo est prête", "Touchez pour comparer avant et après"), "de": ("Dein Foto ist fertig", "Tippe, um Vorher und Nachher zu vergleichen"),
+        "zh": ("照片已完成", "点按以对比处理前后"), "hi": ("आपकी फ़ोटो तैयार है", "पहले और बाद की तुलना के लिए दबाएँ"),
+        "bn": ("আপনার ছবি প্রস্তুত", "আগে ও পরে তুলনা করতে চাপুন"), "ar": ("صورتك جاهزة", "اضغط للمقارنة بين قبل وبعد")}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -277,6 +283,8 @@ def main():
         for k, v in zip(("manual_title", "settings_manual", "settings_manual_sub"), GUIDE[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="info_open_guide">{xml_text(OPEN_GUIDE[lang])}</string>')
+        for k, v in zip(("notif_done", "notif_done_text"), DONE[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         assert len(ABOUT[lang]) == len(ABOUT_KEYS), (lang, "about")
         for k, v in zip(ABOUT_KEYS, ABOUT[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')

@@ -104,4 +104,6 @@
     <string name="about_model">Device model</string>
     <string name="about_engine">Engine</string>
     <string name="about_licences">Licences</string>
+    <string name="notif_done">Your photo is ready</string>
+    <string name="notif_done_text">Tap to compare before and after</string>
 </resources>

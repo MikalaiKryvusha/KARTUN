@@ -75,6 +75,8 @@
     <string name="settings_manual">用户指南</string>
     <string name="settings_manual_sub">如何使用 KARTUN 及其模型</string>
     <string name="info_open_guide">打开完整指南</string>
+    <string name="notif_done">照片已完成</string>
+    <string name="notif_done_text">点按以对比处理前后</string>
     <string name="about_title">关于</string>
     <string name="about_tagline">版本 %1$s · 开源 · 离线 · 设备端 AI</string>
     <string name="about_device">设备</string>
