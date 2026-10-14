@@ -73,10 +73,13 @@ Owner's remarks on the build, chat 2026-10-14 ≈ 18:48–18:50 (verbatim), all 
     Titan rotated («потом потестируем»).
 
 Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of the next chat:
-17. [~] «и под превью фото нужно добавить драг-хендл, чтобы было понятно, что там можно хватать, и двигать превь фото» ·
+17. [x] «и под превью фото нужно добавить драг-хендл, чтобы было понятно, что там можно хватать, и двигать превь фото» ·
     «а превью фото можно тапом и удержанием двигать и перемещать прямо во вьюшке преввью» · «даблтам увеличивает» →
     `DragHandle` + `PhotoCard` gestures built ≈ 20:16 (double tap ×2.5, long press + drag pans, single tap full screen);
     NOT walked on the Titan yet.
+    Walked on the Titan 2026-10-14 22:13 (single-finger input from adb): a double tap zoomed the card in at the point, a long
+    press + drag panned the zoomed photo, a second double tap zoomed out, a single tap opened the photo full screen; the
+    handle pulled the photo in both states at 21:03. Pinch is not reachable from adb (no multi-touch).
 18. [x] «в выборе моделей на экране Улучшение нужно показывать две последние использованные модели. Вверху последнюю
     использованную, ниже предпоследнюю».
     Done 2026-10-14 ≈ 21:41 +03:00: a run moves its model to the front of the stored order (`model_order`), the cards follow
