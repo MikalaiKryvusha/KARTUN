@@ -3,9 +3,9 @@
 // Exit 1 on drift.
 // @guard app-names
 // THREAT:         a build type renamed or a name edited in build.gradle.kts, so the phone shows a name the owner did not give
-// PROVED-AGAINST: «Stage KARTUN» changed to «Staging KARTUN» in a copy of the script's input -> exit 1 (2026-10-14 ≈ 19:49)
+// PROVED-AGAINST: «Stage KARTUN» changed to «Staging KARTUN» in a copy of the script's input -> exit 1 (2026-10-14 19:48 +03:00)
 // GAP:            reads the build script, not the built APK (aapt2 badging of each APK is the device-side check)
-// ON-REAL-PATH:   .git/hooks/pre-commit of this clone (wired 2026-10-14 ≈ 19:49), seen passing on the commit that wired it
+// ON-REAL-PATH:   .git/hooks/pre-commit of this clone (wired 2026-10-14 19:48 +03:00), seen passing on the commit that wired it
 import { readFileSync } from 'node:fs';
 
 const file = process.argv[2] ?? 'app/build.gradle.kts';
