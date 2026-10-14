@@ -66,6 +66,12 @@ Owner's remarks on the build, chat 2026-10-14 ≈ 18:48–18:50 (verbatim), all 
    было бы здорово раскрывать вью картинки на весь экран». A downward pull past the full preview opens the photo full
    screen on black, pinch zoom inside; a swipe up or Back returns to the settings.
 
+10. [~] Landscape — the owner in chat 2026-10-14 ≈ 19:12 +03:00, verbatim: «лендскейп нужно поддерживать тоже». Built
+    2026-10-14 19:15 (guarded loop, no device by the owner's word «работай автономно, без тестирования на клиенте»):
+    home — pick card left, the rest right; «Улучшение» — photo left at full height, settings right with the button under
+    them; processing — photo left, ring panel right; result — the panel capped at 600 dp. Open: walk all four on the
+    Titan rotated («потом потестируем»).
+
 Slice 2 (next): foreground service `mediaProcessing` with a notification; the probe activity moves to a debug-only entry.
 
 ## Risks

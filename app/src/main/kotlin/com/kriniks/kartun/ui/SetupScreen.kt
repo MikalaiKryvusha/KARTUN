@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -52,7 +53,9 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import android.content.res.Configuration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -134,14 +137,33 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
     val heroDp = with(density) { (heroPx + pullPx).toDp() }
     BackHandler { vm.back() }
 
+    // Landscape (the owner, 2026-10-14 ≈ 19:12: «лендскейп нужно поддерживать тоже»): the photo on the left at full height,
+    // the settings scrolling on the right with the button pinned under them; no collapsing header - the photo has its own
+    // half, a tap opens it full screen. [NOT-TESTED: landscape - built only; the device run waits for the owner («потом потестируем»)]
+    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        Box(Modifier.fillMaxSize().background(c.background)) {
+            Column(Modifier.fillMaxSize().statusBarsPadding()) {
+                SetupTopBar(vm)
+                Row(Modifier.weight(1f).padding(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                    PhotoCard(src, onOpen = { fullscreen = true }, onPickOther = onPickOther,
+                        modifier = Modifier.weight(1f).fillMaxHeight().navigationBarsPadding().padding(bottom = 20.dp))
+                    Box(Modifier.weight(1f).fillMaxHeight()) {
+                        Column(
+                            Modifier.fillMaxSize().verticalScroll(scroll).padding(bottom = 130.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        ) { SettingsBlock(vm) { info = it } }
+                        UpscaleButton(vm, Modifier.align(Alignment.BottomCenter), sidePadding = 0.dp)
+                    }
+                }
+            }
+        }
+        SetupOverlays(src.bitmap, fullscreen, { fullscreen = false }, info, { info = null })
+        return
+    }
+
     Box(Modifier.fillMaxSize().background(c.background)) {
         Column(Modifier.fillMaxSize().statusBarsPadding().nestedScroll(collapse)) {
-            Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                RoundIconButton(R.drawable.ic_back, onClick = vm::back)
-                Text(stringResource(R.string.setup_title), Modifier.weight(1f), style = MaterialTheme.typography.titleLarge,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-                Spacer(Modifier.size(44.dp))
-            }
+            SetupTopBar(vm)
             // Pinned preview: the photo card shrinking with the swipe; at its floor it is the compact row.
             Box(Modifier.padding(horizontal = 20.dp).padding(bottom = 12.dp)) {
                 if (heroDp <= HERO_MIN + 0.5.dp) {
@@ -159,8 +181,7 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                     }
                 } else {
                     // The photo itself is a handle too: dragging it feeds the same collapse/stretch as the settings do.
-                    Box(Modifier.fillMaxWidth().height(heroDp).clip(MaterialTheme.shapes.large).background(c.surfaceContainer)
-                        .clickable { fullscreen = true }
+                    PhotoCard(src, onOpen = { fullscreen = true }, onPickOther = onPickOther, modifier = Modifier.fillMaxWidth().height(heroDp)
                         .draggable(
                             rememberDraggableState { d ->
                                 val delta = Offset(0f, d)
@@ -169,48 +190,84 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                             },
                             Orientation.Vertical,
                             onDragStopped = { collapse.onPreFling(Velocity.Zero) },
-                        )) {
-                        Image(src.bitmap.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-                        Pill("${sizeText(src.width, src.height)} · ${stringResource(R.string.megapixels, mpText(src.megapixels))}",
-                            Modifier.align(Alignment.BottomStart).padding(12.dp), translucent = true)
-                        Row(
-                            Modifier.align(Alignment.BottomEnd).padding(12.dp).clip(CircleShape).background(c.background.copy(alpha = 0.72f))
-                                .clickable(onClick = onPickOther).padding(horizontal = 14.dp, vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(painterResource(R.drawable.ic_image), null, Modifier.size(16.dp), tint = c.onBackground)
-                            Spacer(Modifier.width(6.dp))
-                            Text(stringResource(R.string.setup_other_photo), style = MaterialTheme.typography.labelMedium.copy(fontSize = MaterialTheme.typography.bodySmall.fontSize))
-                        }
-                    }
+                        ))
                 }
             }
             Column(
                 Modifier.weight(1f).verticalScroll(scroll).padding(start = 20.dp, end = 20.dp, bottom = 130.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                vm.error?.let { (res, arg) -> Notice(if (arg != null) stringResource(res, arg) else stringResource(res), vm::dismissError) }
-                SectionLabel(stringResource(R.string.label_model)) { info = R.string.label_model }
-                UpscaleViewModel.Model.entries.forEach { m -> ModelCard(m, m == vm.model, m == vm.model && vm.modelLoading) { vm.chooseModel(m) } }
-                SectionLabel(stringResource(R.string.label_scale)) { info = R.string.label_scale }
-                ScaleSlider(vm)
+                SettingsBlock(vm) { info = it }
             }
         }
-        // Pinned bottom button over a fade (.cta).
-        Column(
-            Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(Brush.verticalGradient(fadeColors(c.background)))
-                .navigationBarsPadding().padding(start = 20.dp, end = 20.dp, top = 40.dp, bottom = 24.dp),
+        UpscaleButton(vm, Modifier.align(Alignment.BottomCenter))
+    }
+    SetupOverlays(src.bitmap, fullscreen, { fullscreen = false }, info, { info = null })
+}
+
+/** Back button and the screen title (the same in both orientations). */
+@Composable
+private fun SetupTopBar(vm: UpscaleViewModel) {
+    Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        RoundIconButton(R.drawable.ic_back, onClick = vm::back)
+        Text(stringResource(R.string.setup_title), Modifier.weight(1f), style = MaterialTheme.typography.titleLarge,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        Spacer(Modifier.size(44.dp))
+    }
+}
+
+/** The photo card: the picked photo cropped to the card, its size chip and «Выбрать другое фото»; a tap opens it full screen. */
+@Composable
+private fun PhotoCard(src: UpscaleViewModel.Source, onOpen: () -> Unit, onPickOther: () -> Unit, modifier: Modifier) {
+    val c = MaterialTheme.colorScheme
+    Box(modifier.clip(MaterialTheme.shapes.large).background(c.surfaceContainer).clickable(onClick = onOpen)) {
+        Image(src.bitmap.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+        Pill("${sizeText(src.width, src.height)} · ${stringResource(R.string.megapixels, mpText(src.megapixels))}",
+            Modifier.align(Alignment.BottomStart).padding(12.dp), translucent = true)
+        Row(
+            Modifier.align(Alignment.BottomEnd).padding(12.dp).clip(CircleShape).background(c.background.copy(alpha = 0.72f))
+                .clickable(onClick = onPickOther).padding(horizontal = 14.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            PrimaryButton(
-                stringResource(R.string.upscale_with_estimate, durationText(vm.estimateMs())), R.drawable.ic_spark,
-                onClick = vm::start, enabled = vm.scaleSupported,
-            )
+            Icon(painterResource(R.drawable.ic_image), null, Modifier.size(16.dp), tint = c.onBackground)
+            Spacer(Modifier.width(6.dp))
+            Text(stringResource(R.string.setup_other_photo), style = MaterialTheme.typography.labelMedium.copy(fontSize = MaterialTheme.typography.bodySmall.fontSize))
         }
     }
-    if (fullscreen) FullPhoto(src.bitmap) { fullscreen = false }
+}
+
+/** The settings: the error notice, the model cards and the scale slider, each section with its (i). */
+@Composable
+private fun SettingsBlock(vm: UpscaleViewModel, onInfo: (Int) -> Unit) {
+    vm.error?.let { (res, arg) -> Notice(if (arg != null) stringResource(res, arg) else stringResource(res), vm::dismissError) }
+    SectionLabel(stringResource(R.string.label_model)) { onInfo(R.string.label_model) }
+    UpscaleViewModel.Model.entries.forEach { m -> ModelCard(m, m == vm.model, m == vm.model && vm.modelLoading) { vm.chooseModel(m) } }
+    SectionLabel(stringResource(R.string.label_scale)) { onInfo(R.string.label_scale) }
+    ScaleSlider(vm)
+}
+
+/** «Улучшить · ≈ T» pinned at the bottom over a fade (.cta). */
+@Composable
+private fun UpscaleButton(vm: UpscaleViewModel, modifier: Modifier, sidePadding: androidx.compose.ui.unit.Dp = 20.dp) {
+    val c = MaterialTheme.colorScheme
+    Column(
+        modifier.fillMaxWidth().background(Brush.verticalGradient(fadeColors(c.background)))
+            .navigationBarsPadding().padding(start = sidePadding, end = sidePadding, top = 40.dp, bottom = 24.dp),
+    ) {
+        PrimaryButton(
+            stringResource(R.string.upscale_with_estimate, durationText(vm.estimateMs())), R.drawable.ic_spark,
+            onClick = vm::start, enabled = vm.scaleSupported,
+        )
+    }
+}
+
+/** The full-screen photo and the (i) dialogs, over either layout. */
+@Composable
+private fun SetupOverlays(bitmap: android.graphics.Bitmap, fullscreen: Boolean, closeFull: () -> Unit, info: Int?, closeInfo: () -> Unit) {
+    if (fullscreen) FullPhoto(bitmap, closeFull)
     when (info) {
-        R.string.label_scale -> InfoDialog(stringResource(R.string.label_scale), stringResource(R.string.info_scale_text), stringResource(R.string.info_scale_list)) { info = null }
-        R.string.label_model -> InfoDialog(stringResource(R.string.label_model), stringResource(R.string.info_model_text), stringResource(R.string.info_model_list)) { info = null }
+        R.string.label_scale -> InfoDialog(stringResource(R.string.label_scale), stringResource(R.string.info_scale_text), stringResource(R.string.info_scale_list), closeInfo)
+        R.string.label_model -> InfoDialog(stringResource(R.string.label_model), stringResource(R.string.info_model_text), stringResource(R.string.info_model_list), closeInfo)
     }
 }
 

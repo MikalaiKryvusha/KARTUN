@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,7 +31,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import android.content.res.Configuration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -54,11 +57,37 @@ fun HomeScreen(onPick: () -> Unit, error: String?, onDismissError: () -> Unit) {
                 Modifier.weight(1f).padding(vertical = 10.dp), style = MaterialTheme.typography.displaySmall,
             )
         }
+        // Portrait: one column as on the mockup. Landscape (the owner, 2026-10-14 ≈ 19:12: «лендскейп нужно поддерживать
+        // тоже»): the pick card on the left at full height, the link button, the share hint and the note on the right. [NOT-TESTED: landscape - built only; the device run waits for the owner («потом потестируем»)]
+        if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Row(Modifier.weight(1f).padding(bottom = 20.dp), horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                PickCard(onPick, Modifier.weight(1f).fillMaxHeight())
+                Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    if (error != null) Notice(error, onDismissError)
+                    SecondaryButton(stringResource(R.string.home_paste_link), R.drawable.ic_link, onClick = {}, enabled = false)
+                    ShareHint()
+                    Spacer(Modifier.weight(1f))
+                    OfflineNote()
+                }
+            }
+            return@Column
+        }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             if (error != null) Notice(error, onDismissError)
-            // The pick card (.drop): pink glow from the top, pink border, the 96 dp pink tile with the image icon.
+            PickCard(onPick, Modifier.fillMaxWidth().weight(1f, fill = true).heightIn(max = 380.dp))
+            SecondaryButton(stringResource(R.string.home_paste_link), R.drawable.ic_link, onClick = {}, enabled = false)
+            ShareHint()
+        }
+        Box(Modifier.padding(top = 16.dp, bottom = 24.dp)) { OfflineNote() }
+    }
+}
+
+/** The pick card (.drop): pink glow from the top, pink border, the 96 dp pink tile with the image icon. */
+@Composable
+private fun PickCard(onPick: () -> Unit, modifier: Modifier) {
+    val c = MaterialTheme.colorScheme
             Column(
-                Modifier.fillMaxWidth().weight(1f, fill = true).heightIn(max = 380.dp).clip(MaterialTheme.shapes.extraLarge)
+                modifier.clip(MaterialTheme.shapes.extraLarge)
                     .drawBehind {
                         // radial-gradient(120% 80% at 50% 0%, pink .18, card 60%) of the mockup: the glow comes from the top edge.
                         drawRect(c.surfaceContainer)
@@ -78,8 +107,12 @@ fun HomeScreen(onPick: () -> Unit, error: String?, onDismissError: () -> Unit) {
                 Spacer(Modifier.height(6.dp))
                 Text(stringResource(R.string.home_pick_sub), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
             }
-            SecondaryButton(stringResource(R.string.home_paste_link), R.drawable.ic_link, onClick = {}, enabled = false)
-            // Share hint (.share-hint): how to send a photo here from another app.
+}
+
+/** Share hint (.share-hint): how to send a photo here from another app. */
+@Composable
+private fun ShareHint() {
+    val c = MaterialTheme.colorScheme
             Column(
                 Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(c.surfaceContainer).padding(horizontal = 16.dp, vertical = 14.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -97,13 +130,16 @@ fun HomeScreen(onPick: () -> Unit, error: String?, onDismissError: () -> Unit) {
                     FlowChip("KARTUN", true)
                 }
             }
-        }
-        // Foot note with the green dot: the promise of on-device processing.
-        Row(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 24.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(8.dp).clip(CircleShape).background(c.tertiary))
-            Spacer(Modifier.width(8.dp))
-            Text(stringResource(R.string.home_offline), style = MaterialTheme.typography.bodySmall, color = c.outlineVariant)
-        }
+}
+
+/** Foot note with the green dot: the promise of on-device processing. */
+@Composable
+private fun OfflineNote() {
+    val c = MaterialTheme.colorScheme
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.size(8.dp).clip(CircleShape).background(c.tertiary))
+        Spacer(Modifier.width(8.dp))
+        Text(stringResource(R.string.home_offline), style = MaterialTheme.typography.bodySmall, color = c.outlineVariant)
     }
 }
 

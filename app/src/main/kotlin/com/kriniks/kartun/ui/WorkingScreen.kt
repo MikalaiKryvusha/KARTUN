@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -35,7 +36,9 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import android.content.res.Configuration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,6 +51,8 @@ import kotlin.math.min
 
 /** Tile edge the engine uses - the grid over the photo mirrors the engine's real tiles. */
 private const val TILE_PX = 200
+/** Width of the side panel with the ring in landscape. */
+private val PANEL_WIDTH = 420.dp
 
 /**
  * Processing (mockup 'processing'): the photo with the engine's tile grid over it - finished tiles clear, the current one
@@ -64,10 +69,12 @@ fun WorkingScreen(vm: UpscaleViewModel) {
     // Remaining time: from the real pace once tiles report, from the estimate before that.
     val leftMs = if (p.done > 0) p.elapsedMs * (p.total - p.done) / p.done else p.estimateMs
 
-    // Column, not an overlay: the photo takes the space above the sheet, so no tile hides under it (seen on the Titan
-    // 2026-10-14 18:41 - a fixed bottom padding was shorter than the sheet).
-    Column(Modifier.fillMaxSize().background(c.background)) {
-        BoxWithConstraints(Modifier.fillMaxWidth().weight(1f).statusBarsPadding().padding(16.dp)) {
+    // Portrait: a column - the photo takes the space above the sheet, so no tile hides under it (seen on the Titan
+    // 2026-10-14 18:41 - a fixed bottom padding was shorter than the sheet). Landscape (the owner: «лендскейп нужно
+    // поддерживать тоже»): a row - the photo on the left, the panel on the right, centred in height. [NOT-TESTED: landscape - built only; the device run waits for the owner («потом потестируем»)]
+    val landscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val photo: @Composable (Modifier) -> Unit = { m ->
+        BoxWithConstraints(m.statusBarsPadding().padding(16.dp)) {
             // Photo fitted into the free area; the grid is drawn over the fitted rectangle only.
             val k = min(maxWidth.value / src.width, maxHeight.value / src.height)
             val w = (src.width * k).dp
@@ -97,12 +104,13 @@ fun WorkingScreen(vm: UpscaleViewModel) {
                 }
             }
         }
-        // Bottom sheet with the ring.
+    }
+    val panel: @Composable (Modifier) -> Unit = { m ->
         Column(
-            Modifier.fillMaxWidth()
-                .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)).background(c.surfaceContainerLow)
+            m.background(c.surfaceContainerLow)
                 .navigationBarsPadding().padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(14.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterVertically),
         ) {
             Box(contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(
@@ -126,6 +134,17 @@ fun WorkingScreen(vm: UpscaleViewModel) {
                 Text(stringResource(if (p.gpu) R.string.backend_gpu else R.string.backend_cpu), style = MaterialTheme.typography.labelMedium)
             }
             SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancel)
+        }
+    }
+    if (landscape) {
+        Row(Modifier.fillMaxSize().background(c.background)) {
+            photo(Modifier.weight(1f).fillMaxHeight())
+            panel(Modifier.width(PANEL_WIDTH).fillMaxHeight().clip(RoundedCornerShape(topStart = 32.dp, bottomStart = 32.dp)))
+        }
+    } else {
+        Column(Modifier.fillMaxSize().background(c.background)) {
+            photo(Modifier.fillMaxWidth().weight(1f))
+            panel(Modifier.fillMaxWidth().clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)))
         }
     }
 }
