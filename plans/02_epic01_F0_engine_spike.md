@@ -36,7 +36,9 @@ tolerance, differs from a bicubic resize by more than that tolerance, and the wa
    already covers `build/`, `.gradle/`, `.cxx/`, `local.properties`.
 3. [x] Fetch `ncnn-20260526-android-vulkan.zip` from the Tencent/ncnn GitHub release into `engine/third_party/` (gitignored;
    a script `tools/fetch-ncnn.mjs` downloads and checks SHA-256 so the build is reproducible). Record the hash.
-4. [ ] Models: download `realesrgan-ncnn-vulkan-…` release zip v0.2.5.0 from xinntao, take `realesrgan-x4plus.{param,bin}`;
+4. [~] Done 2026-10-14 18:16 +03:00 on the PC: own conversion of `realesr-general-x4v3` (47.1 dB to PyTorch), provenance
+   and BSD-3 text in `docs/model-licenses.md` (run report `testcases/reports/2026-10-14_F0_own_fast_model.md`); open: the
+   Titan run of the converted model (device offline at 18:16). Original text: Models: download `realesrgan-ncnn-vulkan-…` release zip v0.2.5.0 from xinntao, take `realesrgan-x4plus.{param,bin}`;
    convert or obtain `realesr-general-x4v3` ncnn files from the original `.pth` (BSD-3) — record provenance and SHA-256 in
    `docs/model-licenses.md`; add the BSD-3 notice.
 5. [x] Engine C++ (`engine/src/main/cpp/`): `kartun_engine.cpp` — create `ncnn::Net`, options (Vulkan on/off,

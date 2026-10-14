@@ -50,16 +50,20 @@ def main():
 
     import pnnx  # imported late: it is only needed for the export step
 
-    pt_path = out_dir / f"{name}.pt"
+    pt_path = (out_dir / f"{name}.pt").resolve()
     # Two input shapes mark H and W as dynamic, so the NCNN net accepts any tile size.
-    pnnx.export(model, str(pt_path), inputs=torch.rand(1, 3, 64, 64), inputs2=torch.rand(1, 3, 96, 80))
+    # The path goes in with forward slashes: pnnx writes it into a generated .py, where a Windows "\t" or "\r"
+    # would turn into an escape (EXP-0003 class).
+    pnnx.export(model, pt_path.as_posix(), inputs=torch.rand(1, 3, 64, 64), inputs2=torch.rand(1, 3, 96, 80))
 
+    # pnnx names its outputs after the .pt stem with "-" turned into "_" (realesr_general_x4v3.ncnn.param).
+    stem = pt_path.stem.replace("-", "_")
     # pnnx names the blobs in0/out0; the engine reads "data" and writes "output" (like the official models).
-    param = out_dir / f"{name}.ncnn.param"
+    param = out_dir / f"{stem}.ncnn.param"
     text = param.read_text(encoding="utf-8")
     text = text.replace(" in0", " data").replace(" out0", " output")
     (out_dir / f"{name}.param").write_text(text, encoding="utf-8")
-    (out_dir / f"{name}.bin").write_bytes((out_dir / f"{name}.ncnn.bin").read_bytes())
+    (out_dir / f"{name}.bin").write_bytes((out_dir / f"{stem}.ncnn.bin").read_bytes())
     print(f"written {out_dir / (name + '.param')} and .bin")
 
 
