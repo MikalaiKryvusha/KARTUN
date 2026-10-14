@@ -107,7 +107,17 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
 31. [ ] (owner, chat 2026-10-14 ≈ 21:01 +03:00) «виджет сводки чуть ниже сместить» — the result panel's bottom gap 28 → 8 dp.
 32. [ ] (owner, chat 2026-10-14 ≈ 21:05 +03:00) «и полоса до после зачем-то у тебя от края экрана до края экрана, перекрывает вверху
     статус бар ОС. Нужно её начинать мягкий фейдом и ззаканчивать мягим фейдом в прозрачность на концах» — the divider spans
-    the picture's fitted rect inside the system bars, with a 12 % transparent fade at each end.
+    the picture's fitted rect inside the system bars, with a 12 % transparent fade at each end. Revised ≈ 21:11: «ну ты уже
+    слишком сократил полосу до после. Пусть от верха девайся буде до низа, но немножко от низа отсутпает, и немножко от
+    верха, чтобы статус бар не перекрывала и достаточно» — the divider runs the screen's height inside the system bars with
+    an 8 dp gap from each, the fades kept.
+33. [ ] (owner, chat 2026-10-14 ≈ 21:08 +03:00) «давай виждет сводки на экране результата сделаем скрывающися в сторону за пределы
+    экрана, и чтобы на краб оставалась стрелочка, в которую он скрылся. И отуда его можно ообратно раскрыть» — a sideways swipe
+    hides the panel past the right edge (released beyond 25 % of the width or flung); a grey arrow tab stays on the edge at
+    the panel's height; a tap or a swipe left on it brings the panel back. The tab is excluded from the system back gesture
+    (`systemGestureExclusion`: on the Titan 21:11 a swipe left on it left the screen). ≈ 21:13: «в что виджет сводки можно
+    смахнуть - нукто не догадается, ему нужен или драг хендл или кнопочка-стрелочка» — a round «›» button in the panel's top
+    right corner hides it.
 
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel

@@ -8,6 +8,15 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.calculatePan
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -19,6 +28,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.fillMaxSize
@@ -76,6 +86,11 @@ private const val TAP_ZOOM = 2.5f
 private val DIVIDER_GRAB = 36.dp
 /** The share of the divider's length that fades in at the top and out at the bottom. */
 private const val DIVIDER_FADE = 0.12f
+/** The divider's gap from the status bar above and the navigation bar below. */
+private val DIVIDER_GAP = 8.dp
+/** A released panel hides when dragged past this share of the screen width (or flung right faster than PANEL_FLING px/s). */
+private const val PANEL_HIDE_AT = 0.25f
+private const val PANEL_FLING = 1200f
 
 /**
  * Result (mockup 'result'): before/after over the whole screen. The divider moves only when the finger lands ON it (the
@@ -109,7 +124,16 @@ fun ResultScreen(vm: UpscaleViewModel) {
     var zoom by remember { mutableFloatStateOf(1f) }
     var pan by remember { mutableStateOf(Offset.Zero) }
 
-    Box(Modifier.fillMaxSize().background(c.background)) {
+    // The panel slides off the right edge (the owner, chat 2026-10-14 ≈ 21:08 +03:00: «виджет сводки на экране результата
+    // сделаем скрывающимся в сторону за пределы экрана, и чтобы на краю оставалась стрелочка, в которую он скрылся. И оттуда
+    // его можно обратно раскрыть»): a sideways swipe on the panel hides it, the arrow tab at the edge (tap or swipe) brings it back.
+    var screenW by remember { mutableFloatStateOf(0f) }
+    var panelH by remember { mutableFloatStateOf(0f) }
+    val panelShift = remember { Animatable(0f) } // px to the right: 0 = shown, screenW = hidden
+    fun settle(show: Boolean) { scope.launch { panelShift.animateTo(if (show) 0f else screenW) } }
+    val panelDrag = rememberDraggableState { d -> scope.launch { panelShift.snapTo((panelShift.value + d).coerceIn(0f, screenW)) } }
+
+    Box(Modifier.fillMaxSize().background(c.background).onSizeChanged { screenW = it.width.toFloat() }) {
         BoxWithConstraints(
             Modifier.fillMaxSize().pointerInput(Unit) {
                 // Keep the picture covering what it covered at 1×: pan is bounded by how much the zoom enlarged it.
@@ -161,13 +185,13 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 Image(res.display.asImageBitmap(), null, layer, contentScale = ContentScale.Fit)
             }
             val x = maxWidth * split
-            // The divider spans the PICTURE (its 1× fitted rect), never the system bars, and fades to transparent at both
-            // ends (the owner, chat 2026-10-14 ≈ 21:05 +03:00: «полоса до после зачем-то у тебя от края экрана до края
-            // экрана, перекрывает вверху статус бар ОС. Нужно её начинать мягкий фейдом и заканчивать мягим фейдом»).
+            // The divider runs the screen's height inside the system bars with a small gap from each, and fades to
+            // transparent at both ends (the owner, chat 2026-10-14 ≈ 21:05 +03:00: «перекрывает вверху статус бар ОС. Нужно
+            // её начинать мягкий фейдом и заканчивать мягим фейдом»; ≈ 21:11: «слишком сократил полосу до после. Пусть от
+            // верха девайся буде до низа, но немножко от низа отсутпает, и немножко от верха, чтобы статус бар не перекрывала»).
             val bars = WindowInsets.systemBars.asPaddingValues()
-            val picH = minOf(maxHeight, maxWidth * res.display.height.toFloat() / res.display.width)
-            val lineTop = maxOf((maxHeight - picH) / 2, bars.calculateTopPadding())
-            val lineBottom = minOf((maxHeight + picH) / 2, maxHeight - bars.calculateBottomPadding())
+            val lineTop = bars.calculateTopPadding() + DIVIDER_GAP
+            val lineBottom = maxHeight - bars.calculateBottomPadding() - DIVIDER_GAP
             Box(
                 Modifier.offset(x = x - 1.5.dp, y = lineTop).width(3.dp).height(lineBottom - lineTop).background(
                     Brush.verticalGradient(0f to Color.Transparent, DIVIDER_FADE to c.primary, 1f - DIVIDER_FADE to c.primary, 1f to Color.Transparent),
@@ -199,11 +223,20 @@ fun ResultScreen(vm: UpscaleViewModel) {
             // (the owner: «лендскейп нужно поддерживать тоже»). [NOT-TESTED: landscape - built only; the device run waits for the owner («потом потестируем»)]
             // bottom 8 dp, was 28 (the owner, chat 2026-10-14 ≈ 21:01 +03:00: «виджет сводки чуть ниже сместить»).
             Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(start = 12.dp, end = 12.dp, bottom = 8.dp)
+                .offset { IntOffset(panelShift.value.roundToInt(), 0) }.onSizeChanged { panelH = it.height.toFloat() }
+                .draggable(panelDrag, Orientation.Horizontal, onDragStopped = { v ->
+                    settle(show = panelShift.value < screenW * PANEL_HIDE_AT && v < PANEL_FLING)
+                })
                 .widthIn(max = 600.dp).fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow.copy(alpha = 0.94f)).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             // Which model made it (the owner, chat 2026-10-14 ≈ 20:59 +03:00: «в сводке внизу нужно писать, какая модель улучшила»).
-            Text(stringResource(res.model.title), style = MaterialTheme.typography.titleSmall, color = c.onBackground)
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(res.model.title), Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = c.onBackground)
+                // The visible way to hide the panel - a swipe alone is undiscoverable (the owner, chat 2026-10-14 ≈ 21:13
+                // +03:00: «что виджет сводки можно смахнуть - никто не догадается, ему нужен или драг хендл или кнопочка-стрелочка»).
+                RoundIconButton(R.drawable.ic_back, onClick = { settle(show = false) }, modifier = Modifier.rotate(180f))
+            }
             Row(Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(res.full.width, res.full.height)), Modifier.weight(1f),
                     style = MaterialTheme.typography.bodyMedium, color = c.onBackground)
@@ -217,6 +250,23 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 SecondaryButton(stringResource(R.string.share), R.drawable.ic_share, onClick = share, modifier = Modifier.weight(1f),
                     outlined = false, enabled = !vm.saving, height = 54)
             }
+        }
+        // The arrow tab the panel hid into: on the right edge at the panel's height; tap or swipe left brings it back.
+        if (panelShift.value > screenW / 2) {
+            val tabH = 72.dp
+            Box(
+                Modifier.align(Alignment.BottomEnd).navigationBarsPadding()
+                    .padding(bottom = 8.dp + with(LocalDensity.current) { (panelH / 2).toDp() } - tabH / 2)
+                    .size(width = 40.dp, height = tabH)
+                    // The tab sits on the edge where Android's gesture navigation reads a swipe as «Back» (seen on the
+                    // Titan 21:11: a swipe left on the tab left the screen); the standard opt-out for this strip.
+                    .systemGestureExclusion()
+                    .clip(RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp))
+                    .background(c.surfaceContainerHigh.copy(alpha = 0.85f))
+                    .clickable { settle(show = true) }
+                    .draggable(panelDrag, Orientation.Horizontal, onDragStopped = { settle(show = panelShift.value < screenW * (1 - PANEL_HIDE_AT)) }),
+                contentAlignment = Alignment.Center,
+            ) { Icon(painterResource(R.drawable.ic_back), null, Modifier.size(22.dp), tint = c.onBackground) }
         }
     }
     if (saveOpen) SaveDialog(vm, res.full) { saveOpen = false }
