@@ -90,6 +90,21 @@ Owner's remarks 2026-10-14 ≈ 20:14–20:20 (chat, verbatim), the backlog of th
     «2× · по умолч.» tick label under the scale slider becomes plain «2×».
 24. [ ] (owner, chat 2026-10-14 ≈ 20:50 +03:00) «в настройки пускать только с главного экрана приложения» — the gear leaves
     the «Улучшение» top bar (the only other screen that had it); the home screen keeps it.
+25. [ ] (owner, chat 2026-10-14 ≈ 20:54 +03:00) «непонятно зачем две кнопки поделиться на результате тебе» — the round share
+    icon leaves the result's top bar; «Поделиться» stays in the panel next to «Сохранить».
+26. [ ] (owner, chat 2026-10-14 ≈ 20:54 +03:00) «и почему у кнопки назад нет видимой подложки, хоть чуть-чуть серой, или какой
+    в дизайн схеме нашего приложения» — the translucent round button (result, full-screen photo) takes the theme's grey card
+    `surfaceContainerHigh` at 85 % instead of the near-black background at 55 %.
+27. [ ] (owner, chat 2026-10-14 ≈ 20:58 +03:00) «до после можно не ярко, а полупрозрачно» · «после сейчас слишком кричащее» — both
+    result tags translucent grey (`Pill(translucent)` = `surfaceContainerHigh` at 70 %); the pink «После» pill is gone.
+28. [ ] (owner, chat 2026-10-14 ≈ 20:59 +03:00) «и в сводке внизу нужно писать, какая модель улучшила» — the result panel opens
+    with the model's title.
+29. [ ] BUG (owner, chat 2026-10-14 ≈ 20:57 +03:00) «когда картинку ты свернул - драг хендл пропал - баг» — the handle was drawn in
+    the expanded branch only; now it stands under the photo in both states and the compact row drags too.
+30. [ ] (owner, chat 2026-10-14 ≈ 21:00 +03:00) «м там у тебя перемешает слайдер до после - а должен хватать фото на навигацию» —
+    on the result the divider moves only when grabbed on the line or its knob (±36 dp); a finger elsewhere pans the photo;
+    a double tap zooms ×2.5 at the point and back (as the preview, step 17).
+31. [ ] (owner, chat 2026-10-14 ≈ 21:01 +03:00) «виджет сводки чуть ниже сместить» — the result panel's bottom gap 28 → 8 dp.
 
 Slice 2:
 11. [~] Foreground service `mediaProcessing` (`UpscaleService.kt`, built 2026-10-14 ≈ 19:17, guarded loop): the ViewModel

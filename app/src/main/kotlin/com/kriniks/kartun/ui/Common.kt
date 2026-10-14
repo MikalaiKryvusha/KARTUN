@@ -45,7 +45,9 @@ import java.util.Locale
 /** 44 dp round dark button with a stroke icon (.icon-btn). */
 @Composable
 fun RoundIconButton(icon: Int, onClick: () -> Unit, modifier: Modifier = Modifier, translucent: Boolean = false, enabled: Boolean = true) {
-    val bg = if (translucent) MaterialTheme.colorScheme.background.copy(alpha = 0.55f) else MaterialTheme.colorScheme.surfaceContainer
+    // Translucent = the theme's grey card at 85 %: visible on the black bars and on a photo alike (the owner, chat 2026-10-14
+    // ≈ 20:54 +03:00: «почему у кнопки назад нет видимой подложки, хоть чуть-чуть серой»; it was the near-black background at 55 %).
+    val bg = if (translucent) MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.85f) else MaterialTheme.colorScheme.surfaceContainer
     Box(
         modifier.size(44.dp).clip(CircleShape).background(bg).alpha(if (enabled) 1f else 0.4f)
             .clickable(enabled = enabled, onClick = onClick),
@@ -94,7 +96,7 @@ fun Pill(text: String, modifier: Modifier = Modifier, on: Boolean = false, outli
     m = when {
         on -> m.background(c.primary)
         outlined -> m.border(1.5.dp, c.outline, CircleShape)
-        translucent -> m.background(c.background.copy(alpha = 0.72f))
+        translucent -> m.background(c.surfaceContainerHigh.copy(alpha = 0.7f)) // grey see-through, like the translucent round button
         else -> m.background(c.surfaceContainer)
     }
     if (onClick != null) m = m.clickable(onClick = onClick)

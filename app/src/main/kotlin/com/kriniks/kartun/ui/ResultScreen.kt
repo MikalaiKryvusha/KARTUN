@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.calculatePan
 import androidx.compose.foundation.gestures.calculateZoom
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -63,11 +64,16 @@ import android.content.Intent
 import com.kriniks.kartun.UpscaleViewModel
 
 private const val MAX_ZOOM = 8f
+/** Double tap on the picture zooms to this and back (the same gesture as the «Улучшение» preview, plan 03 step 17). */
+private const val TAP_ZOOM = 2.5f
+/** How close to the divider a finger must land to grab it, each side. */
+private val DIVIDER_GRAB = 36.dp
 
 /**
- * Result (mockup 'result'): before/after over the whole screen. The WHOLE picture is the handle - one finger anywhere
- * moves the divider (the owner's ask from the desktop Upscayl: «ползунок, который можно пальцем схватить»); two fingers
- * zoom and pan both images together. The panel shows the sizes and the time; «Сохранить» / «Поделиться» wait for
+ * Result (mockup 'result'): before/after over the whole screen. The divider moves only when the finger lands ON it (the
+ * line or its pink knob, ±DIVIDER_GRAB); a finger anywhere else grabs the PHOTO and moves it (the owner, chat 2026-10-14
+ * ≈ 21:00 +03:00: «перемешает слайдер до после - а должен хватать фото на навигацию»); a double tap zooms ×TAP_ZOOM at
+ * that point and back; two fingers zoom and pan both images together. [NOT-TESTED] since that change. The panel shows the sizes and the time; «Сохранить» / «Поделиться» wait for
  * phase 3 and are shown disabled.
  * The divider: [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md, case C4]. Pinch zoom and pan: [NOT-TESTED] (adb input has no multi-touch).
  */
@@ -98,27 +104,46 @@ fun ResultScreen(vm: UpscaleViewModel) {
     Box(Modifier.fillMaxSize().background(c.background)) {
         BoxWithConstraints(
             Modifier.fillMaxSize().pointerInput(Unit) {
+                // Keep the picture covering what it covered at 1×: pan is bounded by how much the zoom enlarged it.
+                fun bounded(p: Offset): Offset {
+                    val maxX = size.width * (zoom - 1) / 2
+                    val maxY = size.height * (zoom - 1) / 2
+                    return Offset(p.x.coerceIn(-maxX, maxX), p.y.coerceIn(-maxY, maxY))
+                }
                 awaitEachGesture {
                     val first = awaitFirstDown(requireUnconsumed = false)
+                    val onDivider = kotlin.math.abs(first.position.x - split * size.width) <= DIVIDER_GRAB.toPx()
                     var pinching = false
-                    split = (first.position.x / size.width).coerceIn(0f, 1f)
                     do {
                         val event = awaitPointerEvent()
                         val fingers = event.changes.count { it.pressed }
                         if (fingers >= 2) {
                             pinching = true
                             zoom = (zoom * event.calculateZoom()).coerceIn(1f, MAX_ZOOM)
-                            // Keep the picture covering the screen: pan is bounded by how much the zoom enlarged it.
-                            val maxX = size.width * (zoom - 1) / 2
-                            val maxY = size.height * (zoom - 1) / 2
-                            val p = pan + event.calculatePan()
-                            pan = Offset(p.x.coerceIn(-maxX, maxX), p.y.coerceIn(-maxY, maxY))
+                            pan = bounded(pan + event.calculatePan())
                         } else if (!pinching) {
-                            event.changes.firstOrNull { it.pressed }?.let { split = (it.position.x / size.width).coerceIn(0f, 1f) }
+                            val f = event.changes.firstOrNull { it.pressed }
+                            if (f != null) {
+                                if (onDivider) split = (f.position.x / size.width).coerceIn(0f, 1f)
+                                else pan = bounded(pan + (f.position - f.previousPosition))
+                            }
                         }
                         event.changes.forEach { if (it.positionChanged()) it.consume() }
                     } while (event.changes.any { it.pressed })
                 }
+            }.pointerInput(Unit) {
+                detectTapGestures(onDoubleTap = { at ->
+                    if (zoom > 1f) { zoom = 1f; pan = Offset.Zero }
+                    else {
+                        // Zoom in about the tapped point: that point stays under the finger.
+                        zoom = TAP_ZOOM
+                        val centre = Offset(size.width / 2f, size.height / 2f)
+                        val maxX = size.width * (zoom - 1) / 2
+                        val maxY = size.height * (zoom - 1) / 2
+                        val p = (centre - at) * (zoom - 1)
+                        pan = Offset(p.x.coerceIn(-maxX, maxX), p.y.coerceIn(-maxY, maxY))
+                    }
+                })
             },
         ) {
             val layer = Modifier.fillMaxSize().graphicsLayer { scaleX = zoom; scaleY = zoom; translationX = pan.x; translationY = pan.y }
@@ -137,24 +162,29 @@ fun ResultScreen(vm: UpscaleViewModel) {
         // Top bar and the two tags.
         Column(Modifier.fillMaxWidth().statusBarsPadding().padding(horizontal = 20.dp, vertical = 8.dp)) {
             Row(Modifier.fillMaxWidth()) {
+                // Back only: «Поделиться» lives once, in the panel below (the owner, chat 2026-10-14 ≈ 20:54 +03:00:
+                // «непонятно зачем две кнопки поделиться на результате»).
                 RoundIconButton(R.drawable.ic_back, onClick = vm::back, translucent = true)
-                Spacer(Modifier.weight(1f))
-                RoundIconButton(R.drawable.ic_share, onClick = share, translucent = true, enabled = !vm.saving)
             }
             Row(Modifier.fillMaxWidth().padding(top = 16.dp)) {
+                // Both tags quiet and see-through (the owner, chat 2026-10-14 ≈ 20:58 +03:00: «до после можно не ярко, а
+                // полупрозрачно» · «после сейчас слишком кричащее»); the pink stays on the divider and the buttons.
                 Pill(stringResource(R.string.before), translucent = true)
                 Spacer(Modifier.weight(1f))
-                Pill(stringResource(R.string.after), on = true)
+                Pill(stringResource(R.string.after), translucent = true)
             }
         }
         // Result panel (.result-panel).
         Column(
             // widthIn: in landscape the panel stays a compact card at the bottom instead of a full-width strip
             // (the owner: «лендскейп нужно поддерживать тоже»). [NOT-TESTED: landscape - built only; the device run waits for the owner («потом потестируем»)]
-            Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(start = 12.dp, end = 12.dp, bottom = 28.dp)
+            // bottom 8 dp, was 28 (the owner, chat 2026-10-14 ≈ 21:01 +03:00: «виджет сводки чуть ниже сместить»).
+            Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(start = 12.dp, end = 12.dp, bottom = 8.dp)
                 .widthIn(max = 600.dp).fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow.copy(alpha = 0.94f)).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
+            // Which model made it (the owner, chat 2026-10-14 ≈ 20:59 +03:00: «в сводке внизу нужно писать, какая модель улучшила»).
+            Text(stringResource(res.model.title), style = MaterialTheme.typography.titleSmall, color = c.onBackground)
             Row(Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(res.full.width, res.full.height)), Modifier.weight(1f),
                     style = MaterialTheme.typography.bodyMedium, color = c.onBackground)

@@ -170,10 +170,17 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
         Column(Modifier.fillMaxSize().statusBarsPadding().nestedScroll(collapse)) {
             SetupTopBar(vm)
             // Pinned preview: the photo card shrinking with the swipe; at its floor it is the compact row.
-            Box(Modifier.padding(horizontal = 20.dp).padding(bottom = 12.dp)) {
+            // The photo (card or compact row) is a handle too: dragging it feeds the same collapse/stretch as the settings do.
+            val pull = rememberDraggableState { d ->
+                val delta = Offset(0f, d)
+                if (d < 0) collapse.onPreScroll(delta, NestedScrollSource.UserInput)
+                else collapse.onPostScroll(Offset.Zero, delta, NestedScrollSource.UserInput)
+            }
+            val drag = Modifier.draggable(pull, Orientation.Vertical, onDragStopped = { collapse.onPreFling(Velocity.Zero) })
+            Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 4.dp)) {
                 if (heroDp <= HERO_MIN + 0.5.dp) {
                     Row(
-                        Modifier.fillMaxWidth().height(HERO_MIN).clip(MaterialTheme.shapes.medium).background(c.surfaceContainer).padding(8.dp),
+                        Modifier.fillMaxWidth().height(HERO_MIN).then(drag).clip(MaterialTheme.shapes.medium).background(c.surfaceContainer).padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         Image(src.bitmap.asImageBitmap(), null, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
@@ -185,18 +192,11 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                         Pill(stringResource(R.string.setup_other_short), outlined = true, onClick = onPickOther)
                     }
                 } else {
-                    // The photo itself is a handle too: dragging it feeds the same collapse/stretch as the settings do.
-                    val pull = rememberDraggableState { d ->
-                        val delta = Offset(0f, d)
-                        if (d < 0) collapse.onPreScroll(delta, NestedScrollSource.UserInput)
-                        else collapse.onPostScroll(Offset.Zero, delta, NestedScrollSource.UserInput)
-                    }
-                    Column {
-                        PhotoCard(src, onOpen = { fullscreen = true }, onPickOther = onPickOther, modifier = Modifier.fillMaxWidth().height(heroDp)
-                            .draggable(pull, Orientation.Vertical, onDragStopped = { collapse.onPreFling(Velocity.Zero) }))
-                        DragHandle(Modifier.draggable(pull, Orientation.Vertical, onDragStopped = { collapse.onPreFling(Velocity.Zero) }))
-                    }
+                    PhotoCard(src, onOpen = { fullscreen = true }, onPickOther = onPickOther, modifier = Modifier.fillMaxWidth().height(heroDp).then(drag))
                 }
+                // The handle stays under the photo in BOTH states (the owner, chat 2026-10-14 ≈ 20:57 +03:00: «когда картинку ты
+                // свернул - драг хендл пропал - баг»): collapsed, it is what tells that the row pulls back down.
+                DragHandle(drag)
             }
             Column(
                 Modifier.weight(1f).verticalScroll(scroll).padding(start = 20.dp, end = 20.dp, bottom = 130.dp),
