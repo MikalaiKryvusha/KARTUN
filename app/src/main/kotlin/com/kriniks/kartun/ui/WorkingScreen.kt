@@ -122,7 +122,10 @@ fun WorkingScreen(vm: UpscaleViewModel) {
                     progress = { fraction }, modifier = Modifier.size(150.dp), color = c.primary,
                     strokeWidth = 11.dp, trackColor = c.surfaceContainerHigh, strokeCap = StrokeCap.Butt, gapSize = 0.dp,
                 )
-                Text(stringResource(R.string.percent, (fraction * 100).toInt()), style = MaterialTheme.typography.headlineSmall.copy(fontSize = 34.sp, fontWeight = FontWeight(800)))
+                // Tabular figures: every digit takes the same width, so the number does not jitter as it counts (the owner,
+                // plan 03 step 20: «в кольце прогресса цифры процентов пляшут, вероятно из-за разной ширины цифр»).
+                Text(stringResource(R.string.percent, (fraction * 100).toInt()),
+                    style = MaterialTheme.typography.headlineSmall.copy(fontSize = 34.sp, fontWeight = FontWeight(800), fontFeatureSettings = "tnum"))
             }
             Text(stringResource(R.string.working_title), style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp), textAlign = TextAlign.Center)
             Text(
