@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-14 (agent)
 > **Родитель:** `plans/01_EPIC_mvp.md` §3 row «0 — проверка движка», gate: criteria 2.4 and 2.6 met by a console probe on the Titan
-> **Статус:** 🔧 in progress — engine proven on the Titan 2026-10-14 ≈ 14:09 +03:00 (`testcases/reports/2026-10-14_F0_engine_probe.md`): steps 1–3, 5–9 done; step 4 partly (x4plus + animevideov3 from the xinntao release; general-x4v3 not converted); step 10 open
+> **Статус:** ✅ closed 2026-10-14 18:26 +03:00 — engine proven on the Titan 14:09 (`testcases/reports/2026-10-14_F0_engine_probe.md`); own conversion of the default model proven 18:24 (`testcases/reports/2026-10-14_F0_own_fast_model.md`); all steps done; the speed number for criterion 2.6 is asked in `interviews/interview_003_speed_target.md`
 > **Вовне:** the measured time per 1 MP → to the owner at phase close (proposes the number for criterion 2.6)
 
 ## Goal vector
@@ -36,9 +36,9 @@ tolerance, differs from a bicubic resize by more than that tolerance, and the wa
    already covers `build/`, `.gradle/`, `.cxx/`, `local.properties`.
 3. [x] Fetch `ncnn-20260526-android-vulkan.zip` from the Tencent/ncnn GitHub release into `engine/third_party/` (gitignored;
    a script `tools/fetch-ncnn.mjs` downloads and checks SHA-256 so the build is reproducible). Record the hash.
-4. [~] Done 2026-10-14 18:16 +03:00 on the PC: own conversion of `realesr-general-x4v3` (47.1 dB to PyTorch), provenance
-   and BSD-3 text in `docs/model-licenses.md` (run report `testcases/reports/2026-10-14_F0_own_fast_model.md`); open: the
-   Titan run of the converted model (device offline at 18:16). Original text: Models: download `realesrgan-ncnn-vulkan-…` release zip v0.2.5.0 from xinntao, take `realesrgan-x4plus.{param,bin}`;
+4. [x] Done 2026-10-14 18:24 +03:00: own conversion of `realesr-general-x4v3` — 47.1 dB to PyTorch on the PC, 52.3 dB on the
+   Titan (GPU and CPU); provenance and BSD-3 text in `docs/model-licenses.md` (run report
+   `testcases/reports/2026-10-14_F0_own_fast_model.md`). Original text: Models: download `realesrgan-ncnn-vulkan-…` release zip v0.2.5.0 from xinntao, take `realesrgan-x4plus.{param,bin}`;
    convert or obtain `realesr-general-x4v3` ncnn files from the original `.pth` (BSD-3) — record provenance and SHA-256 in
    `docs/model-licenses.md`; add the BSD-3 notice.
 5. [x] Engine C++ (`engine/src/main/cpp/`): `kartun_engine.cpp` — create `ncnn::Net`, options (Vulkan on/off,
@@ -50,11 +50,12 @@ tolerance, differs from a bicubic resize by more than that tolerance, and the wa
    the PNG and a JSON line (ms, backend, tile, gpu name) to logcat; driven with `adb shell am start … --es in … --ez gpu true`.
 7. [x] PC reference: run the same model with the desktop `realesrgan-ncnn-vulkan` (MIT, v0.2.0 release) on the same
    input → `testdata/ref_*.png`; a node script computes PSNR (sharp/pngjs or ImageMagick `magick compare -metric PSNR`).
-8. [~] Run on the Titan: Vulkan and CPU, both models, 256×256 and 1 MP; pull outputs; compare; write the run report.
+8. [x] Run on the Titan: Vulkan and CPU, both models, 256×256 and 1 MP; pull outputs; compare; write the run report.
    Done: x4plus GPU+CPU at 256, x4plus GPU at 1 MP, animevideov3 GPU at 1 MP, upscayl-lite (measurement only) GPU at 1 MP
-   and on the owner's photo. NOT run: animevideov3 on CPU, any model on CPU at 1 MP, animevideov3 at 256×256.
+   and on the owner's photo. 2026-10-14 18:21–18:24: own general-x4v3 GPU+CPU at 256 and 1 MP, on the photo; animevideov3
+   GPU+CPU at 256. Consciously NOT run: x4plus on CPU at 1 MP (≈ 25 min by the 256 time) — phase 1 fallback ladder decides.
 9. [x] Control case: delete the model file → expect the error path (criterion 5).
-10. [ ] Close: update `STATUS.md`, `MASTER_PLAN.md` phase 0 status, report the timing to the owner, write the phase 1 plan.
+10. [x] Close (2026-10-14 18:26 +03:00; timing to the owner in `interviews/interview_003_speed_target.md`): update `STATUS.md`, `MASTER_PLAN.md` phase 0 status, report the timing to the owner, write the plan of the next phase (phase 2 — screens — goes first, see Decisions below: `plans/03_epic01_F2_screens.md`).
 
 ## Risks
 
@@ -62,3 +63,11 @@ tolerance, differs from a bicubic resize by more than that tolerance, and the wa
 - `vkCreateComputePipelines` or device-lost on Mali-G615 → tile 64/32, fp32, CPU (research 03 §B lessons 2, 4).
 - `realesr-general-x4v3` has no official ncnn file → conversion with pnnx (BSD-3) may cost time; x4plus alone satisfies the gate.
 - Relay latency of adb over Tailscale (150–450 ms) slows pushes of 33 MB models → push once, keep on the device.
+
+## Decisions made without the owner
+
+- `[AI]` Tolerance of criterion 2 lowered from the proposed 40 dB to 38 dB (FORK line in criterion 2, measured).
+- `[AI]` x4plus on CPU at 1 MP not run (≈ 25 min); left to the phase 1 fallback ladder.
+- `[AI]` The ground truth for our own conversion is the PyTorch output of the original weights (not Upscayl's file).
+- `[AI]` Next after phase 0: the screens of phase 2 start before phase 1 (the owner asked in chat ≈ 18:24 «может ты начнёшь UI
+  верстать, или пока рано?»; the agent proposed the order, `plans/01_EPIC_mvp.md` §3) — revisable.
