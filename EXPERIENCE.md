@@ -56,7 +56,7 @@
 > <!-- classes: question-already-answered, guard-not-proven-against-threat, shown-as-link,
 >      claim-before-evidence, owner-decision-not-applied, text-in-agents-world,
 >      etalon-from-dirty-tree, shell-lied, escaping-layer, twins-missed,
->      field-dropped-in-rebuild, platform-layer-unseen -->
+>      field-dropped-in-rebuild, platform-layer-unseen, silent-noop-edit -->
 >
 > | Class slug | The failure it names |
 > |---|---|
@@ -72,6 +72,7 @@
 > | `twins-missed` | one of two layers/copies moved and the twin stayed behind |
 > | `field-dropped-in-rebuild` | a field or section silently lost when an artifact was regenerated |
 > | `platform-layer-unseen` | the platform renders an asset in a place the agent never looked at (splash, themed icon, dark mode) |
+| `silent-noop-edit` | a scripted edit whose anchor did not match changed nothing, and the work was reported as done |
 >
 > The `#tags` are **trigger-tags**: before a task, grep by the task's tags and QUOTE the relevant
 > lessons in your report (id + one line) — or state "no relevant lessons". An unquoted recall is
@@ -80,6 +81,17 @@
 > Skill: `/experience` (capture a lesson · recall relevant lessons).
 
 ## Entries
+
+### EXP-0008 · 2026-10-14 · ❌→✅ · #docs #script #edit #claim
+class: silent-noop-edit
+**Context:** inserting rows into a test-case document with a throwaway Python `t.replace(anchor, rows + anchor, 1)`.
+**Tried / did:** the anchor was typed from memory (`| C14 debug build:`), the real text was `| C14 | debug build:`; no assert.
+**Result:** ❌ the replace changed nothing, the script printed nothing, and two commit messages (`2caef1e`, `7a3ac42`) claimed
+the rows were added. ✅ caught by reading the commit's own `--stat`; rows added and the claim corrected in `9ed34b4`.
+**Lesson:** a scripted text edit must FAIL when its anchor is absent; a replace without an assert is a claim without evidence.
+**Repro:** in every edit script: `assert t.count(anchor) == 1, anchor` before `t.replace(...)`; then `git diff --cached --stat` lists every file the commit message names.
+**Trigger:** writing a script that edits a document → the `rep()` helper with the count assert, never a bare `replace`.
+**Not for:** the Edit tool — it already refuses a missing `old_string`.
 
 ### EXP-0007 · 2026-10-14 · ❌→✅ · #android #icon #splash #titan
 class: platform-layer-unseen
