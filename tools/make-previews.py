@@ -28,7 +28,23 @@ SMALL = 128      # the small picture's side; also DAT2's fixed input
 QUALITY = 84
 OUT = Path("docs/model-previews")
 # model id -> subject file in SRC_DIR (missing -> the beach sample). Filled when the subject photos are chosen.
-SUBJECTS = {}
+SUBJECTS = {  # the owner's themes, 2026-10-16 ≈ 00:30: «природа, греция, пантеры, коты, цветки, луга, альпы, фолрды, снег» ·
+    # «новогодняя елка» · «цветки, пчелы»; photos and licences: engine/third_party/preview-src/*.credit.txt
+    "realesr-general-x4v3": "nature.jpg",
+    "realesrgan-x4plus": "alps.jpg",
+    "realesrgan-x4plus-anime": "anime1.jpg",
+    "realesr-animevideov3-x4": "anime2.jpg",
+    "4xNomos8kSC_fp16": "fjord.jpg",
+    "4xHFA2k_fp16": "anime2.jpg",
+    "4x-NMKD-Superscale-fp16": "greece.jpg",
+    "4x-NMKD-Siax-fp16": "panther.jpg",
+    "4xNomosWebPhoto-RealPLKSR-fp16": "cat.jpg",
+    "4x-ClearRealityV1-fp16": "flowers_bee.jpg",  # portrait.jpg waits for the owner (an identifiable person)
+    "4x-Remacri-fp16": "meadow.jpg",
+    "4x-UltraMix-Balanced-fp16": "snow.jpg",
+    "4x-UltraSharpV2-Lite-fp16": "leopard.jpg",
+    "4x-UltraSharpV2-fp16": "christmas_tree.jpg",
+}
 
 spec = importlib.util.spec_from_file_location("compare_models", "tools/compare-models.py")
 cm = importlib.util.module_from_spec(spec)
@@ -59,7 +75,7 @@ def main():
     credits = {}
     for m in models:
         src = SRC_DIR / SUBJECTS[m["id"]] if m["id"] in SUBJECTS else FALLBACK
-        credit = src.with_name(src.name + ".credit.txt")
+        credit = src.with_suffix(".credit.txt")  # nature.jpg -> nature.credit.txt
         if src != FALLBACK:
             # A subject photo ships only with its author line (CC BY / CC BY-SA ask for it; the app shows it in «О приложении»).
             if not credit.exists():
