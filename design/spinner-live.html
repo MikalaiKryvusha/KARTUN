@@ -28,8 +28,10 @@
 </head>
 <body>
 <h1>Живой спиннер <b>KARTUN</b></h1>
-<p class="lead">Одни и те же розовые квадратики собираются то в сердце, то в кольцо с бегущей волной, то в тайлы 3×3 — и через случайные 3,75–7,5 секунды
-  внезапно перестраиваются в другую фигуру (подряд одна и та же не повторяется). Внутри фигуры квадратики живут (всё в 1,5 раза спокойнее): мерцают яркостью, сердце бьётся, по кольцу бежит волна, тайлы проявляются.</p>
+<p class="lead">Одни и те же розовые квадратики собираются то в сердце, то в кольцо с бегущей волной, то в общий квадрат из тайлов — и через
+  случайные 4–7 секунд перестраиваются в другую фигуру. У каждой перестройки своё настроение (взрыв, вихрь, дождь, змейка), а у каждого квадратика свой
+  характер: один летит по дуге, другой медлит и потом рвётся, третий крутится в полёте, четвёртый промахивается и покачивается у места. Сердце собирается
+  снизу по пикселю, успокаивается и стоит собранным, переливаясь цветом. Всё в 1,5 раза спокойнее.</p>
 <div class="row">
   <div class="box"><h2>Крупно</h2><div class="stage" id="big"></div><div class="now" id="now"></div></div>
   <div class="box"><h2>В приложении</h2>
@@ -38,80 +40,114 @@
   </div>
 </div>
 <script>
-const PINK = [255, 26, 140], GREY = [58, 58, 62];
-// All motion runs on a slowed clock (the owner, ≈ 12:40: «и анимации можно медленее на 50%, спокойнее»).
+// The living spinner, take 3 (the owner, chat 2026-10-15 ≈ 12:44 +03:00: «более интересные варианты перехода между разными
+// тремя сценариями друг в друга… словно пиксели живые и ведут себя по своему усмотрению» · «сердце… должно успокоиться, и
+// чтобы стояло собранным и пиксели цветом переливались»; ≈ 12:40: everything 1.5x slower).
 const SLOW = 1.5;
-const N = 36;                                   // squares in play: enough for the heart, shared by every formation
+const PINK = [255, 26, 140], DEEP = [120, 18, 70], LIGHT = [255, 120, 190], GREY = [58, 58, 62];
+const N = 36;
 const mix = (a, b, k) => a.map((v, i) => Math.round(v + (b[i] - v) * k));
-const rgb = (c, a = 1) => `rgba(${c.join(',')},${a})`;
-const backOut = t => { const s = 1.6; return 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2); }; // small overshoot
+const rgb = c => `rgb(${c.join(',')})`;
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const backOut = t => { const s = 1.4; return 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2); };
+const R = () => Math.random();
 
-// Each formation: targets in unit space (0..1) and a "life" function giving size, brightness and offset per square.
+// --- formations: targets in unit space and the life a square has once it is home
 const HEART = ['0110110', '1111111', '1111111', '0111110', '0011100', '0001000'];
 const heartPts = []; HEART.forEach((r, y) => [...r].forEach((c, x) => c === '1' && heartPts.push([(x + .5) / 7 * .8 + .1, (y + .5) / 6 * .7 + .16])));
-// The tiles' one square: from SQ0 to 1 - SQ0, nine tiles with SEAM between them, each tile 2 x 2 squares of TILE_SUB.
 const SQ0 = .13, SEAM = .025, TILE = (1 - 2 * SQ0 - 2 * SEAM) / 3, TILE_SUB = TILE / 2;
 const formations = {
   heart: {
-    // Always being assembled (the owner, ≈ 12:42: «сердце у тебя сейчас целиком собирается и долго стоит готовое, нужно
-    // больше процесса сборки»): every square in turn leaves for a scattered point and flies back - about a quarter of
-    // the heart is in flight at any moment; the arrival after a regroup goes pixel by pixel, bottom row first.
-    name: 'сердце', size: .1, stagger: 1100,
-    target: i => heartPts[i % heartPts.length],
-    life: (i, t) => {
-      const P = 3200, ph = ((t + (i * 7919 % 36) / 36 * P) % P) / P;          // each square's own phase, shuffled
-      const away = ph < .72 ? 0 : ph < .86 ? (ph - .72) / .14 : 1 - (ph - .86) / .14;
-      const ang = (i * 2.399) % (Math.PI * 2), dist = .28 * Math.sin(away * Math.PI / 2);
-      const beat = Math.pow(Math.max(0, Math.sin(t / 260)), 6);
-      return { k: (1 + beat * .14) * (1 - away * .35), c: .55 + .45 * (1 - away) * Math.abs(Math.sin(t / 400 + i * 1.7)),
-               dx: Math.cos(ang) * dist, dy: Math.sin(ang) * dist };
+    // Builds pixel by pixel from the bottom, then stands assembled: a soft beat and a colour wave running across it.
+    name: 'сердце', size: .1, stagger: 1500, count: heartPts.length,
+    target: i => heartPts[i],
+    life: (i, t, [x, y]) => {
+      const beat = Math.pow(Math.max(0, Math.sin(t / 420)), 8);
+      const wave = .5 + .5 * Math.sin((x + y) * 9 - t / 380);                 // a diagonal shimmer across the heart
+      return { k: 1 + beat * .1, c: mix(DEEP, mix(PINK, LIGHT, wave * .6), .55 + .45 * wave) };
     },
   },
   ring: {
-    name: 'кольцо', size: .085,
-    target: i => { const n = 18, j = i % n, a = j / n * Math.PI * 2 - Math.PI / 2; return [.5 + Math.cos(a) * .36, .5 + Math.sin(a) * .36]; },
+    name: 'кольцо', size: .085, count: 18,
+    target: i => { const j = i, a = j / 18 * Math.PI * 2 - Math.PI / 2; return [.5 + Math.cos(a) * .36, .5 + Math.sin(a) * .36]; },
     life: (i, t) => { const n = 18, head = (t / 1300) % 1 * n, d = (head - (i % n) + n) % n, lit = Math.max(0, 1 - d / 7);
       const out = d < 1 ? (1 - d) * .07 : 0, a = (i % n) / n * Math.PI * 2 - Math.PI / 2;
-      return { k: 1, c: lit > 0 ? .3 + .7 * lit : 0, dx: Math.cos(a) * out, dy: Math.sin(a) * out, grey: lit === 0 }; },
+      return { k: 1, c: lit > 0 ? mix(DEEP, PINK, .3 + .7 * lit) : GREY, dx: Math.cos(a) * out, dy: Math.sin(a) * out }; },
   },
   tiles: {
-    // Variant 4 of the first sheet, which the owner liked (≈ 12:41: «был общий квадрат, и отдельные его части собирались
-    // воедино - было красиво»): nine tiles make one square with thin seams; a tile rippling with four squares of random
-    // brightness merges into one clean pink tile, tile after tile, until the whole square is built - then it starts over.
-    name: 'тайлы', size: TILE_SUB,
+    // One square of nine tiles that lights up tile after tile; the pixels keep their gaps and shimmer once lit.
+    name: 'тайлы', size: TILE_SUB, count: 36,
     target: i => { const j = i % 36, tile = Math.floor(j / 4), sub = j % 4, tx = tile % 3, ty = Math.floor(tile / 3);
       return [SQ0 + tx * (TILE + SEAM) + (sub % 2 + .5) * TILE_SUB, SQ0 + ty * (TILE + SEAM) + (Math.floor(sub / 2) + .5) * TILE_SUB]; },
-    life: (i, t) => { const tile = Math.floor((i % 36) / 4), step = (t / 260) % 13, built = tile < step;
-      return built ? { k: 1.04, c: 1, dx: 0, dy: 0 }                                  // merged: the four squares touch
-                   : { k: .74, c: .3 + .55 * Math.abs(Math.sin(t / 170 + i * 2.3)), dx: 0, dy: 0 }; },
+    life: (i, t) => { const tile = Math.floor((i % 36) / 4), built = tile < (t / 260) % 13;
+      // Built: every pixel keeps its gap and shimmers in its own shade of pink (the owner, ≈ 12:46: «между пикселями нет
+      // промежутка и нет перелива их разными цветами, как было в первом макете»); not built yet: small and dim.
+      const shade = .5 + .5 * Math.sin(t / 330 + i * 2.17);
+      return built ? { k: .88, c: mix(DEEP, mix(PINK, LIGHT, shade * .5), .45 + .55 * shade) }
+                   : { k: .62, c: mix(GREY, DEEP, .35 + .3 * Math.abs(Math.sin(t / 170 + i * 2.3))) }; },
   },
 };
 const order = Object.keys(formations);
+// A square a formation has no place for runs off the frame its own way and waits there unseen; when the next formation
+// needs it, it runs back in from there (the owner, ≈ 12:47: «лишние аккуратно незаметно скрывать, убегать за кадр» · «а когда
+// они нужны - прибегать из-за кадра обратно»).
+const offFrame = i => { const a = i * 2.399 + R() * .6; return [.5 + Math.cos(a) * .95, .5 + Math.sin(a) * .95]; };
+const placeOf = (f, i) => i < formations[f].count ? formations[f].target(i) : offFrame(i);
 
-// The squares: each remembers where it flew from, where it goes and when it started.
-const sq = Array.from({ length: N }, (_, i) => ({ from: [Math.random(), Math.random()], to: [.5, .5], start: 0, delay: 0 }));
-let current = 'heart', switchAt = 0;
-function regroup(t, next) {
+// --- moods of a regroup: where the flight bends through (a quadratic curve's control point) and how the start is staggered
+const moods = {
+  burst:  { name: 'взрыв',  ctrl: (f, to) => [.5 + (f[0] - .5) * 3, .5 + (f[1] - .5) * 3], delay: () => R() * 200 },
+  swirl:  { name: 'вихрь',  ctrl: (f, to) => { const a = Math.atan2(f[1] - .5, f[0] - .5) + 2.2; return [.5 + Math.cos(a) * .55, .5 + Math.sin(a) * .55]; }, delay: () => R() * 300 },
+  rain:   { name: 'дождь',  ctrl: (f, to) => [to[0] + (R() - .5) * .2, -.45], delay: () => R() * 700 },
+  snake:  { name: 'змейка', ctrl: (f, to) => [(f[0] + to[0]) / 2 + (R() - .5) * .5, (f[1] + to[1]) / 2 + (R() - .5) * .5], delay: (i) => i * 55 },
+};
+// --- characters: each square's own manner on top of the mood
+const characters = ['straight', 'arc', 'shy', 'spinner', 'overshooter'];
+
+const sq = Array.from({ length: N }, () => ({ from: [R(), R()], ctrl: [.5, .5], to: [.5, .5], start: 0, delay: 0, dur: 900, who: 'straight', spin: 0 }));
+let current = 'heart', mood = 'burst', switchAt = 0;
+
+function regroup(t, next, moodName) {
+  const m = moods[moodName];
   for (let i = 0; i < N; i++) {
-    const s = sq[i]; const p = pos(s, t);
-    s.from = p; s.to = formations[next].target(i); s.start = t;
+    const s = sq[i], p = pos(s, t);
+    s.from = p; s.to = placeOf(next, i); s.start = t;
+    s.who = characters[Math.floor(R() * characters.length)];
+    s.ctrl = s.who === 'straight' ? [(p[0] + s.to[0]) / 2, (p[1] + s.to[1]) / 2] : m.ctrl(p, s.to);
     const st = formations[next].stagger;
-    s.delay = st ? (1 - s.to[1]) * st + Math.random() * 120 : Math.random() * 260; // bottom row first / a wave
+    s.delay = (st ? (1 - s.to[1]) * st : m.delay(i)) + (s.who === 'shy' ? 500 + R() * 500 : 0);   // the shy one hesitates
+    s.dur = (s.who === 'shy' ? 500 : 800) + R() * 500;                                            // ...then dashes
+    s.spin = s.who === 'spinner' ? (R() < .5 ? -1 : 1) * Math.PI * (1 + Math.floor(R() * 2)) : 0;
   }
-  current = next; switchAt = t + 2500 + Math.random() * 2500;
-  document.getElementById('now').textContent = 'сейчас: ' + formations[next].name;
+  current = next; mood = moodName; switchAt = t + 2500 + R() * 2500 + (formations[next].stagger || 0);
+  document.getElementById('now').textContent = `сейчас: ${formations[next].name} · переход: ${moods[moodName].name}`;
 }
-function pos(s, t) { const k = Math.min(1, Math.max(0, (t - s.start - s.delay) / 650)); const e = k < 1 ? backOut(k) : 1;
-  return [s.from[0] + (s.to[0] - s.from[0]) * e, s.from[1] + (s.to[1] - s.from[1]) * e]; }
 
+function progress(s, t) { return clamp((t - s.start - s.delay) / s.dur); }
+function pos(s, t) {
+  const k = progress(s, t);
+  const e = s.who === 'overshooter' ? backOut(k) : easeInOut(k);
+  const u = clamp(e, 0, 1.2), a = (1 - u) * (1 - u), b = 2 * (1 - u) * u, c = u * u;          // quadratic curve through ctrl
+  let x = a * s.from[0] + b * s.ctrl[0] + c * s.to[0], y = a * s.from[1] + b * s.ctrl[1] + c * s.to[1];
+  if (s.who === 'overshooter' && k >= 1) { const w = Math.sin((performanceT - s.start) / 120) * Math.exp(-(performanceT - s.start - s.delay - s.dur) / 300) * .015; x += w; }
+  return [x, y];
+}
+
+let performanceT = 0;
 function draw(ctx, size, t) {
   const f = formations[current];
   for (let i = 0; i < N; i++) {
-    const [x, y] = pos(sq[i], t); const l = f.life(i, t); const flying = t - sq[i].start - sq[i].delay < 650;
-    const side = size * f.size * l.k * (flying ? .85 : 1);
-    const c = l.grey && !flying ? GREY : mix([90, 20, 55], PINK, flying ? .9 : l.c);
-    ctx.fillStyle = rgb(c);
-    ctx.fillRect((x + l.dx) * size - side / 2, (y + l.dy) * size - side / 2, side, side);
+    const s = sq[i], k = progress(s, t), home = k >= 1, [x, y] = pos(s, t);
+    if (i >= f.count && home) continue;                                          // a spare one waits off the frame
+    const l = home ? f.life(i, t, s.to) : { k: .8, c: mix(PINK, LIGHT, .4) };
+    const side = size * f.size * l.k;
+    ctx.save();
+    ctx.translate((x + (home && l.dx || 0)) * size, (y + (home && l.dy || 0)) * size);
+    ctx.rotate(s.spin * (home ? 1 : easeInOut(k)));
+    ctx.fillStyle = rgb(l.c);
+    ctx.fillRect(-side / 2, -side / 2, side, side);
+    ctx.restore();
   }
 }
 
@@ -120,11 +156,15 @@ const views = [['big', 240], ['c48', 48], ['c22', 22]].map(([id, size]) => {
   cv.width = cv.height = size * dpr; cv.style.width = cv.style.height = size + 'px'; document.getElementById(id).appendChild(cv);
   return { ctx: cv.getContext('2d'), size, dpr };
 });
-// ?f=heart|ring|tiles picks the first formation (for checking one of them); the default is the heart.
-regroup(0, formations[new URLSearchParams(location.search).get('f')] ? new URLSearchParams(location.search).get('f') : 'heart');
-function frame(t) {
-  t = t / SLOW;
-  if (t > switchAt) { const others = order.filter(o => o !== current); regroup(t, others[Math.floor(Math.random() * others.length)]); }
+// ?f=heart|ring|tiles picks the first formation; ?m=burst|swirl|rain|snake the first mood.
+const q = new URLSearchParams(location.search);
+regroup(0, formations[q.get('f')] ? q.get('f') : 'heart', moods[q.get('m')] ? q.get('m') : 'burst');
+function frame(now) {
+  const t = now / SLOW; performanceT = t;
+  if (t > switchAt) {
+    const nextF = order.filter(o => o !== current), nextM = Object.keys(moods).filter(o => o !== mood);
+    regroup(t, nextF[Math.floor(R() * nextF.length)], nextM[Math.floor(R() * nextM.length)]);
+  }
   for (const v of views) { v.ctx.setTransform(v.dpr, 0, 0, v.dpr, 0, 0); v.ctx.clearRect(0, 0, v.size, v.size); draw(v.ctx, v.size, t); }
   requestAnimationFrame(frame);
 }
