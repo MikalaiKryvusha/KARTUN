@@ -183,7 +183,10 @@ object DebugTools {
                         for (b in p.blobs) {
                             if (p.cancel) break
                             say(context.getString(R.string.dbg_log_blob_start, b))
-                            val ms = u.timeToBlob(side, side, b)
+                            // the picture itself when it is exactly one input (else a flat 0.5); blob "output" is also
+                            // saved raw as blob_output.f32 for the float-vs-float check (tools/dat-blob-stats.py --dump)
+                            val dump = if (b == "output") File(dir(context), "blob_output.f32").path else null
+                            val ms = u.timeToBlob(side, side, b, bmp, dump)
                             say(context.getString(R.string.dbg_log_blob, b, ms))
                             Log.i(TAG, """{"blob":"$b","ms":$ms}""")
                         }

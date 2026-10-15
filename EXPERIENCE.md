@@ -89,6 +89,35 @@
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
 
+### EXP-0021 · 2026-10-15 · ❌→✅ · #ncnn #psnr #png #engine
+class: proxy-for-the-thing
+**Context:** checking DAT2 on the Titan: the PNG output against a PyTorch reference gave 32-52 dB, the PC said 66.6 dB.
+**Tried / did:** compared 8-bit PNGs (engine vs PyTorch rounded), then on a bare 108 px input against an engine that pads to 128.
+**Result:** ❌ two gaps that were not the network: the engine's `to_pixels` CUT the fraction (every model's output half a step
+darker, mean -0.46) and a transformer sees the whole padded tile (padding changes the middle too). ✅ float-vs-float on the
+same input: 66.58 dB on the Mali; engine now writes x*255 + 0.5 (x4plus 39.2 -> 39.34 dB vs its reference).
+**Lesson:** a network is compared float against float on the SAME input the engine feeds it; an 8-bit picture is capped near
+59 dB by quantization alone, and a rounding mismatch alone caps it near 54 dB.
+**Repro:** probe extra `blobs output` on a picture of exactly the input size → `blob_output.f32` → PSNR against PyTorch in float.
+**Trigger:** a PSNR between the device and the reference looks low → check rounding and input padding before suspecting a layer.
+**Not for:** taste comparisons of models — those stay the owner's eye.
+none-cheap: the float dump is a debug-build path; the net is the Repro
+
+### EXP-0020 · 2026-10-15 · ❌→✅ · #ncnn #gpu #mali #bisect #device
+class: proxy-for-the-thing
+**Context:** DAT2 gave noise on the Mali; the last session tested each SDPA kind alone on the device and found all correct.
+**Tried / did:** the "channel" test net cut channels in heads of 5 (`Reshape 1=5`) while the real net uses 30 — another shape.
+**Result:** ❌ the test proved a layer the net does not have. ✅ layer-by-layer stats of the REAL net on the device vs the PC
+(`logBlobStats` + `tools/dat-blob-stats.py`, three bisection passes in seconds) found `sdpa_4671`: inputs equal to 6 digits,
+output = the stale contents of a freed blob (its mean |x| matched blob 275 exactly) — the Vulkan kernel wrote nothing.
+`31=16` on the 18 channel SDPAs: the whole net matches the PC, 66.58 dB vs PyTorch, 11.3 s per tile.
+**Lesson:** bisect the real graph on the real device; an isolated reproduction proves only its own shape. A wrong blob whose
+numbers equal another blob's is a kernel that did not write.
+**Repro:** debug build → `--es model <m> --es blobs <b1,b2,…>` → logcat `blobstat` → `tools/dat-blob-stats.py <param> <bin> --blobs <…> --device <logcat.txt>`.
+**Trigger:** a net correct on the PC is wrong on a phone → bisect blobs with the Repro before writing a single isolated test.
+**Not for:** speed questions — use the `ms` timing of the same probe.
+mechanized: tools/dat-blob-stats.py + logBlobStats in kartun_engine.cpp
+
 ### EXP-0019 · 2026-10-15 · ❌→✅ · #ncnn #pnnx #gpu #mali #device
 class: proxy-for-the-thing
 **Context:** bringing DAT2 (UltraSharp V2) to ncnn: the converted net matched PyTorch on the PC's RTX over Vulkan (66.6 dB).

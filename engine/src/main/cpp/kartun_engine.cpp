@@ -34,6 +34,7 @@ namespace {
 constexpr int kPrepadding = 10;             // context pixels around each tile, dropped from the output
 constexpr float kNorm = 1.f / 255.f;        // Real-ESRGAN expects RGB in [0, 1]
 constexpr float kDenorm = 255.f;
+constexpr float kRoundMean = -0.5f / 255.f;  // shifts the output by half a step before the 8-bit cast: rounding
 
 constexpr int kErrBadArgs = -1;
 constexpr int kErrBitmap = -2;
@@ -133,21 +134,66 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeDestroy(JNIEnv*, jclass, jlong
     delete reinterpret_cast<Upscaler*>(handle);
 }
 
-// Debug probe: runs the net on a flat w x h x 3 input (0.5 everywhere) up to `blob` and returns the time in ms (negative:
-// error). Extracting earlier and later blobs shows where the time goes on a device. [NOT-TESTED]
+// Logs a blob's shape and numbers - the sum, the mean |x|, the NaN/inf count and the first values - so a layer on the
+// device can be compared with the same layer on the PC (tools/dat-blob-stats.py prints the same line). Walks each
+// channel's w*h*d values (cstep may pad a channel). [TESTED: 2026-10-15 · Titan: DAT2 blobs vs the PC, three bisection
+// passes found sdpa_4671 - researches/08 section 10]
+static void logBlobStats(const char* blob, const ncnn::Mat& m) {
+    double sum = 0, sabs = 0;
+    long bad = 0, n = 0;
+    const int per = m.w * m.h * m.d;
+    for (int q = 0; q < m.c; ++q) {
+        const float* p = m.channel(q);
+        for (int i = 0; i < per; ++i) {
+            const float v = p[i];
+            if (v != v || v > 3e38f || v < -3e38f) { ++bad; continue; }
+            sum += v; sabs += v < 0 ? -v : v; ++n;
+        }
+    }
+    const float* p0 = m.channel(0);
+    LOGI("{\"blobstat\":\"%s\",\"dims\":%d,\"w\":%d,\"h\":%d,\"d\":%d,\"c\":%d,\"elempack\":%d,\"sum\":%.6g,\"mabs\":%.6g,\"bad\":%ld,"
+         "\"v\":[%.5g,%.5g,%.5g,%.5g]}", blob, m.dims, m.w, m.h, m.d, m.c, m.elempack, sum, n ? sabs / n : 0.0, bad,
+         per > 0 ? p0[0] : 0.f, per > 1 ? p0[1] : 0.f, per > 2 ? p0[2] : 0.f, per > 3 ? p0[3] : 0.f);
+}
+
+// Debug probe: runs the net up to `blob` and returns the time in ms (negative: error). The input is `bitmap` (RGBA, RGB
+// in [0, 1] as the engine feeds it) when it is exactly w x h, else a flat picture of 0.5. Extracting earlier and later
+// blobs shows where the time goes on a device; the blob's numbers go to logcat (logBlobStats) for the layer-by-layer
+// comparison with the PC; with `dumpPath` the blob's raw float32 values (c, h, w, no channel padding) are written there
+// for a float-vs-float check against PyTorch. [TESTED: 2026-10-15 · Titan, test128 through DAT2: 66.58 dB vs PyTorch]
 JNIEXPORT jlong JNICALL
-Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeTimeToBlob(JNIEnv* env, jclass, jlong handle, jint w, jint h, jstring jblob) {
+Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeTimeToBlob(JNIEnv* env, jclass, jlong handle, jint w, jint h, jstring jblob,
+                                                             jobject bitmap, jstring jdump) {
     auto* u = reinterpret_cast<Upscaler*>(handle);
     if (!u || w < 1 || h < 1) return kErrBadArgs;
-    const char* blob = env->GetStringUTFChars(jblob, nullptr);
     ncnn::Mat in(w, h, 3);
     in.fill(0.5f);
+    AndroidBitmapInfo info{};
+    void* px = nullptr;
+    if (bitmap && AndroidBitmap_getInfo(env, bitmap, &info) >= 0 && info.format == ANDROID_BITMAP_FORMAT_RGBA_8888 &&
+        static_cast<int>(info.width) == w && static_cast<int>(info.height) == h && AndroidBitmap_lockPixels(env, bitmap, &px) >= 0) {
+        in = ncnn::Mat::from_pixels(static_cast<const unsigned char*>(px), ncnn::Mat::PIXEL_RGBA2RGB, w, h, static_cast<int>(info.stride));
+        AndroidBitmap_unlockPixels(env, bitmap);
+        const float norm[3] = {kNorm, kNorm, kNorm};
+        in.substract_mean_normalize(nullptr, norm);
+    }
+    const char* blob = env->GetStringUTFChars(jblob, nullptr);
     const auto t0 = std::chrono::steady_clock::now();
     ncnn::Extractor ex = u->net.create_extractor();
     ex.input("data", in);
     ncnn::Mat out;
     const int rc = ex.extract(blob, out);
     const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - t0).count();
+    if (rc == 0) logBlobStats(blob, out);
+    if (rc == 0 && jdump) {
+        const char* dump = env->GetStringUTFChars(jdump, nullptr);
+        if (FILE* f = std::fopen(dump, "wb")) {
+            const size_t per = static_cast<size_t>(out.w) * out.h * out.d;
+            for (int q = 0; q < out.c; ++q) std::fwrite(out.channel(q), sizeof(float), per, f);
+            std::fclose(f);
+        }
+        env->ReleaseStringUTFChars(jdump, dump);
+    }
     env->ReleaseStringUTFChars(jblob, blob);
     return rc != 0 ? kErrExtract : static_cast<jlong>(ms);
 }
@@ -242,8 +288,12 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, j
             ncnn::Mat out;
             if (ex.extract("output", out) != 0) { rc = kErrExtract; break; }
 
+            // (x - mean) * norm with mean = -0.5/255: x * 255 + 0.5, so to_pixels' cast ROUNDS instead of cutting the
+            // fraction off (cut, every output was half a step darker: mean -0.46 against PyTorch rounded, 2026-10-15).
+            // [TESTED: 2026-10-15 · Titan: DAT2 test108 mean diff 0.037 (was -0.46); x4plus 39.34 dB vs its reference]
+            const float rmean[3] = {kRoundMean, kRoundMean, kRoundMean};
             const float denorm[3] = {kDenorm, kDenorm, kDenorm};
-            out.substract_mean_normalize(nullptr, denorm);
+            out.substract_mean_normalize(rmean, denorm);
 
             // Crop the padding away: the tile starts at (tx - x0) * scale inside `out`.
             const int ox = (tx - x0) * scale;

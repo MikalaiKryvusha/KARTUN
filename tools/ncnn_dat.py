@@ -15,8 +15,9 @@ Research: researches/08_dat2_on_ncnn.md. Used by tools/convert-model.py (`patch(
 kind converted alone and checked on the PC's Vulkan GPU (<= 0.0044 on random input); the whole net at 128 px -> 126 SDPA,
 no MatMul, ncnn (Vulkan, fp32 storage) vs PyTorch on a 128 px photo crop 66.6 dB. fp16 storage overflows (first Gemm ->
 inf) - the engine keeps fixed-size nets in fp32. Linear -> 1x1 conv and no Squeeze/ExpandDims: 300 Convolution +
-126 SDPA, 66.6 dB on the PC GPU. On the Titan's Mali: 13.9 s per 128 px tile but the picture is WRONG (16.1 dB) -
-researches/08 section 9]
+126 SDPA, 66.6 dB on the PC GPU. On the Titan's Mali the channel-attention SDPA's Vulkan kernel writes nothing (16.1 dB);
+tools/convert-model.py --fixed moves those 18 layers to the CPU (31=16): 66.58 dB vs PyTorch on the Mali, 11.3 s per 128 px
+tile - researches/08 section 10]
 """
 import types
 

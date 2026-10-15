@@ -172,6 +172,19 @@ def convert(weights, out_dir, name, image, fixed=None):
         lines = text.splitlines(keepends=True)
         i = next(k for k, ln in enumerate(lines) if ln.startswith("Input"))
         lines[i] = lines[i].rstrip("\r\n") + f" 0={fixed} 1={fixed} 2=3\n"
+        # DAT's channel attention (SDPA with 3 inputs - q, k, v, no mask - over 30 channels x 16384 pixels per head) runs
+        # on the CPU: on the Titan's Mali-G615 (ncnn 20260526, fp32) its Vulkan kernel writes NOTHING - the output blob kept
+        # the stale contents of a freed blob, while its inputs matched the PC exactly (layer-by-layer comparison,
+        # tools/dat-blob-stats.py, 2026-10-15). `31=16` is ncnn's per-layer feature mask "no Vulkan" (wiki layer-feat-mask).
+        # With it the whole net matches the PC on the Mali (mean |x| 0.504605 both) and a 128 px tile takes 11.3 s.
+        # [TESTED: 2026-10-15 · Titan, test108: 52.7 dB vs PyTorch on the same padded input - researches/08 section 10]
+        n_cpu = 0
+        for k, ln in enumerate(lines):
+            f = ln.split()
+            if f and f[0] == "SDPA" and f[2] == "3":
+                lines[k] = ln.rstrip("\r\n") + " 31=16\n"
+                n_cpu += 1
+        print(f"DAT: {n_cpu} channel-attention SDPA layers set to run on the CPU (31=16)")
         text = "".join(lines)
     foreign = Counter(t for t in (ln.split()[0] for ln in text.splitlines()[2:] if ln.strip()) if t.startswith(NCNN_FOREIGN))
     if foreign:

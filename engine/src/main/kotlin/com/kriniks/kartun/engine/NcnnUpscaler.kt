@@ -44,12 +44,14 @@ class NcnnUpscaler private constructor(private var handle: Long, val usesGpu: Bo
     }
 
     /**
-     * Debug probe: runs the net on a flat w×h input up to [blob] (a blob name from the .param) and returns the time in ms,
-     * or a negative code. Finds which layer is slow on a device - the debug build's probe screen calls it. [NOT-TESTED]
+     * Debug probe: runs the net up to [blob] (a blob name from the .param) and returns the time in ms, or a negative code.
+     * The input is [input] when it is exactly w×h, else a flat 0.5 picture; the blob's numbers go to logcat, and with
+     * [dumpPath] its raw float32 values (c, h, w) are written to that file - the device side of a float-vs-float check
+     * against PyTorch. The debug build's probe screen calls it. [NOT-TESTED]
      */
-    fun timeToBlob(w: Int, h: Int, blob: String): Long {
+    fun timeToBlob(w: Int, h: Int, blob: String, input: Bitmap? = null, dumpPath: String? = null): Long {
         check(handle != 0L) { "upscaler is closed" }
-        return nativeTimeToBlob(handle, w, h, blob)
+        return nativeTimeToBlob(handle, w, h, blob, input, dumpPath)
     }
 
     override fun close() {
@@ -75,7 +77,7 @@ class NcnnUpscaler private constructor(private var handle: Long, val usesGpu: Bo
         @JvmStatic private external fun nativeGpuInfo(): String
         @JvmStatic private external fun nativeCreate(param: String, bin: String, useGpu: Boolean, threads: Int): Long
         @JvmStatic private external fun nativeDestroy(handle: Long)
-        @JvmStatic private external fun nativeTimeToBlob(handle: Long, w: Int, h: Int, blob: String): Long
+        @JvmStatic private external fun nativeTimeToBlob(handle: Long, w: Int, h: Int, blob: String, input: Bitmap?, dumpPath: String?): Long
         @JvmStatic private external fun nativeUpscale(
             handle: Long, input: Bitmap, output: Bitmap, scale: Int, outScale: Int, tile: Int, listener: TileListener?,
         ): Int
