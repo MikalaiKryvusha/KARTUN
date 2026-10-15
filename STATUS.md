@@ -80,8 +80,11 @@
 2e. **Слепой тест кандидатов в базовую поставку** — владелец 2026-10-15 ≈ 14:04: HFA2k, NMKD Siax, NomosWebPhoto RealPLKSR (+ x4plus, сейчас в APK);
    снимки: портрет, пейзаж, старое пережатое фото; буквы вместо имён, ключ отдельным файлом; страница сравнения всех
    моделей: `.venv-convert/Scripts/python.exe -I tools/compare-models.py …` → `design/model-compare/` (вне git).
-   14:10 слепой ряд на портрете показан: `design/model-compare/blind-1/` (`tools/blind-sheet.py`, ключ `key.json`) — ждёт вердикта;
-   пейзаж и старое фото — следом.
+   14:10 слепой ряд на портрете показан: `design/model-compare/blind-1/` (`tools/blind-sheet.py`, ключ `key.json`).
+   **Вердикт 14:12: «2 и 3 идут в поставку по умолчанию с АПК»** = NomosWebPhoto RealPLKSR + NMKD Siax (журнал `MASTER_PLAN.md`).
+   Дальше: прогон обеих на Титане (GPU, время, картинка) → `tools/stage-models.mjs` + `docs/model-licenses.md` (автор
+   NomosWebPhoto — в «О приложении», CC BY 4.0) + карточки и описания на 10 языках; ❓ уходит ли x4plus из APK и какая
+   модель по умолчанию — спрошено владельца 14:12.
 2f. **UltraSharp V2: Lite против полной** — владелец 14:08 «Лайт версии моделей не берем, только полноценные полные», 14:09
    «UltraSharpV2 Lite - нужно сравнить ее с полноценной»: страница `design/model-compare/v2/` (V1 · V2 Lite · V2, PyTorch на ПК:
    Lite 3,0 с, полная 12,9 с на кусок 200×200) показана 14:10 — ждёт вердикта. Полная V2 (DAT2) в ncnn не переводится:
