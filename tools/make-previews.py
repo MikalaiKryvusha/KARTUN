@@ -43,7 +43,7 @@ SUBJECTS = {  # the owner's themes, 2026-10-16 ≈ 00:30: «природа, гр
     "4x-Remacri-fp16": "meadow.jpg",
     "4x-UltraMix-Balanced-fp16": ("winter2.jpg", 0.55, 0.45, 1.0),  # «и лапу заснеженную меняем»; his examples: firs on a deep blue sky with a peak  # the owner: «зиму чуть другую, тут много белого» · «сосновый зимний лес да, но другой»
     "4x-UltraSharpV2-Lite-fp16": ("black_panther2.jpg", 0.30, 0.50, 1.0),  # «нужен более профессиональный снимок»; the owner picked Bruce McAdam's  # «черную пантеру вместо той на полке»
-    "4x-UltraSharpV2-fp16": "christmas_tree.jpg",
+    "4x-UltraSharpV2-fp16": ("christmas_tree2.jpg", 0.48, 0.50, 1.0),  # «елку … в западный крисмас три стайл» · «проф снимок, более менее во весь рост»
 }
 
 spec = importlib.util.spec_from_file_location("compare_models", "tools/compare-models.py")
