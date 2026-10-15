@@ -87,6 +87,19 @@
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
 
+### EXP-0016 · 2026-10-15 · ❌→✅ · #paths #move #git-hooks
+class: twins-missed
+**Context:** the first KAST commit after the 2026-10-15 00:16 move of `D:\Android` → `C:\Android`.
+**Tried / did:** the move rewrote every path in the tracked files of KARTUN and KAST (`43b0123`, `8d730a20`).
+**Result:** ❌ the commit failed: `.git/hooks/pre-commit` (not tracked) and the guard it runs, `C:\Android\private\kast-denylist-guard.mjs`
+(outside every repo), still pointed at `D:/Android/...`; nothing showed it until the first commit. ✅ both paths fixed, the guard
+ran green (`a318a875`).
+**Lesson:** a path move also sweeps what git does not track: `.git/hooks/*`, private tools, scheduled tasks, shortcuts.
+**Repro:** `grep -rln "D:/Android\|D:\\\\Android" /d/work/ai_sandbox/*/.git/hooks/ /c/Android/private/ 2>/dev/null | grep -v sample` → empty.
+**Trigger:** moving or renaming a tool directory → run the Repro over hooks and private tools in the same step.
+**Not for:** paths inside run reports and closed bugs — those record where a run happened.
+none-cheap: one-off moves; the Repro grep is the net
+
 ### EXP-0015 · 2026-10-15 · ❌→✅ · #titan #ui-agent #harness #device
 class: stand-left-dirty
 **Context:** driving KARTUN on the Titan with the on-device UI agent through the system photo picker.

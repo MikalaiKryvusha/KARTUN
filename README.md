@@ -110,7 +110,7 @@ original weights; its output differs from the original PyTorch network by 52.3 d
 | Largest input photo | 100 MP |
 | Largest result | 500 MP |
 | 8× and 16× | two passes of the network: four to sixteen times longer than 2×–4× |
-| Translations | English and Russian are written by hand; the other eight are drafts waiting for native speakers |
+| Translations | English and Russian are written by hand; the other eight are AI translations checked by the author |
 
 ### 6. Build
 
@@ -255,7 +255,7 @@ Vulkan.
 | Самое большое исходное фото | 100 Мп |
 | Самый большой результат | 500 Мп |
 | 8× и 16× | два прохода нейросети: в 4–16 раз дольше, чем 2×–4× |
-| Переводы | английский и русский написаны руками; остальные восемь — черновики, ждут носителей языка |
+| Переводы | английский и русский написаны руками; остальные восемь — переводы ИИ, проверенные автором |
 
 ### 6. Сборка
 
