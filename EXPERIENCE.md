@@ -90,6 +90,36 @@
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
 
+### EXP-0024 · 2026-10-15 · ❌ · #titan #harness #adb #owner #device
+class: stand-left-dirty
+**Context:** a background bash loop drove the owner's path on the Titan with `input tap` at fixed coordinates (bugs/01 hunt).
+**Tried / did:** stopped it with the harness's task stop when the owner said «баг я сам буду ловить»; did not check the PC
+process list afterwards; the taps did not check which window was on screen.
+**Result:** ❌ the task stop killed only the wrapper — Git Bash kept running `owner_path.sh` (PID 25240) for 7 more minutes;
+`am start` did not always bring KARTUN to the front, so the tap for «Выберите фото» (800, 1142) hit the NDim icon on the
+launcher and opened the owner's NDim three times (21:14:28, 21:16:49/21:17:31, 21:18:53), and two more taps per round landed
+INSIDE NDim. The owner noticed: «кто запускает NDIM на моем девайсе? и зачем?». Found by `dumpsys usagestats` and the PC process list.
+**Lesson:** a tap on the owner's device is legal only after reading that our window has the focus; a stopped loop is stopped
+only when the process list shows it gone.
+**Repro:** before every tap: `adb shell dumpsys window | grep mCurrentFocus` contains `com.kriniks.kartun` — else stop; after
+stopping a loop: `powershell "Get-CimInstance Win32_Process | ? CommandLine -match 'scratchpad'"` prints nothing.
+**Trigger:** writing any adb script with `input tap` / `input keyevent`, or stopping a background task that drives a device.
+**Not for:** taps inside the debug probe screen launched by `am start -S … --es in` in the same call (focus is ours by construction).
+mechanized: tools/titan-tap.mjs (taps only when KARTUN has the focus, else exit 2; proved on the Titan both ways)
+
+### EXP-0023 · 2026-10-15 · ❌→✅ · #crash #logcat #android #forensics
+class: stand-left-dirty
+**Context:** the owner's crash at 19:00 (bugs/01) was looked for at 20:52.
+**Tried / did:** the probe scripts of this session ran `adb logcat -c` before each run.
+**Result:** ❌ the crash buffer and the OpenMP message were gone; only the dropbox entry survived (stack, no assert text —
+libomp prints to stderr, which an Android app drops). ✅ the app now keeps its own journal (`files/crashes/`: exit records
+with tombstones, native stderr, the cpuset before each model load).
+**Lesson:** never clear a device's logs that may hold the owner's evidence; read `logcat -d -b crash` and the dropbox first.
+**Repro:** `adb shell "dumpsys dropbox | grep -E 'data_app_(native_)?crash'"` and `adb shell ls /sdcard/Android/data/com.kriniks.kartun.debug/files/crashes/`.
+**Trigger:** about to run `logcat -c` on the Titan → use `logcat -T <time>` or filter by pid instead.
+**Not for:** a device nobody else uses.
+mechanized: app/src/main/kotlin/com/kriniks/kartun/CrashLog.kt
+
 ### EXP-0022 · 2026-10-15 · ❌→✅ · #build #ninja #ncnn #device
 class: stale-artifact
 **Context:** proving an ncnn shader fix on the Titan: one APK on ncnn as-is, one on ncnn with the fixed shader.
