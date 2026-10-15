@@ -1,6 +1,7 @@
 package com.kriniks.kartun.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -61,6 +62,13 @@ private const val ELAPSED_TICK_MS = 1000L
 
 /** The progress ring of the panel (B1: 84 dp, beside the title). */
 private val RING = 84.dp
+
+/** The spinner's side as a share of the current tile's smaller side (76 dp on an 84 dp tile on the mockup). */
+private const val SPINNER_ON_TILE = 0.9f
+
+/** Below this the spinner on a tile is not shown (the owner: «если тайлы маленькие - анимация не показывается»); under
+ *  40 dp PixelSpinner drops its small states anyway. */
+private val SPINNER_MIN = 40.dp
 
 /** Pads a counter to the width of its total: digits and this space have the same width with tabular figures. */
 private const val FIGURE_SPACE = '\u2007'
@@ -129,8 +137,16 @@ fun WorkingScreen(vm: UpscaleViewModel) {
                 Image(src.preview.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
                 val cols = ceil(src.width / tileOnPhoto).toInt()
                 val rows = ceil(src.height / tileOnPhoto).toInt()
+                // The tile being computed and the living spinner on it (variant B of design/processing-spinner.html - the owner,
+                // chat 2026-10-15 19:52 +03:00: «B · На тайле»; ≈ 19:53: «если тайлы маленькие - анимация не показывается»).
+                val tileW = w * tileOnPhoto / src.width
+                val tileH = h * tileOnPhoto / src.height
+                val spinnerSide = minOf(tileW, tileH) * SPINNER_ON_TILE
+                val current = doneInPass < cols * rows
+                val showSpinner = current && spinnerSide >= SPINNER_MIN
                 val shade = c.background.copy(alpha = 0.62f)
-                val now = c.primary.copy(alpha = 0.28f)
+                // Under the spinner the tile is dark, so the pink squares read on any photo; without it - the pink fill as before.
+                val now = if (showSpinner) c.background.copy(alpha = 0.78f) else c.primary.copy(alpha = 0.28f)
                 val line = c.onBackground.copy(alpha = 0.08f)
                 val pink = c.primary
                 Canvas(Modifier.fillMaxSize()) {
@@ -147,6 +163,16 @@ fun WorkingScreen(vm: UpscaleViewModel) {
                         }
                         drawRect(line, o, s, style = Stroke(0.5.dp.toPx()))
                     }
+                }
+                if (showSpinner) {
+                    // Centred on the current tile and jumps to the next one together with the tile (the owner, chat 2026-10-15
+                    // ≈ 19:57 +03:00: «плохо, что спиннер по пружинке догоняет тайл, нужно резко перемещать, как и тайл»). Not
+                    // clipped: during a regroup the squares may fly over the neighbouring tiles, as on the mockup. [TESTED: 2026-10-15 · Titan, General v3,
+                    // 1920 x 2560: at 2x the spinner sits on the current tile and jumps with it (screens + screenrecord); at 8x pass 2
+                    // (650 tiles) it is hidden; the owner watched it live - «все хорошо»]
+                    val x = tileW * (doneInPass % cols) + (tileW - spinnerSide) / 2
+                    val y = tileH * (doneInPass / cols) + (tileH - spinnerSide) / 2
+                    PixelSpinner(Modifier.offset(x, y).size(spinnerSide))
                 }
             }
         }
