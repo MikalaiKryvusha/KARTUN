@@ -102,4 +102,8 @@
     <string name="terms_title">Conditions d’utilisation</string>
     <string name="terms_sub">Droits des modèles et responsabilité</string>
     <string name="rendering">Rendu…</string>
+    <string name="save_estimate">Fichier ≈ %1$s Mo</string>
+    <string name="format_points_png">• Sans perte : chaque pixel comme dans le résultat\n• Le fichier le plus lourd\n• Pour l’impression et la retouche</string>
+    <string name="format_points_jpeg">• S’ouvre partout\n• Bien plus léger que PNG\n• Pour l’envoi et les réseaux sociaux</string>
+    <string name="format_points_webp">• Le fichier le plus léger pour le même rendu\n• Android, navigateurs et messageries l’ouvrent\n• Pour garder et envoyer</string>
 </resources>

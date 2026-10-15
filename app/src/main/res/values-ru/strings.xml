@@ -81,6 +81,11 @@
     <string name="save_failed">Не удалось сохранить фото.</string>
     <string name="saving">Сохраняем…</string>
     <string name="rendering">Рендер…</string>
+    <!-- [AI] диалог сохранения: оценка размера и для чего каждый формат (владелец, чат 2026-10-15 ≈ 12:00–12:01). -->
+    <string name="save_estimate">Файл ≈ %1$s МБ</string>
+    <string name="format_points_png">• Без потерь: каждая точка как в результате\n• Самый большой файл\n• Для печати и дальнейшей обработки</string>
+    <string name="format_points_jpeg">• Открывается везде\n• Файл заметно меньше PNG\n• Для отправки и соцсетей</string>
+    <string name="format_points_webp">• Самый маленький файл при том же виде\n• Понимают Android, браузеры и мессенджеры\n• Для хранения и отправки</string>
     <string name="webp_too_big">WebP — до 16 383 px по стороне, для этого результата выберите PNG или JPEG</string>
     <!-- [AI] «Вставить ссылку» (LinkDownloader). -->
     <string name="link_title">Ссылка на фото</string>

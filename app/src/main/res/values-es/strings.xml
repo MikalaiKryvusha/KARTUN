@@ -102,4 +102,8 @@
     <string name="terms_title">Condiciones de uso</string>
     <string name="terms_sub">Derechos de los modelos y responsabilidad</string>
     <string name="rendering">Renderizando…</string>
+    <string name="save_estimate">Archivo ≈ %1$s MB</string>
+    <string name="format_points_png">• Sin pérdidas: cada píxel como en el resultado\n• El archivo más grande\n• Para imprimir y seguir editando</string>
+    <string name="format_points_jpeg">• Se abre en todas partes\n• Mucho más ligero que PNG\n• Para enviar y redes sociales</string>
+    <string name="format_points_webp">• El archivo más pequeño con el mismo aspecto\n• Lo abren Android, navegadores y mensajeros\n• Para guardar y enviar</string>
 </resources>

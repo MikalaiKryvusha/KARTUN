@@ -306,6 +306,43 @@ RENDERING = {
     "zh": "正在渲染…", "hi": "रेंडर हो रहा है…", "bn": "রেন্ডার হচ্ছে…", "ar": "جارٍ التصيير…",
 }
 
+# The save dialog (the owner, chat 2026-10-15 ≈ 12:00-12:01): save_estimate · format_points_png · _jpeg · _webp.
+# "\\n" here is the two characters the Android resource reads as a line break.
+SAVE_INFO = {
+    "es": ("Archivo ≈ %1$s MB",
+           "• Sin pérdidas: cada píxel como en el resultado\\n• El archivo más grande\\n• Para imprimir y seguir editando",
+           "• Se abre en todas partes\\n• Mucho más ligero que PNG\\n• Para enviar y redes sociales",
+           "• El archivo más pequeño con el mismo aspecto\\n• Lo abren Android, navegadores y mensajeros\\n• Para guardar y enviar"),
+    "pt": ("Arquivo ≈ %1$s MB",
+           "• Sem perdas: cada pixel como no resultado\\n• O maior arquivo\\n• Para imprimir e continuar editando",
+           "• Abre em qualquer lugar\\n• Bem menor que PNG\\n• Para enviar e redes sociais",
+           "• O menor arquivo com a mesma aparência\\n• Android, navegadores e mensageiros abrem\\n• Para guardar e enviar"),
+    "fr": ("Fichier ≈ %1$s Mo",
+           "• Sans perte : chaque pixel comme dans le résultat\\n• Le fichier le plus lourd\\n• Pour l’impression et la retouche",
+           "• S’ouvre partout\\n• Bien plus léger que PNG\\n• Pour l’envoi et les réseaux sociaux",
+           "• Le fichier le plus léger pour le même rendu\\n• Android, navigateurs et messageries l’ouvrent\\n• Pour garder et envoyer"),
+    "de": ("Datei ≈ %1$s MB",
+           "• Verlustfrei: jedes Pixel wie im Ergebnis\\n• Die größte Datei\\n• Für Druck und Weiterbearbeitung",
+           "• Öffnet sich überall\\n• Deutlich kleiner als PNG\\n• Zum Verschicken und für soziale Netzwerke",
+           "• Die kleinste Datei bei gleichem Aussehen\\n• Android, Browser und Messenger öffnen sie\\n• Zum Aufbewahren und Verschicken"),
+    "zh": ("文件 ≈ %1$s MB",
+           "• 无损：每个像素与结果一致\\n• 文件最大\\n• 适合打印和后期编辑",
+           "• 到处都能打开\\n• 比 PNG 小得多\\n• 适合发送和社交媒体",
+           "• 画质相同、文件最小\\n• Android、浏览器和聊天应用都能打开\\n• 适合保存和发送"),
+    "hi": ("फ़ाइल ≈ %1$s MB",
+           "• बिना नुकसान: हर पिक्सेल नतीजे जैसा\\n• सबसे बड़ी फ़ाइल\\n• प्रिंट और आगे की एडिटिंग के लिए",
+           "• हर जगह खुलती है\\n• PNG से काफ़ी छोटी\\n• भेजने और सोशल मीडिया के लिए",
+           "• वैसी ही दिखावट में सबसे छोटी फ़ाइल\\n• Android, ब्राउज़र और मैसेंजर खोलते हैं\\n• रखने और भेजने के लिए"),
+    "bn": ("ফাইল ≈ %1$s MB",
+           "• ক্ষতিহীন: প্রতিটি পিক্সেল ফলাফলের মতো\\n• সবচেয়ে বড় ফাইল\\n• প্রিন্ট ও পরবর্তী সম্পাদনার জন্য",
+           "• সব জায়গায় খোলে\\n• PNG-এর চেয়ে অনেক ছোট\\n• পাঠানো ও সোশ্যাল মিডিয়ার জন্য",
+           "• একই চেহারায় সবচেয়ে ছোট ফাইল\\n• Android, ব্রাউজার ও মেসেঞ্জার খোলে\\n• রাখা ও পাঠানোর জন্য"),
+    "ar": ("الملف ≈ %1$s م.ب",
+           "• بلا فقدان: كل بكسل كما في النتيجة\\n• أكبر ملف\\n• للطباعة ومتابعة التعديل",
+           "• يفتح في كل مكان\\n• أصغر بكثير من PNG\\n• للإرسال ووسائل التواصل",
+           "• أصغر ملف بالمظهر نفسه\\n• يفتحه Android والمتصفحات وتطبيقات المراسلة\\n• للحفظ والإرسال"),
+}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -343,6 +380,8 @@ def main():
         for k, v in zip(ABOUT_KEYS, ABOUT[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="rendering">{xml_text(RENDERING[lang])}</string>')
+        for k, v in zip(("save_estimate", "format_points_png", "format_points_jpeg", "format_points_webp"), SAVE_INFO[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         body = "\n".join(lines)

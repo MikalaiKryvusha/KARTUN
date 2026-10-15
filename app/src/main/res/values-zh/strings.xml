@@ -98,4 +98,8 @@
     <string name="terms_title">使用条款</string>
     <string name="terms_sub">模型权利与责任</string>
     <string name="rendering">正在渲染…</string>
+    <string name="save_estimate">文件 ≈ %1$s MB</string>
+    <string name="format_points_png">• 无损：每个像素与结果一致\n• 文件最大\n• 适合打印和后期编辑</string>
+    <string name="format_points_jpeg">• 到处都能打开\n• 比 PNG 小得多\n• 适合发送和社交媒体</string>
+    <string name="format_points_webp">• 画质相同、文件最小\n• Android、浏览器和聊天应用都能打开\n• 适合保存和发送</string>
 </resources>

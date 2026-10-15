@@ -100,4 +100,8 @@
     <string name="terms_title">उपयोग की शर्तें</string>
     <string name="terms_sub">मॉडलों के अधिकार और ज़िम्मेदारी</string>
     <string name="rendering">रेंडर हो रहा है…</string>
+    <string name="save_estimate">फ़ाइल ≈ %1$s MB</string>
+    <string name="format_points_png">• बिना नुकसान: हर पिक्सेल नतीजे जैसा\n• सबसे बड़ी फ़ाइल\n• प्रिंट और आगे की एडिटिंग के लिए</string>
+    <string name="format_points_jpeg">• हर जगह खुलती है\n• PNG से काफ़ी छोटी\n• भेजने और सोशल मीडिया के लिए</string>
+    <string name="format_points_webp">• वैसी ही दिखावट में सबसे छोटी फ़ाइल\n• Android, ब्राउज़र और मैसेंजर खोलते हैं\n• रखने और भेजने के लिए</string>
 </resources>

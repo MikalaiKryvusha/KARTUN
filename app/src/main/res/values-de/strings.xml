@@ -100,4 +100,8 @@
     <string name="terms_title">Nutzungsbedingungen</string>
     <string name="terms_sub">Rechte an Modellen und Haftung</string>
     <string name="rendering">Wird gerendert…</string>
+    <string name="save_estimate">Datei ≈ %1$s MB</string>
+    <string name="format_points_png">• Verlustfrei: jedes Pixel wie im Ergebnis\n• Die größte Datei\n• Für Druck und Weiterbearbeitung</string>
+    <string name="format_points_jpeg">• Öffnet sich überall\n• Deutlich kleiner als PNG\n• Zum Verschicken und für soziale Netzwerke</string>
+    <string name="format_points_webp">• Die kleinste Datei bei gleichem Aussehen\n• Android, Browser und Messenger öffnen sie\n• Zum Aufbewahren und Verschicken</string>
 </resources>

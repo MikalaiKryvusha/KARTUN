@@ -37,6 +37,7 @@ user's path; swipes by `adb shell input swipe`; the divider's x is read from scr
 | 12 | 2026-10-15 11:51 +03:00 | path to the result → `python s_render2.py` | opaque card «Рендер…» with the calm spinner, the knob above it |
 | 14 | 2026-10-15 11:54 +03:00 | build with «Отменить» under «Рендер…» → `python s_cancel.py` (8× run, PNG save, «Отменить» 2 s in) | the render stopped 2.2 s after the tap; `content query` and `ls /sdcard/Pictures/KARTUN` show no new item; no error line |
 | 15 | 2026-10-15 11:59 +03:00 | build with still counters + heavy digits → `python s_digits.py` (8× run, UI-tree lines read every 0.5 s) | «Проход 1 из 2 · тайл ␣␣7 из 165» (figure spaces) and «Осталось ≈ 48 секунд» on two lines; heavy digits in the scale line, the compact header and the result panel (`d2`, `d5`, `d6` crops) |
+| 16 | 2026-10-15 12:04 +03:00 | build with the size estimate + format points → `python s_estimate.py` (2×; per format: read «Файл ≈ N МБ», save, read the real size) | PNG 7,7 vs 8,08 MB (−5 %), JPEG q100 3,3 vs 3,34 MB (−1 %), WebP q100 1,9 vs 1,90 MB (0 %); three bullet lines under the chips (`e_JPEG.webp`); test files deleted after |
 | 13 | 2026-10-15 11:42 +03:00 | `python s_c13.py` twice (share timed by window focus, no UI-tree polling) | sheet after 2.4 s both times — the 16 s seen in run 10's tree-polling loop was the harness, not the app |
 
 ## 4. Checks
@@ -68,6 +69,8 @@ picker, taps, swipes); READ: the screen labels through the UI agent, screencaps 
 | owner 11:53 «Отменить» under «Рендер…», the file deleted | pass | run 14 |
 | owner 11:57 pass/tile counters stand still | pass (form) | run 15: padded counter + its own time line; the stillness to the eye is the owner's |
 | owner 11:58 heavy digits, thin «×» and «→» | pass | run 15 crops |
+| owner 12:00 size estimate in MB in the save dialog | pass | run 16: within 5 % of the real file in all three formats |
+| owner 12:01 bullet points for the chosen format | pass (form) | run 16; the wording is an `[AI]` draft for the owner's read |
 | defect seen: picked photo named «63282.jpg» in the compact header | open | the picker URI's display name is the media id; `photo1.jpg` expected — S3, to EXPERIENCE/next step |
 
 ## 5. Found

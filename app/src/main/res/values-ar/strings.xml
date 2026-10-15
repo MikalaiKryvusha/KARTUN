@@ -108,6 +108,10 @@
     <string name="terms_title">شروط الاستخدام</string>
     <string name="terms_sub">حقوق النماذج والمسؤولية</string>
     <string name="rendering">جارٍ التصيير…</string>
+    <string name="save_estimate">الملف ≈ %1$s م.ب</string>
+    <string name="format_points_png">• بلا فقدان: كل بكسل كما في النتيجة\n• أكبر ملف\n• للطباعة ومتابعة التعديل</string>
+    <string name="format_points_jpeg">• يفتح في كل مكان\n• أصغر بكثير من PNG\n• للإرسال ووسائل التواصل</string>
+    <string name="format_points_webp">• أصغر ملف بالمظهر نفسه\n• يفتحه Android والمتصفحات وتطبيقات المراسلة\n• للحفظ والإرسال</string>
     <string name="arrow">←</string>
     <string name="size_to">%1$s ← %2$s</string>
 </resources>

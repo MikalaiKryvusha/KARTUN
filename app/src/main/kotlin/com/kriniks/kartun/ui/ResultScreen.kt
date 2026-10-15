@@ -47,6 +47,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -365,6 +368,16 @@ private fun SaveDialog(vm: UpscaleViewModel, full: android.graphics.Bitmap, onCl
             if (!ResultStore.fits(ResultStore.Format.Webp, full)) {
                 Text(stringResource(R.string.webp_too_big), style = MaterialTheme.typography.bodySmall, color = c.error)
             }
+            // What the chosen format is for, as three short points (the owner, chat 2026-10-15 ≈ 12:01 +03:00: «нужно писать
+            // краткое описания преимуществ выбранного формата, булет-дот списком»). `[AI]` wording, awaiting the owner's read.
+            Text(
+                stringResource(when (vm.saveFormat) {
+                    ResultStore.Format.Png -> R.string.format_points_png
+                    ResultStore.Format.Jpeg -> R.string.format_points_jpeg
+                    ResultStore.Format.Webp -> R.string.format_points_webp
+                }),
+                style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant,
+            )
             if (vm.saveFormat.hasQuality) {
                 SectionLabelPlain(stringResource(R.string.label_quality, vm.saveQuality))
                 Slider(
@@ -372,11 +385,29 @@ private fun SaveDialog(vm: UpscaleViewModel, full: android.graphics.Bitmap, onCl
                     colors = SliderDefaults.colors(thumbColor = c.onBackground, activeTrackColor = c.primary, inactiveTrackColor = c.surfaceContainerHigh),
                 )
             }
+            // The file's size, estimated from the picture in the chosen format and quality (ResultStore.estimateBytes);
+            // recomputed a moment after the format or the quality stops changing.
+            var estimate by remember { mutableStateOf<Long?>(null) }
+            LaunchedEffect(vm.saveFormat, vm.saveQuality) {
+                estimate = null
+                kotlinx.coroutines.delay(ESTIMATE_DEBOUNCE_MS)
+                estimate = withContext(Dispatchers.Default) { ResultStore.estimateBytes(full, vm.saveFormat, vm.saveQuality) }
+            }
+            Text(
+                boldDigits(stringResource(R.string.save_estimate, estimate?.let { mbText(it) } ?: "…")),
+                style = MaterialTheme.typography.bodyMedium, color = c.onBackground,
+            )
             Text(stringResource(R.string.save_folder), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
             PrimaryButton(stringResource(R.string.save), R.drawable.ic_save, onClick = { vm.save(); onClose() })
         }
     }
 }
+
+/** The save dialog waits this long after the last format/quality change before estimating the size. */
+private const val ESTIMATE_DEBOUNCE_MS = 200L
+
+/** Megabytes with one decimal in the user's locale («8,1»). */
+private fun mbText(bytes: Long): String = String.format(java.util.Locale.getDefault(), "%.1f", bytes / 1_000_000.0)
 
 /** A pink upper-case label without the (i) button (the save dialog's own settings need no explanation window). */
 @Composable

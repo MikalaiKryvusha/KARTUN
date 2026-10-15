@@ -32,6 +32,34 @@ object ResultStore {
 
     fun fits(format: Format, bmp: Bitmap) = format != Format.Webp || maxOf(bmp.width, bmp.height) <= WEBP_MAX_SIDE
 
+    /** Sample patches per side for [estimateBytes] and their edge, px. */
+    private const val SAMPLE_GRID = 3
+    private const val SAMPLE_PX = 192
+
+    /**
+     * The file size [bmp] will have in [format] at [quality], estimated from the picture itself: a 3×3 grid of 192 px
+     * patches at full resolution is encoded the same way and the bytes are scaled by area (the owner, chat 2026-10-15
+     * ≈ 12:00 +03:00: «на виджете сохранения с выбором формата нужно писать эстимацию размера файла в мегабайтах»).
+     * Patches keep the real detail per pixel, which a scaled-down copy would not. [NOT-TESTED]
+     */
+    fun estimateBytes(bmp: Bitmap, format: Format, quality: Int): Long {
+        val side = minOf(SAMPLE_PX, bmp.width, bmp.height)
+        var bytes = 0L
+        var area = 0L
+        val out = java.io.ByteArrayOutputStream()
+        for (gy in 0 until SAMPLE_GRID) for (gx in 0 until SAMPLE_GRID) {
+            val x = ((bmp.width - side) * (gx + 0.5f) / SAMPLE_GRID).toInt()
+            val y = ((bmp.height - side) * (gy + 0.5f) / SAMPLE_GRID).toInt()
+            val patch = Bitmap.createBitmap(bmp, x, y, side, side)
+            out.reset()
+            patch.compress(format.compress, quality, out)
+            if (patch !== bmp) patch.recycle()
+            bytes += out.size()
+            area += side.toLong() * side
+        }
+        return bytes * (bmp.width.toLong() * bmp.height) / area
+    }
+
     /** Thrown out of the encoder when «Отменить» under «Рендер…» is tapped; the half-written file is deleted. */
     class RenderCancelled : IOException("render cancelled")
 
