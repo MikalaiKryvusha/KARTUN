@@ -130,11 +130,22 @@ fun WorkingScreen(vm: UpscaleViewModel) {
                     style = MaterialTheme.typography.headlineSmall.copy(fontSize = 34.sp, fontWeight = FontWeight(800), fontFeatureSettings = "tnum"))
             }
             Text(stringResource(R.string.working_title), style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp), textAlign = TextAlign.Center)
+            // The counters stand still (the owner, chat 2026-10-15 ≈ 11:57 +03:00: «нужно как-то так фиксировать метрики
+            // "проход", "тайл" и другие, чтобы они не плясали при изменении цифр в них»): tabular figures, the tile number
+            // padded with figure spaces to the total's width, and the remaining time on a line of its own, whose length
+            // changes with its words. [NOT-TESTED]
+            val counter = MaterialTheme.typography.bodyMedium.copy(fontFeatureSettings = "tnum")
+            if (p.total > 0) {
+                val done = "%d".format(p.done).padStart("%d".format(p.total).length, ' ')
+                Text(
+                    if (mid != null) stringResource(R.string.working_pass, if (inPass2) 2 else 1, done, p.total)
+                    else stringResource(R.string.working_tiles, done, p.total),
+                    style = counter, color = c.onSurfaceVariant, textAlign = TextAlign.Center,
+                )
+            }
             Text(
-                if (p.total > 0 && mid != null) stringResource(R.string.working_pass, if (inPass2) 2 else 1, p.done, p.total, durationText(leftMs))
-                else if (p.total > 0) stringResource(R.string.working_tiles, p.done, p.total, durationText(leftMs))
-                else stringResource(R.string.working_starting, durationText(p.estimateMs)),
-                style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant, textAlign = TextAlign.Center,
+                stringResource(R.string.working_starting, durationText(if (p.total > 0) leftMs else p.estimateMs)),
+                style = counter, color = c.onSurfaceVariant, textAlign = TextAlign.Center,
             )
             Row(
                 Modifier.clip(CircleShape).background(c.surfaceContainer).padding(horizontal = 14.dp, vertical = 8.dp),

@@ -255,6 +255,8 @@ fun ResultScreen(vm: UpscaleViewModel) {
             ) {
                 CalmSpinner(Modifier.size(48.dp), strokeWidth = 5.dp)
                 Text(stringResource(R.string.rendering), style = MaterialTheme.typography.titleSmall, color = c.onBackground)
+                // Small «Отменить»: stops a long render and deletes the half-written file (the owner, chat 2026-10-15 ≈ 11:53).
+                SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancelRender, height = 40)
             }
         }
         // Top bar and the two tags.
@@ -294,7 +296,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 RoundIconButton(R.drawable.ic_back, onClick = { settle(show = false) }, modifier = Modifier.rotate(180f))
             }
             Row(Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(res.full.width, res.full.height)), Modifier.weight(1f),
+                Text(boldDigits(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(res.full.width, res.full.height))), Modifier.weight(1f),
                     style = MaterialTheme.typography.bodyMedium, color = c.onBackground)
                 Text(stringResource(R.string.result_time, durationText(res.ms), stringResource(if (res.gpu) R.string.backend_gpu else R.string.backend_cpu)),
                     style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)

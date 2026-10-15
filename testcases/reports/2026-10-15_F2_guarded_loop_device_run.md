@@ -35,6 +35,8 @@ user's path; swipes by `adb shell input swipe`; the divider's x is read from scr
 | 10 | 2026-10-15 11:43 +03:00 | build with «Рендер…» → `python s_render2.py` (PNG save; tap and `screencap` in one device shell, 0.4 s apart) | the card «Рендер…» over the picture, «Сохраняем…» on the button; at 90 % opacity the knob showed through → made opaque |
 | 11 | 2026-10-15 11:49 +03:00 | build with the knob following the panel + the calm spinner → `python s_knob2.py` | knob y = 965 px with the panel shown (was 1280); a grab 55 dp off at y 965 drags the line 799 → 1196; the same at the old y 1280 leaves it; panel swiped away → knob y = 1279 |
 | 12 | 2026-10-15 11:51 +03:00 | path to the result → `python s_render2.py` | opaque card «Рендер…» with the calm spinner, the knob above it |
+| 14 | 2026-10-15 11:54 +03:00 | build with «Отменить» under «Рендер…» → `python s_cancel.py` (8× run, PNG save, «Отменить» 2 s in) | the render stopped 2.2 s after the tap; `content query` and `ls /sdcard/Pictures/KARTUN` show no new item; no error line |
+| 15 | 2026-10-15 11:59 +03:00 | build with still counters + heavy digits → `python s_digits.py` (8× run, UI-tree lines read every 0.5 s) | «Проход 1 из 2 · тайл ␣␣7 из 165» (figure spaces) and «Осталось ≈ 48 секунд» on two lines; heavy digits in the scale line, the compact header and the result panel (`d2`, `d5`, `d6` crops) |
 | 13 | 2026-10-15 11:42 +03:00 | `python s_c13.py` twice (share timed by window focus, no UI-tree polling) | sheet after 2.4 s both times — the 16 s seen in run 10's tree-polling loop was the harness, not the app |
 
 ## 4. Checks
@@ -63,6 +65,9 @@ picker, taps, swipes); READ: the screen labels through the UI agent, screencaps 
 | owner 11:38 «Рендер…» over the picture | pass | runs 10, 12 |
 | owner 11:45 knob between the screen top and the panel, centre when hidden | pass | run 11 (pixels) |
 | owner 11:47 calmer spinner | built, seen in run 12 | speed is the owner's eye (taste class); one turn 1.6 s × the device's animator scale 0.5 |
+| owner 11:53 «Отменить» under «Рендер…», the file deleted | pass | run 14 |
+| owner 11:57 pass/tile counters stand still | pass (form) | run 15: padded counter + its own time line; the stillness to the eye is the owner's |
+| owner 11:58 heavy digits, thin «×» and «→» | pass | run 15 crops |
 | defect seen: picked photo named «63282.jpg» in the compact header | open | the picker URI's display name is the media id; `photo1.jpg` expected — S3, to EXPERIENCE/next step |
 
 ## 5. Found

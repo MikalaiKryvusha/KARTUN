@@ -28,7 +28,7 @@
     <string name="info_model_text">Un modelo es una red neuronal entrenada. Los modelos se diferencian por las imágenes con las que aprendieron: uno restaura mejor fotos, otro dibujos.</string>
     <string name="info_model_list">• Rápido — quita ruido y desenfoque, normalmente unos segundos.\n• Detallado — detalles finos más nítidos, tarda más.</string>
     <string name="working_title">La red está mejorando tu foto</string>
-    <string name="working_tiles">Mosaico %1$d de %2$d · quedan ≈ %3$s</string>
+    <string name="working_tiles">Mosaico %1$s de %2$d</string>
     <string name="working_starting">Quedan ≈ %1$s</string>
     <string name="cancel">Cancelar</string>
     <string name="before">Antes</string>
@@ -78,7 +78,7 @@
     <string name="settings_manual">Guía del usuario</string>
     <string name="settings_manual_sub">Cómo usar KARTUN y sus modelos</string>
     <string name="info_open_guide">Abrir la guía completa</string>
-    <string name="working_pass">Pasada %1$d de 2 · mosaico %2$d de %3$d · quedan ≈ %4$s</string>
+    <string name="working_pass">Pasada %1$d de 2 · mosaico %2$s de %3$d</string>
     <string name="settings_notifications">Notificaciones</string>
     <string name="settings_notifications_on">Permitidas: progreso y «Tu foto está lista»</string>
     <string name="settings_notifications_off">Desactivadas — toca para permitir</string>

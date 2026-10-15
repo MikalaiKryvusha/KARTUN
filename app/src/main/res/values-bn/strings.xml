@@ -28,7 +28,7 @@
     <string name="info_model_text">মডেল হলো একটি প্রশিক্ষিত নিউরাল নেটওয়ার্ক। মডেলগুলো আলাদা কোন ছবি থেকে শিখেছে তাতে: একটি ছবি ভালো সারায়, অন্যটি আঁকা।</string>
     <string name="info_model_list">• দ্রুত — নয়েজ ও ঝাপসা ভাব দূর করে, সাধারণত কয়েক সেকেন্ড।\n• বিস্তারিত — সূক্ষ্ম খুঁটিনাটি আরও স্পষ্ট, সময় বেশি লাগে।</string>
     <string name="working_title">নিউরাল নেটওয়ার্ক আপনার ছবি উন্নত করছে</string>
-    <string name="working_tiles">টাইল %1$d / %2$d · বাকি ≈ %3$s</string>
+    <string name="working_tiles">টাইল %1$s / %2$d</string>
     <string name="working_starting">বাকি ≈ %1$s</string>
     <string name="cancel">বাতিল</string>
     <string name="before">আগে</string>
@@ -76,7 +76,7 @@
     <string name="settings_manual">ব্যবহারকারী নির্দেশিকা</string>
     <string name="settings_manual_sub">KARTUN ও এর মডেল কীভাবে ব্যবহার করবেন</string>
     <string name="info_open_guide">পুরো নির্দেশিকা খুলুন</string>
-    <string name="working_pass">পাস %1$d / ২ · টাইল %2$d / %3$d · বাকি ≈ %4$s</string>
+    <string name="working_pass">পাস %1$d / ২ · টাইল %2$s / %3$d</string>
     <string name="settings_notifications">বিজ্ঞপ্তি</string>
     <string name="settings_notifications_on">অনুমোদিত: অগ্রগতি ও «আপনার ছবি প্রস্তুত»</string>
     <string name="settings_notifications_off">বন্ধ — অনুমতি দিতে চাপুন</string>

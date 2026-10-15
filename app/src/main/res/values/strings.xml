@@ -33,7 +33,7 @@
     <string name="info_model_list">• Fast — removes noise and blur, usually a few seconds.\n• Detailed — sharper fine details, takes longer.</string>
 
     <string name="working_title">The network is enhancing your photo</string>
-    <string name="working_tiles">Tile %1$d of %2$d · ≈ %3$s left</string>
+    <string name="working_tiles">Tile %1$s of %2$d</string>
     <string name="working_starting">≈ %1$s left</string>
     <string name="cancel">Cancel</string>
     <string name="backend_gpu" translatable="false">GPU · Vulkan</string>
@@ -113,7 +113,7 @@
     <string name="terms_sub">Model rights and liability</string>
     <string name="notif_done">Your photo is ready</string>
     <string name="notif_done_text">Tap to compare before and after</string>
-    <string name="working_pass">Pass %1$d of 2 · tile %2$d of %3$d · ≈ %4$s left</string>
+    <string name="working_pass">Pass %1$d of 2 · tile %2$s of %3$d</string>
     <!-- [OWNER] interview #004 (the permission row and its window; the window text follows his comment). -->
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notifications_on">Allowed: progress and “Your photo is ready”</string>

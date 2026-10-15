@@ -28,7 +28,7 @@
     <string name="info_model_text">النموذج شبكة عصبية مدرَّبة. تختلف النماذج في الصور التي تعلّمت منها: أحدها يرمّم الصور أفضل، والآخر الرسوم.</string>
     <string name="info_model_list">• سريع — يزيل التشويش والضبابية، عادةً بضع ثوانٍ.\n• مفصّل — تفاصيل دقيقة أوضح، يستغرق وقتًا أطول.</string>
     <string name="working_title">الشبكة العصبية تحسّن صورتك</string>
-    <string name="working_tiles">البلاطة %1$d من %2$d · المتبقي ≈ %3$s</string>
+    <string name="working_tiles">البلاطة %1$s من %2$d</string>
     <string name="working_starting">المتبقي ≈ %1$s</string>
     <string name="cancel">إلغاء</string>
     <string name="before">قبل</string>
@@ -84,7 +84,7 @@
     <string name="settings_manual">دليل المستخدم</string>
     <string name="settings_manual_sub">كيف تستخدم KARTUN ونماذجه</string>
     <string name="info_open_guide">افتح الدليل كاملًا</string>
-    <string name="working_pass">المرور %1$d من 2 · البلاطة %2$d من %3$d · المتبقي ≈ %4$s</string>
+    <string name="working_pass">المرور %1$d من 2 · البلاطة %2$s من %3$d</string>
     <string name="settings_notifications">الإشعارات</string>
     <string name="settings_notifications_on">مسموح بها: التقدم و«صورتك جاهزة»</string>
     <string name="settings_notifications_off">متوقفة — اضغط للسماح</string>

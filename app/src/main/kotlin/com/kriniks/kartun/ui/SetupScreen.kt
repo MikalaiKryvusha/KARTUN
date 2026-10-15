@@ -187,7 +187,7 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                         Image(src.bitmap.asImageBitmap(), null, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
                         Column(Modifier.weight(1f)) {
                             Text(src.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            Text(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(src.width * vm.scale, src.height * vm.scale)),
+                            Text(boldDigits(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(src.width * vm.scale, src.height * vm.scale))),
                                 style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
                         }
                         Pill(stringResource(R.string.setup_other_short), outlined = true, onClick = onPickOther)
@@ -265,7 +265,7 @@ private fun PhotoCard(src: UpscaleViewModel.Source, onOpen: () -> Unit, onPickOt
             contentScale = ContentScale.Crop,
         )
         Pill("${sizeText(src.width, src.height)} · ${stringResource(R.string.megapixels, mpText(src.megapixels))}",
-            Modifier.align(Alignment.BottomStart).padding(12.dp), translucent = true)
+            Modifier.align(Alignment.BottomStart).padding(12.dp), translucent = true, heavyDigits = true)
         Row(
             Modifier.align(Alignment.BottomEnd).padding(12.dp).clip(CircleShape).background(c.background.copy(alpha = 0.72f))
                 .clickable(onClick = onPickOther).padding(horizontal = 14.dp, vertical = 8.dp),
@@ -398,7 +398,7 @@ private fun ScaleSlider(vm: UpscaleViewModel) {
         val w = src.width * vm.scale
         val h = src.height * vm.scale
         Row(Modifier.fillMaxWidth().padding(top = 12.dp)) {
-            Text(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(w, h)), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = c.onBackground)
+            Text(boldDigits(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(w, h))), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = c.onBackground)
             Text(stringResource(R.string.megapixels, mpText(w.toFloat() * h / 1_000_000f)), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
         }
         // 8× and 16× run two passes (plans/04 step 1): the mockup's amber «2 прохода · дольше · большой файл»; a result over

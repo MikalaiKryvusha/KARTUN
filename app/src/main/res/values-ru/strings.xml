@@ -35,7 +35,7 @@
     <string name="info_model_list">• Быстрая — убирает шум и размытие, обычно несколько секунд.\n• Детальная — чётче мелкие детали, считает дольше.</string>
 
     <string name="working_title">Нейросеть улучшает фото</string>
-    <string name="working_tiles">Тайл %1$d из %2$d · осталось ≈ %3$s</string>
+    <string name="working_tiles">Тайл %1$s из %2$d</string>
     <string name="working_starting">Осталось ≈ %1$s</string>
     <string name="cancel">Отменить</string>
     <string name="backend_gpu">GPU · Vulkan</string>
@@ -119,7 +119,7 @@
     <string name="terms_sub">Права на модели и ответственность</string>
     <string name="notif_done">Фото готово</string>
     <string name="notif_done_text">Нажмите, чтобы сравнить «до» и «после»</string>
-    <string name="working_pass">Проход %1$d из 2 · тайл %2$d из %3$d · осталось ≈ %4$s</string>
+    <string name="working_pass">Проход %1$d из 2 · тайл %2$s из %3$d</string>
     <!-- [OWNER] interview #004 (the permission row and its window; the window text follows his comment). -->
     <string name="settings_notifications">Уведомления</string>
     <string name="settings_notifications_on">Разрешены: прогресс и «Фото готово»</string>

@@ -92,7 +92,8 @@ fun SecondaryButton(text: String, icon: Int?, onClick: () -> Unit, modifier: Mod
 
 /** A small rounded chip (.pill); [on] paints it pink, [outlined] gives the transparent bordered variant. */
 @Composable
-fun Pill(text: String, modifier: Modifier = Modifier, on: Boolean = false, outlined: Boolean = false, translucent: Boolean = false, onClick: (() -> Unit)? = null) {
+fun Pill(text: String, modifier: Modifier = Modifier, on: Boolean = false, outlined: Boolean = false, translucent: Boolean = false,
+         heavyDigits: Boolean = false, onClick: (() -> Unit)? = null) {
     val c = MaterialTheme.colorScheme
     var m = modifier.clip(CircleShape)
     m = when {
@@ -102,7 +103,8 @@ fun Pill(text: String, modifier: Modifier = Modifier, on: Boolean = false, outli
         else -> m.background(c.surfaceContainer)
     }
     if (onClick != null) m = m.clickable(onClick = onClick)
-    Text(text, m.padding(horizontal = 14.dp, vertical = 8.dp), style = MaterialTheme.typography.labelMedium, color = if (on) c.onPrimary else c.onBackground)
+    Text(if (heavyDigits) boldDigits(text) else androidx.compose.ui.text.AnnotatedString(text), m.padding(horizontal = 14.dp, vertical = 8.dp),
+        style = MaterialTheme.typography.labelMedium, color = if (on) c.onPrimary else c.onBackground)
 }
 
 /** Pink upper-case section label with the (i) button on the right (.label + .info). */
@@ -176,6 +178,17 @@ fun Notice(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, suc
 
 /** "3840 × 5120"; numbers from 10 000 get a thin space as the mockups show ("7 680 × 10 240"). */
 fun sizeText(w: Int, h: Int): String = "${group(w)} × ${group(h)}"
+
+/**
+ * A resolution line with heavy digits and thin «×», «→» and spaces (the owner, chat 2026-10-15 ≈ 11:58 +03:00: «циферки в
+ * разрешениях нужно жирнее… x оставлять тонкими, стрелки тонкими, а цифры толще»). A space between two digits is the
+ * thousands separator of [group] and stays with its number. [NOT-TESTED]
+ */
+fun boldDigits(s: String): androidx.compose.ui.text.AnnotatedString = androidx.compose.ui.text.buildAnnotatedString {
+    append(s)
+    val heavy = androidx.compose.ui.text.SpanStyle(fontWeight = FontWeight.Bold)
+    Regex("\\d+(?:[ \\u00a0\\u202f]\\d{3})*").findAll(s).forEach { addStyle(heavy, it.range.first, it.range.last + 1) }
+}
 
 private fun group(n: Int): String =
     if (n < 10_000) n.toString() else String.format(Locale.ROOT, "%,d", n).replace(',', ' ')

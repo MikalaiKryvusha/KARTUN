@@ -332,25 +332,39 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         val format = saveFormat
         val quality = saveQuality
         prefs.edit { putString(PREF_FORMAT, format.name); putInt(PREF_QUALITY, quality) }
+        renderCancel.set(false)
         viewModelScope.launch {
-            val ok = withContext(Dispatchers.IO) {
+            val outcome = withContext(Dispatchers.IO) {
                 runCatching {
-                    ResultStore.saveToGallery(getApplication(), res.full, ResultStore.fileName(src.name, res.model.file, res.scale, format.ext), format, quality)
-                }.onFailure { Log.w(TAG, "save failed", it) }.isSuccess
+                    ResultStore.saveToGallery(getApplication(), res.full, ResultStore.fileName(src.name, res.model.file, res.scale, format.ext), format, quality, renderCancel)
+                }.onFailure { if (it !is ResultStore.RenderCancelled) Log.w(TAG, "save failed", it) }
             }
             saving = false
-            saveMessage = if (ok) R.string.saved else R.string.save_failed
+            // A cancelled render says nothing: the user asked for it, and the half-written file is already deleted.
+            saveMessage = when {
+                outcome.isSuccess -> R.string.saved
+                outcome.exceptionOrNull() is ResultStore.RenderCancelled -> null
+                else -> R.string.save_failed
+            }
         }
     }
+
+    /** Set by «Отменить» under «Рендер…»; the encoder's stream reads it on every write (ResultStore.Cancellable). */
+    private val renderCancel = java.util.concurrent.atomic.AtomicBoolean(false)
+
+    /** «Отменить» under «Рендер…»: stops the file being written for «Сохранить» or «Поделиться» and deletes it. */
+    fun cancelRender() { renderCancel.set(true) }
 
     /** A PNG copy of the result for the share sheet (plans/01 §2.9); null when it could not be written. */
     suspend fun shareUri(): Uri? {
         val res = result ?: return null
         val src = source ?: return null
+        if (saving) return null
         saving = true
+        renderCancel.set(false)
         return withContext(Dispatchers.IO) {
-            runCatching { ResultStore.shareCopy(getApplication(), res.full, ResultStore.fileName(src.name, res.model.file, res.scale, "png")) }
-                .onFailure { Log.w(TAG, "share copy failed", it) }.getOrNull()
+            runCatching { ResultStore.shareCopy(getApplication(), res.full, ResultStore.fileName(src.name, res.model.file, res.scale, "png"), renderCancel) }
+                .onFailure { if (it !is ResultStore.RenderCancelled) Log.w(TAG, "share copy failed", it) }.getOrNull()
         }.also { saving = false }
     }
 
