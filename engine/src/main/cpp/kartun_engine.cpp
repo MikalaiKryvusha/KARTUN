@@ -21,6 +21,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cerrno>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "net.h"
 #include "gpu.h"
@@ -95,6 +98,24 @@ void ensureGpuInstance() {
 }  // namespace
 
 extern "C" {
+
+// Native stderr goes nowhere in an Android app, and that is where libomp prints why it aborts ("OMP: Error #13: Assertion
+// failure at kmp_affinity…", bugs/01). Points stderr at a file in the app's crash folder: opened in append mode and left
+// unbuffered, so every line is on the disk before the abort that follows it. Returns 0, or errno. [NOT-TESTED]
+JNIEXPORT jint JNICALL
+Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeRedirectStderr(JNIEnv* env, jclass, jstring jpath) {
+    const char* path = env->GetStringUTFChars(jpath, nullptr);
+    const int fd = open(path, O_WRONLY | O_CREAT | O_APPEND | O_CLOEXEC, 0660);
+    const int err = fd < 0 ? errno : 0;
+    env->ReleaseStringUTFChars(jpath, path);
+    if (fd < 0) return err;
+    dup2(fd, STDERR_FILENO);
+    close(fd);
+    setvbuf(stderr, nullptr, _IONBF, 0);
+    // The witness: this line in the file proves that what native code prints to stderr lands there.
+    fprintf(stderr, "native stderr -> this file, pid %d\n", getpid());
+    return 0;
+}
 
 // Human-readable GPU summary for diagnostics: count, name, fp16 support, heap budget.
 JNIEXPORT jstring JNICALL

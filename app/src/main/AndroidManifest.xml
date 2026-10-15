@@ -16,6 +16,7 @@
 
     <!-- Launcher icon: adaptive, generated from the owner's picture by tools/make-icon.py (design/icon/). -->
     <application
+        android:name=".KartunApp"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"

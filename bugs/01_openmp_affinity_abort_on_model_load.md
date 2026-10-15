@@ -68,6 +68,24 @@ Not reproduced yet. Untried axes: a long-lived process that went background → 
 (Android moves the process between cpusets); the CPU path (`gpu=false`) vs GPU; a thread whose mask changes between the
 mask read and the topology read.
 
+The owner's path (chat 20:58–21:00): «мне кажется, что KARTUN был свёрнут» · «и я его развернул тогда» · «и выбрал фото в
+галерее» · «и оно упало». Observed on the Titan 20:56–20:59: foreground `/top-app` cpus 0-7; 12 s after HOME `/background`
+cpus 0-3 (every thread); with the system photo picker open `/foreground` cpus 0-7; back `/top-app` 0-7.
+
+| # | Variant (axis) | Result |
+|---|---|---|
+| 4 | `omp_mask` (NDK r29, `-fstatic-openmp`): first `omp_*` call on one mask, first parallel region on another — ff→0f, 0f→ff, ff→f0, 0f→0f | all ok |
+| 5 | `omp_race`: another thread flips the initialising thread's mask 0-3 ↔ 0-7 during the first parallel region, 300 runs | 300 ok |
+| 6 | the same program as the app user (`run-as`, SELinux `runas_app`), `KMP_AFFINITY=verbose` | ok: libomp parses `/proc/cpuinfo` for the masked CPUs only, topology = mask |
+
+Three+ variants failed → research, not more blind variants. Not tried yet: the owner's exact path (long background,
+then restore, picker, preload) in the real app.
+
+**Forensics for the next time (2026-10-15 21:04, commit below):** the app now keeps a crash journal
+(`files/crashes/`, `CrashLog.kt`): system exit records with tombstones, native stderr in `engine-stderr.log` (libomp's
+assert text lands there), and before every model load a line with the thread, cpuset and allowed CPUs. Verified with a
+SIGSEGV control crash and the engine's witness line.
+
 ## Hypotheses (ranked; none proven)
 
 1. The initialising thread's affinity mask differs from what libomp's topology counts at that moment — e.g. the process

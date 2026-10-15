@@ -220,6 +220,9 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         loaded?.let { if (loadedModel == m) return it }
         release()
         val (param, bin) = ModelStore.files(getApplication(), m.file)
+        // bugs/01: the journal keeps the engine's stderr and the CPU set this load starts on.
+        CrashLog.beforeEngine()
+        CrashLog.note("load ${m.file} gpu=$useGpu ${CrashLog.cpuState()}")
         val up = NcnnUpscaler.load(param.path, bin.path, useGpu = useGpu) ?: throw ModelLoadFailed()
         loaded = up
         loadedModel = m
@@ -388,6 +391,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         if (!u.usesGpu) throw EngineFailed()
         publish(_progress.value.copy(gpu = false))
         val (param, bin) = ModelStore.files(getApplication(), m.file)
+        CrashLog.note("load ${m.file} gpu=false (fallback) ${CrashLog.cpuState()}")
         val cpu = NcnnUpscaler.load(param.path, bin.path, useGpu = false) ?: throw EngineFailed()
         return cpu.use {
             try { it.upscale(input, ENGINE_SCALE, TILE_PX, listener, outScale) to false }

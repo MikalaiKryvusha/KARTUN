@@ -71,9 +71,14 @@ class NcnnUpscaler private constructor(private var handle: Long, val usesGpu: Bo
             return if (h == 0L) null else NcnnUpscaler(h, useGpu && !gpuInfo().startsWith("gpu_count=0"))
         }
 
+        /** Sends the native stderr (libomp and ncnn print their fatal errors there) to the file at [path], appended;
+         *  returns 0 or the errno of the failed open. */
+        fun redirectStderr(path: String): Int = nativeRedirectStderr(path)
+
         /** Diagnostics line: GPU count, name, fp16 support, heap budget. */
         fun gpuInfo(): String = nativeGpuInfo()
 
+        @JvmStatic private external fun nativeRedirectStderr(path: String): Int
         @JvmStatic private external fun nativeGpuInfo(): String
         @JvmStatic private external fun nativeCreate(param: String, bin: String, useGpu: Boolean, threads: Int): Long
         @JvmStatic private external fun nativeDestroy(handle: Long)

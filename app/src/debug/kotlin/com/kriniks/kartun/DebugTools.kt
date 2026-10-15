@@ -168,6 +168,8 @@ object DebugTools {
                 say(context.getString(R.string.dbg_log_loading))
                 val (param, bin) = modelFiles(context, p.model)
                 val t0 = SystemClock.elapsedRealtime()
+                CrashLog.beforeEngine()
+                CrashLog.note("probe load ${p.model} gpu=${p.gpu} ${CrashLog.cpuState()}")
                 val up = NcnnUpscaler.load(param.path, bin.path, p.gpu) ?: error("model load failed: ${p.model}")
                 val t1 = SystemClock.elapsedRealtime()
                 say(context.getString(if (up.usesGpu) R.string.dbg_log_loaded_gpu else R.string.dbg_log_loaded_cpu, (t1 - t0) / 1000.0))
