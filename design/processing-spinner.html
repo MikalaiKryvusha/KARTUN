@@ -1,0 +1,139 @@
+<!doctype html>
+<!-- Processing screen + the living pixel spinner: where to put it (the owner, chat 2026-10-15 ≈ 18:16-18:19 +03:00:
+     «давай эту нашу анимацию добавим не только на рендер, но и куда-то на процесс улучшения» · «Нужно и наш залипательный
+     пиксельный спиннер куда-то встроить» · «макеты нужны»; ideas/03). Frames are the Titan's portrait in dp (533 x 853), the
+     panel is B1 as in WorkingScreen.kt. Everything moves: the tiles advance, the ring counts, the spinner regroups
+     (design/spinner-engine.js - the design port of PixelSpinner.kt). [AI] variants for the owner's choice. -->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Спиннер на обработке</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0D0D0D; --card: #1C1C1E; --card2: #262628; --low: #151516; --text: #F2F2F3; --sub: #9A9AA0;
+    --pink: #FF1A8C; --font: 'Manrope', sans-serif; --head: 'Unbounded', sans-serif; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #070707; color: var(--text); font-family: var(--font); padding: 28px; }
+  .sheet { display: flex; gap: 28px; align-items: flex-start; padding: 18px; }
+  .col h2 { font: 700 20px var(--head); margin: 0 0 6px; } .col h2 b { color: var(--pink); }
+  .col p { font-size: 14px; color: var(--sub); width: 533px; height: 60px; margin-bottom: 12px; line-height: 1.4; }
+  .screen { width: 533px; height: 853px; background: var(--bg); border-radius: 36px; overflow: hidden; position: relative; border: 1px solid #222; }
+  .status { position: absolute; top: 0; left: 0; right: 0; height: 30px; display: flex; justify-content: space-between; padding: 6px 22px;
+    font: 600 13px var(--font); color: #ddd; z-index: 5; }
+  .photo { position: absolute; overflow: visible; left: 0; right: 0; top: 30px; bottom: 232px; background: url('mockups/local/preview.jpg') center / cover; }
+  .tiles { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(7, 1fr); }
+  .tiles i { border: .5px solid rgba(255,255,255,.10); background: rgba(13,13,13,.62); display: block; }
+  .tiles i.done { background: transparent; } .tiles i.now { background: rgba(255,26,140,.30); border: 1.5px solid var(--pink); }
+  .tiles.dark i.now { background: rgba(13,13,13,.78); }
+  .ring { border-radius: 50%; display: grid; place-items: center; position: relative; flex: none; }
+  .ring::before { content: ''; position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(var(--pink) 0 var(--p), var(--card2) var(--p) 100%);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--w)), #000 calc(100% - var(--w) + 1px)); }
+  .ring b { font: 800 var(--fs) var(--head); font-variant-numeric: tabular-nums; position: relative; }
+  .btn { height: 36px; padding: 0 18px; border-radius: 999px; border: 1.5px solid #3A3A3E; display: inline-grid; place-items: center;
+    font: 700 14px var(--font); color: var(--text); white-space: nowrap; flex: none; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: var(--card);
+    font: 600 13px var(--font); white-space: nowrap; align-self: flex-start; } .pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); }
+  .title { font: 700 15px var(--head); white-space: nowrap; }
+  .card { position: absolute; left: 0; right: 0; bottom: 0; height: 232px; background: var(--low); border-radius: 30px 30px 0 0;
+    padding: 20px 20px 24px; display: flex; flex-direction: column; gap: 16px; justify-content: center; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .cell { background: var(--card); border-radius: 16px; padding: 10px 12px; } .cell small { display: block; font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .8px; }
+  .cell b { font: 700 16px var(--font); font-variant-numeric: tabular-nums; }
+  canvas.sp { display: block; }
+  .ontile { position: absolute; transition: left .7s cubic-bezier(.5,0,.2,1), top .7s cubic-bezier(.5,0,.2,1); }
+  .glass { position: absolute; right: 16px; bottom: 16px; width: 132px; height: 132px; border-radius: 28px; background: rgba(13,13,13,.75);
+    backdrop-filter: blur(8px); display: grid; place-items: center; }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- NOW: what the Titan shows (WorkingScreen.kt, panel B1) -->
+  <div class="col"><h2>Сейчас</h2><p>Как на Титане сейчас: розовый тайл ходит по фото, кольцо 84 dp считает проценты. Спиннера нет.</p>
+    <div class="screen" data-v="now"><div class="status"><span>11:59</span><span>21 %</span></div>
+      <div class="photo"><div class="tiles"></div></div>
+      <div class="card">
+        <div style="display:flex; align-items:center; gap:16px">
+          <div class="ring" style="--w:8px; --fs:18px; width:84px; height:84px"><b class="pc"></b></div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:6px"><div class="title">Нейросеть улучшает фото</div><span class="pill"><i></i>GPU · Vulkan</span></div>
+          <div class="btn">Отменить</div>
+        </div>
+        <div class="grid4 metrics"></div>
+      </div></div></div>
+
+  <!-- A: the spinner lives inside the progress ring, the percent moves beside the backend pill -->
+  <div class="col"><h2><b>A</b> · В кольце</h2><p>Спиннер 60 dp живёт внутри кольца прогресса 96 dp. Проценты переезжают крупной розовой цифрой рядом с плашкой GPU. Высота панели та же.</p>
+    <div class="screen" data-v="a"><div class="status"><span>11:59</span><span>21 %</span></div>
+      <div class="photo"><div class="tiles"></div></div>
+      <div class="card">
+        <div style="display:flex; align-items:center; gap:16px">
+          <div class="ring" style="--w:7px; width:96px; height:96px"><canvas class="sp" style="width:60px; height:60px; position:relative"></canvas></div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:6px"><div class="title">Нейросеть улучшает фото</div>
+            <div style="display:flex; align-items:center; gap:12px"><span class="pill"><i></i>GPU · Vulkan</span>
+              <b class="pc" style="font:800 22px var(--head); color:var(--pink); font-variant-numeric:tabular-nums"></b></div></div>
+          <div class="btn">Отменить</div>
+        </div>
+        <div class="grid4 metrics"></div>
+      </div></div></div>
+
+  <!-- B: the spinner sits on the tile the network is computing right now and glides to the next one -->
+  <div class="col"><h2><b>B</b> · На тайле</h2><p>Спиннер 76 dp сидит прямо на тайле, который нейросеть считает сейчас, и переезжает на следующий. Видно, где она работает. Панель не меняется.</p>
+    <div class="screen" data-v="b"><div class="status"><span>11:59</span><span>21 %</span></div>
+      <div class="photo"><div class="tiles dark"></div><canvas class="sp ontile" data-pad=".1667" style="width:114px; height:114px; pointer-events:none"></canvas></div>
+      <div class="card">
+        <div style="display:flex; align-items:center; gap:16px">
+          <div class="ring" style="--w:8px; --fs:18px; width:84px; height:84px"><b class="pc"></b></div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:6px"><div class="title">Нейросеть улучшает фото</div><span class="pill"><i></i>GPU · Vulkan</span></div>
+          <div class="btn">Отменить</div>
+        </div>
+        <div class="grid4 metrics"></div>
+      </div></div></div>
+
+  <!-- C: the spinner on a glass square in the corner of the photo -->
+  <div class="col"><h2><b>C</b> · В углу фото</h2><p>Спиннер 110 dp на тёмном стеклянном квадрате в правом нижнем углу фото, над панелью. Крупнее всего, на тайлы не наезжает. Панель не меняется.</p>
+    <div class="screen" data-v="c"><div class="status"><span>11:59</span><span>21 %</span></div>
+      <div class="photo"><div class="tiles"></div><div class="glass"></div><canvas class="sp" data-pad=".1667" style="position:absolute; right:0; bottom:0; width:165px; height:165px; pointer-events:none"></canvas></div>
+      <div class="card">
+        <div style="display:flex; align-items:center; gap:16px">
+          <div class="ring" style="--w:8px; --fs:18px; width:84px; height:84px"><b class="pc"></b></div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:6px"><div class="title">Нейросеть улучшает фото</div><span class="pill"><i></i>GPU · Vulkan</span></div>
+          <div class="btn">Отменить</div>
+        </div>
+        <div class="grid4 metrics"></div>
+      </div></div></div>
+
+</div>
+<script src="spinner-engine.js"></script>
+<script>
+// The run of the mockup: 35 tiles (5 x 7, the photo's own grid), one more done every TILE_MS, from 11 done round to 34.
+const COLS = 5, ROWS = 7, N = COLS * ROWS, TILE_MS = 2600, FIRST = 11;
+const doneAt = t => FIRST + Math.floor(t / TILE_MS) % (N - FIRST);
+const fmt = ms => { const s = Math.round(ms / 1000), m = Math.floor(s / 60); return m ? `${m} мин ${s % 60} с` : `${s} с`; };
+const screens = [...document.querySelectorAll('.screen')];
+screens.forEach(s => s.querySelector('.tiles').innerHTML = '<i></i>'.repeat(N));
+let last = -1;
+function tick(now) {
+  const done = doneAt(now);
+  if (done !== last) {
+    last = done;
+    const p = Math.round(done / N * 100);
+    for (const s of screens) {
+      [...s.querySelectorAll('.tiles i')].forEach((el, i) => el.className = i < done ? 'done' : i === done ? 'now' : '');
+      s.querySelectorAll('.pc').forEach(el => el.textContent = p + '%');
+      s.querySelector('.ring').style.setProperty('--p', p + '%');
+      s.querySelector('.metrics').innerHTML = [['Проход', '1 / 1'], ['Тайл', `${String(done).padStart(2, ' ')} / ${N}`],
+        ['Прошло', fmt(done * 2100)], ['Осталось', '≈ ' + fmt((N - done) * 2100)]].map(([k, v]) => `<div class="cell"><small>${k}</small><b>${v}</b></div>`).join('');
+      // B: the spinner sits on the current tile, centred in it.
+      const ot = s.querySelector('.ontile');
+      if (ot) { const ph = s.querySelector('.photo'), tw = ph.clientWidth / COLS, th = ph.clientHeight / ROWS, sz = ot.clientWidth;
+        ot.style.left = (done % COLS) * tw + (tw - sz) / 2 + 'px'; ot.style.top = Math.floor(done / COLS) * th + (th - sz) / 2 + 'px'; }
+    }
+  }
+  document.querySelectorAll('canvas.sp').forEach(cv => drawSpinner(cv, now, +(cv.dataset.pad || 0)));
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
