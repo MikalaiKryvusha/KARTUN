@@ -77,3 +77,6 @@ design/spinner-live*.png
 design/spinner-live*.webp
 design/spinner-live-strip.webp
 design/model-compare/
+
+# Claude Code local permissions (machine-specific, never shared)
+.claude/settings.local.json
