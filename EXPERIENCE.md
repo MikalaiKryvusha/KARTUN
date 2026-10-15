@@ -57,7 +57,7 @@
 >      claim-before-evidence, owner-decision-not-applied, text-in-agents-world,
 >      etalon-from-dirty-tree, shell-lied, escaping-layer, twins-missed,
 >      field-dropped-in-rebuild, platform-layer-unseen, silent-noop-edit, replace-crossed-scope, stand-left-dirty, shallow-scan,
->      proxy-for-the-thing -->
+>      proxy-for-the-thing, stale-artifact -->
 >
 > | Class slug | The failure it names |
 > |---|---|
@@ -78,6 +78,7 @@
 | `stand-left-dirty` | a harness left the owner's device, stand or tree in a state the owner does not expect |
 | `shallow-scan` | a selection walked less of the tree than the action that follows it (top-level `ls` before a recursive delete) |
 | `proxy-for-the-thing` | a check on a stand-in (the desktop GPU, the PC) taken as the check on the target (the phone's GPU) |
+| `stale-artifact` | a build or file believed to carry a change that it does not carry (timestamps, caches) |
 >
 > The `#tags` are **trigger-tags**: before a task, grep by the task's tags and QUOTE the relevant
 > lessons in your report (id + one line) — or state "no relevant lessons". An unquoted recall is
@@ -88,6 +89,19 @@
 ## Entries
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
+
+### EXP-0022 · 2026-10-15 · ❌→✅ · #build #ninja #ncnn #device
+class: stale-artifact
+**Context:** proving an ncnn shader fix on the Titan: one APK on ncnn as-is, one on ncnn with the fixed shader.
+**Tried / did:** copied the fixed shader into the tree with PowerShell `Copy-Item` and ran `ninja install`, then built the APK.
+**Result:** ❌ the two APKs were byte-identical: `Copy-Item` kept the old file time, ninja saw nothing new, the "fixed" build was the
+old one; caught by hashing both APKs before the device run. ✅ `touch` the file, rebuild, check the build by decoding the embedded
+shader (`sdpa_cross.comp.hex.h` contains `min(gy4`), APK hashes differ.
+**Lesson:** a build "with the change" is proved by the artifact's own content (decode it, hash it), never by the build exiting 0.
+**Repro:** `sha256sum a.apk b.apk` must differ; `python -c "import re;…bytes(int(x,16) for x in re.findall(r'0x([0-9a-f]{2})',t))…"` on the generated header shows the change.
+**Trigger:** building two variants to compare on a device → hash both before installing.
+**Not for:** builds that differ in source the build system watches by content.
+none-cheap: one-off A/B builds; the Repro hash is the net
 
 ### EXP-0021 · 2026-10-15 · ❌→✅ · #ncnn #psnr #png #engine
 class: proxy-for-the-thing
