@@ -35,9 +35,9 @@ SUBJECTS = {  # the owner's themes, 2026-10-16 ≈ 00:30: «природа, гр
     "realesrgan-x4plus-anime": "anime1.jpg",
     "realesr-animevideov3-x4": "anime2.jpg",
     "4xNomos8kSC_fp16": "fjord.jpg",
-    "4xHFA2k_fp16": "anime2.jpg",
+    "4xHFA2k_fp16": ("anime3.jpg", 0.67, 0.5, 1.0),  # the owner: «повторка?» - «Cozy» stood on two cards
     "4x-NMKD-Superscale-fp16": "autumn.jpg",  # the owner: «осенний лес бы ещё вместо того белого здания»
-    "4x-NMKD-Siax-fp16": ("panther.jpg", 0.18, 0.42, 0.55),  # the owner: «гепард не влез» · «нужно мордовку чтобы было видно»
+    "4x-NMKD-Siax-fp16": ("panther.jpg", 0.30, 0.50, 0.85),  # the owner: «гепард не влез» · «нужно мордовку чтобы было видно» · «более общий» · «чтобы тело было видно»
     "4xNomosWebPhoto-RealPLKSR-fp16": "cat.jpg",
     "4x-ClearRealityV1-fp16": "flowers_bee.jpg",  # portrait.jpg waits for the owner (an identifiable person)
     "4x-Remacri-fp16": "meadow.jpg",
