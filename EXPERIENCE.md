@@ -90,6 +90,36 @@
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
 
+### EXP-0027 · 2026-10-16 · ❌→✅ · #shell #heredoc #bash #script
+class: shell-lied
+**Context:** editing Kotlin/Python files through a Bash-tool call that held a quoted heredoc (`<<'EOF'`) with a Python
+script inside — triple quotes, Kotlin `'…'` chars, Cyrillic text.
+**Tried / did:** four long heredocs of this shape in one session.
+**Result:** ❌ each one died before running: `unexpected EOF while looking for matching `''` — the tool's command parser
+counts quotes across the WHOLE command, the heredoc's quoting does not shield it; nothing was written, so no damage, only lost
+turns. ✅ the same script written with the file tool (Write) into the scratchpad and run as `python <file>` worked first time.
+**Lesson:** a script longer than a few lines, or one with quotes of its own, travels as a FILE (Write → run), never as a
+heredoc inside a tool command — the text-through-files rule applies to the agent's own scripts, not only to documents.
+**Repro:** a Bash-tool command `python - <<'EOF'` whose body holds `'''` or an odd number of `'` → the parse error above, exit 2.
+**Trigger:** about to put a multi-line script with quotes into a single Bash-tool call.
+**Not for:** short heredocs of plain text without quote characters (they pass).
+mechanized: no — the parser is the tool's, not the project's; the rule is AGENT_GUIDE.md «TEXT TRAVELS THROUGH FILES»
+
+### EXP-0026 · 2026-10-16 · ❌→✅ · #adb #titan #harness #device
+class: stand-left-dirty
+**Context:** two sessions (KARTUN and Krinik Tribit) and the UI agent drove the same Titan over Wi-Fi adb.
+**Tried / did:** called the UI agent's `shot`, which runs bare `adb`, from a shell whose PATH had `C:\adb` first.
+**Result:** ❌ `adb server version (32) doesn't match this client (41); killing...` — C:\adb (32) and the SDK's adb (41) kill
+each other's server on every call, the Titan's Wi-Fi connection drops (`device not found`, the agent's socket refused).
+Both sessions did it once. ✅ the SDK's platform-tools first in PATH for every script that runs ui.py; `adb connect` again.
+**Lesson:** on this PC only `C:\Android\Sdk\platform-tools\adb.exe` may touch the device — and tools that call bare `adb`
+(the UI agent) inherit PATH, so the PATH is part of the call.
+**Repro:** `C:\adb\adb.exe devices` then `C:\Android\Sdk\platform-tools\adb.exe devices` → the second prints the version
+mismatch line and an empty device list.
+**Trigger:** any script or tool that runs `adb` without a full path; a second session on the same device.
+**Not for:** calls with the SDK adb's full path (they never meet C:\adb).
+mechanized: no — HOUSE_RULES.md section 3/6 rows say «only the SDK adb»; the UI-agent row now names the PATH
+
 ### EXP-0025 · 2026-10-15 · ❌→✅ · #powershell #encoding #script #windows
 class: shell-lied
 **Context:** handing the owner a `.ps1` to run himself (the agent's own git operation had been refused), with progress messages written in his language.
