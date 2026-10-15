@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -42,8 +43,11 @@ import com.kriniks.kartun.R
  * The user guide (mockups 'manual' / 'manual-models'): a Markdown document laid out like a rendered page - the owner
  * asked for it «в вёрстке Markdown» with points and pictures (interview #002). The text lives in res/raw/manual.md (English) and
  * res/raw-ru/manual.md, one file per language; this renderer knows only what the guide uses: `#`/`##` headings (a leading number painted pink), paragraphs,
- * numbered and bulleted lists, `|` tables (the first row is the header), `>` notes and `**bold**`. Pictures come with the
- * guide's next revision. [NOT-TESTED: device run deferred by the owner («потом потестируем»)]
+ * numbered and bulleted lists, `|` tables (the first row is the header), `>` notes, `**bold**` and pictures
+ * `![caption](manual/ru/01_home.webp)` - a file of the APK's assets, drawn across the page with its caption under it (the
+ * owner, interview #002: «красочно с пунктами, картинками»; 2026-10-16: «картинки у тебя в руководстве будут? кнопки?
+ * примеры интерфейса?»). A picture whose file is missing is skipped. [NOT-TESTED: device run deferred by the owner
+ * («потом потестируем»); pictures - no guide page carries one yet]
  */
 @Composable
 fun ManualScreen(onBack: () -> Unit, raw: Int = R.raw.manual, title: Int = R.string.manual_title) {
@@ -71,6 +75,7 @@ fun ManualScreen(onBack: () -> Unit, raw: Int = R.raw.manual, title: Int = R.str
                     line.startsWith("## ") -> H2(line.removePrefix("## "))
                     line.startsWith("# ") -> Text(line.removePrefix("# "), style = MaterialTheme.typography.headlineSmall)
                     line.startsWith("> ") -> Note(line.removePrefix("> "))
+                    PICTURE.matches(line) -> PICTURE.find(line)!!.destructured.let { (caption, path) -> Picture(path, caption) }
                     line.startsWith("|") -> {
                         // A table: this line and the following "|" lines; the first row is the header.
                         val rows = mutableListOf<List<String>>()
@@ -88,6 +93,27 @@ fun ManualScreen(onBack: () -> Unit, raw: Int = R.raw.manual, title: Int = R.str
                 i++
             }
         }
+    }
+}
+
+/** `![caption](assets path)` on a line of its own. */
+internal val PICTURE = Regex("""^!\[(.*)]\((.+)\)$""")
+
+/** A picture of the guide: an asset image across the page, rounded like the cards, its caption under it. */
+@Composable
+private fun Picture(path: String, caption: String) {
+    val ctx = LocalContext.current
+    val img = remember(path) {
+        runCatching { ctx.assets.open(path).use { android.graphics.BitmapFactory.decodeStream(it) }?.asImageBitmap() }.getOrNull()
+    } ?: return
+    Column(Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        androidx.compose.foundation.Image(
+            img, caption, Modifier.fillMaxWidth().widthIn(max = 420.dp).clip(RoundedCornerShape(18.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
+            contentScale = androidx.compose.ui.layout.ContentScale.FillWidth,
+        )
+        if (caption.isNotBlank()) Text(caption, Modifier.padding(top = 6.dp), style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
     }
 }
 
