@@ -35,7 +35,7 @@
     <string name="after">Después</string>
     <string name="save">Guardar</string>
     <string name="share">Compartir</string>
-    <string name="error_too_big">Las fotos de más de %1$s MP aún no son compatibles: llegarán con el procesamiento por partes.</string>
+    <string name="error_too_big">Las fotos de más de %1$s MP no son compatibles.</string>
     <string name="error_decode">No se pudo abrir esta foto.</string>
     <string name="error_model">No se pudo cargar el modelo. Reinstala la app.</string>
     <string name="error_engine">La red no pudo procesar esta foto.</string>
@@ -102,6 +102,14 @@
     <string name="terms_title">Condiciones de uso</string>
     <string name="terms_sub">Derechos de los modelos y responsabilidad</string>
     <string name="rendering">Renderizando…</string>
+    <string name="working_elapsed">Transcurrido %1$s</string>
+    <string name="metric_pass">Pasada</string>
+    <string name="metric_tile">Mosaico</string>
+    <string name="metric_elapsed">Transcurrido</string>
+    <string name="metric_left">Quedan</string>
+    <string name="duration_short_ms">%1$d min %2$d s</string>
+    <string name="duration_short_s">%1$d s</string>
+    <string name="duration_short_m">%1$d min</string>
     <string name="save_estimate">Archivo ≈ %1$s MB</string>
     <string name="format_points_png">• Sin pérdidas: cada píxel como en el resultado\n• El archivo más grande\n• Para imprimir y seguir editando</string>
     <string name="format_points_jpeg">• Se abre en todas partes\n• Mucho más ligero que PNG\n• Para enviar y redes sociales</string>

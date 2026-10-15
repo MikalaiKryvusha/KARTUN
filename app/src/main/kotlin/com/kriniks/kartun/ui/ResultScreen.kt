@@ -259,7 +259,9 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 CalmSpinner(Modifier.size(48.dp), strokeWidth = 5.dp)
                 Text(stringResource(R.string.rendering), style = MaterialTheme.typography.titleSmall, color = c.onBackground)
                 // Small «Отменить»: stops a long render and deletes the half-written file (the owner, chat 2026-10-15 ≈ 11:53).
-                SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancelRender, height = 40)
+                // A fixed width: SecondaryButton fills its parent, and the card stretched over the whole screen (the
+                // owner, chat 2026-10-15 ≈ 12:31 +03:00: «диалог Рендер некрасиво растянуло на весь экран у тебя»).
+                SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancelRender, height = 36, modifier = Modifier.width(COMPACT_BUTTON))
             }
         }
         // Top bar and the two tags.

@@ -74,7 +74,11 @@ fun PrimaryButton(text: String, icon: Int?, onClick: () -> Unit, modifier: Modif
     }
 }
 
-/** Outlined (.btn.ghost) or filled-dark (.btn.soft) secondary pill button. */
+/** Width of a small «Отменить» that must not stretch its card (the render card, the processing panel B1): 104 dp after the
+ *  owner's «Кнопку отменить меньше, ниже» · «чтобы высвободить место для заголовка» (chat 2026-10-15 ≈ 12:35 +03:00). */
+val COMPACT_BUTTON = 104.dp
+
+/** Outlined (.btn.ghost) or filled-dark (.btn.soft) secondary pill button; it fills its width - pass a width to keep it small. */
 @Composable
 fun SecondaryButton(text: String, icon: Int?, onClick: () -> Unit, modifier: Modifier = Modifier, outlined: Boolean = true, enabled: Boolean = true, height: Int = 60) {
     val shape = CircleShape
@@ -86,7 +90,7 @@ fun SecondaryButton(text: String, icon: Int?, onClick: () -> Unit, modifier: Mod
     ) {
         val fg = MaterialTheme.colorScheme.onBackground
         if (icon != null) { Icon(painterResource(icon), null, Modifier.size(22.dp), tint = fg); Spacer(Modifier.width(10.dp)) }
-        Text(text, style = MaterialTheme.typography.labelLarge.copy(fontSize = if (height < 60) 16.sp else 18.sp), color = fg)
+        Text(text, style = MaterialTheme.typography.labelLarge.copy(fontSize = when { height <= 40 -> 14.sp; height < 60 -> 16.sp; else -> 18.sp }), color = fg)
     }
 }
 
@@ -180,14 +184,21 @@ fun Notice(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, suc
 fun sizeText(w: Int, h: Int): String = "${group(w)} × ${group(h)}"
 
 /**
- * A resolution line with heavy digits and thin «×», «→» and spaces (the owner, chat 2026-10-15 ≈ 11:58 +03:00: «циферки в
- * разрешениях нужно жирнее… x оставлять тонкими, стрелки тонкими, а цифры толще»). A space between two digits is the
- * thousands separator of [group] and stays with its number. [NOT-TESTED]
+ * A resolution line with heavy digits, thin «×» and spaces (the owner, chat 2026-10-15 ≈ 11:58 +03:00: «циферки в
+ * разрешениях нужно жирнее… x оставлять тонкими, а цифры толще»), and the arrow pink and heavy (≈ 12:33: «давай
+ * стрелочку… увеличения разрешения в розовый наш покрасим, и сделаем толще»; it was thin by the 11:58 word). A space
+ * between two digits is the thousands separator of [group] and stays with its number. [NOT-TESTED]
  */
-fun boldDigits(s: String): androidx.compose.ui.text.AnnotatedString = androidx.compose.ui.text.buildAnnotatedString {
-    append(s)
-    val heavy = androidx.compose.ui.text.SpanStyle(fontWeight = FontWeight.Bold)
-    Regex("\\d+(?:[ \\u00a0\\u202f]\\d{3})*").findAll(s).forEach { addStyle(heavy, it.range.first, it.range.last + 1) }
+@Composable
+fun boldDigits(s: String): androidx.compose.ui.text.AnnotatedString {
+    val accent = MaterialTheme.colorScheme.primary
+    return androidx.compose.ui.text.buildAnnotatedString {
+        append(s)
+        val heavy = androidx.compose.ui.text.SpanStyle(fontWeight = FontWeight.Bold)
+        Regex("\\d+(?:[ \\u00a0\\u202f]\\d{3})*").findAll(s).forEach { addStyle(heavy, it.range.first, it.range.last + 1) }
+        val arrow = androidx.compose.ui.text.SpanStyle(color = accent, fontWeight = FontWeight.ExtraBold)
+        Regex("[→←]").findAll(s).forEach { addStyle(arrow, it.range.first, it.range.last + 1) }
+    }
 }
 
 private fun group(n: Int): String =

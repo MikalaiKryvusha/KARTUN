@@ -35,7 +35,7 @@
     <string name="after">Nachher</string>
     <string name="save">Speichern</string>
     <string name="share">Teilen</string>
-    <string name="error_too_big">Fotos über %1$s MP werden noch nicht unterstützt: Sie kommen mit der Verarbeitung in Teilen.</string>
+    <string name="error_too_big">Fotos über %1$s MP werden nicht unterstützt.</string>
     <string name="error_decode">Dieses Foto ließ sich nicht öffnen.</string>
     <string name="error_model">Das Modell ließ sich nicht laden. Bitte installiere die App neu.</string>
     <string name="error_engine">Das Netz konnte dieses Foto nicht verarbeiten.</string>
@@ -100,6 +100,14 @@
     <string name="terms_title">Nutzungsbedingungen</string>
     <string name="terms_sub">Rechte an Modellen und Haftung</string>
     <string name="rendering">Wird gerendert…</string>
+    <string name="working_elapsed">Vergangen %1$s</string>
+    <string name="metric_pass">Durchgang</string>
+    <string name="metric_tile">Kachel</string>
+    <string name="metric_elapsed">Vergangen</string>
+    <string name="metric_left">Noch</string>
+    <string name="duration_short_ms">%1$d Min %2$d s</string>
+    <string name="duration_short_s">%1$d s</string>
+    <string name="duration_short_m">%1$d Min</string>
     <string name="save_estimate">Datei ≈ %1$s MB</string>
     <string name="format_points_png">• Verlustfrei: jedes Pixel wie im Ergebnis\n• Die größte Datei\n• Für Druck und Weiterbearbeitung</string>
     <string name="format_points_jpeg">• Öffnet sich überall\n• Deutlich kleiner als PNG\n• Zum Verschicken und für soziale Netzwerke</string>

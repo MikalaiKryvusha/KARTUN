@@ -15,6 +15,7 @@
 #include <android/log.h>
 
 #include <string>
+#include <vector>
 #include <algorithm>
 
 #include "net.h"
@@ -101,18 +102,41 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeDestroy(JNIEnv*, jclass, jlong
     delete reinterpret_cast<Upscaler*>(handle);
 }
 
-// Upscales `input` into `output` (output = input * scale) tile by tile, reporting each finished tile to `listener`.
+// Averages each f x f block of an RGBA tile into one pixel of `dst` (row pitch `dstStride`): the network's 4x tile shrunk
+// to the output scale right away, so a 1x/2x run never holds the full 4x image (the owner, chat 2026-10-15 ≈ 11:35 +03:00:
+// «нужно сделать на входе поддержку файлов больше 12 мб. Думаю, до 100 мб можно давтаь поддержку»). [NOT-TESTED]
+static void boxDown(const unsigned char* src, int sw, int sh, int f, unsigned char* dst, size_t dstStride) {
+    const int dw = sw / f, dh = sh / f, n = f * f;
+    for (int y = 0; y < dh; ++y) {
+        unsigned char* d = dst + static_cast<size_t>(y) * dstStride;
+        for (int x = 0; x < dw; ++x) {
+            int r = 0, g = 0, b = 0;
+            for (int yy = 0; yy < f; ++yy) {
+                const unsigned char* s = src + (static_cast<size_t>(y * f + yy) * sw + x * f) * 4;
+                for (int xx = 0; xx < f; ++xx, s += 4) { r += s[0]; g += s[1]; b += s[2]; }
+            }
+            d[x * 4 + 0] = static_cast<unsigned char>((r + n / 2) / n);
+            d[x * 4 + 1] = static_cast<unsigned char>((g + n / 2) / n);
+            d[x * 4 + 2] = static_cast<unsigned char>((b + n / 2) / n);
+            d[x * 4 + 3] = 255;
+        }
+    }
+}
+
+// Upscales `input` into `output` tile by tile, reporting each finished tile to `listener`. The network enlarges by
+// `scale`; the output is `outScale` x input (outScale divides scale: each tile is box-averaged down by scale/outScale).
 JNIEXPORT jint JNICALL
 Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, jlong handle, jobject input,
-                                                          jobject output, jint scale, jint tile, jobject listener) {
+                                                          jobject output, jint scale, jint outScale, jint tile, jobject listener) {
     auto* u = reinterpret_cast<Upscaler*>(handle);
-    if (!u || scale < 1 || tile < 16) return kErrBadArgs;
+    if (!u || scale < 1 || outScale < 1 || scale % outScale != 0 || tile < 16) return kErrBadArgs;
+    const int shrink = scale / outScale;
 
     AndroidBitmapInfo inInfo{}, outInfo{};
     if (AndroidBitmap_getInfo(env, input, &inInfo) < 0 || AndroidBitmap_getInfo(env, output, &outInfo) < 0)
         return kErrBitmap;
     if (inInfo.format != ANDROID_BITMAP_FORMAT_RGBA_8888 || outInfo.format != ANDROID_BITMAP_FORMAT_RGBA_8888 ||
-        outInfo.width != inInfo.width * scale || outInfo.height != inInfo.height * scale)
+        outInfo.width != inInfo.width * outScale || outInfo.height != inInfo.height * outScale)
         return kErrBadArgs;
 
     void* inPixels = nullptr;
@@ -125,11 +149,11 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, j
 
     const int w = static_cast<int>(inInfo.width);
     const int h = static_cast<int>(inInfo.height);
-    // Whole input as a normalized RGB Mat (CPU side); NCNN uploads each tile to the GPU itself.
-    ncnn::Mat full = ncnn::Mat::from_pixels(static_cast<const unsigned char*>(inPixels),
-                                            ncnn::Mat::PIXEL_RGBA2RGB, w, h, static_cast<int>(inInfo.stride));
+    // Each padded tile is read straight from the bitmap: a whole-photo float Mat would be 12 bytes a pixel (1.2 GB for
+    // 100 MP). NCNN uploads each tile to the GPU itself.
+    const auto* inBase = static_cast<const unsigned char*>(inPixels);
     const float norm[3] = {kNorm, kNorm, kNorm};
-    full.substract_mean_normalize(nullptr, norm);
+    std::vector<unsigned char> tilePx;  // one 4x tile in RGBA before the box-down (only when shrink > 1)
 
     // Progress: the tile count is known up front, so the caller can show an exact percentage.
     const int total = ((w + tile - 1) / tile) * ((h + tile - 1) / tile);
@@ -150,8 +174,9 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, j
             const int x1 = std::min(tx + tw + kPrepadding, w);
             const int y1 = std::min(ty + th + kPrepadding, h);
 
-            ncnn::Mat in;
-            ncnn::copy_cut_border(full, in, y0, h - y1, x0, w - x1);
+            ncnn::Mat in = ncnn::Mat::from_pixels(inBase + static_cast<size_t>(y0) * inInfo.stride + static_cast<size_t>(x0) * 4,
+                                                  ncnn::Mat::PIXEL_RGBA2RGB, x1 - x0, y1 - y0, static_cast<int>(inInfo.stride));
+            in.substract_mean_normalize(nullptr, norm);
 
             ncnn::Extractor ex = u->net.create_extractor();
             ex.input("data", in);
@@ -169,8 +194,14 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, j
             ncnn::Mat crop;
             ncnn::copy_cut_border(out, crop, oy, out.h - oy - oh, ox, out.w - ox - ow);
 
-            unsigned char* dst = outBase + static_cast<size_t>(ty * scale) * outInfo.stride + static_cast<size_t>(tx * scale) * 4;
-            crop.to_pixels(dst, ncnn::Mat::PIXEL_RGB2RGBA, static_cast<int>(outInfo.stride));
+            unsigned char* dst = outBase + static_cast<size_t>(ty * outScale) * outInfo.stride + static_cast<size_t>(tx * outScale) * 4;
+            if (shrink == 1) {
+                crop.to_pixels(dst, ncnn::Mat::PIXEL_RGB2RGBA, static_cast<int>(outInfo.stride));
+            } else {
+                tilePx.resize(static_cast<size_t>(ow) * oh * 4);
+                crop.to_pixels(tilePx.data(), ncnn::Mat::PIXEL_RGB2RGBA, ow * 4);
+                boxDown(tilePx.data(), ow, oh, shrink, dst, outInfo.stride);
+            }
 
             ++done;
             if (onTile && !env->CallBooleanMethod(listener, onTile, done, total)) rc = kErrCancelled;

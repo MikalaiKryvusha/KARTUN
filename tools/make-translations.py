@@ -35,7 +35,7 @@ T = {
            "• Rápido — quita ruido y desenfoque, normalmente unos segundos.\\n• Detallado — detalles finos más nítidos, tarda más.",
            "La red está mejorando tu foto", "Mosaico %1$s de %2$d", "Quedan ≈ %1$s", "Cancelar", "Antes",
            "Después", "Guardar", "Compartir",
-           "Las fotos de más de %1$s MP aún no son compatibles: llegarán con el procesamiento por partes.",
+           "Las fotos de más de %1$s MP no son compatibles.",
            "No se pudo abrir esta foto.", "No se pudo cargar el modelo. Reinstala la app.", "La red no pudo procesar esta foto.",
            "Procesamiento", "%1$d%% hecho", "Iniciando la red…", "Guardar en la galería", "Formato", "Calidad · %1$d",
            "Carpeta: Pictures/KARTUN · el original no cambia", "Guardado en Pictures/KARTUN", "No se pudo guardar la foto.",
@@ -52,7 +52,7 @@ T = {
            "• Rápido — remove ruído e desfoque, normalmente alguns segundos.\\n• Detalhado — detalhes finos mais nítidos, demora mais.",
            "A rede está melhorando sua foto", "Bloco %1$s de %2$d", "Faltam ≈ %1$s", "Cancelar", "Antes",
            "Depois", "Salvar", "Compartilhar",
-           "Fotos acima de %1$s MP ainda não são suportadas: chegarão com o processamento em partes.",
+           "Fotos acima de %1$s MP não são suportadas.",
            "Não foi possível abrir esta foto.", "Não foi possível carregar o modelo. Reinstale o app.", "A rede não conseguiu processar esta foto.",
            "Processamento", "%1$d%% concluído", "Iniciando a rede…", "Salvar na galeria", "Formato", "Qualidade · %1$d",
            "Pasta: Pictures/KARTUN · o original não muda", "Salvo em Pictures/KARTUN", "Não foi possível salvar a foto.",
@@ -69,7 +69,7 @@ T = {
            "• Rapide — enlève le bruit et le flou, en général quelques secondes.\\n• Détaillé — petits détails plus nets, prend plus de temps.",
            "Le réseau améliore votre photo", "Tuile %1$s sur %2$d", "Reste ≈ %1$s", "Annuler", "Avant",
            "Après", "Enregistrer", "Partager",
-           "Les photos de plus de %1$s Mpx ne sont pas encore prises en charge : elles arriveront avec le traitement par parties.",
+           "Les photos de plus de %1$s Mpx ne sont pas prises en charge.",
            "Impossible d’ouvrir cette photo.", "Impossible de charger le modèle. Réinstallez l’appli.", "Le réseau n’a pas pu traiter cette photo.",
            "Traitement", "%1$d %% fait", "Démarrage du réseau…", "Enregistrer dans la galerie", "Format", "Qualité · %1$d",
            "Dossier : Pictures/KARTUN · l’original reste intact", "Enregistré dans Pictures/KARTUN", "Impossible d’enregistrer la photo.",
@@ -86,7 +86,7 @@ T = {
            "• Schnell — entfernt Rauschen und Unschärfe, meist ein paar Sekunden.\\n• Detailliert — feine Details schärfer, dauert länger.",
            "Das Netz verbessert dein Foto", "Kachel %1$s von %2$d", "Noch ≈ %1$s", "Abbrechen", "Vorher",
            "Nachher", "Speichern", "Teilen",
-           "Fotos über %1$s MP werden noch nicht unterstützt: Sie kommen mit der Verarbeitung in Teilen.",
+           "Fotos über %1$s MP werden nicht unterstützt.",
            "Dieses Foto ließ sich nicht öffnen.", "Das Modell ließ sich nicht laden. Bitte installiere die App neu.", "Das Netz konnte dieses Foto nicht verarbeiten.",
            "Verarbeitung", "%1$d %% fertig", "Netz wird gestartet…", "In der Galerie speichern", "Format", "Qualität · %1$d",
            "Ordner: Pictures/KARTUN · das Original bleibt unverändert", "In Pictures/KARTUN gespeichert", "Das Foto ließ sich nicht speichern.",
@@ -103,7 +103,7 @@ T = {
            "• 快速 — 去除噪点和模糊，通常几秒钟。\\n• 细致 — 细节更清晰，耗时更长。",
            "神经网络正在增强你的照片", "第 %1$s / %2$d 块", "剩余约 %1$s", "取消", "处理前",
            "处理后", "保存", "分享",
-           "暂不支持超过 %1$s 百万像素的照片：分块处理上线后即可支持。",
+           "不支持超过 %1$s 百万像素的照片。",
            "无法打开这张照片。", "无法加载模型。请重新安装应用。", "神经网络无法处理这张照片。",
            "处理中", "已完成 %1$d%%", "正在启动神经网络…", "保存到相册", "格式", "质量 · %1$d",
            "文件夹：Pictures/KARTUN · 原图保持不变", "已保存到 Pictures/KARTUN", "无法保存照片。",
@@ -120,7 +120,7 @@ T = {
            "• तेज़ — शोर और धुंधलापन हटाता है, आमतौर पर कुछ सेकंड।\\n• विस्तृत — बारीक विवरण अधिक स्पष्ट, ज़्यादा समय लेता है।",
            "न्यूरल नेटवर्क आपकी फ़ोटो बेहतर बना रहा है", "टाइल %1$s / %2$d", "बाक़ी ≈ %1$s", "रद्द करें", "पहले",
            "बाद में", "सहेजें", "शेयर करें",
-           "%1$s MP से बड़ी फ़ोटो अभी समर्थित नहीं हैं: हिस्सों में प्रोसेसिंग के साथ आएँगी।",
+           "%1$s MP से बड़ी फ़ोटो समर्थित नहीं हैं।",
            "यह फ़ोटो नहीं खुल सकी।", "मॉडल लोड नहीं हो सका। कृपया ऐप दोबारा इंस्टॉल करें।", "न्यूरल नेटवर्क यह फ़ोटो प्रोसेस नहीं कर सका।",
            "प्रोसेसिंग", "%1$d%% पूरा", "नेटवर्क शुरू हो रहा है…", "गैलरी में सहेजें", "फ़ॉर्मैट", "गुणवत्ता · %1$d",
            "फ़ोल्डर: Pictures/KARTUN · मूल फ़ोटो नहीं बदलती", "Pictures/KARTUN में सहेजा गया", "फ़ोटो सहेजी नहीं जा सकी।",
@@ -137,7 +137,7 @@ T = {
            "• দ্রুত — নয়েজ ও ঝাপসা ভাব দূর করে, সাধারণত কয়েক সেকেন্ড।\\n• বিস্তারিত — সূক্ষ্ম খুঁটিনাটি আরও স্পষ্ট, সময় বেশি লাগে।",
            "নিউরাল নেটওয়ার্ক আপনার ছবি উন্নত করছে", "টাইল %1$s / %2$d", "বাকি ≈ %1$s", "বাতিল", "আগে",
            "পরে", "সংরক্ষণ", "শেয়ার",
-           "%1$s MP-এর বড় ছবি এখনো সমর্থিত নয়: অংশে অংশে প্রক্রিয়ার সঙ্গে আসবে।",
+           "%1$s MP-এর বড় ছবি সমর্থিত নয়।",
            "এই ছবিটি খোলা যায়নি।", "মডেল লোড করা যায়নি। অ্যাপটি আবার ইনস্টল করুন।", "নিউরাল নেটওয়ার্ক এই ছবি প্রক্রিয়া করতে পারেনি।",
            "প্রক্রিয়া", "%1$d%% সম্পন্ন", "নেটওয়ার্ক চালু হচ্ছে…", "গ্যালারিতে সংরক্ষণ", "ফরম্যাট", "গুণমান · %1$d",
            "ফোল্ডার: Pictures/KARTUN · মূল ছবি অপরিবর্তিত থাকে", "Pictures/KARTUN-এ সংরক্ষিত", "ছবি সংরক্ষণ করা যায়নি।",
@@ -154,7 +154,7 @@ T = {
            "• سريع — يزيل التشويش والضبابية، عادةً بضع ثوانٍ.\\n• مفصّل — تفاصيل دقيقة أوضح، يستغرق وقتًا أطول.",
            "الشبكة العصبية تحسّن صورتك", "البلاطة %1$s من %2$d", "المتبقي ≈ %1$s", "إلغاء", "قبل",
            "بعد", "حفظ", "مشاركة",
-           "الصور الأكبر من %1$s ميغابكسل غير مدعومة بعد: ستأتي مع المعالجة على أجزاء.",
+           "الصور الأكبر من %1$s ميغابكسل غير مدعومة.",
            "تعذّر فتح هذه الصورة.", "تعذّر تحميل النموذج. أعد تثبيت التطبيق.", "تعذّر على الشبكة معالجة هذه الصورة.",
            "المعالجة", "اكتمل %1$d%%", "جارٍ تشغيل الشبكة…", "الحفظ في المعرض", "الصيغة", "الجودة · %1$d",
            "المجلد: Pictures/KARTUN · تبقى الصورة الأصلية كما هي", "حُفظت في Pictures/KARTUN", "تعذّر حفظ الصورة.",
@@ -343,6 +343,24 @@ SAVE_INFO = {
            "• أصغر ملف بالمظهر نفسه\\n• يفتحه Android والمتصفحات وتطبيقات المراسلة\\n• للحفظ والإرسال"),
 }
 
+# «Прошло …» on the processing screen (the owner, chat 2026-10-15 ≈ 12:18 +03:00: «Нужно еще считать время, сколько уже
+# длиться процесс»).
+ELAPSED = {"es": "Transcurrido %1$s", "pt": "Decorrido %1$s", "fr": "Écoulé %1$s", "de": "Vergangen %1$s",
+           "zh": "已用 %1$s", "hi": "बीता %1$s", "bn": "পেরিয়েছে %1$s", "ar": "مضى %1$s"}
+
+# The processing panel B1 (the owner, chat 2026-10-15 ≈ 12:30 +03:00): metric_pass · metric_tile · metric_elapsed ·
+# metric_left · duration_short_ms · duration_short_s · duration_short_m.
+PANEL = {
+    "es": ("Pasada", "Mosaico", "Transcurrido", "Quedan", "%1$d min %2$d s", "%1$d s", "%1$d min"),
+    "pt": ("Passagem", "Bloco", "Decorrido", "Faltam", "%1$d min %2$d s", "%1$d s", "%1$d min"),
+    "fr": ("Passe", "Tuile", "Écoulé", "Reste", "%1$d min %2$d s", "%1$d s", "%1$d min"),
+    "de": ("Durchgang", "Kachel", "Vergangen", "Noch", "%1$d Min %2$d s", "%1$d s", "%1$d Min"),
+    "zh": ("次", "块", "已用", "剩余", "%1$d 分 %2$d 秒", "%1$d 秒", "%1$d 分"),
+    "hi": ("पास", "टाइल", "बीता", "बाक़ी", "%1$d मि %2$d से", "%1$d से", "%1$d मि"),
+    "bn": ("পাস", "টাইল", "পেরিয়েছে", "বাকি", "%1$d মি %2$d সে", "%1$d সে", "%1$d মি"),
+    "ar": ("المرور", "البلاطة", "مضى", "المتبقي", "%1$d د %2$d ث", "%1$d ث", "%1$d د"),
+}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -380,6 +398,9 @@ def main():
         for k, v in zip(ABOUT_KEYS, ABOUT[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="rendering">{xml_text(RENDERING[lang])}</string>')
+        lines.append(f'    <string name="working_elapsed">{xml_text(ELAPSED[lang])}</string>')
+        for k, v in zip(("metric_pass", "metric_tile", "metric_elapsed", "metric_left", "duration_short_ms", "duration_short_s", "duration_short_m"), PANEL[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in zip(("save_estimate", "format_points_png", "format_points_jpeg", "format_points_webp"), SAVE_INFO[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in EXTRA.get(lang, {}).items():

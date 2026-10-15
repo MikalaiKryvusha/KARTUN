@@ -38,6 +38,12 @@ user's path; swipes by `adb shell input swipe`; the divider's x is read from scr
 | 14 | 2026-10-15 11:54 +03:00 | build with «Отменить» under «Рендер…» → `python s_cancel.py` (8× run, PNG save, «Отменить» 2 s in) | the render stopped 2.2 s after the tap; `content query` and `ls /sdcard/Pictures/KARTUN` show no new item; no error line |
 | 15 | 2026-10-15 11:59 +03:00 | build with still counters + heavy digits → `python s_digits.py` (8× run, UI-tree lines read every 0.5 s) | «Проход 1 из 2 · тайл ␣␣7 из 165» (figure spaces) and «Осталось ≈ 48 секунд» on two lines; heavy digits in the scale line, the compact header and the result panel (`d2`, `d5`, `d6` crops) |
 | 16 | 2026-10-15 12:04 +03:00 | build with the size estimate + format points → `python s_estimate.py` (2×; per format: read «Файл ≈ N МБ», save, read the real size) | PNG 7,7 vs 8,08 MB (−5 %), JPEG q100 3,3 vs 3,34 MB (−1 %), WebP q100 1,9 vs 1,90 MB (0 %); three bullet lines under the chips (`e_JPEG.webp`); test files deleted after |
+| 17 | 2026-10-15 12:09 +03:00 | engine `outScale` build → `titan-probe.mjs --in test256.png --model realesr-general-x4v3 --gpu true --tile 200 --ref torch_gx4v3_256.png` (and `--tile 100`) | 52.2998 dB (same as before the change) · 51.8184 dB at tile 100 |
+| 18 | 2026-10-15 12:11 +03:00 | `python s_big_open.py` (picker → `big48mp.png` 6000×8000 102 MB, then `big100mp.jpg` 8640×11520 43 MB) | both open: «6000 × 8000 · 48,0 Мп» in 1.9 s (native heap 295 MB), «8640 × 11 520 · 99,5 Мп» in 1.2 s (498 MB); at 2× the 99.5 MP photo is refused (button grey) under the then 200 MP limit |
+| 19 | 2026-10-15 12:13 +03:00 | 99.5 MP at 1× (`s_big_run.py`, then a direct read at 12:29) | «8640 × 11 520 → 8640 × 11 520 · 15 минут 29 секунд · GPU · Vulkan», 2552 tiles, PSS peak 1.37 GB, no FATAL/OOM in KARTUN (two `OutOfMemoryError` lines belong to the system FuseDaemon) |
+| 20 | 2026-10-15 12:29 +03:00 | `python s_big_save.py` (JPEG q100 of the 99.5 MP result) | estimate 36,8 MB vs real 35,5 MB (+4 %), saved in 4 s |
+| 21 | 2026-10-15 12:32 +03:00 | build with B1 + 500 MP + «Прошло» + pink arrow → `python s_b1.py` (8×) | B1 tiles «ПРОХОД 2 / 2 · ТАЙЛ 64 / 165 · ПРОШЛО 15 с · ОСТАЛОСЬ ≈ 24 с»; pink heavy arrow in the result panel; the «Рендер…» card compact with «Отменить» |
+| 22 | 2026-10-15 12:37 +03:00 | smaller «Отменить» (104×36 dp), title 15 sp → `python s_b1b.py` | the title reads whole «Нейросеть улучшает фото» (it was cut at 17 sp) |
 | 13 | 2026-10-15 11:42 +03:00 | `python s_c13.py` twice (share timed by window focus, no UI-tree polling) | sheet after 2.4 s both times — the 16 s seen in run 10's tree-polling loop was the harness, not the app |
 
 ## 4. Checks
@@ -71,6 +77,9 @@ picker, taps, swipes); READ: the screen labels through the UI agent, screencaps 
 | owner 11:58 heavy digits, thin «×» and «→» | pass | run 15 crops |
 | owner 12:00 size estimate in MB in the save dialog | pass | run 16: within 5 % of the real file in all three formats |
 | owner 12:01 bullet points for the chosen format | pass (form) | run 16; the wording is an `[AI]` draft for the owner's read |
+| owner 11:35 input up to 100 (MP) | pass | runs 17–20: 48 MP and 99.5 MP open, 99.5 MP processed at 1× and saved; the test photos are synthetic (an enlarged 1.2 MP photo + noise) — quality on a real 100 MP photo is not judged |
+| owner 12:14 output limit 500 MP | hygiene only | PassPlanTest (31.25 MP × 4² = 500 fits, 100 MP × 2² = 400 fits); a 400 MP result on the device is not run yet |
+| owner 12:30 B1 + 12:35 smaller «Отменить» + 12:18 «Прошло» + 12:33 pink arrow + 12:31 compact «Рендер…» | pass | runs 21–22 |
 | defect seen: picked photo named «63282.jpg» in the compact header | open | the picker URI's display name is the media id; `photo1.jpg` expected — S3, to EXPERIENCE/next step |
 
 ## 5. Found

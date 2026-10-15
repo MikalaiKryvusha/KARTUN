@@ -35,7 +35,7 @@
     <string name="after">处理后</string>
     <string name="save">保存</string>
     <string name="share">分享</string>
-    <string name="error_too_big">暂不支持超过 %1$s 百万像素的照片：分块处理上线后即可支持。</string>
+    <string name="error_too_big">不支持超过 %1$s 百万像素的照片。</string>
     <string name="error_decode">无法打开这张照片。</string>
     <string name="error_model">无法加载模型。请重新安装应用。</string>
     <string name="error_engine">神经网络无法处理这张照片。</string>
@@ -98,6 +98,14 @@
     <string name="terms_title">使用条款</string>
     <string name="terms_sub">模型权利与责任</string>
     <string name="rendering">正在渲染…</string>
+    <string name="working_elapsed">已用 %1$s</string>
+    <string name="metric_pass">次</string>
+    <string name="metric_tile">块</string>
+    <string name="metric_elapsed">已用</string>
+    <string name="metric_left">剩余</string>
+    <string name="duration_short_ms">%1$d 分 %2$d 秒</string>
+    <string name="duration_short_s">%1$d 秒</string>
+    <string name="duration_short_m">%1$d 分</string>
     <string name="save_estimate">文件 ≈ %1$s MB</string>
     <string name="format_points_png">• 无损：每个像素与结果一致\n• 文件最大\n• 适合打印和后期编辑</string>
     <string name="format_points_jpeg">• 到处都能打开\n• 比 PNG 小得多\n• 适合发送和社交媒体</string>

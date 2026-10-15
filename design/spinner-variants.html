@@ -1,0 +1,124 @@
+<!doctype html>
+<!-- Spinner variants «pixels assembling into something» (the owner, chat 2026-10-15 ≈ 12:37 +03:00: «можем анимацию спинера
+     поискать другую? Как из пикселей рассыпанных что-то собирается?» · «предложишь варианты? Макет откроешь на отсмотр мне»).
+     Each variant at the size it would ship: 120 px demo, 48 dp («Рендер…» card), 22 dp (model card). [AI] for the owner's choice. -->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Спиннеры KARTUN</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0D0D0D; --low: #151516; --card: #1C1C1E; --text: #F2F2F3; --sub: #9A9AA0; --pink: #FF1A8C; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #070707; color: var(--text); font-family: 'Manrope', sans-serif; padding: 32px; }
+  h1 { font: 700 26px 'Unbounded', sans-serif; margin-bottom: 6px; } h1 b { color: var(--pink); }
+  .lead { color: var(--sub); margin-bottom: 28px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
+  .v { background: var(--low); border-radius: 28px; padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+  .v h2 { font: 700 18px 'Unbounded', sans-serif; } .v h2 b { color: var(--pink); } .v p { color: var(--sub); font-size: 14px; line-height: 1.45; }
+  .demo { display: grid; place-items: center; height: 170px; background: var(--bg); border-radius: 20px; }
+  .inuse { display: flex; gap: 14px; align-items: center; }
+  .render { background: var(--low); border: 1px solid #262628; border-radius: 22px; padding: 14px 20px; display: flex; flex-direction: column; align-items: center; gap: 8px; font: 700 13px 'Manrope'; }
+  .model { flex: 1; background: var(--card); border: 1.5px solid var(--pink); border-radius: 16px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; font: 700 14px 'Manrope'; }
+  .model small { display: block; font-weight: 500; color: var(--sub); font-size: 12px; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<h1>Спиннеры <b>KARTUN</b></h1>
+<p class="lead">Сейчас: ровная розовая дуга. Ниже 4 варианта «из пикселей собирается». Под каждым — как он встанет в «Рендер…» и на карточку модели.</p>
+<div class="grid" id="grid"></div>
+<script>
+const PINK = [255, 26, 140];
+const variants = [
+  { id: 1, name: 'Сборка сердца', text: 'Розовые пиксели слетаются из разброса в пиксельное сердце KARTUN, держатся миг и снова рассыпаются.', draw: heart },
+  { id: 2, name: 'Пиксели → круг', text: 'Квадратики в хаосе яркостей (как левая половина иконки) стягиваются в гладкое кольцо, кольцо проворачивается и снова рассыпается.', draw: pixToRing },
+  { id: 3, name: 'Кольцо из пикселей', text: 'Кольцо из 16 квадратиков, по нему бежит розовая волна; отставший пиксель подлетает на своё место.', draw: pixelRing },
+  { id: 4, name: 'Тайлы', text: 'Сетка 3×3: тайлы по очереди «проявляются» из крупных пикселей в чистый розовый — как движок обрабатывает фото.', draw: tiles },
+];
+
+// --- helpers
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const rnd = seed => () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const col = (a, k = 1) => `rgba(${PINK.map(c => Math.round(c * k)).join(',')},${a})`;
+
+// 1: heart from a 9x8 pixel mask
+const HEART = ['011000110', '111101111', '111111111', '111111111', '011111110', '001111100', '000111000', '000010000'];
+const heartPts = []; HEART.forEach((r, y) => [...r].forEach((c, x) => c === '1' && heartPts.push([x, y])));
+function heart(ctx, s, t) {
+  const r = rnd(7); const cell = s / 11; const ox = (s - 9 * cell) / 2, oy = (s - 8 * cell) / 2;
+  const cyc = (t % 2400) / 2400; // gather 0-.45, hold .45-.6, scatter .6-1
+  heartPts.forEach(([x, y], i) => {
+    const sx = r() * s, sy = r() * s, shade = .55 + r() * .45, delay = r() * .15;
+    let k = cyc < .6 ? ease(Math.min(1, Math.max(0, (cyc - delay) / .45))) : 1 - ease(Math.min(1, (cyc - .6) / .4));
+    const px = sx + (ox + x * cell - sx) * k, py = sy + (oy + y * cell - sy) * k;
+    ctx.fillStyle = col(.25 + .75 * k, shade); ctx.fillRect(px, py, cell * .86, cell * .86);
+  });
+}
+
+// 2: scattered chaos squares -> smooth ring that turns
+function pixToRing(ctx, s, t) {
+  const r = rnd(11); const n = 28; const R = s * .36, w = s * .1;
+  const cyc = (t % 2800) / 2800; const k = cyc < .5 ? ease(cyc / .5) : cyc < .75 ? 1 : 1 - ease((cyc - .75) / .25);
+  for (let i = 0; i < n; i++) {
+    const a = i / n * Math.PI * 2 + t / 900; const sx = r() * s, sy = r() * s, shade = .45 + r() * .55;
+    const tx = s / 2 + Math.cos(a) * R, ty = s / 2 + Math.sin(a) * R; const sz = s * .085 * (1 - k * .35);
+    ctx.fillStyle = col(1, shade + (1 - shade) * k);
+    ctx.fillRect(sx + (tx - sx) * k - sz / 2, sy + (ty - sy) * k - sz / 2, sz, sz);
+  }
+  if (k > .9) { ctx.strokeStyle = col((k - .9) * 10); ctx.lineWidth = w; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(s / 2, s / 2, R, t / 900, t / 900 + Math.PI * 1.6); ctx.stroke(); }
+}
+
+// 3: a ring of 16 pixels with a running pink wave; the lagging pixel flies in
+function pixelRing(ctx, s, t) {
+  const n = 16, R = s * .36, sz = s * .11; const head = (t / 1400) % 1 * n;
+  for (let i = 0; i < n; i++) {
+    const a = i / n * Math.PI * 2 - Math.PI / 2; let d = (head - i + n) % n; const lit = Math.max(0, 1 - d / 6);
+    const fly = d < 1 ? (1 - d) * s * .22 : 0;
+    const x = s / 2 + Math.cos(a) * (R + fly), y = s / 2 + Math.sin(a) * (R + fly);
+    ctx.fillStyle = lit > 0 ? col(.25 + .75 * lit) : 'rgba(60,60,64,1)';
+    ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
+  }
+}
+
+// 4: 3x3 tiles developing from coarse pixels to clean pink, one after another
+function tiles(ctx, s, t) {
+  const g = 3, gap = s * .04, T = (s - gap * (g + 1)) / g; const step = 260; const total = g * g * step + 900;
+  const cyc = t % total; const r = rnd(3);
+  for (let j = 0; j < g * g; j++) {
+    const x = gap + (j % g) * (T + gap), y = gap + Math.floor(j / g) * (T + gap);
+    const p = Math.min(1, Math.max(0, (cyc - j * step) / step));
+    const sub = p < 1 ? (p < .5 ? 4 : 2) : 1; const c = T / sub;
+    for (let a = 0; a < sub; a++) for (let b = 0; b < sub; b++) {
+      const shade = sub === 1 ? 1 : .35 + r() * .65;
+      ctx.fillStyle = p === 0 ? 'rgba(40,40,44,1)' : col(1, shade);
+      ctx.fillRect(x + a * c, y + b * c, c - (sub > 1 ? 1 : 0), c - (sub > 1 ? 1 : 0));
+    }
+  }
+}
+
+// --- page
+const grid = document.getElementById('grid'); const canvases = [];
+for (const v of variants) {
+  const el = document.createElement('div'); el.className = 'v';
+  el.innerHTML = `<h2><b>${v.id}</b> · ${v.name}</h2><p>${v.text}</p><div class="demo"></div>
+    <div class="inuse"><div class="render"><span class="c48"></span>Рендер…</div>
+    <div class="model"><span>Real-ESRGAN General v3<small>Быстрая · загружается</small></span><span class="c22"></span></div></div>`;
+  grid.appendChild(el);
+  for (const [sel, size] of [['.demo', 120], ['.c48', 48], ['.c22', 22]]) {
+    const cv = document.createElement('canvas'); const dpr = window.devicePixelRatio || 1;
+    cv.width = cv.height = size * dpr; cv.style.width = cv.style.height = size + 'px';
+    el.querySelector(sel).appendChild(cv); canvases.push({ cv, size, dpr, draw: v.draw });
+  }
+}
+function frame(t) {
+  for (const { cv, size, dpr, draw } of canvases) {
+    const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, size, size); draw(ctx, size, t);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

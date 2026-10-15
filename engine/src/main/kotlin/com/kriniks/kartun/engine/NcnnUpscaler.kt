@@ -24,14 +24,17 @@ class UpscaleCancelledException : RuntimeException("upscale cancelled")
 class NcnnUpscaler private constructor(private var handle: Long, val usesGpu: Boolean) : AutoCloseable {
 
     /**
-     * Upscales [input] (ARGB_8888) by [scale] using tiles of [tile] px, reporting progress to [listener].
-     * Returns the new bitmap; throws [UpscaleCancelledException] when the listener stopped the run.
+     * Upscales [input] (ARGB_8888) with the network's [scale] using tiles of [tile] px, reporting progress to [listener].
+     * The result is [outScale] × input ([outScale] divides [scale]): each tile is box-averaged down in the engine, so a
+     * 1×/2× result never needs the full 4× image in memory. Returns the new bitmap; throws [UpscaleCancelledException]
+     * when the listener stopped the run.
      */
-    fun upscale(input: Bitmap, scale: Int, tile: Int, listener: TileListener? = null): Bitmap {
+    fun upscale(input: Bitmap, scale: Int, tile: Int, listener: TileListener? = null, outScale: Int = scale): Bitmap {
         check(handle != 0L) { "upscaler is closed" }
+        require(outScale >= 1 && scale % outScale == 0) { "outScale $outScale must divide scale $scale" }
         val src = if (input.config == Bitmap.Config.ARGB_8888) input else input.copy(Bitmap.Config.ARGB_8888, false)
-        val out = Bitmap.createBitmap(src.width * scale, src.height * scale, Bitmap.Config.ARGB_8888)
-        val rc = nativeUpscale(handle, src, out, scale, tile, listener)
+        val out = Bitmap.createBitmap(src.width * outScale, src.height * outScale, Bitmap.Config.ARGB_8888)
+        val rc = nativeUpscale(handle, src, out, scale, outScale, tile, listener)
         if (rc != 0) {
             out.recycle()
             if (rc == ERR_CANCELLED) throw UpscaleCancelledException()
@@ -64,7 +67,7 @@ class NcnnUpscaler private constructor(private var handle: Long, val usesGpu: Bo
         @JvmStatic private external fun nativeCreate(param: String, bin: String, useGpu: Boolean, threads: Int): Long
         @JvmStatic private external fun nativeDestroy(handle: Long)
         @JvmStatic private external fun nativeUpscale(
-            handle: Long, input: Bitmap, output: Bitmap, scale: Int, tile: Int, listener: TileListener?,
+            handle: Long, input: Bitmap, output: Bitmap, scale: Int, outScale: Int, tile: Int, listener: TileListener?,
         ): Int
     }
 }

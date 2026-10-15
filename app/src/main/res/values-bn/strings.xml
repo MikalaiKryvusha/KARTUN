@@ -35,7 +35,7 @@
     <string name="after">পরে</string>
     <string name="save">সংরক্ষণ</string>
     <string name="share">শেয়ার</string>
-    <string name="error_too_big">%1$s MP-এর বড় ছবি এখনো সমর্থিত নয়: অংশে অংশে প্রক্রিয়ার সঙ্গে আসবে।</string>
+    <string name="error_too_big">%1$s MP-এর বড় ছবি সমর্থিত নয়।</string>
     <string name="error_decode">এই ছবিটি খোলা যায়নি।</string>
     <string name="error_model">মডেল লোড করা যায়নি। অ্যাপটি আবার ইনস্টল করুন।</string>
     <string name="error_engine">নিউরাল নেটওয়ার্ক এই ছবি প্রক্রিয়া করতে পারেনি।</string>
@@ -100,6 +100,14 @@
     <string name="terms_title">ব্যবহারের শর্তাবলি</string>
     <string name="terms_sub">মডেলের অধিকার ও দায়</string>
     <string name="rendering">রেন্ডার হচ্ছে…</string>
+    <string name="working_elapsed">পেরিয়েছে %1$s</string>
+    <string name="metric_pass">পাস</string>
+    <string name="metric_tile">টাইল</string>
+    <string name="metric_elapsed">পেরিয়েছে</string>
+    <string name="metric_left">বাকি</string>
+    <string name="duration_short_ms">%1$d মি %2$d সে</string>
+    <string name="duration_short_s">%1$d সে</string>
+    <string name="duration_short_m">%1$d মি</string>
     <string name="save_estimate">ফাইল ≈ %1$s MB</string>
     <string name="format_points_png">• ক্ষতিহীন: প্রতিটি পিক্সেল ফলাফলের মতো\n• সবচেয়ে বড় ফাইল\n• প্রিন্ট ও পরবর্তী সম্পাদনার জন্য</string>
     <string name="format_points_jpeg">• সব জায়গায় খোলে\n• PNG-এর চেয়ে অনেক ছোট\n• পাঠানো ও সোশ্যাল মিডিয়ার জন্য</string>

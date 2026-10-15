@@ -163,7 +163,7 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                 }
             }
         }
-        SetupOverlays(src.bitmap, fullscreen, { fullscreen = false }, info, { info = null }, vm::openManual)
+        SetupOverlays(src.preview, fullscreen, { fullscreen = false }, info, { info = null }, vm::openManual)
         return
     }
 
@@ -184,7 +184,7 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                         Modifier.fillMaxWidth().height(HERO_MIN).then(drag).clip(MaterialTheme.shapes.medium).background(c.surfaceContainer).padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        Image(src.bitmap.asImageBitmap(), null, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
+                        Image(src.preview.asImageBitmap(), null, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
                         Column(Modifier.weight(1f)) {
                             Text(src.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(boldDigits(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(src.width * vm.scale, src.height * vm.scale))),
@@ -208,7 +208,7 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
         }
         UpscaleButton(vm, Modifier.align(Alignment.BottomCenter))
     }
-    SetupOverlays(src.bitmap, fullscreen, { fullscreen = false }, info, { info = null }, vm::openManual)
+    SetupOverlays(src.preview, fullscreen, { fullscreen = false }, info, { info = null }, vm::openManual)
 }
 
 /** Back button and the screen title (the same in both orientations). */
@@ -260,7 +260,7 @@ private fun PhotoCard(src: UpscaleViewModel.Source, onOpen: () -> Unit, onPickOt
             },
     ) {
         Image(
-            src.bitmap.asImageBitmap(), null,
+            src.preview.asImageBitmap(), null,
             Modifier.fillMaxSize().graphicsLayer { scaleX = zoom; scaleY = zoom; translationX = pan.x; translationY = pan.y },
             contentScale = ContentScale.Crop,
         )

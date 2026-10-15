@@ -35,7 +35,7 @@
     <string name="after">बाद में</string>
     <string name="save">सहेजें</string>
     <string name="share">शेयर करें</string>
-    <string name="error_too_big">%1$s MP से बड़ी फ़ोटो अभी समर्थित नहीं हैं: हिस्सों में प्रोसेसिंग के साथ आएँगी।</string>
+    <string name="error_too_big">%1$s MP से बड़ी फ़ोटो समर्थित नहीं हैं।</string>
     <string name="error_decode">यह फ़ोटो नहीं खुल सकी।</string>
     <string name="error_model">मॉडल लोड नहीं हो सका। कृपया ऐप दोबारा इंस्टॉल करें।</string>
     <string name="error_engine">न्यूरल नेटवर्क यह फ़ोटो प्रोसेस नहीं कर सका।</string>
@@ -100,6 +100,14 @@
     <string name="terms_title">उपयोग की शर्तें</string>
     <string name="terms_sub">मॉडलों के अधिकार और ज़िम्मेदारी</string>
     <string name="rendering">रेंडर हो रहा है…</string>
+    <string name="working_elapsed">बीता %1$s</string>
+    <string name="metric_pass">पास</string>
+    <string name="metric_tile">टाइल</string>
+    <string name="metric_elapsed">बीता</string>
+    <string name="metric_left">बाक़ी</string>
+    <string name="duration_short_ms">%1$d मि %2$d से</string>
+    <string name="duration_short_s">%1$d से</string>
+    <string name="duration_short_m">%1$d मि</string>
     <string name="save_estimate">फ़ाइल ≈ %1$s MB</string>
     <string name="format_points_png">• बिना नुकसान: हर पिक्सेल नतीजे जैसा\n• सबसे बड़ी फ़ाइल\n• प्रिंट और आगे की एडिटिंग के लिए</string>
     <string name="format_points_jpeg">• हर जगह खुलती है\n• PNG से काफ़ी छोटी\n• भेजने और सोशल मीडिया के लिए</string>

@@ -45,7 +45,7 @@
     <string name="share">Share</string>
     <string name="result_time" tools:ignore="MissingTranslation">%1$s · %2$s</string>
 
-    <string name="error_too_big">Photos over %1$s MP are not supported yet: large photos arrive together with processing in parts.</string>
+    <string name="error_too_big">Photos over %1$s MP are not supported.</string>
     <string name="error_decode">Could not open this photo.</string>
     <string name="error_model">Could not load the model. Please reinstall the app.</string>
     <string name="error_engine">The network could not process this photo.</string>
@@ -73,6 +73,14 @@
     <string name="save_failed">Could not save the photo.</string>
     <string name="saving">Saving…</string>
     <string name="rendering">Rendering…</string>
+    <string name="working_elapsed">Elapsed %1$s</string>
+    <string name="metric_pass">Pass</string>
+    <string name="metric_tile">Tile</string>
+    <string name="metric_elapsed">Elapsed</string>
+    <string name="metric_left">Left</string>
+    <string name="duration_short_ms">%1$d min %2$d s</string>
+    <string name="duration_short_s">%1$d s</string>
+    <string name="duration_short_m">%1$d min</string>
     <!-- [AI] save dialog: the size estimate and what each format is for (the owner, chat 2026-10-15 ≈ 12:00-12:01). -->
     <string name="save_estimate">File ≈ %1$s MB</string>
     <string name="format_points_png">• Lossless: every pixel as in the result\n• The largest file\n• For printing and further editing</string>

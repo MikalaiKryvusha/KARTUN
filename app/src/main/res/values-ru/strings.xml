@@ -48,7 +48,7 @@
     <string name="result_time">%1$s · %2$s</string>
 
     <!-- [AI] error lines (the mockups have none; GOAL.md §3: understandable errors, not exception codes). -->
-    <string name="error_too_big">Фото больше %1$s Мп пока не поддерживается: большие фото появятся вместе с обработкой по частям.</string>
+    <string name="error_too_big">Фото больше %1$s Мп не поддерживается.</string>
     <string name="error_decode">Не удалось открыть это фото.</string>
     <string name="error_model">Не удалось загрузить модель. Переустановите приложение.</string>
     <string name="error_engine">Нейросеть не смогла обработать фото.</string>
@@ -81,6 +81,14 @@
     <string name="save_failed">Не удалось сохранить фото.</string>
     <string name="saving">Сохраняем…</string>
     <string name="rendering">Рендер…</string>
+    <string name="working_elapsed">Прошло %1$s</string>
+    <string name="metric_pass">Проход</string>
+    <string name="metric_tile">Тайл</string>
+    <string name="metric_elapsed">Прошло</string>
+    <string name="metric_left">Осталось</string>
+    <string name="duration_short_ms">%1$d мин %2$d с</string>
+    <string name="duration_short_s">%1$d с</string>
+    <string name="duration_short_m">%1$d мин</string>
     <!-- [AI] диалог сохранения: оценка размера и для чего каждый формат (владелец, чат 2026-10-15 ≈ 12:00–12:01). -->
     <string name="save_estimate">Файл ≈ %1$s МБ</string>
     <string name="format_points_png">• Без потерь: каждая точка как в результате\n• Самый большой файл\n• Для печати и дальнейшей обработки</string>

@@ -27,6 +27,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,10 +56,40 @@ import kotlin.math.min
 /** Width of the side panel with the ring in landscape. */
 private val PANEL_WIDTH = 420.dp
 
+/** How often the «Прошло» line ticks. */
+private const val ELAPSED_TICK_MS = 1000L
+
+/** The progress ring of the panel (B1: 84 dp, beside the title). */
+private val RING = 84.dp
+
+/** Pads a counter to the width of its total: digits and this space have the same width with tabular figures. */
+private const val FIGURE_SPACE = '\u2007'
+
+/** One metric tile of the panel: a small upper-case label over a value in tabular figures. */
+@Composable
+private fun Metric(label: String, value: String, modifier: Modifier) {
+    val c = MaterialTheme.colorScheme
+    Column(modifier.clip(RoundedCornerShape(16.dp)).background(c.surfaceContainer).padding(horizontal = 12.dp, vertical = 10.dp)) {
+        Text(label.uppercase(LocalConfiguration.current.locales[0]), style = MaterialTheme.typography.labelSmall, color = c.onSurfaceVariant, maxLines = 1)
+        Text(value, style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight(700), fontFeatureSettings = "tnum"), maxLines = 1)
+    }
+}
+
+/** «1 мин 12 с» / «38 с» / «3 мин»: the short form that fits a metric tile (the long one is «1 минута 12 секунд»). */
+@Composable
+private fun shortDuration(ms: Long): String {
+    val (m, s) = durationParts(ms)
+    return when {
+        m == 0 -> stringResource(R.string.duration_short_s, s)
+        s == 0 -> stringResource(R.string.duration_short_m, m)
+        else -> stringResource(R.string.duration_short_ms, m, s)
+    }
+}
+
 /**
  * Processing (mockup 'processing'): the photo with the engine's tile grid over it - finished tiles clear, the current one
- * pink - and the sheet with the PERCENT ring, «Тайл N из M · осталось ≈ T», the backend pill and «Отменить» (cancel lands
- * between tiles). Percent ring and estimate: [OWNER] interview #003, Q1 = D. [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
+ * pink - and the sheet with the PERCENT ring, «Тайл N из M», «Прошло T», «Осталось ≈ T», the backend pill and «Отменить»
+ * (cancel lands between tiles). Percent ring and estimate: [OWNER] interview #003, Q1 = D. [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
  */
 @Composable
 fun WorkingScreen(vm: UpscaleViewModel) {
@@ -73,6 +107,13 @@ fun WorkingScreen(vm: UpscaleViewModel) {
     val inPass2 = mid != null && p.done >= pass1
     val tileOnPhoto = if (inPass2) UpscaleViewModel.TILE_PX.toFloat() / mid!! else UpscaleViewModel.TILE_PX.toFloat()
     val doneInPass = if (inPass2) p.done - pass1 else p.done
+    // Time already spent, ticking every second between tiles too (the owner, chat 2026-10-15 ≈ 12:18 +03:00: «Осталось -
+    // ок. Нужно еще считать время, сколько уже длиться процесс»). The start is taken back from the engine's elapsed time,
+    // so a recreated screen keeps counting from the run's real start. [NOT-TESTED]
+    val startedAt = remember { android.os.SystemClock.elapsedRealtime() - p.elapsedMs }
+    var now by remember { mutableLongStateOf(android.os.SystemClock.elapsedRealtime()) }
+    LaunchedEffect(Unit) { while (true) { now = android.os.SystemClock.elapsedRealtime(); kotlinx.coroutines.delay(ELAPSED_TICK_MS) } }
+    val spentMs = now - startedAt
 
     // Portrait: a column - the photo takes the space above the sheet, so no tile hides under it (seen on the Titan
     // 2026-10-14 18:41 - a fixed bottom padding was shorter than the sheet). Landscape (the owner: «лендскейп нужно
@@ -85,7 +126,7 @@ fun WorkingScreen(vm: UpscaleViewModel) {
             val w = (src.width * k).dp
             val h = (src.height * k).dp
             Box(Modifier.align(Alignment.Center).size(w, h)) {
-                Image(src.bitmap.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
+                Image(src.preview.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
                 val cols = ceil(src.width / tileOnPhoto).toInt()
                 val rows = ceil(src.height / tileOnPhoto).toInt()
                 val shade = c.background.copy(alpha = 0.62f)
@@ -110,52 +151,55 @@ fun WorkingScreen(vm: UpscaleViewModel) {
             }
         }
     }
+    // The panel, variant B1 of design/processing-variants.html (the owner, chat 2026-10-15 ≈ 12:30 +03:00: «Давай Б1
+    // попробуем, только кнопку Отменить вверх поднять над тайтлами метрик»; before that ≈ 12:17: the old panel took too
+    // much height): the ring, the title with the backend and «Отменить» in one row, the four metrics as tiles under it.
+    // [NOT-TESTED]
     val panel: @Composable (Modifier) -> Unit = { m ->
         Column(
             m.background(c.surfaceContainerLow)
-                .navigationBarsPadding().padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterVertically),
+                .navigationBarsPadding().padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                // Rounded ends of the arc (the owner, chat 2026-10-15 ≈ 11:35 +03:00: «если можно у кольца прогресс бара концы
-                // сделать закругленными»).
-                CircularProgressIndicator(
-                    progress = { fraction }, modifier = Modifier.size(150.dp), color = c.primary,
-                    strokeWidth = 11.dp, trackColor = c.surfaceContainerHigh, strokeCap = StrokeCap.Round, gapSize = 0.dp,
-                )
-                // Tabular figures: every digit takes the same width, so the number does not jitter as it counts (the owner,
-                // plan 03 step 20: «в кольце прогресса цифры процентов пляшут, вероятно из-за разной ширины цифр»).
-                Text(stringResource(R.string.percent, (fraction * 100).toInt()),
-                    style = MaterialTheme.typography.headlineSmall.copy(fontSize = 34.sp, fontWeight = FontWeight(800), fontFeatureSettings = "tnum"))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(contentAlignment = Alignment.Center) {
+                    // Rounded ends of the arc (the owner, 11:35: «если можно у кольца прогресс бара концы сделать закругленными»).
+                    CircularProgressIndicator(
+                        progress = { fraction }, modifier = Modifier.size(RING), color = c.primary,
+                        strokeWidth = 8.dp, trackColor = c.surfaceContainerHigh, strokeCap = StrokeCap.Round, gapSize = 0.dp,
+                    )
+                    // Tabular figures: the number does not jitter as it counts (plan 03 step 20).
+                    Text(stringResource(R.string.percent, (fraction * 100).toInt()),
+                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 19.sp, fontWeight = FontWeight(800), fontFeatureSettings = "tnum"))
+                }
+                Spacer(Modifier.width(16.dp))
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    // 15 sp: at 17 the wide heading font cut the title even beside the small «Отменить» (Titan 12:37).
+                    Text(stringResource(R.string.working_title), style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp), maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    Row(
+                        Modifier.clip(CircleShape).background(c.surfaceContainer).padding(horizontal = 12.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(painterResource(R.drawable.ic_cpu), null, Modifier.size(14.dp), tint = c.primary)
+                        Spacer(Modifier.width(6.dp))
+                        Text(stringResource(if (p.gpu) R.string.backend_gpu else R.string.backend_cpu), style = MaterialTheme.typography.labelMedium)
+                    }
+                }
+                Spacer(Modifier.width(12.dp))
+                SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancel, height = 36, modifier = Modifier.width(COMPACT_BUTTON))
             }
-            Text(stringResource(R.string.working_title), style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp), textAlign = TextAlign.Center)
-            // The counters stand still (the owner, chat 2026-10-15 ≈ 11:57 +03:00: «нужно как-то так фиксировать метрики
-            // "проход", "тайл" и другие, чтобы они не плясали при изменении цифр в них»): tabular figures, the tile number
-            // padded with figure spaces to the total's width, and the remaining time on a line of its own, whose length
-            // changes with its words. [NOT-TESTED]
-            val counter = MaterialTheme.typography.bodyMedium.copy(fontFeatureSettings = "tnum")
-            if (p.total > 0) {
-                val done = "%d".format(p.done).padStart("%d".format(p.total).length, ' ')
-                Text(
-                    if (mid != null) stringResource(R.string.working_pass, if (inPass2) 2 else 1, done, p.total)
-                    else stringResource(R.string.working_tiles, done, p.total),
-                    style = counter, color = c.onSurfaceVariant, textAlign = TextAlign.Center,
-                )
+            // The counters stand still (the owner, 11:57: «чтобы они не плясали при изменении цифр в них»): tabular figures
+            // and the done count padded with figure spaces to the total's width. The pass shows on one-pass scales too
+            // («1 / 1» - the owner, 12:17: «и надпись номера прогона исчезла =(»). Elapsed ticks every second (12:18).
+            val total = "%d".format(p.total)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Metric(stringResource(R.string.metric_pass), "${if (inPass2) 2 else 1} / ${if (mid != null) 2 else 1}", Modifier.weight(1f))
+                Metric(stringResource(R.string.metric_tile),
+                    if (p.total > 0) "${"%d".format(p.done).padStart(total.length, FIGURE_SPACE)} / $total" else "—", Modifier.weight(1f))
+                Metric(stringResource(R.string.metric_elapsed), shortDuration(spentMs), Modifier.weight(1f))
+                Metric(stringResource(R.string.metric_left), "≈ " + shortDuration(if (p.total > 0) leftMs else p.estimateMs), Modifier.weight(1f))
             }
-            Text(
-                stringResource(R.string.working_starting, durationText(if (p.total > 0) leftMs else p.estimateMs)),
-                style = counter, color = c.onSurfaceVariant, textAlign = TextAlign.Center,
-            )
-            Row(
-                Modifier.clip(CircleShape).background(c.surfaceContainer).padding(horizontal = 14.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(painterResource(R.drawable.ic_cpu), null, Modifier.size(16.dp), tint = c.primary)
-                Spacer(Modifier.width(6.dp))
-                Text(stringResource(if (p.gpu) R.string.backend_gpu else R.string.backend_cpu), style = MaterialTheme.typography.labelMedium)
-            }
-            SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancel)
         }
     }
     if (landscape) {

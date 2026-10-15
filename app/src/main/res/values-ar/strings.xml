@@ -35,7 +35,7 @@
     <string name="after">بعد</string>
     <string name="save">حفظ</string>
     <string name="share">مشاركة</string>
-    <string name="error_too_big">الصور الأكبر من %1$s ميغابكسل غير مدعومة بعد: ستأتي مع المعالجة على أجزاء.</string>
+    <string name="error_too_big">الصور الأكبر من %1$s ميغابكسل غير مدعومة.</string>
     <string name="error_decode">تعذّر فتح هذه الصورة.</string>
     <string name="error_model">تعذّر تحميل النموذج. أعد تثبيت التطبيق.</string>
     <string name="error_engine">تعذّر على الشبكة معالجة هذه الصورة.</string>
@@ -108,6 +108,14 @@
     <string name="terms_title">شروط الاستخدام</string>
     <string name="terms_sub">حقوق النماذج والمسؤولية</string>
     <string name="rendering">جارٍ التصيير…</string>
+    <string name="working_elapsed">مضى %1$s</string>
+    <string name="metric_pass">المرور</string>
+    <string name="metric_tile">البلاطة</string>
+    <string name="metric_elapsed">مضى</string>
+    <string name="metric_left">المتبقي</string>
+    <string name="duration_short_ms">%1$d د %2$d ث</string>
+    <string name="duration_short_s">%1$d ث</string>
+    <string name="duration_short_m">%1$d د</string>
     <string name="save_estimate">الملف ≈ %1$s م.ب</string>
     <string name="format_points_png">• بلا فقدان: كل بكسل كما في النتيجة\n• أكبر ملف\n• للطباعة ومتابعة التعديل</string>
     <string name="format_points_jpeg">• يفتح في كل مكان\n• أصغر بكثير من PNG\n• للإرسال ووسائل التواصل</string>

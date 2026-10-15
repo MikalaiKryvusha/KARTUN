@@ -12,7 +12,7 @@ import org.junit.Test
 
 /**
  * JVM hygiene for the pass plan of plans/04 step 1: which scales take a second pass and over what image, how much work
- * the estimate counts, the tile count the progress ring divides by, and the 200 MP output limit. Hygiene only: whether
+ * the estimate counts, the tile count the progress ring divides by, and the 500 MP output limit. Hygiene only: whether
  * the two passes produce a right picture is read on the device.
  */
 class PassPlanTest {
@@ -36,10 +36,16 @@ class PassPlanTest {
         assertEquals(35, tiles(960, 1280)); assertEquals(1, tiles(200, 200)); assertEquals(4, tiles(201, 201))
     }
 
-    // The owner's photo 960x1280 (1.2288 MP): 8× gives 78.6 MP and fits, 16× gives 314.6 MP and does not.
+    // The 500 MP output limit (the owner, chat 2026-10-15 ≈ 12:14 +03:00: «давай поднимем макс лимит до 500 Мегапикселей»):
+    // the owner's 960x1280 photo now fits even at 16× (314.6 MP); the boundary itself is 31.25 MP at 4× = 500 MP.
     @Test fun outputLimitOnTheOwnersPhoto() {
         val mp = 960f * 1280 / 1_000_000f
-        assertTrue(fits(mp, 8)); assertFalse(fits(mp, 16))
-        assertTrue(fits(12.5f, 4)); assertFalse(fits(12.6f, 4))
+        assertTrue(fits(mp, 8)); assertTrue(fits(mp, 16))
+        assertTrue(fits(31.25f, 4)); assertFalse(fits(31.3f, 4))
+    }
+
+    // The largest input (100 MP): 2× gives 400 MP and fits, 4× gives 1600 MP and does not.
+    @Test fun outputLimitOnTheLargestInput() {
+        assertTrue(fits(100f, 2)); assertFalse(fits(100f, 4))
     }
 }

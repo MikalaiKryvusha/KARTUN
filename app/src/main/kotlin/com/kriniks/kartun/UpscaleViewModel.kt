@@ -49,7 +49,10 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         Max("realesrgan-x4plus", R.string.model_max_name, R.string.model_max_desc, 88_717f, 1_432_510f),
     }
 
+    /** The picked photo: [bitmap] at full size for the engine, [preview] at most DISPLAY_MAX_SIDE for every screen -
+     *  Android refuses to draw a bitmap over ~100 MB, and a 100 MP photo is 400 MB. */
     class Source(val uri: Uri, val name: String, val bitmap: Bitmap) {
+        val preview: Bitmap = fitForDisplay(bitmap)
         val width get() = bitmap.width
         val height get() = bitmap.height
         val megapixels get() = width.toFloat() * height / 1_000_000f
@@ -109,7 +112,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                 screen = Screen.Setup
                 preload()
             }.onFailure {
-                error = if (it is TooBig) R.string.error_too_big to MAX_INPUT_MP.toString() else R.string.error_decode to null
+                error = if (it is TooBig) R.string.error_too_big to mpLimitText() else R.string.error_decode to null
             }
         }
     }
@@ -281,25 +284,20 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                             }
                         }
                         var gpuUsed = u.usesGpu
-                        val pass = { input: Bitmap, listener: TileListener ->
-                            withFallback(chosen, u, input, listener).also { (_, gpu) -> gpuUsed = gpuUsed && gpu }.first
+                        val pass = { input: Bitmap, outScale: Int, listener: TileListener ->
+                            withFallback(chosen, u, input, outScale, listener).also { (_, gpu) -> gpuUsed = gpuUsed && gpu }.first
                         }
                         val tRun = SystemClock.elapsedRealtime()
-                        val out4 = pass(src.bitmap, report(0, pass1))
+                        // Pass 1 comes out of the engine already at the size it is needed at - the target for 1×/2×/4×,
+                        // the second pass's input (2× for 8×, 4× for 16×) otherwise: the network's 4× tiles are shrunk
+                        // inside the engine, so no full 4× image is held (photos up to MAX_INPUT_MP, the owner 11:35).
+                        val first = pass(src.bitmap, mid ?: target, report(0, pass1))
                         learnRate(chosen, gpuUsed, src.megapixels, SystemClock.elapsedRealtime() - tRun)
-                        val full = when {
-                            target == ENGINE_SCALE -> out4
-                            mid == null -> downscale(out4, src.width * target, src.height * target)
-                            else -> {
-                                // 8×: the 4× result scaled down to 2× feeds the second 4× pass (2 x 4 = 8);
-                                // 16×: the 4× result itself does (4 x 4 = 16). [AI] plans/04 step 1.
-                                // [NOT-TESTED: two passes on the device - deferred by the owner; PassPlanTest covers the plan only]
-                                val input = if (mid == ENGINE_SCALE) out4 else downscale(out4, src.width * mid, src.height * mid)
-                                pass(input, report(pass1, pass2)).also { input.recycle() }
-                            }
-                        }
+                        // 8×: the 2× result feeds the second 4× pass (2 x 4 = 8); 16×: the 4× result does (4 x 4 = 16).
+                        // [TESTED: 2026-10-15 · 8× on the Titan - testcases/reports/2026-10-15_F2_guarded_loop_device_run.md run 8, before this change]
+                        val full = if (mid == null) first else pass(first, ENGINE_SCALE, report(pass1, pass2)).also { first.recycle() }
                         val display = fitForDisplay(full)
-                        val before = Bitmap.createScaledBitmap(src.bitmap, display.width, display.height, true)
+                        val before = Bitmap.createScaledBitmap(src.preview, display.width, display.height, true)
                         Result(full, display, before, SystemClock.elapsedRealtime() - t0, gpuUsed, chosen, target)
                     }
                 }
@@ -376,14 +374,14 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
      * net with 100 px tiles → a CPU net → an honest error. A cancel is never retried. Returns the bitmap and whether the
      * GPU did the work. [NOT-TESTED: the forced GPU failure on the device - deferred by the owner]
      */
-    private fun withFallback(m: Model, u: NcnnUpscaler, input: Bitmap, listener: TileListener): Pair<Bitmap, Boolean> {
+    private fun withFallback(m: Model, u: NcnnUpscaler, input: Bitmap, outScale: Int, listener: TileListener): Pair<Bitmap, Boolean> {
         try {
-            return u.upscale(input, ENGINE_SCALE, TILE_PX, listener) to u.usesGpu
+            return u.upscale(input, ENGINE_SCALE, TILE_PX, listener, outScale) to u.usesGpu
         } catch (e: IllegalStateException) {
             Log.w(TAG, "pass failed with tile $TILE_PX (${e.message}); retry with ${TILE_PX / 2}")
         }
         try {
-            return u.upscale(input, ENGINE_SCALE, TILE_PX / 2, listener) to u.usesGpu
+            return u.upscale(input, ENGINE_SCALE, TILE_PX / 2, listener, outScale) to u.usesGpu
         } catch (e: IllegalStateException) {
             Log.w(TAG, "pass failed with tile ${TILE_PX / 2} (${e.message}); retry on the CPU")
         }
@@ -392,7 +390,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         val (param, bin) = ModelStore.files(getApplication(), m.file)
         val cpu = NcnnUpscaler.load(param.path, bin.path, useGpu = false) ?: throw EngineFailed()
         return cpu.use {
-            try { it.upscale(input, ENGINE_SCALE, TILE_PX, listener) to false }
+            try { it.upscale(input, ENGINE_SCALE, TILE_PX, listener, outScale) to false }
             catch (e: IllegalStateException) { Log.w(TAG, "CPU pass failed too (${e.message})"); throw EngineFailed() }
         }
     }
@@ -468,12 +466,18 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         const val ENGINE_SCALE = 4
         /** Tile edge in px - the value of every phase 0 run on the Titan (plans/02). */
         const val TILE_PX = 200
-        /** [AI] slice 1 input limit: 12.5 MP keeps the 4x output under 200 MP in one bitmap; phase 1 lifts it. */
-        const val MAX_INPUT_MP = 12.5f
+        /** Input limit: the owner, chat 2026-10-15 ≈ 11:35 +03:00: «нужно сделать на входе поддержку файлов больше 12 мб.
+         *  Думаю, до 100 мб можно давтаь поддержку» - read as 100 MP (the old limit he saw was «12,5 Мп»). With the
+         *  output limit below, a 100 MP photo is offered 1×, a 50 MP one up to 2×. */
+        const val MAX_INPUT_MP = 100f
         /** JPEG/WebP quality by default - the value the accepted mockup 'save' shows («Качество · 92»). */
         const val DEFAULT_QUALITY = 92
-        /** [AI] output limit, plans/04 step 1: the size the 4× of a 12.5 MP photo already reached in phase 2 slice 1. */
-        const val MAX_OUTPUT_MP = 200f
+        /** Output limit: the owner, chat 2026-10-15 ≈ 12:14 +03:00: «давай поднимем макс лимит до 500 Мегапикселей» (was
+         *  200). 500 MP in ARGB_8888 is 2.0 GB - just under Android's 2^31-byte ceiling for one Bitmap. */
+        const val MAX_OUTPUT_MP = 500f
+
+        /** The input limit as the error line shows it: «100», not «100.0». */
+        fun mpLimitText(): String = if (MAX_INPUT_MP % 1f == 0f) MAX_INPUT_MP.toInt().toString() else MAX_INPUT_MP.toString()
 
         /** The result of a [mp]-megapixel photo at [scale] fits the output limit. */
         fun fits(mp: Float, scale: Int) = mp * scale * scale <= MAX_OUTPUT_MP
@@ -510,10 +514,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                 if (it.moveToFirst()) it.getString(0) else null
             } ?: uri.lastPathSegment.orEmpty()
 
-        private fun downscale(src: Bitmap, w: Int, h: Int): Bitmap =
-            Bitmap.createScaledBitmap(src, w, h, true).also { if (it !== src) src.recycle() }
-
-        private fun fitForDisplay(full: Bitmap): Bitmap {
+        fun fitForDisplay(full: Bitmap): Bitmap {
             val side = max(full.width, full.height)
             if (side <= DISPLAY_MAX_SIDE) return full
             val k = DISPLAY_MAX_SIDE.toFloat() / side
