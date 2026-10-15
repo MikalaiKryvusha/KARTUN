@@ -17,6 +17,10 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <chrono>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "net.h"
 #include "gpu.h"
@@ -38,11 +42,30 @@ constexpr int kErrCancelled = -4;
 
 bool g_gpuInstance = false;
 
-// One loaded model: the NCNN net plus how it was configured.
+// One loaded model: the NCNN net plus how it was configured. `fixed` > 0: the net was traced at one input size (DAT2 -
+// tools/convert-model.py --fixed writes `0=<w> 1=<h>` into its Input layer); such a net gets tiles of exactly that size.
 struct Upscaler {
     ncnn::Net net;
     bool gpu = false;
+    int fixedW = 0;
+    int fixedH = 0;
 };
+
+// Reads `0=<w> 1=<h>` from the Input line of a .param text file; leaves 0 when the net takes any size. [NOT-TESTED]
+void readFixedInput(const char* paramPath, int& w, int& h) {
+    FILE* f = std::fopen(paramPath, "rb");
+    if (!f) return;
+    char line[512];
+    while (std::fgets(line, sizeof line, f)) {
+        if (std::strncmp(line, "Input", 5) != 0) continue;
+        for (char* t = std::strtok(line, " \t\r\n"); t; t = std::strtok(nullptr, " \t\r\n")) {
+            if (std::strncmp(t, "0=", 2) == 0) w = std::atoi(t + 2);
+            if (std::strncmp(t, "1=", 2) == 0) h = std::atoi(t + 2);
+        }
+        break;
+    }
+    std::fclose(f);
+}
 
 void ensureGpuInstance() {
     if (!g_gpuInstance) { ncnn::create_gpu_instance(); g_gpuInstance = true; }
@@ -84,6 +107,14 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeCreate(JNIEnv* env, jclass, js
     u->net.opt.use_fp16_packed = true;
     u->net.opt.use_fp16_arithmetic = false;  // fp16 arithmetic gives black output on some Mali/Adreno (research 03 B4)
     u->net.opt.num_threads = threads > 0 ? threads : 4;
+    readFixedInput(param, u->fixedW, u->fixedH);
+    if (u->fixedW > 0) {
+        // A fixed-size net is a DAT transformer: in fp16 storage its first Gemm overflows to inf (ncnn 20260526, seen on
+        // the PC's Vulkan GPU 2026-10-15; fp32 storage gives 66.6 dB against PyTorch) - keep its blobs in fp32.
+        u->net.opt.use_fp16_storage = false;
+        u->net.opt.use_fp16_packed = false;
+        LOGI("fixed input %dx%d, fp32 storage", u->fixedW, u->fixedH);
+    }
     const int rp = u->net.load_param(param);
     const int rm = u->net.load_model(bin);
     env->ReleaseStringUTFChars(jparam, param);
@@ -100,6 +131,25 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeCreate(JNIEnv* env, jclass, js
 JNIEXPORT void JNICALL
 Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeDestroy(JNIEnv*, jclass, jlong handle) {
     delete reinterpret_cast<Upscaler*>(handle);
+}
+
+// Debug probe: runs the net on a flat w x h x 3 input (0.5 everywhere) up to `blob` and returns the time in ms (negative:
+// error). Extracting earlier and later blobs shows where the time goes on a device. [NOT-TESTED]
+JNIEXPORT jlong JNICALL
+Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeTimeToBlob(JNIEnv* env, jclass, jlong handle, jint w, jint h, jstring jblob) {
+    auto* u = reinterpret_cast<Upscaler*>(handle);
+    if (!u || w < 1 || h < 1) return kErrBadArgs;
+    const char* blob = env->GetStringUTFChars(jblob, nullptr);
+    ncnn::Mat in(w, h, 3);
+    in.fill(0.5f);
+    const auto t0 = std::chrono::steady_clock::now();
+    ncnn::Extractor ex = u->net.create_extractor();
+    ex.input("data", in);
+    ncnn::Mat out;
+    const int rc = ex.extract(blob, out);
+    const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - t0).count();
+    env->ReleaseStringUTFChars(jblob, blob);
+    return rc != 0 ? kErrExtract : static_cast<jlong>(ms);
 }
 
 // Averages each f x f block of an RGBA tile into one pixel of `dst` (row pitch `dstStride`): the network's 4x tile shrunk
@@ -129,6 +179,8 @@ JNIEXPORT jint JNICALL
 Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, jlong handle, jobject input,
                                                           jobject output, jint scale, jint outScale, jint tile, jobject listener) {
     auto* u = reinterpret_cast<Upscaler*>(handle);
+    // A fixed-size net decides the tile itself: its input minus the context on both sides.
+    if (u && u->fixedW > 0) tile = std::min(u->fixedW, u->fixedH) - 2 * kPrepadding;
     if (!u || scale < 1 || outScale < 1 || scale % outScale != 0 || tile < 16) return kErrBadArgs;
     const int shrink = scale / outScale;
 
@@ -177,6 +229,13 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, j
             ncnn::Mat in = ncnn::Mat::from_pixels(inBase + static_cast<size_t>(y0) * inInfo.stride + static_cast<size_t>(x0) * 4,
                                                   ncnn::Mat::PIXEL_RGBA2RGB, x1 - x0, y1 - y0, static_cast<int>(inInfo.stride));
             in.substract_mean_normalize(nullptr, norm);
+            // A fixed-size net: edge tiles (and small images) are padded on the right and bottom by repeating the last
+            // row/column; the crop below takes the real region from the top-left, so the padding never reaches the output.
+            if (u->fixedW > 0 && (in.w < u->fixedW || in.h < u->fixedH)) {
+                ncnn::Mat padded;
+                ncnn::copy_make_border(in, padded, 0, u->fixedH - in.h, 0, u->fixedW - in.w, ncnn::BORDER_REPLICATE, 0.f);
+                in = padded;
+            }
 
             ncnn::Extractor ex = u->net.create_extractor();
             ex.input("data", in);
@@ -204,6 +263,7 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, j
             }
 
             ++done;
+            LOGI("tile %d/%d %dx%d", done, total, in.w, in.h);  // logcat time stamps give the per-tile time
             if (onTile && !env->CallBooleanMethod(listener, onTile, done, total)) rc = kErrCancelled;
             if (env->ExceptionCheck()) { env->ExceptionClear(); rc = kErrCancelled; }
         }

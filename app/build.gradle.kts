@@ -34,6 +34,13 @@ android {
             resValue("string", "app_name", "KARTUN")
         }
     }
+    // The «Отладка» section and the engine probe screen live in src/debug (code and strings ship only in «Debug KARTUN»,
+    // the owner, chat 2026-10-15 ≈ 15:35 +03:00: «в дебаг сборке приложения»); stage and release get the empty
+    // DebugTools of src/nodebug with the same API.
+    sourceSets {
+        getByName("stage") { kotlin.directories.add("src/nodebug/kotlin") }
+        getByName("release") { kotlin.directories.add("src/nodebug/kotlin") }
+    }
     // Model files stay uncompressed in the APK: ModelStore reads their size through AssetManager.openFd, which only
     // works for stored (not deflated) assets, and the copy out of the APK is a plain stream.
     androidResources {

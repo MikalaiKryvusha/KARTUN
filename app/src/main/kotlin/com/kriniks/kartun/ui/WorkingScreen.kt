@@ -67,7 +67,7 @@ private const val FIGURE_SPACE = '\u2007'
 
 /** One metric tile of the panel: a small upper-case label over a value in tabular figures. */
 @Composable
-private fun Metric(label: String, value: String, modifier: Modifier) {
+internal fun Metric(label: String, value: String, modifier: Modifier) {
     val c = MaterialTheme.colorScheme
     Column(modifier.clip(RoundedCornerShape(16.dp)).background(c.surfaceContainer).padding(horizontal = 12.dp, vertical = 10.dp)) {
         Text(label.uppercase(LocalConfiguration.current.locales[0]), style = MaterialTheme.typography.labelSmall, color = c.onSurfaceVariant, maxLines = 1)

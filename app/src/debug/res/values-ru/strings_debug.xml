@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Только отладочная сборка (src/debug): раздел «Отладка» в настройках и экран пробы движка. -->
+<resources>
+    <string name="dbg_section">Отладка</string>
+    <string name="dbg_probe">Проба движка</string>
+    <string name="dbg_probe_sub">Одна модель на одной картинке, на видеочипе или процессоре, с живыми записями и загрузкой устройства</string>
+    <string name="dbg_title">Проба движка</string>
+    <string name="dbg_model">Модель</string>
+    <string name="dbg_picture">Картинка</string>
+    <string name="dbg_mode">Режим</string>
+    <string name="dbg_mode_gpu">Видеочип (Vulkan)</string>
+    <string name="dbg_mode_cpu">Процессор</string>
+    <string name="dbg_start">Запустить</string>
+    <string name="dbg_cancel">Остановить</string>
+    <string name="dbg_again">Ещё раз</string>
+    <string name="dbg_no_pictures">Картинок пока нет. Положите PNG или JPEG в %1$s (adb push).</string>
+    <string name="dbg_cpu">Процессор</string>
+    <string name="dbg_ram">ОЗУ</string>
+    <string name="dbg_ram_value">свободно %1$.1f из %2$.1f ГБ · KARTUN %3$d МБ</string>
+    <string name="dbg_gpu">Видеочип</string>
+    <string name="dbg_gpu_busy">считает · %1$d с</string>
+    <string name="dbg_gpu_idle">свободен</string>
+    <string name="dbg_log_start">Проба: %1$s на %2$s (%3$d×%4$d), %5$s</string>
+    <string name="dbg_log_device">Видеочип устройства: %1$s</string>
+    <string name="dbg_log_loading">Загружаю модель…</string>
+    <string name="dbg_log_loaded_gpu">Модель загружена на видеочип за %1$.1f с</string>
+    <string name="dbg_log_loaded_cpu">Модель загружена на процессор за %1$.1f с</string>
+    <string name="dbg_log_fixed">Модель берёт куски %1$d×%1$d: картинка режется на %2$d шт.</string>
+    <string name="dbg_log_tile">Кусок %1$d из %2$d · %3$.1f с</string>
+    <string name="dbg_log_done">Готово: %1$d×%2$d за %3$.1f с · сохранено как %4$s</string>
+    <string name="dbg_log_cancelled">Остановлено</string>
+    <string name="dbg_log_error">Ошибка: %1$s</string>
+    <string name="dbg_cores">Частота ядер, ГГц: %1$s</string>
+    <string name="dbg_thread_engine">движок</string>
+    <string name="dbg_thread_ncnn">ncnn на процессоре</string>
+    <string name="dbg_thread_mali">драйвер Mali</string>
+    <string name="dbg_thread_render">отрисовка</string>
+    <string name="dbg_thread_ui">интерфейс</string>
+    <string name="dbg_log_blob_start">Считаю до слоя %1$s…</string>
+    <string name="dbg_log_blob">До слоя %1$s: %2$d мс</string>
+</resources>

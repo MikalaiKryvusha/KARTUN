@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug build only (src/debug): the «Debug» settings group and the engine probe screen. -->
+<resources>
+    <string name="dbg_section">Debug</string>
+    <string name="dbg_probe">Engine probe</string>
+    <string name="dbg_probe_sub">One model on one picture, on the GPU or the CPU, with live logs and device load</string>
+    <string name="dbg_title">Engine probe</string>
+    <string name="dbg_model">Model</string>
+    <string name="dbg_picture">Picture</string>
+    <string name="dbg_mode">Mode</string>
+    <string name="dbg_mode_gpu">GPU (Vulkan)</string>
+    <string name="dbg_mode_cpu">CPU</string>
+    <string name="dbg_start">Start</string>
+    <string name="dbg_cancel">Stop</string>
+    <string name="dbg_again">Again</string>
+    <string name="dbg_no_pictures">No pictures yet. Put a PNG or JPEG into %1$s (adb push).</string>
+    <string name="dbg_cpu">CPU</string>
+    <string name="dbg_ram">RAM</string>
+    <string name="dbg_ram_value">%1$.1f of %2$.1f GB free · KARTUN %3$d MB</string>
+    <string name="dbg_gpu">GPU</string>
+    <string name="dbg_gpu_busy">computing · %1$d s</string>
+    <string name="dbg_gpu_idle">idle</string>
+    <string name="dbg_log_start">Probe: %1$s on %2$s (%3$d×%4$d), %5$s</string>
+    <string name="dbg_log_device">Device GPU: %1$s</string>
+    <string name="dbg_log_loading">Loading the model…</string>
+    <string name="dbg_log_loaded_gpu">Model loaded on the GPU in %1$.1f s</string>
+    <string name="dbg_log_loaded_cpu">Model loaded on the CPU in %1$.1f s</string>
+    <string name="dbg_log_fixed">The model takes %1$d×%1$d pieces: the picture is cut into %2$d of them</string>
+    <string name="dbg_log_tile">Piece %1$d of %2$d · %3$.1f s</string>
+    <string name="dbg_log_done">Done: %1$d×%2$d in %3$.1f s · saved as %4$s</string>
+    <string name="dbg_log_cancelled">Stopped</string>
+    <string name="dbg_log_error">Error: %1$s</string>
+    <string name="dbg_cores">Core clocks, GHz: %1$s</string>
+    <string name="dbg_thread_engine">engine</string>
+    <string name="dbg_thread_ncnn">ncnn on the CPU</string>
+    <string name="dbg_thread_mali">Mali driver</string>
+    <string name="dbg_thread_render">rendering</string>
+    <string name="dbg_thread_ui">interface</string>
+    <string name="dbg_log_blob_start">Running up to layer %1$s…</string>
+    <string name="dbg_log_blob">Up to layer %1$s: %2$d ms</string>
+</resources>

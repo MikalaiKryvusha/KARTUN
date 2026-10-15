@@ -124,6 +124,9 @@ fun SettingsScreen(vm: UpscaleViewModel, onBack: () -> Unit) {
                     onInfo = null, onClick = vm::openTerms,
                 ) { Text("›", style = MaterialTheme.typography.titleMedium, color = c.onSurfaceVariant) }
             }
+            // «Отладка» - the debug build only (src/debug); empty in stage and release.
+            com.kriniks.kartun.DebugTools.SettingsSection()
+            Spacer(Modifier.size(12.dp))
         }
     }
     when (info) {

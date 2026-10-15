@@ -43,6 +43,15 @@ class NcnnUpscaler private constructor(private var handle: Long, val usesGpu: Bo
         return out
     }
 
+    /**
+     * Debug probe: runs the net on a flat w×h input up to [blob] (a blob name from the .param) and returns the time in ms,
+     * or a negative code. Finds which layer is slow on a device - the debug build's probe screen calls it. [NOT-TESTED]
+     */
+    fun timeToBlob(w: Int, h: Int, blob: String): Long {
+        check(handle != 0L) { "upscaler is closed" }
+        return nativeTimeToBlob(handle, w, h, blob)
+    }
+
     override fun close() {
         if (handle != 0L) nativeDestroy(handle)
         handle = 0L
@@ -66,6 +75,7 @@ class NcnnUpscaler private constructor(private var handle: Long, val usesGpu: Bo
         @JvmStatic private external fun nativeGpuInfo(): String
         @JvmStatic private external fun nativeCreate(param: String, bin: String, useGpu: Boolean, threads: Int): Long
         @JvmStatic private external fun nativeDestroy(handle: Long)
+        @JvmStatic private external fun nativeTimeToBlob(handle: Long, w: Int, h: Int, blob: String): Long
         @JvmStatic private external fun nativeUpscale(
             handle: Long, input: Bitmap, output: Bitmap, scale: Int, outScale: Int, tile: Int, listener: TileListener?,
         ): Int

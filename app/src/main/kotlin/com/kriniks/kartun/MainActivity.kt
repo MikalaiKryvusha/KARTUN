@@ -27,7 +27,8 @@ import com.kriniks.kartun.ui.theme.KartunTheme
 /**
  * The one activity: the main path of phase 2 (plans/03) - home → setup → processing → result, switched by
  * [UpscaleViewModel.screen]. Photos come from the system photo picker (no storage permission, plans/01 §2.3) or from
- * another app's «Поделиться» (ACTION_SEND). An adb launch with the `in` extra runs the phase 0 [EngineProbe]. [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
+ * another app's «Поделиться» (ACTION_SEND). An adb launch with the `in` extra opens the debug build's engine probe screen
+ * ([DebugTools]). [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
  */
 class MainActivity : ComponentActivity() {
 
@@ -36,10 +37,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        // The phase 0 adb probe exists only in debuggable builds (debug, stage); a release ignores the `in` extra.
-        if (BuildConfig.DEBUG && EngineProbe.runIfRequested(this, intent)) return
+        // The adb engine probe (tools/titan-probe.mjs, the `in` extra) opens the debug build's probe screen; stage and
+        // release ignore it (src/nodebug/DebugTools).
+        if (savedInstanceState == null) DebugTools.onIntent(this, intent)
         if (savedInstanceState == null) sharedImage(intent)?.let(vm::open)
-        setContent { KartunTheme { KartunApp(vm) } }
+        setContent { KartunTheme { if (!DebugTools.Overlay()) KartunApp(vm) } }
     }
 
     override fun onStart() { super.onStart(); ProcessingState.appVisible = true }
