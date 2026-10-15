@@ -62,10 +62,14 @@ const formations = {
     // Builds pixel by pixel from the bottom, then stands assembled: a soft beat and a colour wave running across it.
     name: 'сердце', size: .1, stagger: 1500, count: heartPts.length,
     target: i => heartPts[i],
-    life: (i, t, [x, y]) => {
+    life: (i, t) => {
+      // Random colour play, no wave (the owner, ≈ 12:53: «сердце собранное у тебя сейчас переливается волной цвета, а я хочу,
+      // чтобы рандомные переливы цветов были»): every pixel has its own pace and phase, and now and then one flares up.
       const beat = Math.pow(Math.max(0, Math.sin(t / 420)), 8);
-      const wave = .5 + .5 * Math.sin((x + y) * 9 - t / 380);                 // a diagonal shimmer across the heart
-      return { k: 1 + beat * .1, c: mix(DEEP, mix(PINK, LIGHT, wave * .6), .55 + .45 * wave) };
+      const h1 = (i * 0.6180339) % 1, h2 = (i * 0.4142135) % 1, h3 = (i * 0.7320508) % 1;   // fixed per-pixel randomness
+      const play = .5 + .5 * Math.sin(t / (380 + h1 * 700) + h2 * 6.283) * Math.sin(t / (900 + h3 * 900) + h1 * 6.283);
+      const flare = Math.max(0, Math.sin(t / (1700 + h2 * 2300) + h3 * 6.283) - .93) / .07;     // a rare short flash
+      return { k: 1 + beat * .1 + flare * .08, c: mix(mix(DEEP, PINK, .35 + .65 * play), LIGHT, flare * .8) };
     },
   },
   ring: {
