@@ -102,6 +102,8 @@
     <string name="info_language_text">The system list of KARTUN\'s languages opens: the app\'s language can differ from the phone\'s.</string>
     <!-- The model card line: what the model is for, then the estimate (mockup .mrow .f). Language-neutral glue. -->
     <string name="model_desc_with_estimate" translatable="false">%1$s · ≈ %2$s</string>
+    <!-- The catalogue card line: what the model is for, then its exact size («Фото · 34 МБ»). Language-neutral glue. -->
+    <string name="model_desc_with_size" translatable="false">%1$s · %2$s</string>
     <!-- The user guide (mockups 'settings' / 'manual'); the Russian lines are the mockup's. -->
     <string name="manual_title">Guide</string>
     <string name="settings_manual">User guide</string>

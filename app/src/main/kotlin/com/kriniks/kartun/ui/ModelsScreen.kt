@@ -132,7 +132,7 @@ private fun ModelRow(
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(m.name, style = MaterialTheme.typography.titleSmall)
-                Text(stringResource(R.string.model_desc_with_estimate, stringResource(purposeRes(m.purpose)), sizeMb(m.bytes)),
+                Text(stringResource(R.string.model_desc_with_size, stringResource(purposeRes(m.purpose)), sizeMb(m.bytes)),
                     style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
             }
             when {

@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-14 (agent, autonomous window 21:56–22:26; the owner's orders in chat)
 > **Родитель:** `plans/03_epic01_F2_screens.md` step 22 («В экране выбора всех моделей нужно картинку показывать превью по каждой модели» · «моделей нужно сильно больше добавить») and step 40 (ToU); `MASTER_PLAN.md` phase 4 («каталог моделей со скачиванием на устройство») and the decision-log row 2026-10-14 ≈ 22:04 (variant B); interview #002 (licence badges as Upscayl shows them)
-> **Статус:** 🔧 2026-10-15 14:17 +03:00 — step 0 done (`researches/07_best_models_recon.md`); 12 models in the catalogue, 7 converted by `tools/convert-model.py`; the owner's APK pick NomosWebPhoto RealPLKSR + NMKD Siax (journal 14:12–14:14); none of the new ones run on the Titan yet
+> **Статус:** 🔧 2026-10-16 00:51 +03:00 — steps 2–6 built (`fc6b8d5`), the release `models` is up (29 assets), criteria 1, 3, 4 pass on the Titan (`testcases/reports/2026-10-16_catalogue_device_run.md`); open: the preview subjects from the owner's themes, the download ring seen on the device · 2026-10-15 14:17 — step 0 done (`researches/07_best_models_recon.md`); 12 models in the catalogue, 7 converted by `tools/convert-model.py`; the owner's APK pick NomosWebPhoto RealPLKSR + NMKD Siax (journal 14:12–14:14); none of the new ones run on the Titan yet
 > **Вовне:** the owner — which non-commercial models without ready ncnn files to take (UltraMix, Remacri); the GitHub release `models` is created on the first upload
 
 ## Goal vector
@@ -66,9 +66,9 @@ licence text beside it; the non-commercial ones stay there only while KARTUN is 
    `docs/model-previews/<id>.webp`, 9–19 KB each, linked from the catalogue; a drawing sample for anime models still to do.
    Step 2's generator, 22:21: `tools/catalogue.mjs` writes `app/src/main/assets/catalogue.json` (shape, hash, NC-not-commercial
    checks); `--check` proved red on a hand-edited copy (DRIFT, exit 1), green after rewriting.
-4. [ ] The release `models`: upload files + licence texts with `gh release upload`; a tool `tools/publish-models.mjs`
+4. [x] (2026-10-16 ≈ 00:35: `tools/publish-models.mjs`, 12 models + 5 licence texts, prerelease, not «latest») The release `models`: upload files + licence texts with `gh release upload`; a tool `tools/publish-models.mjs`
    checks every hash against the catalogue before upload.
-5. [ ] The app: a downloader (resume-safe, hash-verified, into app storage), the «Все модели» screen with cards
+5. [x] (2026-10-16, `fc6b8d5`: ModelDownloader, ModelStore, ModelsScreen; the ring not yet seen on the device) The app: a downloader (resume-safe, hash-verified, into app storage), the «Все модели» screen with cards
    (preview, author, badge, size, «Скачать» / «Удалить»), downloaded models on «Улучшение» by recency.
    The owner's words for this step (chat 2026-10-15 ≈ 11:36–11:40 +03:00), each an acceptance line:
    - «модели, которые скачаны - нужно давать возможность их удалять через экран "Все модели"» · «нужно давтаь
@@ -78,8 +78,8 @@ licence text beside it; the non-commercial ones stay there only while KARTUN is 
    - «хранить их в директории приложения» → `Context.filesDir/models/` (private, removed with the app).
    - «при скачивании модели в ее плашке нужно крутить кольцо-прогресса с процентами, сколько мегабайт модели скачено»
      → while downloading, the card shows a small percent ring (round ends, like the processing ring) and «12 из 33 МБ».
-6. [ ] The ToU line on each card: «Модель принадлежит автору: <name>» (plan 03 step 40).
-7. [ ] Titan run of criteria 1–4 → run report.
+6. [x] (2026-10-16: «Модель принадлежит автору: …» on every card) The ToU line on each card: «Модель принадлежит автору: <name>» (plan 03 step 40).
+7. [~] Titan run of criteria 1–4 → run report: `testcases/reports/2026-10-16_catalogue_device_run.md` (partial).
 
 ## Risks
 

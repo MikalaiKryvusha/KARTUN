@@ -48,8 +48,6 @@ if (bad) process.exit(1);
 // The app needs only what it shows and checks; the source note stays in the docs.
 const app = { release: src.release, models: src.models.map(({ source, rateSource, preview, ...m }) => m) };
 const previews = src.models.map((m) => [join('docs', m.preview), join(PREVIEW_DIR, `${m.id}.webp`)]);
-// The «before» half of every card's thumbnail: the same crop enlarged bicubically (tools/make-previews.py).
-previews.push([join('docs', 'model-previews', '_bicubic.webp'), join(PREVIEW_DIR, '_bicubic.webp')]);
 const text = JSON.stringify(app, null, 1) + '\n';
 if (process.argv.includes('--check')) {
   const now = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
