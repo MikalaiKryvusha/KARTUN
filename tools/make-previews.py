@@ -41,8 +41,8 @@ SUBJECTS = {  # the owner's themes, 2026-10-16 ≈ 00:30: «природа, гр
     "4xNomosWebPhoto-RealPLKSR-fp16": "cat.jpg",
     "4x-ClearRealityV1-fp16": "flowers_bee.jpg",  # portrait.jpg waits for the owner (an identifiable person)
     "4x-Remacri-fp16": "meadow.jpg",
-    "4x-UltraMix-Balanced-fp16": "winter.jpg",  # the owner: «зиму чуть другую, тут много белого» · «сосновый зимний лес да, но другой»
-    "4x-UltraSharpV2-Lite-fp16": ("black_panther.jpg", 0.5, 0.47, 0.95),  # «черную пантеру вместо той на полке»
+    "4x-UltraMix-Balanced-fp16": ("winter2.jpg", 0.55, 0.45, 1.0),  # «и лапу заснеженную меняем»; his examples: firs on a deep blue sky with a peak  # the owner: «зиму чуть другую, тут много белого» · «сосновый зимний лес да, но другой»
+    "4x-UltraSharpV2-Lite-fp16": ("black_panther2.jpg", 0.30, 0.50, 1.0),  # «нужен более профессиональный снимок»; the owner picked Bruce McAdam's  # «черную пантеру вместо той на полке»
     "4x-UltraSharpV2-fp16": "christmas_tree.jpg",
 }
 
