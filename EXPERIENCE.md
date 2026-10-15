@@ -90,6 +90,18 @@
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
 
+### EXP-0028 · 2026-10-16 · ❌ · #owner-reviews #contour #timeout
+class: stand-left-dirty
+**Context:** raising interview #005 to the owner with the review contour's page.
+**Tried / did:** `timeout 60 node .kaif/tools/contour/review.mjs --queue` — the timeout was there to keep the tool call short.
+**Result:** ❌ the page's local server lives in that process; `timeout` killed it after 60 s, and the owner's «send» failed
+(«упал твой контур»); he pasted the page's answer JSON into the chat instead — the answers were applied from there.
+**Lesson:** the queue command SERVES the page — run it in the background (or plain, without a timeout), never under `timeout`.
+**Repro:** `timeout 60 node .kaif/tools/contour/review.mjs --queue`, answer on the page after 60 s → the send fails.
+**Trigger:** about to start any command that serves a page the owner will use.
+**Not for:** `--check`, `--list` and other one-shot queue commands.
+mechanized: no — the command cannot see the wrapper that kills it
+
 ### EXP-0027 · 2026-10-16 · ❌→✅ · #shell #heredoc #bash #script
 class: shell-lied
 **Context:** editing Kotlin/Python files through a Bash-tool call that held a quoted heredoc (`<<'EOF'`) with a Python

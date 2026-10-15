@@ -3,7 +3,7 @@
 > Topic: шесть решений об API для ИИ-агентов (ADB и локальная сеть), которые меняют то, что видит пользователь и кто может пользоваться его планшетом; фаза A (ADB) ждёт только Q3
 > Source of the idea: слово владельца 2026-10-15 ≈ 23:55 +03:00 «API для ИИ-агентов по ADB и HTTPS (ideas/02); Сейчас делаем!» и ≈ 23:58 «чтобы IP девайса и порт приложения можно было дать, и этого хватало для работы по локальной сети»; `plans/06_EPIC_agent_api.md` §6; `researches/10_agent_api_recon.md` §2
 > Created: 2026-10-16 00:59 +03:00
-> Status: ❓ ждёт ответа владельца
+> Status: **✅ ANSWER RECEIVED 2026-10-16 01:00 +03:00** — Q1 = A, Q2 = A, Q3 = A, Q4 = B, Q5 = B, Q6 = B (the page's answer JSON pasted in chat by Mikalai Kryvusha); applied to `plans/06_EPIC_agent_api.md` §6
 
 ## Context / what I already found
 
@@ -34,6 +34,8 @@
   - Check. Без `-k` команда отказывает с ошибкой сертификата; с `-k` — PNG 4×.
 - **C) your own answer** —
 
+**Ответ (16 октября 2026, 01:00 (+03:00)):** A) <!-- owner-review: by Mikalai Kryvusha · 16 октября 2026, 01:00 (+03:00) · chat paste -->
+
 ### Q2. Нужен ли ключ доступа?
 
 **Answer target:** `plans/06_EPIC_agent_api.md` §6.2, фаза B
@@ -54,6 +56,8 @@
   - Result. Без ключа — отказ; с ключом — PNG. Агенту каждый раз нужно переписать ключ с экрана планшета.
   - Check. `curl` без заголовка получает `401`, с заголовком — PNG.
 - **C) your own answer** —
+
+**Ответ (16 октября 2026, 01:00 (+03:00)):** A) <!-- owner-review: by Mikalai Kryvusha · 16 октября 2026, 01:00 (+03:00) · chat paste -->
 
 ### Q3. Пускать ли агентов по кабелю (ADB) в обычной сборке «KARTUN»?
 
@@ -76,6 +80,8 @@
   - Check. С релизной сборкой CLI печатает ошибку, с отладочной — PNG.
 - **C) your own answer** —
 
+**Ответ (16 октября 2026, 01:00 (+03:00)):** A) <!-- owner-review: by Mikalai Kryvusha · 16 октября 2026, 01:00 (+03:00) · chat paste -->
+
 ### Q4. Помнит ли станция, что была включена?
 
 **Answer target:** `plans/06_EPIC_agent_api.md` §6.4, фаза B
@@ -96,6 +102,8 @@
   - Result. Станция отвечает сразу; в шторке висит уведомление «Станция включена».
   - Check. После перезагрузки и запуска KARTUN `curl` получает `200` без касаний настроек.
 - **C) your own answer** —
+
+**Ответ (16 октября 2026, 01:00 (+03:00)):** B) <!-- owner-review: by Mikalai Kryvusha · 16 октября 2026, 01:00 (+03:00) · chat paste -->
 
 ### Q5. Только домашний Wi-Fi или ещё и Tailscale?
 
@@ -118,6 +126,8 @@
   - Check. Запрос с адреса `100.x` получает `200`.
 - **C) your own answer** —
 
+**Ответ (16 октября 2026, 01:00 (+03:00)):** B) <!-- owner-review: by Mikalai Kryvusha · 16 октября 2026, 01:00 (+03:00) · chat paste -->
+
 ### Q6. Делать ли сразу MCP-сервер для Claude Code?
 
 **Answer target:** `plans/06_EPIC_agent_api.md` §6.6
@@ -138,3 +148,5 @@
   - Result. Без чтения документа; фаза B (сеть) сдвигается на время MCP.
   - Check. `claude mcp list` показывает `kartun`, вызов инструмента возвращает путь к PNG.
 - **C) your own answer** —
+
+**Ответ (16 октября 2026, 01:00 (+03:00)):** B) <!-- owner-review: by Mikalai Kryvusha · 16 октября 2026, 01:00 (+03:00) · chat paste -->

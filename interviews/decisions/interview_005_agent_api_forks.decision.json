@@ -1,0 +1,42 @@
+{
+  "kind": "interview",
+  "document": "interviews/interview_005_agent_api_forks.md",
+  "by": "Mikalai Kryvusha",
+  "at": "2026-10-15T22:00:14.000Z",
+  "atHuman": "16 октября 2026, 01:00 (+03:00)",
+  "transport": "chat (the page's answer JSON pasted by the owner; the page's server had been killed by the agent's `timeout 60`)",
+  "comment": "",
+  "answers": {
+    "Q1": {
+      "choice": "A",
+      "text": "",
+      "comment": ""
+    },
+    "Q2": {
+      "choice": "A",
+      "text": "",
+      "comment": ""
+    },
+    "Q3": {
+      "choice": "A",
+      "text": "",
+      "comment": ""
+    },
+    "Q4": {
+      "choice": "B",
+      "text": "",
+      "comment": ""
+    },
+    "Q5": {
+      "choice": "B",
+      "text": "",
+      "comment": ""
+    },
+    "Q6": {
+      "choice": "B",
+      "text": "",
+      "comment": ""
+    }
+  },
+  "rev": "8fe9801ad39ae5d6b2d44468db0c4b57cb1c51eb359b65c290e8f1bf40f49608"
+}
