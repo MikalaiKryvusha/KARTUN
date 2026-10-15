@@ -4,11 +4,10 @@
 > изменении. STATUS — сводка «сейчас»; закрытое переезжает дословно в `PROJECT_HISTORY.md`.
 > Принцип мышления — `PHILOSOPHY.md`; рабочий канон — `AGENT_GUIDE.md`; стенд и правила владельца — `HOUSE_RULES.md`.
 
-Последняя сессия: 2026-10-14 23:13 – 2026-10-15 00:49 +03:00, закрыта мягко по слову владельца «закрыть чат» (сводка — в
-`PROJECT_HISTORY.md`).
+Последняя сессия: 2026-10-15 11:06 – 13:14 +03:00, закрыта мягко по слову владельца «продолжай автономно 15 минут… а затем
+закрывай чат» (сводка — в `PROJECT_HISTORY.md`).
 
-Неисправленные ложные утверждения: нет. Найденное и исправленное: «Ждёт владельца: удалить `D:\Android` … `adb` падает с
-`10013`» — устарело в 00:2x (папка удалена, `adb` из `C:\Android` подключается), исправлено в этом STATUS при закрытии.
+Неисправленные ложные утверждения: нет.
 
 ---
 
@@ -37,19 +36,11 @@
 приложения — `node tools/catalogue.mjs` (`--check`). Файлы моделей лежат вне git в `engine/third_party/catalogue/` и
 `engine/third_party/realesrgan-win/models/`.
 
-**Проверки на ПК** (зелёные на 22:21): `.\gradlew.bat :app:testDebugUnitTest assembleDebug` (25 JVM-тестов) ·
-`gradlew :app:lintDebug` — 0 ошибок, 11 предупреждений · `python tools/make-translations.py --check` ·
+**Проверки на ПК** (зелёные 2026-10-15 13:10): `.\gradlew.bat :app:testDebugUnitTest assembleDebug` (29 JVM-тестов) ·
+`gradlew :app:lintDebug` — 0 ошибок, 15 предупреждений · `python tools/make-translations.py --check` ·
 `node tools/check-app-names.mjs` · `node tools/catalogue.mjs --check`.
 
 **Сборки:** `debug` («Debug KARTUN»), `stage` («Stage KARTUN»), `release` («KARTUN») — правило R3 в `HOUSE_RULES.md`.
-
-**Медиа Титана — закрыто** (`ideas/01_DONE_…`, 2026-10-15 00:46): Telegram, свои кадры из `Download` и `DCIM/Camera` лежат в
-`J:\OLD_HDD\Pic\Фото\2026\<сезон>\`, сверены по SHA-256; на Титане свободно 55 ГБ из 225. ⚠ Три видео `Download/Quick Share`
-удалены без копии (EXP-0013).
-
-**Инструменты Android — в `C:\Android`** (перенос с D: 2026-10-15 00:16, 71 273 файла, 8,95 ГБ, сверено): SDK, `gradle-home`,
-`private\ui-agent`; пути в KARTUN (`43b0123`) и KAST (`8d730a20`) переписаны; `D:\Android` больше нет (проверено 00:2x), NordVPN исключает
-`C:\Android\Sdk\platform-tools\adb.exe` — `adb` до Титана проверен 00:2x.
 
 ---
 
@@ -80,6 +71,7 @@
    приложения, кольцо с процентами при скачивании).
 2b. **Замечено, не сделано:** имя файла из системной галереи приходит как «63282.jpg» (номер, а не `photo1.jpg`) — `[AI]`
    гипотеза: так отдаёт имена сама галерея Android, без разрешения на медиа настоящего имени не узнать — проверить источником;
+   скриншоты README (`docs/screenshots/`) показывают старую панель обработки — переснять `tools/shoot-readme.mjs` на Титане;
    у широкой панорамы ручка «До/После» стоит над фото (центр видимой области, а не самой картинки); оценка времени на огромных
    фото занижена (10:29 против 15:29); lint 13:10 — 0 ошибок, 15 предупреждений: строки `working_tiles` / `working_starting` /
 `working_elapsed` / `working_pass` больше не используются (их заменили плитки B1) — удалить из `values*` и из позиционных

@@ -71,7 +71,7 @@ Sections: 1 What it does · 2 Screens · 3 Models and speed · 4 Privacy · 5 Fo
 |---|---|
 | Home | pick a photo, paste a link, or read how to send a photo from another app |
 | Enhance | see the photo and its size, pick the model and the scale, start; swipe up to fold the photo into a row, pull the handle down to open it full screen |
-| Processing | watch the ring and the tiles fill in, see the time left, cancel |
+| Processing | watch the ring and the tiles fill in, see the time spent and the time left, cancel |
 | Result | compare before and after, save, share |
 | Settings | GPU acceleration, notifications, language, the user guide, «About» with the device, the author and the licences, the terms of use |
 
@@ -107,8 +107,8 @@ original weights; its output differs from the original PyTorch network by 52.3 d
 |---|---|
 | Input | any picture format Android itself opens: JPEG, PNG, WebP, HEIC, AVIF, GIF, BMP and others |
 | Output | PNG (lossless), JPEG and WebP with a quality slider; WebP up to 16 383 px per side |
-| Largest input photo | 12.5 MP |
-| Largest result | 200 MP |
+| Largest input photo | 100 MP |
+| Largest result | 500 MP |
 | 8× and 16× | two passes of the network: four to sixteen times longer than 2×–4× |
 | Translations | English and Russian are written by hand; the other eight are drafts waiting for native speakers |
 
@@ -216,7 +216,7 @@ Vulkan.
 |---|---|
 | Главный | выбирают фото, вставляют ссылку или читают, как отправить фото из другого приложения |
 | «Улучшение» | видят фото и его размер, выбирают модель и масштаб, запускают; свайп вверх сворачивает фото в строку, хендл вниз раскрывает его на весь экран |
-| Обработка | следят за кольцом и тайлами, видят оставшееся время, могут отменить |
+| Обработка | следят за кольцом и тайлами, видят, сколько прошло и сколько осталось, могут отменить |
 | Результат | сравнивают «до» и «после», сохраняют, делятся |
 | Настройки | ускорение GPU, уведомления, язык, руководство пользователя, «О приложении» с устройством, автором и лицензиями, условия использования |
 
@@ -252,8 +252,8 @@ Vulkan.
 |---|---|
 | Вход | любой формат картинки, который открывает сам Android: JPEG, PNG, WebP, HEIC, AVIF, GIF, BMP и другие |
 | Выход | PNG без потерь, JPEG и WebP с ползунком качества; WebP — до 16 383 пикселей по стороне |
-| Самое большое исходное фото | 12,5 Мп |
-| Самый большой результат | 200 Мп |
+| Самое большое исходное фото | 100 Мп |
+| Самый большой результат | 500 Мп |
 | 8× и 16× | два прохода нейросети: в 4–16 раз дольше, чем 2×–4× |
 | Переводы | английский и русский написаны руками; остальные восемь — черновики, ждут носителей языка |
 
