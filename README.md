@@ -4,30 +4,30 @@
 
 <h1 align="center">KARTUN</h1>
 
-<p align="center"><b>Krinik Android Restoration Tool for Upscaling with Neural Networks</b><br>
-Open source · Offline · AI on the device</p>
-
 <p align="center">
   <a href="#english"><img src="https://img.shields.io/badge/English-2C7BE5?style=for-the-badge" alt="English"></a>
   &nbsp;
   <a href="#russian"><img src="https://img.shields.io/badge/Русский-C0392B?style=for-the-badge" alt="Русский"></a>
 </p>
 
-<p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-  <a href="https://github.com/Tencent/ncnn"><img src="https://img.shields.io/badge/engine-ncnn%20%2B%20Vulkan-FF1A8C.svg" alt="Engine: ncnn + Vulkan"></a>
-  <a href="https://github.com/xinntao/Real-ESRGAN"><img src="https://img.shields.io/badge/models-Real--ESRGAN-6A5ACD.svg" alt="Models: Real-ESRGAN"></a>
-  <a href="#english"><img src="https://img.shields.io/badge/platform-Android%2016%2B-3DDC84.svg" alt="Platform: Android 16+"></a>
-  <a href="#english"><img src="https://img.shields.io/badge/languages-10-0EA5E9.svg" alt="10 languages"></a>
-  <a href="STATUS.md"><img src="https://img.shields.io/badge/status-early%20development-orange.svg" alt="Status: early development"></a>
-  <a href="https://github.com/MikalaiKryvusha/KAIF"><img src="https://img.shields.io/badge/framework-KAIF-7F52FF.svg" alt="Framework: KAIF"></a>
-</p>
-
 ---
 
 <a name="english"></a>
 
-## English
+<h2 align="center">KARTUN</h2>
+
+<p align="center"><b>Krinik Android Restoration Tool for Upscaling with Neural Networks</b><br>
+Open source · Offline · AI on the device</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://github.com/Tencent/ncnn"><img src="https://img.shields.io/badge/engine-ncnn_%2B_Vulkan-FF1A8C.svg" alt="engine: ncnn + Vulkan"></a>
+  <a href="#en-3"><img src="https://img.shields.io/badge/models-Real--ESRGAN_and_more-6A5ACD.svg" alt="models: Real-ESRGAN and more"></a>
+  <a href="#en-5"><img src="https://img.shields.io/badge/platform-Android_16%2B-3DDC84.svg" alt="platform: Android 16+"></a>
+  <a href="#en-1"><img src="https://img.shields.io/badge/languages-10-0EA5E9.svg" alt="languages: 10"></a>
+  <a href="#en-8"><img src="https://img.shields.io/badge/status-early_development-orange.svg" alt="status: early development"></a>
+  <a href="https://github.com/MikalaiKryvusha/KAIF"><img src="https://img.shields.io/badge/framework-KAIF-7F52FF.svg" alt="framework: KAIF"></a>
+</p>
 
 [Читать по-русски →](#russian)
 
@@ -179,7 +179,20 @@ Author: Mikalai Kryvusha (Krinik).
 
 <a name="russian"></a>
 
-## Русский
+<h2 align="center">KARTUN</h2>
+
+<p align="center"><b>Krinik Android Restoration Tool for Upscaling with Neural Networks</b><br>
+Открытый код · Без сети · ИИ на устройстве</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F-MIT-yellow.svg" alt="лицензия: MIT"></a>
+  <a href="https://github.com/Tencent/ncnn"><img src="https://img.shields.io/badge/%D0%B4%D0%B2%D0%B8%D0%B6%D0%BE%D0%BA-ncnn_%2B_Vulkan-FF1A8C.svg" alt="движок: ncnn + Vulkan"></a>
+  <a href="#ru-3"><img src="https://img.shields.io/badge/%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D0%B8-Real--ESRGAN_%D0%B8_%D0%B4%D1%80%D1%83%D0%B3%D0%B8%D0%B5-6A5ACD.svg" alt="модели: Real-ESRGAN и другие"></a>
+  <a href="#ru-5"><img src="https://img.shields.io/badge/%D0%BF%D0%BB%D0%B0%D1%82%D1%84%D0%BE%D1%80%D0%BC%D0%B0-Android_16%2B-3DDC84.svg" alt="платформа: Android 16+"></a>
+  <a href="#ru-1"><img src="https://img.shields.io/badge/%D1%8F%D0%B7%D1%8B%D0%BA%D0%B8-10-0EA5E9.svg" alt="языки: 10"></a>
+  <a href="#ru-8"><img src="https://img.shields.io/badge/%D1%81%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D0%B5-%D1%80%D0%B0%D0%BD%D0%BD%D1%8F%D1%8F_%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-orange.svg" alt="состояние: ранняя разработка"></a>
+  <a href="https://github.com/MikalaiKryvusha/KAIF"><img src="https://img.shields.io/badge/%D1%84%D1%80%D0%B5%D0%B9%D0%BC%D0%B2%D0%BE%D1%80%D0%BA-KAIF-7F52FF.svg" alt="фреймворк: KAIF"></a>
+</p>
 
 [Read in English →](#english)
 
