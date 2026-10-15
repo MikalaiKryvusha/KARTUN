@@ -86,7 +86,8 @@
 | Gradle | обёртка проекта, Gradle 9.8.1; AGP 9.4.1, Kotlin 2.4.21, Compose BOM 2026.09.00 (версии сверены 2026-10-14) | `gradle/wrapper/gradle-wrapper.properties`, `gradle/libs.versions.toml` |
 | Android Studio | не установлен — сборка только из командной строки | `ls "C:/Program Files/Android"` |
 | adb | `C:\Android\Sdk\platform-tools\adb.exe` 1.0.41 (рабочий для Tailscale); есть ещё `C:\adb\adb.exe` — первый в PATH | `which -a adb` |
-| Остальное (кодировки, локали, `tar`/`curl`/`find`) | `— not probed yet —` | |
+| Кодировка файлов скриптов | PowerShell 5.1 читает `.ps1` без BOM как ANSI: кириллица в скрипте превращается в мусор и ломает разбор строк (`TerminatorExpectedAtEndOfString` на строке, которая в исходнике верна). Скрипты PowerShell писать латиницей; нужен не-ASCII — сохранять UTF-8 **с BOM** или держать текст в отдельном файле данных | проба 2026-10-15: скрипт с русскими `Write-Host` упал при запуске, тот же скрипт латиницей отработал |
+| Остальное (локали, `tar`/`curl`/`find`) | `— not probed yet —` | |
 
 ## 5. Маршруты, рецепты и соглашения — указатель своей работы
 

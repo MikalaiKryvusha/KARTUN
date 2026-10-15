@@ -727,6 +727,14 @@ reproduces in JS/JSON/YAML anywhere):
    writes ANSI by default. Know WHICH shell you are in; before running a foreign script on
    Windows, check what `tar`/`curl`/`find` actually resolve to in the current PATH; record in the
    project docs which shell the build runs from.
+5. **a SCRIPT FILE is read in the shell's encoding too, not only written in it.** PowerShell 5.1
+   reads a `.ps1` without a BOM as ANSI: non-ASCII inside it turns to mojibake, and when that
+   mojibake lands in a quoted string the QUOTE itself breaks — the script dies at parse time with
+   `TerminatorExpectedAtEndOfString`, pointing at a line whose source is perfectly valid. Write
+   `.ps1` in ASCII only (English messages); when the script must carry non-ASCII, save it UTF-8
+   **with BOM** or keep that text in a separate data file the script reads. The companion below
+   ("read the result back") does not catch this one: the file on disk is correct — it is the
+   READER that is wrong.
 
 Companions: after ANY machine edit of a non-ASCII document — READ THE RESULT BACK (face 2 cannot be
 caught otherwise); prefer the file tools (Write/Edit) over the shell for editing text — the shell

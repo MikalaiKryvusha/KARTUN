@@ -90,6 +90,17 @@
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
 
+### EXP-0025 · 2026-10-15 · ❌→✅ · #powershell #encoding #script #windows
+class: shell-lied
+**Context:** handing the owner a `.ps1` to run himself (the agent's own git operation had been refused), with progress messages written in his language.
+**Tried / did:** wrote the script with Cyrillic `Write-Host` lines, as for any other document of this project.
+**Result:** ❌ it died at parse time — `TerminatorExpectedAtEndOfString` on `Write-Host 'готово'`, a line correct in the source: PowerShell 5.1 reads a BOM-less `.ps1` as ANSI, the Cyrillic became mojibake and the mojibake ate the closing quote. ✅ rewritten ASCII-only (English messages), ran first try.
+**Lesson:** the encoding rule binds a SCRIPT FILE, not only an argument and not only a write — the file on disk is correct and the READER is wrong, so "read the result back" never catches it. A `.ps1` is ASCII-only unless saved UTF-8 WITH BOM.
+**Repro:** a `.ps1` holding a Cyrillic string, saved UTF-8 without BOM → `powershell -File` exits with a parser error naming a valid line; the same script in ASCII runs.
+**Trigger:** about to write a `.ps1` (or any script a Windows-native interpreter parses) that contains non-ASCII.
+**Not for:** files a UTF-8-aware reader consumes (`.md`, `.json`, `.mjs` via node) — those stay in the owner's language.
+mechanized: no — one guard would have to parse every script this project may ever write; the cheap half is the canon line (AGENT_GUIDE.md, face 5 of the text-encoding class) plus the dossier row in HOUSE_RULES.md, both read before writing
+
 ### EXP-0024 · 2026-10-15 · ❌ · #titan #harness #adb #owner #device
 class: stand-left-dirty
 **Context:** a background bash loop drove the owner's path on the Titan with `input tap` at fixed coordinates (bugs/01 hunt).
