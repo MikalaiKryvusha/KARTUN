@@ -9,6 +9,8 @@ android {
     ndkVersion = "29.0.14206865"
 
     defaultConfig {
+        // R8 keep rules for the names the C++ side calls back (TileListener.onTile) - consumer-rules.pro.
+        consumerProguardFiles("consumer-rules.pro")
         minSdk = 36
         ndk { abiFilters += "arm64-v8a" }
         externalNativeBuild {

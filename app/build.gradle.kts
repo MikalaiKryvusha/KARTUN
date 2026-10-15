@@ -27,6 +27,11 @@ android {
         }
         release {
             resValue("string", "app_name", "KARTUN")
+            // R8 for the prod build (the owner, MASTER_PLAN 2026-10-15 ≈ 13:57: «нужно будет включить для прод сборок»):
+            // code shrinking and obfuscation plus resource shrinking; the engine's JNI keep rules come with :engine.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
         }
     }
     // The «Отладка» section and the engine probe screen live in src/debug (code and strings ship only in «Debug KARTUN»,
