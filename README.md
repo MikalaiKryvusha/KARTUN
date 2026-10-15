@@ -43,9 +43,9 @@ on. The picture never leaves the device: the network runs on the phone's graphic
   <img src="docs/screenshots/en/06_settings.webp" width="19%" alt="Settings">
 </p>
 
-Sections: 1 What it does · 2 Screens · 3 Models and speed · 4 Privacy · 5 Formats and limits · 6 Build · 7 Project map ·
-8 Status and plans · 9 Credits and licence.
+Sections: [1 What it does](#en-1) · [2 Screens](#en-2) · [3 Models and speed](#en-3) · [4 Privacy](#en-4) · [5 Formats and limits](#en-5) · [6 Build](#en-6) · [7 Project map](#en-7) · [8 Status and plans](#en-8) · [9 Credits and licence](#en-9).
 
+<a name="en-1"></a>
 ### 1. What it does
 
 1. Enlarges a photo 1×, 2×, 4×, 8× or 16× with a Real-ESRGAN neural network. The network restores detail that plain
@@ -65,6 +65,7 @@ Sections: 1 What it does · 2 Screens · 3 Models and speed · 4 Privacy · 5 Fo
 8. Works in portrait and landscape; every setting has an (i) button with a short explanation, and the user guide is
    built in.
 
+<a name="en-2"></a>
 ### 2. Screens
 
 | Screen | What you do there |
@@ -81,6 +82,7 @@ Sections: 1 What it does · 2 Screens · 3 Models and speed · 4 Privacy · 5 Fo
   <img src="docs/screenshots/en/08_about.webp" width="24%" alt="About">
 </p>
 
+<a name="en-3"></a>
 ### 3. Models and speed
 
 Two models ship inside the app; both are Real-ESRGAN under BSD-3 and free for commercial use.
@@ -94,6 +96,7 @@ Measured on a HEADWOLF Titan 1 tablet: MediaTek MT8792, Mali-G615 MC6 graphics, 
 graphics chip the fast model takes 85 s for the same 1024 × 1024 photo. The fast model is KARTUN's own conversion of the
 original weights; its output differs from the original PyTorch network by 52.3 dB PSNR, which the eye does not see.
 
+<a name="en-4"></a>
 ### 4. Privacy
 
 1. The neural network runs on the device. No photo is uploaded anywhere.
@@ -101,6 +104,7 @@ original weights; its output differs from the original PyTorch network by 52.3 d
 3. No account, no ads, no analytics, no telemetry.
 4. The original is never changed: every result is a new file.
 
+<a name="en-5"></a>
 ### 5. Formats and limits
 
 | | |
@@ -112,6 +116,7 @@ original weights; its output differs from the original PyTorch network by 52.3 d
 | 8× and 16× | two passes of the network: four to sixteen times longer than 2×–4× |
 | Translations | English and Russian are written by hand; the other eight are AI translations checked by the author |
 
+<a name="en-6"></a>
 ### 6. Build
 
 There are no ready APKs yet; build the app from source on Windows. You need JDK 21, the Android SDK with platform 36,
@@ -137,6 +142,7 @@ node tools/stage-models.mjs                   # copies the models into the APK a
 .\gradlew.bat assembleDebug                   # app/build/outputs/apk/debug/app-debug.apk
 ```
 
+<a name="en-7"></a>
 ### 7. Project map
 
 | Path | What lives there |
@@ -147,12 +153,14 @@ node tools/stage-models.mjs                   # copies the models into the APK a
 | `docs/` | licences of everything shipped, model provenance, the README screenshots |
 | `design/` | the icon sources and the screen mockups |
 
+<a name="en-8"></a>
 ### 8. Status and plans
 
 Early development: the whole main path works on a real device, no public release yet. Next: a model catalogue with
 downloadable models and preview pictures, writing very large results in strips, a release on GitHub. The roadmap is
 [MASTER_PLAN.md](MASTER_PLAN.md), the current state is [STATUS.md](STATUS.md).
 
+<a name="en-9"></a>
 ### 9. Credits and licence
 
 1. [Upscayl](https://github.com/upscayl/upscayl) — the desktop app whose simplicity KARTUN follows. No Upscayl code is
@@ -188,9 +196,9 @@ Vulkan.
   <img src="docs/screenshots/ru/06_settings.webp" width="19%" alt="Настройки">
 </p>
 
-Разделы: 1 Что умеет · 2 Экраны · 3 Модели и скорость · 4 Приватность · 5 Форматы и ограничения · 6 Сборка ·
-7 Карта проекта · 8 Состояние и планы · 9 Благодарности и лицензия.
+Разделы: [1 Что умеет](#ru-1) · [2 Экраны](#ru-2) · [3 Модели и скорость](#ru-3) · [4 Приватность](#ru-4) · [5 Форматы и ограничения](#ru-5) · [6 Сборка](#ru-6) · [7 Карта проекта](#ru-7) · [8 Состояние и планы](#ru-8) · [9 Благодарности и лицензия](#ru-9).
 
+<a name="ru-1"></a>
 ### 1. Что умеет
 
 1. Увеличивает фото в 1×, 2×, 4×, 8× или 16× нейросетью Real-ESRGAN. Нейросеть восстанавливает то, чего нет при
@@ -210,6 +218,7 @@ Vulkan.
 8. Работает в портретной и альбомной ориентации; у каждой настройки есть кнопка (i) с коротким пояснением, руководство
    пользователя встроено.
 
+<a name="ru-2"></a>
 ### 2. Экраны
 
 | Экран | Что здесь делают |
@@ -226,6 +235,7 @@ Vulkan.
   <img src="docs/screenshots/ru/08_about.webp" width="24%" alt="О приложении">
 </p>
 
+<a name="ru-3"></a>
 ### 3. Модели и скорость
 
 В приложение встроены две модели; обе — Real-ESRGAN под BSD-3, обе можно использовать в коммерции.
@@ -239,6 +249,7 @@ Vulkan.
 быстрая модель обрабатывает то же фото 1024 × 1024 за 85 с. Быстрая модель — собственная конвертация KARTUN из исходных
 весов; её результат отличается от оригинальной нейросети PyTorch на 52,3 дБ PSNR, глазом разницы не видно.
 
+<a name="ru-4"></a>
 ### 4. Приватность
 
 1. Нейросеть работает на устройстве. Фото никуда не загружается.
@@ -246,6 +257,7 @@ Vulkan.
 3. Нет аккаунта, рекламы, аналитики и телеметрии.
 4. Оригинал не меняется: каждый результат — новый файл.
 
+<a name="ru-5"></a>
 ### 5. Форматы и ограничения
 
 | | |
@@ -257,6 +269,7 @@ Vulkan.
 | 8× и 16× | два прохода нейросети: в 4–16 раз дольше, чем 2×–4× |
 | Переводы | английский и русский написаны руками; остальные восемь — переводы ИИ, проверенные автором |
 
+<a name="ru-6"></a>
 ### 6. Сборка
 
 Готовых APK пока нет; соберите приложение из исходников под Windows. Нужны JDK 21, Android SDK с платформой 36,
@@ -282,6 +295,7 @@ node tools/stage-models.mjs                   # кладёт модели в APK
 .\gradlew.bat assembleDebug                   # app/build/outputs/apk/debug/app-debug.apk
 ```
 
+<a name="ru-7"></a>
 ### 7. Карта проекта
 
 | Путь | Что там |
@@ -292,12 +306,14 @@ node tools/stage-models.mjs                   # кладёт модели в APK
 | `docs/` | лицензии всего, что едет в приложении, происхождение моделей, скриншоты README |
 | `design/` | исходники иконки и макеты экранов |
 
+<a name="ru-8"></a>
 ### 8. Состояние и планы
 
 Ранняя разработка: весь основной путь работает на настоящем устройстве, публичного релиза пока нет. Дальше — каталог
 моделей со скачиванием и картинками-превью, запись очень больших результатов полосами, релиз на GitHub. Дорожная
 карта — [MASTER_PLAN.md](MASTER_PLAN.md), текущее состояние — [STATUS.md](STATUS.md).
 
+<a name="ru-9"></a>
 ### 9. Благодарности и лицензия
 
 1. [Upscayl](https://github.com/upscayl/upscayl) — настольное приложение, простоте которого следует KARTUN. Код Upscayl
