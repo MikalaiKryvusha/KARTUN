@@ -7,7 +7,11 @@
    "author": "Xintao Wang",
    "licence": "BSD-3-Clause",
    "commercial": true,
-   "purpose": "photos, fast",
+   "purpose": "fast_photo",
+   "kind": "photo",
+   "builtin": false,
+   "gpuMsPerMp": 5777,
+   "cpuMsPerMp": 84806,
    "files": [
     {
      "name": "realesr-general-x4v3.param",
@@ -20,8 +24,32 @@
      "bytes": 2435272
     }
    ],
-   "published": false,
-   "preview": "model-previews/realesr-general-x4v3.webp"
+   "published": false
+  },
+  {
+   "id": "realesrgan-x4plus",
+   "name": "Real-ESRGAN x4plus",
+   "author": "Xintao Wang",
+   "licence": "BSD-3-Clause",
+   "commercial": true,
+   "purpose": "detail",
+   "kind": "photo",
+   "builtin": false,
+   "gpuMsPerMp": 88717,
+   "cpuMsPerMp": 1432510,
+   "files": [
+    {
+     "name": "realesrgan-x4plus.param",
+     "sha256": "35330ececcea33b6c397a72548e788d5d53becee4734c50b7fada36e89f10a86",
+     "bytes": 116029
+    },
+    {
+     "name": "realesrgan-x4plus.bin",
+     "sha256": "713ee713b0353afaa27976f0563a64a5043bd70b9bd8936c2e26e25ebcdbcddf",
+     "bytes": 33424520
+    }
+   ],
+   "published": false
   },
   {
    "id": "realesrgan-x4plus-anime",
@@ -29,7 +57,11 @@
    "author": "Xintao Wang",
    "licence": "BSD-3-Clause",
    "commercial": true,
-   "purpose": "anime and drawings",
+   "purpose": "anime",
+   "kind": "anime",
+   "builtin": false,
+   "gpuMsPerMp": 31799,
+   "cpuMsPerMp": 476985,
    "files": [
     {
      "name": "realesrgan-x4plus-anime.param",
@@ -42,8 +74,7 @@
      "bytes": 8943500
     }
    ],
-   "published": false,
-   "preview": "model-previews/realesrgan-x4plus-anime.webp"
+   "published": false
   },
   {
    "id": "realesr-animevideov3-x4",
@@ -51,7 +82,11 @@
    "author": "Xintao Wang",
    "licence": "BSD-3-Clause",
    "commercial": true,
-   "purpose": "anime frames, fast",
+   "purpose": "anime_fast",
+   "kind": "anime",
+   "builtin": false,
+   "gpuMsPerMp": 3616,
+   "cpuMsPerMp": 54240,
    "files": [
     {
      "name": "realesr-animevideov3-x4.param",
@@ -64,8 +99,7 @@
      "bytes": 1247368
     }
    ],
-   "published": false,
-   "preview": "model-previews/realesr-animevideov3-x4.webp"
+   "published": false
   },
   {
    "id": "4xNomos8kSC_fp16",
@@ -73,7 +107,11 @@
    "author": "Philip Hofmann (Phhofm)",
    "licence": "CC-BY-4.0",
    "commercial": true,
-   "purpose": "photos",
+   "purpose": "photo",
+   "kind": "photo",
+   "builtin": false,
+   "gpuMsPerMp": 82336,
+   "cpuMsPerMp": 1235040,
    "files": [
     {
      "name": "4xNomos8kSC_fp16.param",
@@ -86,8 +124,7 @@
      "bytes": 33424520
     }
    ],
-   "published": false,
-   "preview": "model-previews/4xNomos8kSC_fp16.webp"
+   "published": false
   },
   {
    "id": "4xHFA2k_fp16",
@@ -95,7 +132,11 @@
    "author": "Philip Hofmann (Phhofm)",
    "licence": "CC-BY-4.0",
    "commercial": true,
-   "purpose": "anime and drawings",
+   "purpose": "anime",
+   "kind": "anime",
+   "builtin": false,
+   "gpuMsPerMp": 80643,
+   "cpuMsPerMp": 1209645,
    "files": [
     {
      "name": "4xHFA2k_fp16.param",
@@ -108,8 +149,7 @@
      "bytes": 33424520
     }
    ],
-   "published": false,
-   "preview": "model-previews/4xHFA2k_fp16.webp"
+   "published": false
   },
   {
    "id": "4x-NMKD-Superscale-fp16",
@@ -117,7 +157,11 @@
    "author": "NMKD (Nmkd)",
    "licence": "WTFPL",
    "commercial": true,
-   "purpose": "photos, clean real-world images",
+   "purpose": "clean_photo",
+   "kind": "photo",
+   "builtin": false,
+   "gpuMsPerMp": 82336,
+   "cpuMsPerMp": 1235040,
    "files": [
     {
      "name": "4x-NMKD-Superscale-fp16.param",
@@ -130,8 +174,7 @@
      "bytes": 33424520
     }
    ],
-   "published": false,
-   "preview": "model-previews/4x-NMKD-Superscale-fp16.webp"
+   "published": false
   },
   {
    "id": "4x-NMKD-Siax-fp16",
@@ -139,7 +182,11 @@
    "author": "NMKD (Nmkd)",
    "licence": "WTFPL",
    "commercial": true,
-   "purpose": "universal, clean or slightly compressed images",
+   "purpose": "universal",
+   "kind": "photo",
+   "builtin": true,
+   "gpuMsPerMp": 105042,
+   "cpuMsPerMp": 1575630,
    "files": [
     {
      "name": "4x-NMKD-Siax-fp16.param",
@@ -152,8 +199,7 @@
      "bytes": 33424520
     }
    ],
-   "published": false,
-   "preview": "model-previews/4x-NMKD-Siax-fp16.webp"
+   "published": false
   },
   {
    "id": "4xNomosWebPhoto-RealPLKSR-fp16",
@@ -161,7 +207,12 @@
    "author": "Philip Hofmann (Phhofm)",
    "licence": "CC-BY-4.0",
    "commercial": true,
-   "purpose": "web photos, compression and blur",
+   "purpose": "web_photo",
+   "kind": "photo",
+   "builtin": true,
+   "default": true,
+   "gpuMsPerMp": 64850,
+   "cpuMsPerMp": 972750,
    "files": [
     {
      "name": "4xNomosWebPhoto-RealPLKSR-fp16.param",
@@ -174,8 +225,7 @@
      "bytes": 14806428
     }
    ],
-   "published": false,
-   "preview": "model-previews/4xNomosWebPhoto-RealPLKSR-fp16.webp"
+   "published": false
   },
   {
    "id": "4x-ClearRealityV1-fp16",
@@ -183,7 +233,11 @@
    "author": "Kim2091",
    "licence": "Apache-2.0",
    "commercial": false,
-   "purpose": "faces, hair, nature; fast",
+   "purpose": "faces",
+   "kind": "photo",
+   "builtin": false,
+   "gpuMsPerMp": 5722,
+   "cpuMsPerMp": 85830,
    "files": [
     {
      "name": "4x-ClearRealityV1-fp16.param",
@@ -196,8 +250,7 @@
      "bytes": 854788
     }
    ],
-   "published": false,
-   "preview": "model-previews/4x-ClearRealityV1-fp16.webp"
+   "published": false
   },
   {
    "id": "4x-Remacri-fp16",
@@ -205,7 +258,11 @@
    "author": "FoolhardyVEVO",
    "licence": "CC-BY-NC-SA-4.0",
    "commercial": false,
-   "purpose": "photos, natural detail",
+   "purpose": "photo",
+   "kind": "photo",
+   "builtin": false,
+   "gpuMsPerMp": 82336,
+   "cpuMsPerMp": 1235040,
    "files": [
     {
      "name": "4x-Remacri-fp16.param",
@@ -218,8 +275,7 @@
      "bytes": 33424520
     }
    ],
-   "published": false,
-   "preview": "model-previews/4x-Remacri-fp16.webp"
+   "published": false
   },
   {
    "id": "4x-UltraMix-Balanced-fp16",
@@ -227,7 +283,11 @@
    "author": "Kim2091",
    "licence": "CC-BY-NC-SA-4.0",
    "commercial": false,
-   "purpose": "photos, balanced detail",
+   "purpose": "balanced",
+   "kind": "photo",
+   "builtin": false,
+   "gpuMsPerMp": 82336,
+   "cpuMsPerMp": 1235040,
    "files": [
     {
      "name": "4x-UltraMix-Balanced-fp16.param",
@@ -240,8 +300,7 @@
      "bytes": 33424520
     }
    ],
-   "published": false,
-   "preview": "model-previews/4x-UltraMix-Balanced-fp16.webp"
+   "published": false
   },
   {
    "id": "4x-UltraSharpV2-Lite-fp16",
@@ -249,7 +308,11 @@
    "author": "Kim2091",
    "licence": "CC-BY-NC-SA-4.0",
    "commercial": false,
-   "purpose": "photos, art and anime",
+   "purpose": "sharp",
+   "kind": "photo",
+   "builtin": false,
+   "gpuMsPerMp": 65491,
+   "cpuMsPerMp": 982365,
    "files": [
     {
      "name": "4x-UltraSharpV2-Lite-fp16.param",
@@ -262,8 +325,32 @@
      "bytes": 14806428
     }
    ],
-   "published": false,
-   "preview": "model-previews/4x-UltraSharpV2-Lite-fp16.webp"
+   "published": false
+  },
+  {
+   "id": "4x-UltraSharpV2-fp16",
+   "name": "4x UltraSharp V2",
+   "author": "Kim2091",
+   "licence": "CC-BY-NC-SA-4.0",
+   "commercial": false,
+   "purpose": "sharpest",
+   "kind": "photo",
+   "builtin": false,
+   "gpuMsPerMp": 1416016,
+   "cpuMsPerMp": 21240240,
+   "files": [
+    {
+     "name": "4x-UltraSharpV2-fp16.param",
+     "sha256": "1c34ebe515d28fdc4c6f33d02bc437364e38c4c5179c2b691fde0454206f3037",
+     "bytes": 499443
+    },
+    {
+     "name": "4x-UltraSharpV2-fp16.bin",
+     "sha256": "94c82f9bcacc167ae3cecf3438234e791735af65099ca39ed21c259a8af98fa0",
+     "bytes": 84471888
+    }
+   ],
+   "published": false
   }
  ]
 }

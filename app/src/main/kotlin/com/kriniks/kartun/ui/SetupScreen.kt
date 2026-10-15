@@ -64,6 +64,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kriniks.kartun.R
+import com.kriniks.kartun.Model
 import com.kriniks.kartun.UpscaleViewModel
 import kotlin.math.roundToInt
 
@@ -299,7 +300,10 @@ private fun DragHandle(modifier: Modifier) {
 private fun SettingsBlock(vm: UpscaleViewModel, onInfo: (Int) -> Unit) {
     vm.error?.let { (res, arg) -> Notice(if (arg != null) stringResource(res, arg) else stringResource(res), vm::dismissError) }
     SectionLabel(stringResource(R.string.label_model)) { onInfo(R.string.label_model) }
-    vm.modelOrder.forEach { m -> ModelCard(m, m == vm.model, m == vm.model && vm.modelLoading, durationText(vm.estimateMs(m))) { vm.chooseModel(m) } }
+    vm.recentModels.forEach { m -> ModelCard(m, m == vm.model, m == vm.model && vm.modelLoading, durationText(vm.estimateMs(m))) { vm.chooseModel(m) } }
+    // The chosen model may come from «Все модели» and not be one of the two last used yet: it stands under them.
+    if (vm.model !in vm.recentModels) ModelCard(vm.model, true, vm.modelLoading, durationText(vm.estimateMs(vm.model))) {}
+    AllModelsRow(vm.catalogue.models.size, vm.onDevice.size, vm::openModels)
     SectionLabel(stringResource(R.string.label_scale)) { onInfo(R.string.label_scale) }
     ScaleSlider(vm)
 }
@@ -330,9 +334,25 @@ private fun SetupOverlays(bitmap: android.graphics.Bitmap, fullscreen: Boolean, 
     }
 }
 
+/** «Все модели · Моделей: 14 · на устройстве: 2 · Выбрать ›» under the cards (mockup A-setup, .row-link). */
+@Composable
+private fun AllModelsRow(total: Int, onDevice: Int, onClick: () -> Unit) {
+    val c = MaterialTheme.colorScheme
+    Row(
+        Modifier.fillMaxWidth().clip(MaterialTheme.shapes.medium).background(c.surfaceContainer).clickable(onClick = onClick).padding(14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(stringResource(R.string.models_all), style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.models_count, total, onDevice), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
+        }
+        Text(stringResource(R.string.models_choose), style = MaterialTheme.typography.labelMedium.copy(fontWeight = androidx.compose.ui.text.font.FontWeight(700)), color = c.primary)
+    }
+}
+
 /** A model card (.mrow): name, what it is for with the estimate, the licence badge; pink border + tick when chosen. */
 @Composable
-private fun ModelCard(m: UpscaleViewModel.Model, on: Boolean, loading: Boolean, estimate: String, onClick: () -> Unit) {
+private fun ModelCard(m: Model, on: Boolean, loading: Boolean, estimate: String, onClick: () -> Unit) {
     val c = MaterialTheme.colorScheme
     val shape = MaterialTheme.shapes.medium
     Row(
@@ -343,14 +363,9 @@ private fun ModelCard(m: UpscaleViewModel.Model, on: Boolean, loading: Boolean, 
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(stringResource(m.title), style = MaterialTheme.typography.titleSmall)
-            Text(stringResource(R.string.model_desc_with_estimate, stringResource(m.desc), estimate), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
-            Text(
-                stringResource(R.string.licence_bsd),
-                Modifier.clip(CircleShape).background(c.tertiary.copy(alpha = 0.14f)).padding(horizontal = 9.dp, vertical = 4.dp),
-                style = MaterialTheme.typography.labelSmall.copy(letterSpacing = MaterialTheme.typography.bodySmall.letterSpacing),
-                color = c.tertiary,
-            )
+            Text(m.name, style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.model_desc_with_estimate, stringResource(purposeRes(m.purpose)), estimate), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
+            LicenceBadge(m)
         }
         // While the chosen model loads (preload on this screen) a small pink ring stands where the tick will be.
         if (on && loading) PixelSpinner(Modifier.size(22.dp))

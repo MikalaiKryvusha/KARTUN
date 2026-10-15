@@ -35,6 +35,7 @@ private val Mute = Color(0xFF6E6E73)          // --mute
 private val PinkSoft = Color(0x24FF1A8C)      // --pink-soft, rgba(255,26,140,.14)
 private val Green = Color(0xFF3DDC84)         // the "on device" dot and badge
 private val Amber = Color(0xFFFFB020)         // warnings (8x/16x, licences)
+private val Blue = Color(0xFF8FB8FF)          // the «free with credit» (CC BY) licence badge (mockup .badge.by)
 
 private val Colors = darkColorScheme(
     primary = Pink, onPrimary = Color.White, primaryContainer = PinkSoft, onPrimaryContainer = Pink,
@@ -43,7 +44,7 @@ private val Colors = darkColorScheme(
     surfaceContainerLowest = Bg, surfaceContainerLow = Surface, surfaceContainer = Card,
     surfaceContainerHigh = Card2, surfaceContainerHighest = Card2,
     onSurfaceVariant = Sub, outline = Line, outlineVariant = Mute,
-    tertiary = Green, error = Amber, onError = Color.Black,
+    secondary = Blue, tertiary = Green, error = Amber, onError = Color.Black,
     scrim = Color(0x8C000000),
 )
 

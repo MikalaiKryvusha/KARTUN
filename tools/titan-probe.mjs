@@ -25,14 +25,16 @@ const model = arg('model', 'realesrgan-x4plus');
 const gpu = arg('gpu', 'true');
 const tile = arg('tile', '128');
 
-adb('logcat', '-c');
+// Read the log from this moment on instead of clearing it: `logcat -c` would wipe the traces of a crash nobody has
+// pulled yet (HOUSE_RULES section 6, bugs/01).
+const since = (adb('shell', 'date', "+'%m-%d %H:%M:%S.000'").stdout || '').trim();
 adb('shell', 'am', 'start', '-S', '-n', `${PKG}/com.kriniks.kartun.MainActivity`,
   '--es', 'in', input, '--es', 'model', model, '--ez', 'gpu', gpu, '--ei', 'tile', tile, '--ei', 'scale', '4');
 
 let line = null;
 const t0 = Date.now();
 while (!line && Date.now() - t0 < TIMEOUT_MS) {
-  const log = adb('logcat', '-d', '-s', 'KARTUN_PROBE:*', 'AndroidRuntime:E').stdout || '';
+  const log = adb('logcat', '-d', '-T', since, '-s', 'KARTUN_PROBE:*', 'AndroidRuntime:E').stdout || '';
   line = log.split(/\r?\n/).find((l) => l.includes('KARTUN_PROBE') || l.includes('FATAL')) || null;
   if (!line) await new Promise((r) => setTimeout(r, POLL_MS));
 }

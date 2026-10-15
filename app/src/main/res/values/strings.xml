@@ -14,11 +14,8 @@
     <string name="setup_other_short">Another photo</string>
     <string name="label_model">Model</string>
     <string name="label_scale">Scale</string>
-    <string name="model_fast_name" translatable="false">Real-ESRGAN General v3</string>
     <string name="model_fast_desc">Fast · removes noise and blur</string>
-    <string name="model_max_name" translatable="false">Real-ESRGAN x4plus</string>
     <string name="model_max_desc">Detailed · sharper fine details</string>
-    <string name="licence_bsd">Commercial use allowed · BSD-3</string>
     <string name="megapixels">%1$s MP</string>
     <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
     <string name="scale_too_big">The result would exceed %1$s MP — for this photo choose up to %2$d×</string>
@@ -30,7 +27,7 @@
     <string name="info_scale_text">Scale is how many times the photo\'s width and height grow: 1×, 2×, 4×, 8× or 16×; 2× by default.</string>
     <string name="info_scale_list">• 1× — same size; the network only removes noise and blur.\n• 2× and 4× — one pass of the network; enough for a screen and for print.\n• 8× and 16× — two passes: 4–16 times longer, a very large file.</string>
     <string name="info_model_text">A model is a trained neural network. Models differ in what pictures they learned from: one restores photos better, another drawings.</string>
-    <string name="info_model_list">• Fast — removes noise and blur, usually a few seconds.\n• Detailed — sharper fine details, takes longer.</string>
+    <string name="info_model_list">• This screen shows the two models you used last.\n• «All models» lists every model: what it is for, its author, licence and size. Download the ones you need; they work without the network.</string>
 
     <string name="working_title">The network is enhancing your photo</string>
     <string name="working_tiles">Tile %1$s of %2$d</string>
@@ -135,4 +132,37 @@
     <string name="notif_denied_title">Notifications are off</string>
     <string name="notif_denied_text">The notification permission was refused earlier, and KARTUN can no longer ask for it by itself. Turn notifications on by hand in Android\'s settings for KARTUN.</string>
     <string name="notif_open_settings">Open settings</string>
+
+    <!-- The model catalogue and «All models» (plans/05 step 5). -->
+    <string name="model_purpose_fast_photo" translatable="false">@string/model_fast_desc</string>
+    <string name="model_purpose_detail" translatable="false">@string/model_max_desc</string>
+    <string name="model_purpose_web_photo">Photos from the web · removes compression and blur</string>
+    <string name="model_purpose_universal">Universal · clean or slightly compressed pictures</string>
+    <string name="model_purpose_clean_photo">Photos · clean camera shots</string>
+    <string name="model_purpose_photo">Photos · natural detail</string>
+    <string name="model_purpose_balanced">Photos · balance of sharpness and detail</string>
+    <string name="model_purpose_faces">Faces, hair, nature · fast</string>
+    <string name="model_purpose_anime">Anime and drawings</string>
+    <string name="model_purpose_anime_fast">Anime and video frames · the lightest</string>
+    <string name="model_purpose_sharp">Sharpness · photos, art, anime</string>
+    <string name="model_purpose_sharpest">Most detail · very slow</string>
+    <string name="licence_commercial">Commercial use allowed · %1$s</string>
+    <string name="licence_noncommercial">Not for commercial use</string>
+    <string name="models_title">Models</string>
+    <string name="models_all">All models</string>
+    <string name="models_count">Models: %1$d · on the device: %2$d</string>
+    <string name="models_choose">Choose ›</string>
+    <string name="filter_all">All</string>
+    <string name="filter_photo">Photos</string>
+    <string name="filter_anime">Anime</string>
+    <string name="filter_commercial">Commercial use</string>
+    <string name="model_size_mb">%1$s MB</string>
+    <string name="model_progress_mb">%1$s of %2$s MB</string>
+    <string name="model_download">Download</string>
+    <string name="model_delete">Delete</string>
+    <string name="model_builtin">Built into the app</string>
+    <string name="model_author">The model belongs to its author: %1$s</string>
+    <string name="model_download_failed">Could not download the model. Check the connection and try again.</string>
+    <string name="model_damaged">The downloaded file was damaged and has been deleted. Try again.</string>
+    <string name="error_model_downloaded">Could not load the model. Delete it in «All models» and download it again.</string>
 </resources>

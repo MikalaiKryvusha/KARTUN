@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.edit
@@ -36,18 +37,11 @@ import kotlin.math.roundToInt
  */
 class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
-    enum class Screen { Home, Setup, Working, Result, Settings, Manual, About, Terms }
+    enum class Screen { Home, Setup, Working, Result, Settings, Manual, About, Terms, Models }
 
-    /**
-     * The two models shipped in the APK. [msPerMp] / [cpuMsPerMp] are the starting estimates of the time per input
-     * megapixel on the GPU and on the CPU, measured on the Titan: GPU - 2026-10-14_F0_own_fast_model.md run 9 (5 777 ms
-     * for 1 MP) and 2026-10-14_F0_engine_probe.md run 6 (88 717 ms for 1 MP); CPU - _own_fast_model.md run 11 (84 806 ms
-     * for 1 MP) and _engine_probe.md run 4 (93 881 ms for 256 x 256 = 0.0655 MP). Each device then learns its own two rates.
-     */
-    enum class Model(val file: String, @param:StringRes val title: Int, @param:StringRes val desc: Int, val msPerMp: Float, val cpuMsPerMp: Float) {
-        Fast("realesr-general-x4v3", R.string.model_fast_name, R.string.model_fast_desc, 5_777f, 84_806f),
-        Max("realesrgan-x4plus", R.string.model_max_name, R.string.model_max_desc, 88_717f, 1_432_510f),
-    }
+    /** The model catalogue of the APK (ModelCatalog.kt): the built-in models and the ones downloaded on demand; the
+     *  starting time estimates per model stand in it (docs/model-catalogue.json -> gpuMsPerMp, cpuMsPerMp, rateSource). */
+    val catalogue: Catalogue = ModelCatalog.load(app)
 
     /** The picked photo: [bitmap] at full size for the engine, [preview] at most DISPLAY_MAX_SIDE for every screen -
      *  Android refuses to draw a bitmap over ~100 MB, and a 100 MP photo is 400 MB. */
@@ -66,7 +60,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     var screen by mutableStateOf(Screen.Home); private set
     var source by mutableStateOf<Source?>(null); private set
     /** The chosen model; choosing one starts loading it right away (the owner: «модель качать на экране улучшение»). */
-    var model by mutableStateOf(Model.Fast); private set
+    var model by mutableStateOf(catalogue.default); private set
     /** True while the chosen model is being copied out of the APK and loaded into the engine. */
     var modelLoading by mutableStateOf(false); private set
     var scaleIndex by mutableIntStateOf(DEFAULT_SCALE_INDEX)
@@ -117,9 +111,19 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** The model cards' order: the last used on top, the one before it next (the owner, plan 03 step 18: «Вверху последнюю
-     *  использованную, ниже предпоследнюю»); a model never used keeps its catalogue place after them. Kept between launches. */
-    var modelOrder by mutableStateOf(Model.entries.toList()); private set
+    /** The cards of «Улучшение»: the two models on the device used last, the last one on top (the owner, plan 03 step 18:
+     *  «показывать две последние использованные модели. Вверху последнюю использованную, ниже предпоследнюю»); the
+     *  built-in ones fill the list until two were used. The rest are reached through «Все модели». */
+    var recentModels by mutableStateOf(listOf<Model>()); private set
+
+    /** Ids of the models on the device: built in, or downloaded with both files at their catalogue size. */
+    var onDevice by mutableStateOf(setOf<String>()); private set
+
+    /** Downloads in flight: model id -> bytes on disk and the model's total (the card's ring and «12 из 33 МБ»). */
+    val downloads = mutableStateMapOf<String, Pair<Long, Long>>()
+
+    /** The last download's failure for the «Все модели» screen, as a string resource; null = nothing to say. */
+    var modelsMessage by mutableStateOf<Int?>(null); private set
 
     /** «Ускорение GPU» of the settings; off = the CPU path. Kept between launches. */
     var useGpu by mutableStateOf(true); private set
@@ -129,8 +133,9 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     // come back as the user left them.
     init {
         useGpu = prefs.getBoolean(PREF_GPU, true)
-        model = Model.entries.firstOrNull { it.name == prefs.getString(PREF_MODEL, null) } ?: Model.Fast
-        modelOrder = byRecency(prefs.getString(PREF_MODEL_ORDER, null))
+        migrateModelPrefs()
+        refreshOnDevice()
+        model = catalogue.byId(prefs.getString(PREF_MODEL, null))?.takeIf { it.id in onDevice } ?: catalogue.default
         scaleIndex = prefs.getInt(PREF_SCALE, DEFAULT_SCALE_INDEX).coerceIn(0, SCALES.lastIndex)
         saveFormat = ResultStore.Format.entries.firstOrNull { it.name == prefs.getString(PREF_FORMAT, null) } ?: ResultStore.Format.Png
         saveQuality = prefs.getInt(PREF_QUALITY, DEFAULT_QUALITY)
@@ -195,10 +200,79 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun chooseModel(m: Model) {
-        if (m == model) return
+        if (m == model || m.id !in onDevice) return
         model = m
-        prefs.edit { putString(PREF_MODEL, m.name) }
+        prefs.edit { putString(PREF_MODEL, m.id) }
         preload()
+    }
+
+    /** «Все модели» from «Улучшение». */
+    fun openModels() { modelsMessage = null; screen = Screen.Models }
+
+    /** A card of «Все модели» on the device: it becomes the chosen model and the user is back on «Улучшение». */
+    fun pickFromCatalogue(m: Model) {
+        if (m.id !in onDevice) return
+        chooseModel(m)
+        screen = Screen.Setup
+    }
+
+    /** «Скачать» on a card: the files come from the release `models` into the app's folder, hash-checked; the card shows
+     *  the bytes as they arrive. Several downloads may run at once, one per model. */
+    fun download(m: Model) {
+        if (m.builtin || m.id in downloads || m.id in onDevice) return
+        modelsMessage = null
+        downloads[m.id] = 0L to m.bytes
+        val ctx = getApplication<Application>()
+        viewModelScope.launch {
+            var shown = 0L
+            val outcome = withContext(Dispatchers.IO) {
+                runCatching {
+                    ModelDownloader.download(m, ModelStore.dir(ctx), catalogue::url, progress = { done, total ->
+                        // One state write per ~1 % keeps the list from recomposing on every 64 KB buffer.
+                        if (done - shown >= total / PROGRESS_STEPS || done == total) {
+                            shown = done
+                            viewModelScope.launch { if (m.id in downloads) downloads[m.id] = done to total }
+                        }
+                    })
+                }.onFailure { Log.w(TAG, "model download failed: ${m.id}", it) }
+            }
+            downloads.remove(m.id)
+            refreshOnDevice()
+            modelsMessage = when (outcome.exceptionOrNull()) {
+                null -> null
+                is ModelDownloader.Damaged -> R.string.model_damaged
+                else -> R.string.model_download_failed
+            }
+        }
+    }
+
+    /** «Удалить» on a downloaded card: its files leave the device; if it was the chosen model, the default takes its place. */
+    fun deleteModel(m: Model) {
+        if (m.builtin || m.id in downloads) return
+        viewModelScope.launch {
+            withContext(engineThread) { if (loadedModel == m) release() }
+            withContext(Dispatchers.IO) { ModelStore.delete(getApplication(), m) }
+            refreshOnDevice()
+            if (model == m) { model = catalogue.default; prefs.edit { putString(PREF_MODEL, model.id) } }
+        }
+    }
+
+    private fun refreshOnDevice() {
+        val ctx = getApplication<Application>()
+        onDevice = catalogue.models.filter { ModelStore.isAvailable(ctx, it) }.map { it.id }.toSet()
+        recentModels = recent(prefs.getString(PREF_MODEL_ORDER, null), catalogue, onDevice).mapNotNull { catalogue.byId(it) }
+    }
+
+    /** The first builds stored the enum names «Fast» and «Max»; they become catalogue ids once. */
+    private fun migrateModelPrefs() {
+        val rename = mapOf("Fast" to "realesr-general-x4v3", "Max" to "realesrgan-x4plus")
+        val order = prefs.getString(PREF_MODEL_ORDER, null)
+        val chosen = prefs.getString(PREF_MODEL, null)
+        if (chosen !in rename && order?.split(',')?.none { it in rename } != false) return
+        prefs.edit {
+            chosen?.let { putString(PREF_MODEL, rename[it] ?: it) }
+            order?.let { putString(PREF_MODEL_ORDER, it.split(',').joinToString(",") { n -> rename[n] ?: n }) }
+        }
     }
 
     /** Loads the chosen model on the setup screen, so «Улучшить» starts the network at once. */
@@ -210,7 +284,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
             val ok = withContext(engineThread) { runCatching { ensureLoaded(m) }.isSuccess }
             if (m == model) {
                 modelLoading = false
-                if (!ok) error = R.string.error_model to null
+                if (!ok) error = (if (m.builtin) R.string.error_model else R.string.error_model_downloaded) to null
             }
         }
     }
@@ -219,10 +293,10 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     private fun ensureLoaded(m: Model): NcnnUpscaler {
         loaded?.let { if (loadedModel == m) return it }
         release()
-        val (param, bin) = ModelStore.files(getApplication(), m.file)
+        val (param, bin) = ModelStore.files(getApplication(), m)
         // bugs/01: the journal keeps the engine's stderr and the CPU set this load starts on.
         CrashLog.beforeEngine()
-        CrashLog.note("load ${m.file} gpu=$useGpu ${CrashLog.cpuState()}")
+        CrashLog.note("load ${m.id} gpu=$useGpu ${CrashLog.cpuState()}")
         val up = NcnnUpscaler.load(param.path, bin.path, useGpu = useGpu) ?: throw ModelLoadFailed()
         loaded = up
         loadedModel = m
@@ -257,9 +331,8 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         if (!scaleSupported) return
         ProcessingState.cancelRequested = false
         error = null
-        val recent = usedFirst(prefs.getString(PREF_MODEL_ORDER, null), model)
-        prefs.edit { putInt(PREF_SCALE, scaleIndex); putString(PREF_MODEL_ORDER, recent) }
-        modelOrder = byRecency(recent)
+        prefs.edit { putInt(PREF_SCALE, scaleIndex); putString(PREF_MODEL_ORDER, usedFirst(prefs.getString(PREF_MODEL_ORDER, null), model.id)) }
+        refreshOnDevice()
         val chosen = model
         val target = scale
         publish(Progress(estimateMs = estimateMs()))
@@ -314,7 +387,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                     screen = Screen.Setup
                     error = when (it) {
                         is UpscaleCancelledException -> null
-                        is ModelLoadFailed -> R.string.error_model to null
+                        is ModelLoadFailed -> (if (chosen.builtin) R.string.error_model else R.string.error_model_downloaded) to null
                         else -> R.string.error_engine to null
                     }
                 }
@@ -337,7 +410,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val outcome = withContext(Dispatchers.IO) {
                 runCatching {
-                    ResultStore.saveToGallery(getApplication(), res.full, ResultStore.fileName(src.name, res.model.file, res.scale, format.ext), format, quality, renderCancel)
+                    ResultStore.saveToGallery(getApplication(), res.full, ResultStore.fileName(src.name, res.model.id, res.scale, format.ext), format, quality, renderCancel)
                 }.onFailure { if (it !is ResultStore.RenderCancelled) Log.w(TAG, "save failed", it) }
             }
             saving = false
@@ -364,7 +437,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         saving = true
         renderCancel.set(false)
         return withContext(Dispatchers.IO) {
-            runCatching { ResultStore.shareCopy(getApplication(), res.full, ResultStore.fileName(src.name, res.model.file, res.scale, "png"), renderCancel) }
+            runCatching { ResultStore.shareCopy(getApplication(), res.full, ResultStore.fileName(src.name, res.model.id, res.scale, "png"), renderCancel) }
                 .onFailure { if (it !is ResultStore.RenderCancelled) Log.w(TAG, "share copy failed", it) }.getOrNull()
         }.also { saving = false }
     }
@@ -390,8 +463,8 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         }
         if (!u.usesGpu) throw EngineFailed()
         publish(_progress.value.copy(gpu = false))
-        val (param, bin) = ModelStore.files(getApplication(), m.file)
-        CrashLog.note("load ${m.file} gpu=false (fallback) ${CrashLog.cpuState()}")
+        val (param, bin) = ModelStore.files(getApplication(), m)
+        CrashLog.note("load ${m.id} gpu=false (fallback) ${CrashLog.cpuState()}")
         val cpu = NcnnUpscaler.load(param.path, bin.path, useGpu = false) ?: throw EngineFailed()
         return cpu.use {
             try { it.upscale(input, ENGINE_SCALE, TILE_PX, listener, outScale) to false }
@@ -414,6 +487,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
             Screen.Working -> cancel()
             Screen.Result -> { screen = Screen.Setup; result = null; saveMessage = null }
             Screen.Settings -> { screen = beforeSettings; if (screen == Screen.Setup) preload() }
+            Screen.Models -> { screen = Screen.Setup; modelsMessage = null }
             Screen.Manual -> screen = beforeManual
             Screen.About -> screen = Screen.Settings
             Screen.Terms -> screen = Screen.Settings
@@ -451,15 +525,24 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         private const val PREF_MODEL = "model"
         private const val PREF_MODEL_ORDER = "model_order"
 
-        /** The models in the stored order (names, comma-separated, most recent first); unknown names are dropped, models
-         *  never used follow in their catalogue order. [TESTED: 2026-10-14 · RecencyTest] */
-        fun byRecency(stored: String?): List<Model> {
-            val used = stored.orEmpty().split(',').mapNotNull { n -> Model.entries.firstOrNull { it.name == n } }.distinct()
-            return used + Model.entries.filter { it !in used }
-        }
+        /** How many model cards «Улучшение» shows (the owner, plan 03 step 18: «две последние использованные модели»). */
+        const val RECENT_CARDS = 2
+        private const val PROGRESS_STEPS = 100
 
-        /** The stored order after a run with [m]: [m] moves to the front. */
-        fun usedFirst(stored: String?, m: Model): String = (listOf(m) + byRecency(stored).filter { it != m }).joinToString(",") { it.name }
+        /** The ids in the stored order (comma-separated, most recent first), duplicates and blanks dropped. */
+        fun storedIds(stored: String?): List<String> = stored.orEmpty().split(',').map { it.trim() }.filter { it.isNotEmpty() }.distinct()
+
+        /** The stored order after a run with [id]: [id] moves to the front. [NOT-TESTED] */
+        fun usedFirst(stored: String?, id: String): String = (listOf(id) + storedIds(stored).filter { it != id }).joinToString(",")
+
+        /** The ids of the «Улучшение» cards: the models on the device used last, most recent first, then the built-in ones
+         *  (the default first) until there are [RECENT_CARDS]. [NOT-TESTED] */
+        fun recent(stored: String?, catalogue: Catalogue, onDevice: Set<String>): List<String> {
+            val known = catalogue.models.map { it.id }.toSet()
+            val used = storedIds(stored).filter { it in known && it in onDevice }
+            val fill = catalogue.models.filter { it.builtin }.sortedByDescending { it.isDefault }.map { it.id }.filter { it !in used }
+            return (used + fill).take(RECENT_CARDS)
+        }
         private const val PREF_SCALE = "scale_index"
         private const val PREF_FORMAT = "save_format"
         private const val PREF_QUALITY = "save_quality"
@@ -501,10 +584,10 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
         /** The preference key of a learned rate: one per model and backend. New keys on purpose - the old one per model
          *  mixed GPU and CPU runs, so a CPU run had inflated the GPU estimate too. [TESTED: 2026-10-14 · EstimateTest] */
-        fun rateKey(m: Model, gpu: Boolean): String = "rate_${m.file}_${if (gpu) "gpu" else "cpu"}"
+        fun rateKey(m: Model, gpu: Boolean): String = "rate_${m.id}_${if (gpu) "gpu" else "cpu"}"
 
-        /** The starting rate before this device has learned one. */
-        fun startRate(m: Model, gpu: Boolean): Float = if (gpu) m.msPerMp else m.cpuMsPerMp
+        /** The starting rate before this device has learned one (the catalogue's, measured on the Titan). */
+        fun startRate(m: Model, gpu: Boolean): Float = if (gpu) m.gpuMsPerMp else m.cpuMsPerMp
 
         private fun decode(ctx: Context, uri: Uri): Bitmap =
             ImageDecoder.decodeBitmap(ImageDecoder.createSource(ctx.contentResolver, uri)) { decoder, info, _ ->

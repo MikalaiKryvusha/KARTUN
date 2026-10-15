@@ -15,11 +15,8 @@
     <string name="setup_other_short">Другое фото</string>
     <string name="label_model">Модель</string>
     <string name="label_scale">Масштаб</string>
-    <string name="model_fast_name">Real-ESRGAN General v3</string>
     <string name="model_fast_desc">Быстрая · убирает шум и размытие</string>
-    <string name="model_max_name">Real-ESRGAN x4plus</string>
     <string name="model_max_desc">Детальная · чётче мелкие детали</string>
-    <string name="licence_bsd">Разрешена для коммерческого использования · BSD-3</string>
     <string name="megapixels">%1$s Мп</string>
     <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
     <string name="scale_too_big">Результат больше %1$s Мп — для этого фото подойдёт масштаб до %2$d×</string>
@@ -32,7 +29,7 @@
     <string name="info_scale_list">• 1× — размер прежний, нейросеть только убирает шум и размытие.\n• 2× и 4× — один проход нейросети; хватает для экрана и печати.\n• 8× и 16× — два прохода: обработка дольше в 4–16 раз, файл очень большой.</string>
     <string name="info_model_text">Модель — это обученная нейросеть. Модели различаются тем, на каких снимках учились: одна лучше восстанавливает фото, другая — рисунки.</string>
     <!-- [AI] the line on the two shipped models; the ratio is the Titan measurement (5.8 s vs 88.7 s per 1 MP). -->
-    <string name="info_model_list">• Быстрая — убирает шум и размытие, обычно несколько секунд.\n• Детальная — чётче мелкие детали, считает дольше.</string>
+    <string name="info_model_list">• На этом экране — две модели, которыми вы пользовались последними.\n• «Все модели» — весь каталог: для чего модель, её автор, лицензия и размер. Скачайте нужные — работают они без сети.</string>
 
     <string name="working_title">Нейросеть улучшает фото</string>
     <string name="working_tiles">Тайл %1$s из %2$d</string>
@@ -141,4 +138,35 @@
     <string name="notif_denied_title">Уведомления выключены</string>
     <string name="notif_denied_text">Разрешение на уведомления раньше отклонили, и KARTUN больше не может запросить его сам. Включите уведомления вручную в настройках Android для KARTUN.</string>
     <string name="notif_open_settings">Открыть настройки</string>
+
+    <!-- The model catalogue and «All models» (plans/05 step 5). -->
+    <string name="model_purpose_web_photo">Фото из интернета · убирает сжатие и размытие</string>
+    <string name="model_purpose_universal">Универсальная · чистые и слегка сжатые снимки</string>
+    <string name="model_purpose_clean_photo">Фото · чистые снимки с камеры</string>
+    <string name="model_purpose_photo">Фото · естественные детали</string>
+    <string name="model_purpose_balanced">Фото · баланс резкости и деталей</string>
+    <string name="model_purpose_faces">Лица, волосы, природа · быстрая</string>
+    <string name="model_purpose_anime">Аниме и рисунки</string>
+    <string name="model_purpose_anime_fast">Аниме и кадры видео · самая лёгкая</string>
+    <string name="model_purpose_sharp">Резкость · фото, арт, аниме</string>
+    <string name="model_purpose_sharpest">Больше всего деталей · очень медленная</string>
+    <string name="licence_commercial">Разрешена для коммерческого использования · %1$s</string>
+    <string name="licence_noncommercial">Не для коммерческого использования</string>
+    <string name="models_title">Модели</string>
+    <string name="models_all">Все модели</string>
+    <string name="models_count">Моделей: %1$d · на устройстве: %2$d</string>
+    <string name="models_choose">Выбрать ›</string>
+    <string name="filter_all">Все</string>
+    <string name="filter_photo">Фото</string>
+    <string name="filter_anime">Аниме</string>
+    <string name="filter_commercial">Для коммерческого использования</string>
+    <string name="model_size_mb">%1$s МБ</string>
+    <string name="model_progress_mb">%1$s из %2$s МБ</string>
+    <string name="model_download">Скачать</string>
+    <string name="model_delete">Удалить</string>
+    <string name="model_builtin">Встроена в приложение</string>
+    <string name="model_author">Модель принадлежит автору: %1$s</string>
+    <string name="model_download_failed">Не удалось скачать модель. Проверьте сеть и попробуйте ещё раз.</string>
+    <string name="model_damaged">Скачанный файл оказался повреждён и удалён. Попробуйте ещё раз.</string>
+    <string name="error_model_downloaded">Не удалось загрузить модель. Удалите её в «Все модели» и скачайте снова.</string>
 </resources>

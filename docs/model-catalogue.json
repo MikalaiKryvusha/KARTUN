@@ -1,5 +1,5 @@
 {
-  "_comment": "KARTUN model catalogue - the single source for downloadable models (plans/05_model_catalogue.md step 2). Files are served from the GitHub release `models` of MikalaiKryvusha/KARTUN (the owner's variant B, 2026-10-14 22:04); every file carries its SHA-256 and size, the app refuses a download whose hash differs. `published: false` = not uploaded to the release yet. Licences: researches/03 section C. The models belong to their authors.",
+  "_comment": "KARTUN model catalogue - the single source for downloadable models (plans/05_model_catalogue.md step 2). Files are served from the GitHub release `models` of MikalaiKryvusha/KARTUN (the owner's variant B, 2026-10-14 22:04); every file carries its SHA-256 and size, the app refuses a download whose hash differs. `published: false` = not uploaded to the release yet. `builtin: true` = shipped inside the APK, `default: true` = the model a first launch starts with (the owner's pick 2026-10-15 14:12: NomosWebPhoto RealPLKSR by default + NMKD Siax), still listed so the cards show it; `purpose` names the card's description string (model_purpose_<purpose>), `kind` the filter chip; gpuMsPerMp/cpuMsPerMp start the time estimate until the device learns its own. Licences: researches/03 section C. The models belong to their authors.",
   "release": "https://github.com/MikalaiKryvusha/KARTUN/releases/download/models/",
   "models": [
     {
@@ -9,7 +9,12 @@
       "licence": "BSD-3-Clause",
       "commercial": true,
       "source": "xinntao/Real-ESRGAN release v0.2.5.0, realesr-general-x4v3.pth (sha256 8dc7edb9ac80ccdc30c3a5dca6616509367f05fbc184ad95b731f05bece96292), converted to ncnn by tools/convert-model.py (docs/model-licenses.md); leaves the APK for the catalogue by the owner's word 2026-10-15 14:03",
-      "purpose": "photos, fast",
+      "purpose": "fast_photo",
+      "kind": "photo",
+      "builtin": false,
+      "gpuMsPerMp": 5777,
+      "cpuMsPerMp": 84806,
+      "rateSource": "2026-10-14_F0_own_fast_model.md run 9; CPU 84 806 run 11",
       "files": [
         {
           "name": "realesr-general-x4v3.param",
@@ -26,13 +31,46 @@
       "preview": "model-previews/realesr-general-x4v3.webp"
     },
     {
+      "id": "realesrgan-x4plus",
+      "name": "Real-ESRGAN x4plus",
+      "author": "Xintao Wang",
+      "licence": "BSD-3-Clause",
+      "commercial": true,
+      "source": "xinntao/Real-ESRGAN release v0.2.5.0, realesrgan-ncnn-vulkan-20220424-windows.zip, models/ (unchanged); leaves the APK for the catalogue by the owner's word 2026-10-15 14:14",
+      "purpose": "detail",
+      "kind": "photo",
+      "builtin": false,
+      "gpuMsPerMp": 88717,
+      "cpuMsPerMp": 1432510,
+      "rateSource": "2026-10-14_F0_engine_probe.md run 6; CPU 1 432 510 run 4",
+      "files": [
+        {
+          "name": "realesrgan-x4plus.param",
+          "sha256": "35330ececcea33b6c397a72548e788d5d53becee4734c50b7fada36e89f10a86",
+          "bytes": 116029
+        },
+        {
+          "name": "realesrgan-x4plus.bin",
+          "sha256": "713ee713b0353afaa27976f0563a64a5043bd70b9bd8936c2e26e25ebcdbcddf",
+          "bytes": 33424520
+        }
+      ],
+      "published": false,
+      "preview": "model-previews/realesrgan-x4plus.webp"
+    },
+    {
       "id": "realesrgan-x4plus-anime",
       "name": "Real-ESRGAN x4plus anime",
       "author": "Xintao Wang",
       "licence": "BSD-3-Clause",
       "commercial": true,
       "source": "xinntao/Real-ESRGAN release v0.2.5.0, realesrgan-ncnn-vulkan-20220424-windows.zip, models/ (unchanged)",
-      "purpose": "anime and drawings",
+      "purpose": "anime",
+      "kind": "anime",
+      "builtin": false,
+      "gpuMsPerMp": 31799,
+      "cpuMsPerMp": 476985,
+      "rateSource": "Titan 256x256 2084 ms 2026-10-16; CPU = GPU x 15 (the Titan ratio of the two models run on both)",
       "files": [
         {
           "name": "realesrgan-x4plus-anime.param",
@@ -55,7 +93,12 @@
       "licence": "BSD-3-Clause",
       "commercial": true,
       "source": "xinntao/Real-ESRGAN release v0.2.5.0, realesrgan-ncnn-vulkan-20220424-windows.zip, models/ (unchanged)",
-      "purpose": "anime frames, fast",
+      "purpose": "anime_fast",
+      "kind": "anime",
+      "builtin": false,
+      "gpuMsPerMp": 3616,
+      "cpuMsPerMp": 54240,
+      "rateSource": "Titan 256x256 237 ms 2026-10-14; CPU = GPU x 15 (the Titan ratio of the two models run on both)",
       "files": [
         {
           "name": "realesr-animevideov3-x4.param",
@@ -78,7 +121,12 @@
       "licence": "CC-BY-4.0",
       "commercial": true,
       "source": "github.com/Phhofm/models release 4xNomos8kSC, 4xNomos8kSC_fp16.param and .bin (the author's own ncnn files, unchanged)",
-      "purpose": "photos",
+      "purpose": "photo",
+      "kind": "photo",
+      "builtin": false,
+      "gpuMsPerMp": 82336,
+      "cpuMsPerMp": 1235040,
+      "rateSource": "Titan 256x256 5396 ms 2026-10-14; CPU = GPU x 15 (the Titan ratio of the two models run on both)",
       "files": [
         {
           "name": "4xNomos8kSC_fp16.param",
@@ -101,7 +149,12 @@
       "licence": "CC-BY-4.0",
       "commercial": true,
       "source": "github.com/Phhofm/models release 4xHFA2k, 4xHFA2k_fp16.param and .bin (the author's own ncnn files, unchanged)",
-      "purpose": "anime and drawings",
+      "purpose": "anime",
+      "kind": "anime",
+      "builtin": false,
+      "gpuMsPerMp": 80643,
+      "cpuMsPerMp": 1209645,
+      "rateSource": "Titan 256x256 5285 ms 2026-10-14; CPU = GPU x 15 (the Titan ratio of the two models run on both)",
       "files": [
         {
           "name": "4xHFA2k_fp16.param",
@@ -124,7 +177,12 @@
       "licence": "WTFPL",
       "commercial": true,
       "source": "OpenModelDB 4x-NMKD-Superscale, 4x_NMKD-Superscale-SP_178000_G.pth (sha256 1d1b0078fe71446e0469d8d4df59e96baa80d83cda600d68237d655830821bcc, mirror huggingface.co/gemasai), converted to ncnn fp16 by tools/convert-model.py from the original weights",
-      "purpose": "photos, clean real-world images",
+      "purpose": "clean_photo",
+      "kind": "photo",
+      "builtin": false,
+      "gpuMsPerMp": 82336,
+      "cpuMsPerMp": 1235040,
+      "rateSource": "RRDB like 4xNomos8kSC (not run itself); CPU = GPU x 15 (the Titan ratio of the two models run on both)",
       "files": [
         {
           "name": "4x-NMKD-Superscale-fp16.param",
@@ -147,7 +205,12 @@
       "licence": "WTFPL",
       "commercial": true,
       "source": "OpenModelDB 4x-NMKD-Siax-CX, 4x_NMKD-Siax_200k.pth (sha256 560424d9f68625713fc47e9e7289a98aabe1d744e1cd6a9ae5a35e9957fd127e, mirror huggingface.co/uwg/upscaler), converted to ncnn fp16 by tools/convert-model.py from the original weights",
-      "purpose": "universal, clean or slightly compressed images",
+      "purpose": "universal",
+      "kind": "photo",
+      "builtin": true,
+      "gpuMsPerMp": 105042,
+      "cpuMsPerMp": 1575630,
+      "rateSource": "Titan 256x256 6884 ms 2026-10-16; CPU = GPU x 15 (the Titan ratio of the two models run on both)",
       "files": [
         {
           "name": "4x-NMKD-Siax-fp16.param",
@@ -170,7 +233,13 @@
       "licence": "CC-BY-4.0",
       "commercial": true,
       "source": "github.com/Phhofm/models release 4xNomosWebPhoto_RealPLKSR, 4xNomosWebPhoto_RealPLKSR.pth (sha256 a9db66c9b674c6a5025b6ef3bee71a57c33b8605d8a2de0980470f89002efbbe), converted to ncnn fp16 by tools/convert-model.py from the original weights",
-      "purpose": "web photos, compression and blur",
+      "purpose": "web_photo",
+      "kind": "photo",
+      "builtin": true,
+      "default": true,
+      "gpuMsPerMp": 64850,
+      "cpuMsPerMp": 972750,
+      "rateSource": "Titan 256x256 4250 ms 2026-10-16; CPU = GPU x 15 (the Titan ratio of the two models run on both)",
       "files": [
         {
           "name": "4xNomosWebPhoto-RealPLKSR-fp16.param",
@@ -193,7 +262,12 @@
       "licence": "Apache-2.0",
       "commercial": false,
       "source": "huggingface.co/Kim2091/ClearRealityV1, 4x-ClearRealityV1.pth (sha256 a4cd3a25b00e0be949d4302fc774eb4d7f2ed5f47cdb51551e2d75fa6562e51e), converted to ncnn fp16 by tools/convert-model.py from the original weights; the author's own NCNN files do not load in ncnn 20260526 (dangling blob /Constant_output_0). Licence conflict: the author's HF card says Apache 2.0, OpenModelDB says CC BY-NC-SA 4.0 - kept non-commercial until the owner decides",
-      "purpose": "faces, hair, nature; fast",
+      "purpose": "faces",
+      "kind": "photo",
+      "builtin": false,
+      "gpuMsPerMp": 5722,
+      "cpuMsPerMp": 85830,
+      "rateSource": "Titan 256x256 375 ms 2026-10-16; CPU = GPU x 15 (the Titan ratio of the two models run on both)",
       "files": [
         {
           "name": "4x-ClearRealityV1-fp16.param",
@@ -216,7 +290,12 @@
       "licence": "CC-BY-NC-SA-4.0",
       "commercial": false,
       "source": "OpenModelDB 4x-Remacri, 4x_foolhardy_Remacri.pth (sha256 e1a73bd89c2da1ae494774746398689048b5a892bd9653e146713f9df8bca86a, huggingface.co/FacehugmanIII), converted to ncnn fp16 by tools/convert-model.py from the original weights",
-      "purpose": "photos, natural detail",
+      "purpose": "photo",
+      "kind": "photo",
+      "builtin": false,
+      "gpuMsPerMp": 82336,
+      "cpuMsPerMp": 1235040,
+      "rateSource": "RRDB like 4xNomos8kSC (not run itself); CPU = GPU x 15 (the Titan ratio of the two models run on both)",
       "files": [
         {
           "name": "4x-Remacri-fp16.param",
@@ -239,7 +318,12 @@
       "licence": "CC-BY-NC-SA-4.0",
       "commercial": false,
       "source": "huggingface.co/Kim2091/UltraSharp, Interpolations/4x-UltraMix_Balanced.pth (sha256 e23ca000107aae95ec9b8d7d1bf150f7884f1361cd9d669bdf824d72529f0e26), converted to ncnn fp16 by tools/convert-model.py from the original weights",
-      "purpose": "photos, balanced detail",
+      "purpose": "balanced",
+      "kind": "photo",
+      "builtin": false,
+      "gpuMsPerMp": 82336,
+      "cpuMsPerMp": 1235040,
+      "rateSource": "RRDB like 4xNomos8kSC (not run itself); CPU = GPU x 15 (the Titan ratio of the two models run on both)",
       "files": [
         {
           "name": "4x-UltraMix-Balanced-fp16.param",
@@ -262,7 +346,12 @@
       "licence": "CC-BY-NC-SA-4.0",
       "commercial": false,
       "source": "huggingface.co/Kim2091/UltraSharpV2, 4x-UltraSharpV2_Lite.safetensors (sha256 7a330ef6b7c632477d311ac03499c91c350e35c5986d4a6c295f0628cb871a09), converted to ncnn fp16 by tools/convert-model.py from the original weights",
-      "purpose": "photos, art and anime",
+      "purpose": "sharp",
+      "kind": "photo",
+      "builtin": false,
+      "gpuMsPerMp": 65491,
+      "cpuMsPerMp": 982365,
+      "rateSource": "Titan 256x256 4292 ms 2026-10-16; CPU = GPU x 15 (the Titan ratio of the two models run on both)",
       "files": [
         {
           "name": "4x-UltraSharpV2-Lite-fp16.param",
@@ -277,6 +366,34 @@
       ],
       "published": false,
       "preview": "model-previews/4x-UltraSharpV2-Lite-fp16.webp"
+    },
+    {
+      "id": "4x-UltraSharpV2-fp16",
+      "name": "4x UltraSharp V2",
+      "author": "Kim2091",
+      "licence": "CC-BY-NC-SA-4.0",
+      "commercial": false,
+      "source": "huggingface.co/Kim2091/UltraSharpV2, 4x-UltraSharpV2.safetensors (sha256 2b5db674aa8f3864a696dccd1d07d7cc0500fbf220f35044cd30eee9a7f971a7), a DAT2 network converted to ncnn fp16 by tools/convert-model.py --fixed 128 with the channel attention padded to 32 rows (tools/ncnn_dat.py, researches/08 sections 10-11); runs on the Mali GPU, 66.6 dB to PyTorch; the big photo has no seams (researches/08 section 15)",
+      "purpose": "sharpest",
+      "kind": "photo",
+      "builtin": false,
+      "gpuMsPerMp": 1416016,
+      "cpuMsPerMp": 21240240,
+      "rateSource": "Titan photo1 960x1280 about 29 min 2026-10-15; CPU = GPU x 15 (the Titan ratio of the two models run on both)",
+      "files": [
+        {
+          "name": "4x-UltraSharpV2-fp16.param",
+          "sha256": "1c34ebe515d28fdc4c6f33d02bc437364e38c4c5179c2b691fde0454206f3037",
+          "bytes": 499443
+        },
+        {
+          "name": "4x-UltraSharpV2-fp16.bin",
+          "sha256": "94c82f9bcacc167ae3cecf3438234e791735af65099ca39ed21c259a8af98fa0",
+          "bytes": 84471888
+        }
+      ],
+      "published": false,
+      "preview": "model-previews/4x-UltraSharpV2-fp16.webp"
     }
   ]
 }

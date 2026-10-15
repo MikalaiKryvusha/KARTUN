@@ -105,6 +105,9 @@ fun AboutScreen(onBack: () -> Unit) {
             Group(stringResource(R.string.about_licences), listOf(
                 "KARTUN" to "MIT",
                 "ncnn (Tencent)" to "BSD 3-Clause",
+                // The two models inside the APK (docs/model-licenses.md); CC BY 4.0 asks for the author's credit here.
+                "4xNomosWebPhoto RealPLKSR (Philip Hofmann)" to "CC BY 4.0",
+                "4x NMKD Siax (NMKD)" to "WTFPL",
                 "Real-ESRGAN (Xintao Wang)" to "BSD 3-Clause",
                 "Unbounded, Manrope" to "SIL Open Font License 1.1",
                 "AndroidX, Jetpack Compose" to "Apache 2.0",

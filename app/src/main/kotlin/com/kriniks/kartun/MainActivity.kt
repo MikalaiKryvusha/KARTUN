@@ -18,6 +18,7 @@ import com.kriniks.kartun.ui.AboutScreen
 import com.kriniks.kartun.ui.HomeScreen
 import com.kriniks.kartun.ui.LinkDialog
 import com.kriniks.kartun.ui.ManualScreen
+import com.kriniks.kartun.ui.ModelsScreen
 import com.kriniks.kartun.ui.ResultScreen
 import com.kriniks.kartun.ui.SettingsScreen
 import com.kriniks.kartun.ui.SetupScreen
@@ -82,6 +83,7 @@ private fun KartunApp(vm: UpscaleViewModel) {
         UpscaleViewModel.Screen.Settings -> SettingsScreen(vm, onBack = vm::back)
         UpscaleViewModel.Screen.Manual -> ManualScreen(onBack = vm::back)
         UpscaleViewModel.Screen.About -> AboutScreen(onBack = vm::back)
+        UpscaleViewModel.Screen.Models -> ModelsScreen(vm)
         UpscaleViewModel.Screen.Terms -> ManualScreen(onBack = vm::back, raw = R.raw.terms, title = R.string.terms_title)
     }
 }

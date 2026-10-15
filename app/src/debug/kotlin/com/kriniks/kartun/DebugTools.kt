@@ -147,7 +147,9 @@ object DebugTools {
         val d = dir(context)
         val param = File(d, "$model.param")
         val bin = File(d, "$model.bin")
-        return if (param.exists() && bin.exists()) param to bin else ModelStore.files(context, model)
+        if (param.exists() && bin.exists()) return param to bin
+        val m = ModelCatalog.load(context).byId(model) ?: error("no model $model in the adb folder or the catalogue")
+        return ModelStore.files(context, m)
     }
 
     /** `0=<w>` of the Input line: a fixed-size net (DAT) takes tiles of exactly that size (kartun_engine.cpp). */

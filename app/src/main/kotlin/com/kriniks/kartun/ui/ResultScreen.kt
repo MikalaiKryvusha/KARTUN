@@ -295,7 +295,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
         ) {
             // Which model made it (the owner, chat 2026-10-14 ≈ 20:59 +03:00: «в сводке внизу нужно писать, какая модель улучшила»).
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(res.model.title), Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = c.onBackground)
+                Text(res.model.name, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = c.onBackground)
                 // The visible way to hide the panel - a swipe alone is undiscoverable (the owner, chat 2026-10-14 ≈ 21:13
                 // +03:00: «что виджет сводки можно смахнуть - никто не догадается, ему нужен или драг хендл или кнопочка-стрелочка»).
                 RoundIconButton(R.drawable.ic_back, onClick = { settle(show = false) }, modifier = Modifier.rotate(180f))
