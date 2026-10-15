@@ -67,3 +67,7 @@ app/src/main/assets/models/
 
 # backup written by tools/unwire-owner-word-hooks.mjs
 .claude/settings.json.bak
+
+# processing variants sheet - shot by tools/shoot-processing-variants.mjs, regenerated on demand
+design/processing-variants.webp
+design/processing-variants.png

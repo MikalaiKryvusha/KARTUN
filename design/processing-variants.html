@@ -1,0 +1,119 @@
+<!doctype html>
+<!-- Processing screen, compact variants (the owner, chat 2026-10-15 ≈ 12:17 +03:00: «Нейросеть улучшает фото - нужно
+     предложить макеты другие этого экрана. Сейчас много по высоте места занимает… чтобы был ниже, но все так же
+     информативен. Сейчас много пустого черного пространства в нем»). Frames are the Titan's portrait in dp (533 x 853).
+     Shot by tools/shoot-processing-variants.mjs. [AI] variants for the owner's choice. -->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0D0D0D; --card: #1C1C1E; --card2: #262628; --low: #151516; --line: #2E2E31; --text: #F2F2F3; --sub: #9A9AA0;
+    --pink: #FF1A8C; --font: 'Manrope', sans-serif; --head: 'Unbounded', sans-serif; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #070707; color: var(--text); font-family: var(--font); padding: 28px; }
+  .sheet { padding: 18px; }
+  .sheet { display: flex; gap: 28px; align-items: flex-start; }
+  .col h2 { font: 700 20px var(--head); margin: 0 0 6px; } .col h2 b { color: var(--pink); }
+  .col p { font-size: 14px; color: var(--sub); width: 533px; height: 40px; margin-bottom: 12px; line-height: 1.4; }
+  .screen { width: 533px; height: 853px; background: var(--bg); border-radius: 36px; overflow: hidden; position: relative; border: 1px solid #222; }
+  .status { position: absolute; top: 0; left: 0; right: 0; height: 30px; display: flex; justify-content: space-between; padding: 6px 22px;
+    font: 600 13px var(--font); color: #ddd; z-index: 5; }
+  .photo { position: absolute; background: url('mockups/local/preview.jpg') center / cover; }
+  .tiles { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(7, 1fr); }
+  .tiles i { border: .5px solid rgba(255,255,255,.10); background: rgba(13,13,13,.62); display: block; }
+  .tiles i.done { background: transparent; } .tiles i.now { background: rgba(255,26,140,.30); border: 1.5px solid var(--pink); }
+  .ring { border-radius: 50%; display: grid; place-items: center; position: relative; }
+  .ring::before { content: ''; position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(var(--pink) 0 var(--p), var(--card2) var(--p) 100%);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--w)), #000 calc(100% - var(--w) + 1px)); }
+  .ring b { font: 800 var(--fs) var(--head); font-variant-numeric: tabular-nums; position: relative; }
+  .btn { height: 44px; padding: 0 22px; border-radius: 999px; border: 1.5px solid #3A3A3E; display: inline-grid; place-items: center;
+    font: 700 15px var(--font); color: var(--text); background: transparent; white-space: nowrap; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: var(--card);
+    font: 600 13px var(--font); color: var(--text); white-space: nowrap; } .pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); }
+  .title { font: 700 17px var(--head); } .sub { font-size: 14px; color: var(--sub); font-variant-numeric: tabular-nums; }
+  .sub b { color: var(--text); font-weight: 700; }
+  .card { position: absolute; left: 0; right: 0; bottom: 0; background: var(--low); border-radius: 30px 30px 0 0; }
+  .bar { height: 8px; border-radius: 99px; background: var(--card2); overflow: hidden; } .bar i { display: block; height: 100%; width: 34%; background: var(--pink); border-radius: 99px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .cell { background: var(--card); border-radius: 16px; padding: 10px 12px; } .cell small { display: block; font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .8px; }
+  .cell b { font: 700 16px var(--font); font-variant-numeric: tabular-nums; } .cell b.pk { color: var(--pink); }
+  .ruler { position: absolute; right: -2px; border-right: 2px dashed rgba(255,26,140,.6); }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- NOW: what the Titan shows (WorkingScreen.kt) -->
+  <div class="col"><h2>Сейчас</h2><p>Фото сверху, под ним высокая панель: кольцо 150 dp, заголовок, две строки, плашка, кнопка во всю ширину.</p>
+    <div class="screen"><div class="status"><span>11:59</span><span>21 %</span></div>
+      <div class="photo" style="left:100px; right:100px; top:40px; height:410px"><div class="tiles">${TILES}</div></div>
+      <div class="card" style="height:400px; padding:30px 24px; display:flex; flex-direction:column; align-items:center; gap:14px">
+        <div class="ring" style="--p:34%; --w:11px; --fs:34px; width:150px; height:150px"><b>34%</b></div>
+        <div class="title">Нейросеть улучшает фото</div>
+        <div class="sub">Проход 1 из 2 · тайл &#8199;56 из 165</div>
+        <div class="sub">Осталось ≈ 38 секунд</div>
+        <span class="pill"><i></i>GPU · Vulkan</span>
+        <div class="btn" style="width:100%">Отменить</div>
+      </div></div></div>
+
+  <!-- A: one row - small ring left, text right -->
+  <div class="col"><h2><b>A</b> · Строка</h2><p>Кольцо 76 dp слева, всё остальное в две колонки справа. Панель ≈ 215 dp — фото почти на весь экран.</p>
+    <div class="screen"><div class="status"><span>11:59</span><span>21 %</span></div>
+      <div class="photo" style="left:0; right:0; top:30px; bottom:196px"><div class="tiles">${TILES}</div></div>
+      <div class="card" style="height:214px; padding:22px 22px 26px">
+        <div style="display:flex; gap:18px; align-items:center">
+          <div class="ring" style="--p:34%; --w:7px; --fs:21px; width:76px; height:76px; flex:none"><b>34%</b></div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:5px">
+            <div class="title">Нейросеть улучшает фото</div>
+            <div class="sub">Проход <b>1</b> из 2 · тайл <b>&#8199;56</b> из 165</div>
+            <div class="sub">Прошло <b>1 минута 12 секунд</b></div>
+            <div class="sub">Осталось ≈ <b>38 секунд</b></div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px">
+          <span class="pill"><i></i>GPU · Vulkan</span><div class="btn">Отменить</div>
+        </div>
+      </div></div></div>
+
+  <!-- B: percent + bar + four metric cells -->
+  <div class="col"><h2><b>B</b> · Табло</h2><p>Большие проценты и полоса вместо кольца, четыре метрики плитками: всё читается одним взглядом. Панель ≈ 230 dp.</p>
+    <div class="screen"><div class="status"><span>11:59</span><span>21 %</span></div>
+      <div class="photo" style="left:0; right:0; top:30px; bottom:216px"><div class="tiles">${TILES}</div></div>
+      <div class="card" style="height:234px; padding:20px 20px 24px; display:flex; flex-direction:column; gap:14px">
+        <div style="display:flex; align-items:baseline; justify-content:space-between">
+          <div class="title">Нейросеть улучшает фото</div>
+          <b style="font:800 30px var(--head); color:var(--pink); font-variant-numeric:tabular-nums">34%</b>
+        </div>
+        <div class="bar"><i></i></div>
+        <div class="grid4">
+          <div class="cell"><small>Проход</small><b>1 / 2</b></div>
+          <div class="cell"><small>Тайл</small><b>56 / 165</b></div>
+          <div class="cell"><small>Прошло</small><b>1 мин 12 с</b></div>
+          <div class="cell"><small>Осталось</small><b>≈ 38 с</b></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center"><span class="pill"><i></i>GPU · Vulkan</span><div class="btn" style="height:40px">Отменить</div></div>
+      </div></div></div>
+
+  <!-- C: ring over the photo, a slim bar below -->
+  <div class="col"><h2><b>C</b> · Кольцо на фото</h2><p>Фото на весь экран, кольцо прямо на нём по центру. Внизу тонкая строка метрик и «Отменить». Панель ≈ 145 dp.</p>
+    <div class="screen"><div class="status"><span>11:59</span><span>21 %</span></div>
+      <div class="photo" style="left:0; right:0; top:30px; bottom:130px"><div class="tiles">${TILES}</div>
+        <div style="position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); width:170px; height:170px; border-radius:50%;
+             background:rgba(13,13,13,.72); backdrop-filter:blur(6px); display:grid; place-items:center">
+          <div class="ring" style="--p:34%; --w:9px; --fs:30px; width:150px; height:150px"><b>34%</b></div></div></div>
+      <div class="card" style="height:146px; padding:18px 20px 22px; display:flex; flex-direction:column; gap:12px">
+        <div class="sub" style="display:flex; justify-content:space-between"><span>Проход <b>1</b> из 2 · тайл <b>&#8199;56</b> из 165</span></div>
+        <div class="sub" style="display:flex; justify-content:space-between; margin-top:-6px"><span>Прошло <b>1 минута 12 секунд</b></span><span>осталось ≈ <b>38 секунд</b></span></div>
+        <div style="display:flex; justify-content:space-between; align-items:center"><span class="pill"><i></i>GPU · Vulkan</span><div class="btn">Отменить</div></div>
+      </div></div></div>
+
+</div>
+<script>
+  // 35 tiles (5 x 7, the photo's own grid): 11 done, the 12th now.
+  const tiles = Array.from({ length: 35 }, (_, i) => `<i class="${i < 11 ? 'done' : i === 11 ? 'now' : ''}"></i>`).join('');
+  document.querySelectorAll('.tiles').forEach(t => t.innerHTML = tiles);
+</script>
+</body>
+</html>
