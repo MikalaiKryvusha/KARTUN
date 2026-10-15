@@ -46,6 +46,7 @@ user's path; swipes by `adb shell input swipe`; the divider's x is read from scr
 | 22 | 2026-10-15 12:37 +03:00 | smaller «Отменить» (104×36 dp), title 15 sp → `python s_b1b.py` | the title reads whole «Нейросеть улучшает фото» (it was cut at 17 sp) |
 | 23 | 2026-10-15 12:50 +03:00 | `python s_zurich.py` — a real photo (Wikimedia Commons «Zürich view Quaibrücke 20200702», CC BY-SA 3.0, EXIF stripped byte-wise) 12 732 × 6619 = 84,3 MP at 2× | «→ 25 464 × 13 238 · 337,1 Мп» allowed under the 500 MP limit; done 13:03 in «11 минут 55 секунд · GPU · Vulkan», 2176 tiles, PSS rising to ≈ 2.0 GB, no FATAL/OOM |
 | 24 | 2026-10-15 13:05 +03:00 | PixelSpinner build → `python s_pixspin.py` (PNG save; screencaps 0.4 / 0.7 s after the tap in one device shell) | the «Рендер…» card shows the pixel spinner gathering into the heart |
+| 25 | 2026-10-15 13:08 +03:00 | `python s_modelspin.py` (tap the x4plus card; screencaps 0.2 / 0.45 s later; then back to the fast model) | the 22 dp pixel spinner on the x4plus card while it loads |
 | 13 | 2026-10-15 11:42 +03:00 | `python s_c13.py` twice (share timed by window focus, no UI-tree polling) | sheet after 2.4 s both times — the 16 s seen in run 10's tree-polling loop was the harness, not the app |
 
 ## 4. Checks
