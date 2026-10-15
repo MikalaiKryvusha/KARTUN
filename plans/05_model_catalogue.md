@@ -70,6 +70,14 @@ licence text beside it; the non-commercial ones stay there only while KARTUN is 
    checks every hash against the catalogue before upload.
 5. [ ] The app: a downloader (resume-safe, hash-verified, into app storage), the «Все модели» screen with cards
    (preview, author, badge, size, «Скачать» / «Удалить»), downloaded models on «Улучшение» by recency.
+   The owner's words for this step (chat 2026-10-15 ≈ 11:36–11:40 +03:00), each an acceptance line:
+   - «модели, которые скачаны - нужно давать возможность их удалять через экран "Все модели"» · «нужно давтаь
+     возможность удалять файл модели» → «Удалить» on a downloaded card deletes the .param/.bin from disk; Check: the
+     file is gone from `files/models/` and the card shows «Скачать» again.
+   - «Там нужно писатьих размер в мегабайтах» → the card shows the size in MB («33 МБ»).
+   - «хранить их в директории приложения» → `Context.filesDir/models/` (private, removed with the app).
+   - «при скачивании модели в ее плашке нужно крутить кольцо-прогресса с процентами, сколько мегабайт модели скачено»
+     → while downloading, the card shows a small percent ring (round ends, like the processing ring) and «12 из 33 МБ».
 6. [ ] The ToU line on each card: «Модель принадлежит автору: <name>» (plan 03 step 40).
 7. [ ] Titan run of criteria 1–4 → run report.
 
