@@ -50,7 +50,9 @@ import kotlin.random.Random
  * [TESTED: 2026-10-15 · seen on the Titan, debug probe screen at 150 dp: ~100 frames over two minutes show heart, ring,
  * tiles, net with links and sparks, convolution, attention, Life (pulsar, glider, spaceship, pentadecathlon), sort, wave,
  * the regroups between them, no crash; the owner watched it live - «да, анимация очень красивая стала». NOT walked: the
- * 48 dp processing screen and the 22 dp model card (compact set), the quadtree seen only in a moment]
+ * 48 dp processing screen and the 22 dp model card (compact set), the quadtree seen only in a moment. The 18:20-18:27
+ * tweaks - quadtree grid and pixel ends, the gliding convolution window without placeholders, the smart random - built,
+ * installed, the app alive and computing; their look NOT yet observed by the agent]
  */
 
 private const val SLOW = 1.5f
@@ -138,6 +140,9 @@ private val QUAD_IMG = listOf("00000000", "01100110", "11111111", "11111111", "0
 private class Block(val x: Float, val y: Float, val side: Int, val v: Float, val key: Int)
 private fun quadBlock(cell: Int, level: Int): Block {
     val cx = cell % 8; val cy = cell / 8
+    // level 4 is the picture itself, every pixel apart - the quadtree's finest level keeps uniform blocks whole, and those
+    // flew as big squares in and out of the figure
+    if (level >= 4) return Block(.1f + (cx + .5f) * .1f, .1f + (cy + .5f) * .1f, 1, if (QUAD_IMG[cy][cx] == '1') 1f else 0f, 64 + cy * 8 + cx)
     var b = 8; var depth = 0
     while (true) {
         val bx = cx / b * b; val by = cy / b * b
@@ -148,8 +153,10 @@ private fun quadBlock(cell: Int, level: Int): Block {
         b /= 2; depth++
     }
 }
-private val QUAD_LUT = Array(4) { level -> Array(64) { cell -> quadBlock(cell, level) } }
-private const val QUAD_CYCLE = 3600f
+private val QUAD_LUT = Array(5) { level -> Array(64) { cell -> quadBlock(cell, level) } }
+private const val QUAD_CYCLE = 4400f
+/** The gap between quadtree pixels and blocks, in cells (the heart's is about 12 % of its step). */
+private const val QUAD_GAP = .16f
 
 /*
  * Conway's Game of Life (≈ 17:45: «Игра в жизнь: больше размерность сетки, быстрее, и сидить реальными сидами, чтобы там
@@ -228,6 +235,11 @@ private enum class Fig(val size: Float, val count: Int, val stagger: Float, val 
         Wave -> Pt(.07f + i / 35f * .86f, .5f)
     }
 }
+
+/** Weights of the smart random of figures: just shown, the gain per regroup not chosen, the cap. */
+private const val FIG_W_SHOWN = .15f
+private const val FIG_W_GROW = .5f
+private const val FIG_W_MAX = 4f
 
 /** As many squares as the largest figure needs; the others merge the spare ones into hosts. */
 private val N = Fig.entries.maxOf { it.count }
@@ -409,6 +421,14 @@ private class PixelSpinnerState(private val pink: Color, private val grey: Color
         sortWaveT = tau - SORT_CMP * SORT_STEP; sortHopT = sortWaveT - SORT_WAVE
     }
 
+    /** The quadtree's depth now, 4 (every pixel apart) .. 0 (one block): a cycle starts and ends at the pixels and merges up to
+     *  the big blocks in its middle, so the squares fly in and out small (the owner, ≈ 18:14: «только немножко страшные
+     *  большие пиксели, когда квадро дерево переход делает в и из»). */
+    private fun quadLevel(t: Float): Float {
+        val ph = frac(scene(t) / QUAD_CYCLE)
+        return 4 - easeInOut(if (ph < .5f) ph * 2 else (1 - ph) * 2) * 4
+    }
+
     // ---- the life of a square that stands in figure f
 
     private fun life(f: Fig, i: Int, t: Float): Look = when (f) {
@@ -439,11 +459,13 @@ private class PixelSpinnerState(private val pink: Color, private val grey: Color
         Fig.Conv -> convLife(i % 34, t)
         Fig.Attn -> attnLife(i % 48, t)
         Fig.Quad -> {
-            val ph = frac(scene(t) / QUAD_CYCLE); val lvl = easeInOut(if (ph < .5f) ph * 2 else (1 - ph) * 2) * 3
-            val lo = min(3, lvl.toInt()); val hi = min(3, lo + 1); val fr = easeInOut(lvl - lo)
+            val lvl = quadLevel(t)
+            val lo = min(4, lvl.toInt()); val hi = min(4, lo + 1); val fr = easeInOut(lvl - lo)
             val j = i % 64; val a = QUAD_LUT[lo][j]; val b = QUAD_LUT[hi][j]; val tg = Fig.Quad.target(j)
             val g = glow(if (fr < .5f) a.key else b.key, t, .15f + .75f * mixF(a.v, b.v, fr))
-            Look(mixF(a.side.toFloat(), b.side.toFloat(), fr) * .92f * g.k, g.c, mixF(a.x, b.x, fr) - tg.x, mixF(a.y, b.y, fr) - tg.y)
+            // a fixed gap between pixels and blocks, a grid like the heart's (the owner, ≈ 18:20: «пусть у квадродерева
+            // между пикселями будет промежуток сетка небольшая» · «как в сердчке»): side = cells - QUAD_GAP
+            Look((mixF(a.side.toFloat(), b.side.toFloat(), fr) - QUAD_GAP) * g.k, g.c, mixF(a.x, b.x, fr) - tg.x, mixF(a.y, b.y, fr) - tg.y)
         }
         Fig.Life -> {
             lifeAt(t); val j = i % (LIFE_G * LIFE_G)
@@ -470,22 +492,40 @@ private class PixelSpinnerState(private val pink: Color, private val grey: Color
         val r = scene(t); val step = (r / CONV_STEP).toInt() % CONV_STEPS; val f = frac(r / CONV_STEP)
         if (j < 25) {
             val x = j % 5; val y = j / 5
-            fun under(s: Int) = s in 0..8 && x >= s % 3 && x < s % 3 + 3 && y >= s / 3 && y < s / 3 + 3
-            // No frame: the 3x3 group under the kernel lights up and grows (the owner, ≈ 17:58: «в свертке можно окно не
-            // делать, а пусть в оригинальной группе просто увеличиваются и подсвечиваются группы 3-3»), smoothly over
-            // ~90 ms as the kernel moves on (≈ 18:08: «пиксели оригинала будут анимацией плавно вспыхивать и
-            // увеличиваться, за мс 50...100, а у тебя резко»); +10 % keeps the nine apart.
-            val u = mixF(if (under(step - 1)) 1f else 0f, if (under(step)) 1f else 0f, easeInOut(clamp01(f * CONV_STEP / 90f)))
+            // No frame: the pixels under the kernel light up and grow (the owner, ≈ 17:58: «в свертке можно окно не делать, а
+            // пусть в оригинальной группе просто увеличиваются и подсвечиваются группы 3-3»). The kernel GLIDES from stop
+            // to stop over the first 45 % of a step, and each pixel lights by how much of it the gliding window covers -
+            // a smooth pass, lighting up ahead and fading behind (≈ 18:08: «плавно вспыхивать и увеличиваться… а у тебя
+            // резко»; ≈ 18:24: «квадрат сверточного окна всё так же резко ходит по оригиналу, не видно плавного загорания
+            // и потухания и перехода» - a 90 ms switch still read as a jump). The window fades in at the first stop and out
+            // after the last; +10 % keeps the nine apart.
+            val glide = easeInOut(clamp01(f / .45f))
+            val cur = min(step, 8); val prev = if (step in 1..8) step - 1 else cur
+            val wx = mixF((prev % 3).toFloat(), (cur % 3).toFloat(), glide); val wy = mixF((prev / 3).toFloat(), (cur / 3).toFloat(), glide)
+            val amp = when { step == 0 -> glide; step <= 8 -> 1f; step == 9 -> 1 - glide; else -> 0f }
+            val cover = clamp01(min(x + 1f, wx + 3) - max(x.toFloat(), wx)) * clamp01(min(y + 1f, wy + 3) - max(y.toFloat(), wy))
+            val u = easeInOut(cover) * amp
             val g = glow(j, t, mixF(.12f * convIn(x, y), .5f + .5f * convIn(x, y), u))
             return swayed(Look(g.k * (1 + .1f * u), g.c), j, t, .003f)
         }
         val o = j - 25
+        // A result pixel not yet computed waits hidden on the centre pixel of its window, looking exactly like it - no grey
+        // placeholders (the owner, ≈ 18:21: «пусть свертка когда собирает свертку 3 на 3 - не будет серых плейсхолдеров в
+        // свертке, а она собирается теми, что прилетают» · «а то там уже стоит заготовка серая 3 на 3»); in the last step of
+        // the round the output pixels fly back into their windows.
+        val w = convWindow(o); val slot = Fig.Conv.target(j)
+        val inner = convLife((o / 3 + 1) * 5 + o % 3 + 1, t)
         return when {
-            step >= 9 || o < step -> glow(j, t, .55f + .45f * CONV_OUT[o] + (if (step >= 9) .3f * bump(frac(r / (4 * CONV_STEP)), 0f, 1f) else 0f))
-            o > step -> Look(.82f, grey)
+            step == CONV_STEPS - 1 -> {
+                val e = easeInOut(f); val g = glow(j, t, .55f + .45f * CONV_OUT[o])
+                Look(mixF(g.k, inner.k, e), lerp(g.c, inner.c, e), (w.x - slot.x) * e + inner.dx * e, (w.y - slot.y) * e + inner.dy * e - .1f * sin(PI_F * e))
+            }
+            step >= 9 || o < step -> glow(j, t, .55f + .45f * CONV_OUT[o] + (if (step >= 9) .3f * bump(frac(r / (3 * CONV_STEP)), 0f, 1f) else 0f))
+            o > step -> Look(inner.k, inner.c, w.x - slot.x + inner.dx, w.y - slot.y + inner.dy)
             else -> {                                              // jumping out of the window into its place
-                val e = easeInOut(clamp01(f / .8f)); val w = convWindow(o); val slot = Fig.Conv.target(j); val g = glow(j, t, 1f)
-                Look(mixF(.26f / .085f, 1f, easeInOut(clamp01(f / .35f))) * g.k, lerp(light, g.c, e),
+                // it jumps once the gliding window has arrived (the glide takes the first 45 % of the step)
+                val e = easeInOut(clamp01((f - .4f) / .55f)); val g = glow(j, t, 1f)
+                Look(mixF(inner.k, g.k, easeInOut(clamp01((f - .4f) / .25f))), lerp(inner.c, lerp(light, g.c, e), clamp01((f - .4f) / .15f)),
                     (w.x - slot.x) * (1 - e), (w.y - slot.y) * (1 - e) - .16f * sin(PI_F * e))
             }
         }
@@ -627,14 +667,34 @@ private class PixelSpinnerState(private val pink: Color, private val grey: Color
         switchAt = t + 2500 + rnd.nextFloat() * 2500 + next.stagger + next.hold
     }
 
-    fun start() = regroup(0f, Fig.Heart, Mood.Burst)
+    /** Smart random of the next figure (the owner, ≈ 18:26: «нужен умный рандом переключения состояний живой анимации.
+     *  Состояния, которые были показаны - теряют вес в случайности следующего показа» · «каждый раз, когда их не выбирают -
+     *  вес растёт»): the chosen figure's weight drops to FIG_W_SHOWN, every figure not chosen gains FIG_W_GROW, up to FIG_W_MAX;
+     *  the next one is drawn by weight. */
+    private val figWeight = FloatArray(Fig.entries.size) { 1f }
+
+    private fun pickFig(): Fig {
+        val cands = Fig.entries.filter { it != fig && !(compact && it.fine) }
+        var r = rnd.nextFloat() * cands.fold(0f) { s, f -> s + figWeight[f.ordinal] }
+        var chosen = cands.last()
+        for (c in cands) { r -= figWeight[c.ordinal]; if (r <= 0f) { chosen = c; break } }
+        noteShown(chosen)
+        return chosen
+    }
+
+    private fun noteShown(shown: Fig) {
+        for (f in Fig.entries) figWeight[f.ordinal] = if (f == shown) FIG_W_SHOWN else min(FIG_W_MAX, figWeight[f.ordinal] + FIG_W_GROW)
+    }
+
+    fun start() { noteShown(Fig.Heart); regroup(0f, Fig.Heart, Mood.Burst) }
 
     /** Moves the spinner to time [t] (ms on the slowed clock): a due regroup, merges that just happened. */
     fun update(t: Float) {
         val tilesHold = tilesLevel(t) >= 10                       // the tiles square leaves only once fully built
-        if (t > switchAt && (fig != Fig.Tiles || tilesHold)) {
-            val figs = Fig.entries.filter { it != fig && !(compact && it.fine) }; val moods = Mood.entries.filter { it != mood }
-            regroup(t, figs[rnd.nextInt(figs.size)], moods[rnd.nextInt(moods.size)])
+        val quadHold = quadLevel(t) > 3.95f                       // the quadtree leaves only as single pixels again
+        if (t > switchAt && (fig != Fig.Tiles || tilesHold) && (fig != Fig.Quad || quadHold)) {
+            val moods = Mood.entries.filter { it != mood }
+            regroup(t, pickFig(), moods[rnd.nextInt(moods.size)])
         }
         for (s in sq) if (s.host >= 0 && !s.merged && progress(s, t) >= 1) { s.merged = true; sq[s.host].gulpAt = t }
     }
