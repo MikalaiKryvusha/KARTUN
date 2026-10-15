@@ -15,9 +15,8 @@ Research: researches/08_dat2_on_ncnn.md. Used by tools/convert-model.py (`patch(
 kind converted alone and checked on the PC's Vulkan GPU (<= 0.0044 on random input); the whole net at 128 px -> 126 SDPA,
 no MatMul, ncnn (Vulkan, fp32 storage) vs PyTorch on a 128 px photo crop 66.6 dB. fp16 storage overflows (first Gemm ->
 inf) - the engine keeps fixed-size nets in fp32. Linear -> 1x1 conv and no Squeeze/ExpandDims: 300 Convolution +
-126 SDPA, 66.6 dB on the PC GPU. On the Titan's Mali the channel-attention SDPA's Vulkan kernel writes nothing (16.1 dB);
-tools/convert-model.py --fixed moves those 18 layers to the CPU (31=16): 66.58 dB vs PyTorch on the Mali, 11.3 s per 128 px
-tile - researches/08 section 10]
+126 SDPA, 66.6 dB on the PC GPU. Channel attention padded to 32 rows (sdpa_cross.comp reads past its buffer at 30 rows,
+ncnn #7120): every layer on the Titan's Mali GPU, 66.58 dB vs PyTorch, 10.9 s per 128 px tile - researches/08 section 11]
 """
 import types
 
@@ -159,8 +158,27 @@ def aca_forward(self, x, H, W):
     # F.normalize = x / max(|x|, 1e-12) lowers to aten::clamp_min, which ncnn lacks; |x| is never near 1e-12 here
     q = q / torch.norm(q, p=2, dim=-1, keepdim=True)
     k = k / torch.norm(k, p=2, dim=-1, keepdim=True)
-    # softmax(q k^T * temperature) v as ncnn SDPA: the per-head temperature moves into q, scale 1 (heads, d, N)
-    o = F.scaled_dot_product_attention(q * self.temperature, k, v, scale=1.0)
+    # softmax(q k^T * temperature) v as ncnn SDPA: the per-head temperature moves into q, scale 1 (heads, d, N).
+    # The sequence (d = 30 channels per head) is padded to a multiple of 4 with zero rows, masked out of the softmax, and
+    # the extra output rows are dropped - the same numbers. Why: ncnn 20260526's sdpa_cross.comp computes 4x4 blocks and
+    # reads q/k rows gy*4..gy*4+3 without a bound check; with 30 rows the last head reads past the end of its buffer -
+    # harmless on a desktop GPU, but on the Titan's Mali-G615 the job is dropped and the output is never written (the
+    # output blob kept a freed blob's contents, 2026-10-15; researches/08 section 11).
+    d = C // h
+    dp = (d + 3) // 4 * 4
+    if dp != d:
+        # The padding and the crop run on 4-D tensors with the batch axis (1) in front: on the 3-D (heads, d, N) form pnnx
+        # put the row slice and the concat on the head axis (Crop/Concat axis 0, 41.3 dB - seen 2026-10-15).
+        q = q * self.temperature
+        zero = q.reshape(1, h, d, N)[:, :, :1, :] * 0.0  # a run-time zero row (1, h, 1, N)
+        pad = torch.cat([zero] * (dp - d), dim=2)
+        q, k, v = (torch.cat([t.reshape(1, h, d, N), pad], dim=2).reshape(h, dp, N) for t in (q, k, v))
+        # padded keys get no weight (exp(-1e4) == 0 in fp32 and fp16); the mask is built in patch(), so the trace sees a
+        # constant (built here, its in-place fill lowers to Tensor.fill, which ncnn lacks - seen 2026-10-15)
+        o = F.scaled_dot_product_attention(q, k, v, attn_mask=self.pad_mask, scale=1.0)
+        o = o.reshape(1, h, dp, N)[:, :, :d, :]  # drop the padded rows: (1, h, d, N)
+    else:
+        o = F.scaled_dot_product_attention(q * self.temperature, k, v, scale=1.0)
     attened_x = o.reshape(1, C, N).transpose(1, 2)  # (heads, d, N) -> (1, N, C), channel order [h][d] as the original
     conv_x = self.dwconv(v_)
     channel_map = self.channel_interaction(attened_x.transpose(-2, -1).contiguous().view(1, C, H, W))
@@ -188,5 +206,8 @@ def patch(model):
         elif name == "Adaptive_Spatial_Attention":
             mod.forward = types.MethodType(asa_forward, mod); n += 1
         elif name == "Adaptive_Channel_Attention":
+            d = mod.qkv.lin.in_features // mod.num_heads  # channels per head = the attention's sequence
+            dp = (d + 3) // 4 * 4
+            mod.pad_mask = torch.cat([torch.zeros(dp, d), torch.full((dp, dp - d), -1e4)], dim=1)
             mod.forward = types.MethodType(aca_forward, mod); n += 1
     return n

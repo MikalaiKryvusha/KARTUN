@@ -110,7 +110,9 @@ class: proxy-for-the-thing
 **Result:** ❌ the test proved a layer the net does not have. ✅ layer-by-layer stats of the REAL net on the device vs the PC
 (`logBlobStats` + `tools/dat-blob-stats.py`, three bisection passes in seconds) found `sdpa_4671`: inputs equal to 6 digits,
 output = the stale contents of a freed blob (its mean |x| matched blob 275 exactly) — the Vulkan kernel wrote nothing.
-`31=16` on the 18 channel SDPAs: the whole net matches the PC, 66.58 dB vs PyTorch, 11.3 s per tile.
+`31=16` on the 18 channel SDPAs: the whole net matches the PC, 66.58 dB vs PyTorch, 11.3 s per tile. Root cause found later the
+same hour: ncnn's sdpa_cross.comp reads rows past its buffer when the sequence is not a multiple of 4 (30 here) - padding to 32
+runs every layer on the GPU (10.9 s, 66.58 dB; ncnn #7120). A desktop GPU tolerates out-of-bounds reads, the Mali does not.
 **Lesson:** bisect the real graph on the real device; an isolated reproduction proves only its own shape. A wrong blob whose
 numbers equal another blob's is a kernel that did not write.
 **Repro:** debug build → `--es model <m> --es blobs <b1,b2,…>` → logcat `blobstat` → `tools/dat-blob-stats.py <param> <bin> --blobs <…> --device <logcat.txt>`.

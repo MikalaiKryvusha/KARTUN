@@ -68,6 +68,26 @@ void readFixedInput(const char* paramPath, int& w, int& h) {
     std::fclose(f);
 }
 
+// Debug switch for driver investigations: a file `<param>.opts` next to the model ("lightmode=0 local_memory=0
+// subgroup=0 coopmat=0", any subset) turns the named ncnn options off before the net loads, so one device run tells which
+// shader path breaks (researches/08 section 11). Models shipped in the APK never have such a file. [TESTED: 2026-10-15 ·
+// Titan: the logcat line showed each switch applied; lightmode=0 / local_memory=0 changed the DAT2 SDPA output, subgroup=0 crashed ncnn]
+void applyDebugOpts(const char* paramPath, ncnn::Option& opt) {
+    const std::string path = std::string(paramPath) + ".opts";
+    FILE* f = std::fopen(path.c_str(), "rb");
+    if (!f) return;
+    char buf[256] = {0};
+    const size_t n = std::fread(buf, 1, sizeof buf - 1, f);
+    std::fclose(f);
+    const std::string s(buf, n);
+    if (s.find("lightmode=0") != std::string::npos) opt.lightmode = false;
+    if (s.find("local_memory=0") != std::string::npos) opt.use_shader_local_memory = false;
+    if (s.find("subgroup=0") != std::string::npos) opt.use_subgroup_ops = false;
+    if (s.find("coopmat=0") != std::string::npos) opt.use_cooperative_matrix = false;
+    LOGI("debug opts from %s: lightmode=%d local_memory=%d subgroup=%d coopmat=%d", path.c_str(), opt.lightmode,
+         opt.use_shader_local_memory, opt.use_subgroup_ops, opt.use_cooperative_matrix);
+}
+
 void ensureGpuInstance() {
     if (!g_gpuInstance) { ncnn::create_gpu_instance(); g_gpuInstance = true; }
 }
@@ -116,6 +136,7 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeCreate(JNIEnv* env, jclass, js
         u->net.opt.use_fp16_packed = false;
         LOGI("fixed input %dx%d, fp32 storage", u->fixedW, u->fixedH);
     }
+    applyDebugOpts(param, u->net.opt);
     const int rp = u->net.load_param(param);
     const int rm = u->net.load_model(bin);
     env->ReleaseStringUTFChars(jparam, param);
