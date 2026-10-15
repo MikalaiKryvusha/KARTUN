@@ -17,28 +17,22 @@ android {
         ndk { abiFilters += "arm64-v8a" }
     }
 
-    // App names on the phone (owner's rule R3, HOUSE_RULES.md): stage builds carry "Stage KARTUN", prod is just "KARTUN".
-    // Each type has its own applicationId suffix, so debug, stage and prod install side by side on the Titan.
+    // Two builds (owner's rule R3, HOUSE_RULES.md; the stage build was dropped by the owner 2026-10-15 ≈ 15:55 +03:00:
+    // «не нужно три варианта сборки. Два достаточно. Для разработки дебаг. Прод версия.»): debug is «Debug KARTUN»,
+    // prod is just «KARTUN»; the .debug suffix lets both install side by side on the Titan.
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
             resValue("string", "app_name", "Debug KARTUN")
-        }
-        create("stage") {
-            initWith(getByName("debug"))
-            applicationIdSuffix = ".stage"
-            resValue("string", "app_name", "Stage KARTUN")
-            matchingFallbacks += listOf("debug")
         }
         release {
             resValue("string", "app_name", "KARTUN")
         }
     }
     // The «Отладка» section and the engine probe screen live in src/debug (code and strings ship only in «Debug KARTUN»,
-    // the owner, chat 2026-10-15 ≈ 15:35 +03:00: «в дебаг сборке приложения»); stage and release get the empty
-    // DebugTools of src/nodebug with the same API.
+    // the owner, chat 2026-10-15 ≈ 15:35 +03:00: «в дебаг сборке приложения»); release gets the empty DebugTools of
+    // src/nodebug with the same API.
     sourceSets {
-        getByName("stage") { kotlin.directories.add("src/nodebug/kotlin") }
         getByName("release") { kotlin.directories.add("src/nodebug/kotlin") }
     }
     // Model files stay uncompressed in the APK: ModelStore reads their size through AssetManager.openFd, which only

@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -77,7 +78,8 @@ import java.util.concurrent.Executors
  * KARTUN's memory (PSS). The Mali load is closed to apps on this device (sysfs "Permission denied", probed 2026-10-15) -
  * the screen shows how long KARTUN computes on the GPU instead. [NOT-TESTED: the first version (one CPU line, the Mali
  * note) was seen on the Titan 2026-10-15 15:44-15:49 over an adb probe - spinner, load tiles, logs, the result picture;
- * the thread list, core clocks, «ОЗУ» and the layer timing are not yet seen on the device]
+ * 16:07-16:08 the current one (GPU tile, «ОЗУ» on its own row, core clocks as chips, one KARTUN percent) seen by
+ * screenshots on the Titan; the `blobs` layer timing read from logcat; the Settings path not walked yet]
  */
 object DebugTools {
     private const val TAG = "KARTUN_PROBE"
@@ -219,10 +221,8 @@ object DebugTools {
 
     // ---- device load ----
 
-    /** One thread of KARTUN: its name and its share of ONE core over the last second, like `top -H` (100 % = a full core). */
-    private class ThreadLoad(val name: String, val pct: Int)
-
-    private class Load(val threads: List<ThreadLoad>, val coresGhz: List<Double>, val freeGb: Double, val totalGb: Double, val appMb: Int)
+    /** cpuPct: KARTUN's share of the WHOLE processor over the last second (all cores = 100 %), summed over its threads. */
+    private class Load(val cpuPct: Int, val coresGhz: List<Double>, val freeGb: Double, val totalGb: Double, val appMb: Int)
 
     private val clkTck by lazy { Os.sysconf(OsConstants._SC_CLK_TCK).coerceAtLeast(1) }
     private val cores = Runtime.getRuntime().availableProcessors()
@@ -241,17 +241,6 @@ object DebugTools {
     /** Current clock of every core, GHz (cpufreq is readable by apps; the load per core is not - /proc/stat is closed). */
     private fun coresGhz(): List<Double> = (0 until cores).map { i ->
         runCatching { File("/sys/devices/system/cpu/cpu$i/cpufreq/scaling_cur_freq").readText().trim().toLong() / 1e6 }.getOrDefault(0.0)
-    }
-
-    /** Human names for KARTUN's threads; anything else keeps its system name. */
-    @Composable
-    private fun threadLabel(name: String): String = when {
-        name == ENGINE_THREAD -> stringResource(R.string.dbg_thread_engine)
-        name.startsWith("openmp") -> stringResource(R.string.dbg_thread_ncnn)
-        name.startsWith("mali") || name.startsWith("GPU completion") -> stringResource(R.string.dbg_thread_mali)
-        name == "RenderThread" -> stringResource(R.string.dbg_thread_render)
-        name.startsWith("ks.kartun") -> stringResource(R.string.dbg_thread_ui)
-        else -> name
     }
 
     private fun memInfoKb(key: String): Long =
@@ -275,13 +264,12 @@ object DebugTools {
                     val now = threadTicks()
                     val at = SystemClock.elapsedRealtime()
                     val sec = (at - lastAt) / 1000.0
-                    // Threads with the same name (ncnn's openmp workers) are summed into one line.
-                    val perName = now.entries.groupBy({ it.value.first }) { (tid, v) -> v.second - (last[tid]?.second ?: v.second) }
-                        .map { (name, deltas) -> ThreadLoad(name, (deltas.sum().toDouble() / clkTck / sec * 100).toInt()) }
-                        .filter { it.pct > 0 }.sortedByDescending { it.pct }.take(5)
+                    // One number (the owner, chat 2026-10-15 ≈ 16:08 +03:00: «частоты ядер и один процент суммарный»): the CPU
+                    // time of every KARTUN thread over the last second, as a share of all cores.
+                    val ticks = now.entries.sumOf { (tid, v) -> v.second - (last[tid]?.second ?: v.second) }
                     last = now; lastAt = at
-                    Load(perName, coresGhz(), memInfoKb("MemAvailable") / 1048576.0, memInfoKb("MemTotal") / 1048576.0,
-                        (Debug.getPss() / 1024).toInt())
+                    Load((ticks.toDouble() / clkTck / sec / cores * 100).toInt().coerceIn(0, 100), coresGhz(),
+                        memInfoKb("MemAvailable") / 1048576.0, memInfoKb("MemTotal") / 1048576.0, (Debug.getPss() / 1024).toInt())
                 }
                 tick++
             }
@@ -301,24 +289,34 @@ object DebugTools {
             val l = load
             val now = tick.let { SystemClock.elapsedRealtime() }  // re-read every second with the load sample
             val gpuSec = ((p.gpuMs + if (p.gpuStart > 0) now - p.gpuStart else 0) / 1000).toInt()
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Metric(stringResource(R.string.dbg_gpu),
-                    if (p.gpuStart > 0) stringResource(R.string.dbg_gpu_busy, gpuSec) else stringResource(R.string.dbg_gpu_idle), Modifier.weight(1f))
-                Metric(stringResource(R.string.dbg_ram), if (l == null) "…" else stringResource(R.string.dbg_ram_value, l.freeGb, l.totalGb, l.appMb), Modifier.weight(1.4f))
-            }
+            Metric(stringResource(R.string.dbg_gpu),
+                if (p.gpuStart > 0) stringResource(R.string.dbg_gpu_busy, gpuSec) else stringResource(R.string.dbg_gpu_idle), Modifier.fillMaxWidth())
             Spacer(Modifier.height(8.dp))
-            // CPU: KARTUN's threads like `top -H` (100 % = one full core) and the clock of every core.
+            // RAM on a row of its own: next to the GPU tile its line was cut («· KARTUN … МБ», seen on the Titan 16:07)
+            Metric(stringResource(R.string.dbg_ram), if (l == null) "…" else stringResource(R.string.dbg_ram_value, l.freeGb, l.totalGb, l.appMb), Modifier.fillMaxWidth())
+            Spacer(Modifier.height(8.dp))
+            // CPU: the clock of every core and KARTUN's share of the whole processor.
             Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(c.surfaceContainer).padding(horizontal = 12.dp, vertical = 10.dp)) {
                 Text(stringResource(R.string.dbg_cpu).uppercase(), style = MaterialTheme.typography.labelSmall, color = c.onSurfaceVariant)
                 if (l == null) Text("…")
-                l?.threads?.forEach { t ->
-                    Row {
-                        Text(threadLabel(t.name), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                        Text("${t.pct} %", style = MaterialTheme.typography.bodySmall.copy(fontFeatureSettings = "tnum"))
+                // Core clocks first, right under the title, as small fixed-width chips: the row keeps its width while
+                // the digits change (the owner, chat 2026-10-15 ≈ 16:00 +03:00: «частота ядер нужно сделать чипсами
+                // маленькими и зафиксировать» · «частоты ядра сразу под заголовком Процессор сделай»).
+                l?.let {
+                    Text(stringResource(R.string.dbg_cores), Modifier.padding(top = 4.dp, bottom = 4.dp),
+                        style = MaterialTheme.typography.labelSmall, color = c.onSurfaceVariant)
+                    Row(Modifier.padding(bottom = 6.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        it.coresGhz.forEach { g ->
+                            Text("%.1f".format(g), Modifier.width(38.dp).clip(RoundedCornerShape(8.dp)).background(c.surfaceContainerHigh)
+                                .padding(vertical = 3.dp), textAlign = TextAlign.Center, maxLines = 1,
+                                style = MaterialTheme.typography.labelSmall.copy(fontFamily = FontFamily.Monospace))
+                        }
                     }
                 }
-                l?.let { Text(stringResource(R.string.dbg_cores, it.coresGhz.joinToString("  ") { g -> "%.1f".format(g) }),
-                    Modifier.padding(top = 4.dp), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant) }
+                l?.let {
+                    Text(stringResource(R.string.dbg_cpu_total, it.cpuPct),
+                        style = MaterialTheme.typography.bodySmall.copy(fontFeatureSettings = "tnum"))
+                }
             }
             Spacer(Modifier.height(8.dp))
             val state = rememberLazyListState()

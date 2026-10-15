@@ -56,7 +56,8 @@
 > <!-- classes: question-already-answered, guard-not-proven-against-threat, shown-as-link,
 >      claim-before-evidence, owner-decision-not-applied, text-in-agents-world,
 >      etalon-from-dirty-tree, shell-lied, escaping-layer, twins-missed,
->      field-dropped-in-rebuild, platform-layer-unseen, silent-noop-edit, replace-crossed-scope, stand-left-dirty, shallow-scan -->
+>      field-dropped-in-rebuild, platform-layer-unseen, silent-noop-edit, replace-crossed-scope, stand-left-dirty, shallow-scan,
+>      proxy-for-the-thing -->
 >
 > | Class slug | The failure it names |
 > |---|---|
@@ -76,6 +77,7 @@
 | `replace-crossed-scope` | a scripted replace matched the same text in a neighbouring block (another language, another section) |
 | `stand-left-dirty` | a harness left the owner's device, stand or tree in a state the owner does not expect |
 | `shallow-scan` | a selection walked less of the tree than the action that follows it (top-level `ls` before a recursive delete) |
+| `proxy-for-the-thing` | a check on a stand-in (the desktop GPU, the PC) taken as the check on the target (the phone's GPU) |
 >
 > The `#tags` are **trigger-tags**: before a task, grep by the task's tags and QUOTE the relevant
 > lessons in your report (id + one line) — or state "no relevant lessons". An unquoted recall is
@@ -86,6 +88,47 @@
 ## Entries
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
+
+### EXP-0019 · 2026-10-15 · ❌→✅ · #ncnn #pnnx #gpu #mali #device
+class: proxy-for-the-thing
+**Context:** bringing DAT2 (UltraSharp V2) to ncnn: the converted net matched PyTorch on the PC's RTX over Vulkan (66.6 dB).
+**Tried / did:** took the desktop GPU run as the proof and pushed the model to the Titan.
+**Result:** ❌ on the Mali one 128 px tile took 267 s and came out as noise (16 dB): ncnn's fp32 Vulkan Gemm ran ~0.6 GFLOP/s on
+Mali (found by timing the net up to chosen blobs on the device), and some other layer computes differently there. ✅ Gemm →
+1×1 conv made it 13.9 s; the wrong layer is still being bisected (STATUS item 1).
+**Lesson:** a desktop GPU is a proxy for the phone's GPU, not the phone: every new graph runs ONE small tile on the Titan, its
+time and its picture read, before anything is built on it; when it is slow or wrong, time and compare per layer on the device.
+**Repro:** debug build → `adb shell am start … --es in test108.png --es model <m> --es blobs <b1,b2,…>` → logcat `{"blob":…,"ms":…}`.
+**Trigger:** a new model or a rewritten graph → one small tile on the Titan through the probe screen first.
+**Not for:** the PC-side numeric check of a conversion — it stays, it just is not the device.
+mechanized: app/src/debug DebugTools (the probe screen and the `blobs` layer timing)
+
+### EXP-0018 · 2026-10-15 · ❌→✅ · #titan #probe #owner #device
+class: stand-left-dirty
+**Context:** probing the first DAT2 build on the Titan with a 256 px picture through the phase 0 adb probe.
+**Tried / did:** started the run and waited on it in the background (10-minute tool timeout), twice.
+**Result:** ❌ the owner saw a black screen for many minutes («что-то приложение КАРТУН висит» · «долго висит черный экран»)
+and stopped it. ✅ the probe now opens a screen with the spinner, live logs and device load; small pictures only (the owner:
+«так ты на маленьких картинках пробуй, которым 10 минут не нужно»).
+**Lesson:** a device probe the owner may look at shows what it is doing and finishes in seconds; anything slow is first cut
+down (one tile, a tiny net) before it runs on his device.
+**Repro:** `adb shell am start -S -n com.kriniks.kartun.debug/com.kriniks.kartun.MainActivity --es in test108.png --es model <m> --ez gpu true --ei scale 4` → the probe screen, not black.
+**Trigger:** about to run anything on the Titan that may take over a minute → shrink it first.
+**Not for:** the owner's own long runs he asked for (a 100 MP photo).
+mechanized: app/src/debug DebugTools (the probe screen replaces the black-screen probe)
+
+### EXP-0017 · 2026-10-15 · ❌→✅ · #shell #python #paths #windows #docs
+class: escaping-layer
+**Context:** scripted edits of STATUS.md / HOUSE_RULES.md with a throwaway Python heredoc carrying Windows paths.
+**Tried / did:** wrote `"C:\\Android\\Sdk\\platform-tools\\adb.exe"` inside a normal Python string literal (twice this session).
+**Result:** ❌ once the assert stopped the write; once it went through: `\a` became a BEL byte and STATUS.md read
+«platform-tools<BEL>db.exe». ✅ fixed with the Edit tool and a chr(7) replace; guard added.
+**Lesson:** in a script, a Windows path inside a normal string literal is an escape minefield (`\a \b \f \v \t \A`); edit such
+text with the Edit tool, or use raw strings / forward slashes — and let a commit hook refuse control bytes in text files.
+**Repro:** `node tools/ctrl-char-guard.mjs <file>` → `CONTROL 0x07 …` on the broken file, exit 1.
+**Trigger:** a scripted edit of a document that contains a backslash → Edit tool instead.
+**Not for:** Markdown written by the Write/Edit tools — they pass backslashes through.
+mechanized: tools/ctrl-char-guard.mjs (in .git/hooks/pre-commit)
 
 ### EXP-0016 · 2026-10-15 · ❌→✅ · #paths #move #git-hooks
 class: twins-missed

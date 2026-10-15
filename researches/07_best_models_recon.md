@@ -54,7 +54,7 @@ Tool: `tools/convert-model.py` (spandrel 0.4.2 → pnnx 20260526 → ncnn; check
 | Compact (General v3) | ✅ byte-identical to the shipped files | the tool's golden |
 | SPAN (ClearReality) | ✅ 71.4 dB, 0.85 MB | training-time Conv3XC branches fold into one conv: 9.0 → 0.85 MB |
 | RealPLKSR (NomosWebPhoto, UltraSharp V2 Lite) | ✅ 72.9 / 68.8 dB, 14.8 MB | needs one substitution: `torch.repeat_interleave` (no NCNN layer) → an exact one-hot 1×1 conv |
-| DAT2 (UltraSharp V2) | ❌ attempt 1: pnnx dies silently in `pass_level0` (TorchScript path; DAT checks the input size in Python — TracerWarnings); attempt 2: pnnx on the author's ONNX segfaults in `fold_constants_dynamic_shape` | §5 |
+| DAT2 (UltraSharp V2) | ❌ attempt 1: pnnx dies silently in `pass_level0` (TorchScript path; DAT checks the input size in Python — TracerWarnings); attempt 2: pnnx on the author's ONNX segfaults in `fold_constants_dynamic_shape` · correction 16:05: attempt 3 converts it exactly (66.6 dB on the PC GPU) - `researches/08` §9 | §5 |
 | RealPLKSR + DySample | not tried | needs `GridSample` — exists in ncnn, not proven on our path |
 
 None of the new models has run on the Titan yet (the port was unknown all session) — speed on the device is unmeasured.
@@ -97,7 +97,7 @@ RealWebPhoto v4 dat2.
 
 1. The models we chose sit on the 2026 frontier for phones: the NTIRE 2026 mobile track was won by a PLKSR CNN and an RRDB
    — exactly the architectures of the owner's APK picks (NomosWebPhoto RealPLKSR, NMKD Siax).
-2. The next quality step is **DAT2 on ncnn Vulkan**: it unlocks UltraSharp V2 (the owner accepted it, 14:13) and the
+2. The next quality step is **DAT2 on ncnn Vulkan**: it unlocks UltraSharp V2 (the owner, 14:13: «ультрашарп обе принимаем, можно докачать») and the
    commercially clean Nomos2 hq dat2 and BHI dat2 real. The runtime has attention on Vulkan; the blocker is the conversion.
    Attempt 3 (and the 3-attempts stop, `BUG_FIXING_FRAMEWORK.md`): trace at a FIXED tile size (DAT's Python size checks are
    what break dynamic tracing) and let the engine pad edge tiles to that size; measure the Titan's time per tile before

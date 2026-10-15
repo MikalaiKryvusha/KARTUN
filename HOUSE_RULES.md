@@ -17,9 +17,9 @@
 
 [OWNER] 2026-10-14 ≈ 13:33 +03:00 · чат сессии развёртывания KAIF: «титан в твоем распоряжении, можешь ставить на него сборки»
 
-### R2. Ключи подписи stage и prod живут в `.env` вне git
+### R2. Ключи подписи prod живут в `.env` вне git
 
-1. Храни ключи и пароли подписи stage- и prod-сборок только в `.env` в корне проекта на машине владельца; файл, `.env.*`,
+1. Храни ключи и пароли подписи prod-сборки только в `.env` в корне проекта на машине владельца (сборки stage больше нет — R3); файл, `.env.*`,
    `*.jks`, `*.keystore`, `keystore.properties` уже в `.gitignore` (строки добавлены 2026-10-14 13:34 +03:00, до появления файлов).
 2. В репозиторий клади только `.env.example` — имена переменных без значений.
 3. Не печатай значения секретов в чат, журналы, отчёты и коммиты; сборка читает их сама.
@@ -27,14 +27,16 @@
 
 [OWNER] 2026-10-14 ≈ 13:33 +03:00 · чат сессии развёртывания KAIF: «Ключи от стейдж и прод сборок будут храниться на этом компе в проекте в .env файле вне гита, и еще я в секретный документ запишу»
 
-### R3. Название приложения на телефоне: stage — «Stage KARTUN», prod — «KARTUN»
+### R3. Две сборки: debug — «Debug KARTUN», prod — «KARTUN»
 
-1. Stage-сборка (тип сборки `stage`, пакет `com.kriniks.kartun.stage`) называется «Stage KARTUN».
-2. Prod-сборка (тип сборки `release`, пакет `com.kriniks.kartun`) называется «KARTUN».
-3. `[AI]` Отладочная сборка (тип `debug`, пакет `com.kriniks.kartun.debug`) называется «Debug KARTUN».
-- **Исключение:** нет. Названия задаются в `app/build.gradle.kts` через `resValue("string", "app_name", …)`.
+1. Сборок ровно две: для разработки — `debug` (пакет `com.kriniks.kartun.debug`, «Debug KARTUN»), прод — `release`
+   (пакет `com.kriniks.kartun`, «KARTUN»). Сборку `stage` не заводи.
+2. Отладочное (раздел «Отладка», экран пробы движка) живёт только в `debug`: код и строки в `app/src/debug`, заглушки — `app/src/nodebug`.
+- **Исключение:** нет. Названия задаются в `app/build.gradle.kts` через `resValue("string", "app_name", …)`; `node tools/check-app-names.mjs`
+  краснеет при другом названии и при возвращении stage.
 
-[OWNER] 2026-10-14 ≈ 15:15 +03:00 · чат, дословно: «стейдж сборки в названии должны иметь слово Stage KARTUN» · «прод просто KARTUN»
+[OWNER] 2026-10-14 ≈ 15:15 +03:00 · чат: «стейдж сборки в названии должны иметь слово Stage KARTUN» · «прод просто KARTUN»
+[OWNER] 2026-10-15 ≈ 15:55 +03:00 · чат: «не нужно три варианта сборки. Два достаточно. Для разработки дебаг. Прод версия.» — сборка stage убрана
 
 ### R4. Снимки экрана — в WebP, не в PNG
 
@@ -114,7 +116,7 @@
 | `python tools/make-vector-icon.py [--apply \| --check]` | рисует своё векторное стеклянное сердце (`res/drawable/ic_launcher_heart*.xml`, SVG-двойник `design/icon/heart_vector.svg`); `--apply` переключает адаптивную иконку на него, растр `icon_v3` остаётся в `mipmap-*`; `--check` — exit 1, если сгенерированные drawable правили руками | ручная правка сгенерированных drawable |
 | `python tools/make-translations.py [--check]` | пишет `res/values-{es,pt,fr,de,zh,hi,bn,ar}/strings.xml` — `[AI]` черновые переводы с английского; EN и RU правятся руками; `--check` — exit 1, если сгенерированный `values-xx` правили руками или `locales_config.xml` разошёлся с папками | ручная правка сгенерированных переводов (правь скрипт) |
 | `node tools/catalogue.mjs [--check]` | копирует каталог моделей `docs/model-catalogue.json` в `app/src/main/assets/catalogue.json`, проверив поля, хеши и что модель с NC-лицензией не помечена коммерческой; `--check` — exit 1 при расхождении копии с источником | ручная правка копии каталога в приложении |
-| `node tools/check-app-names.mjs` | сверяет названия сборок в `app/build.gradle.kts` с правилом R3 («Debug KARTUN» · «Stage KARTUN» · «KARTUN»), exit 1 при расхождении | переименованная сборка или название не то, что дал владелец |
+| `node tools/check-app-names.mjs` | сверяет названия сборок в `app/build.gradle.kts` с правилом R3 («Debug KARTUN» · «KARTUN»), exit 1 при расхождении и при возвращении сборки stage | переименованная сборка или название не то, что дал владелец |
 | `KARTUN_SERIAL=100.99.111.48:<порт> node tools/shoot-readme.mjs [--lang ru\|en\|all]` | проходит путь пользователя на Титане и снимает 8 экранов в `docs/screenshots/<язык>/` (WebP 540 px) для README; статус-бар чистит демо-режим Android, язык приложения и поворот возвращает | README со старыми или чужими скриншотами |
 | UI-агент на устройстве (лежит ВНЕ репозитория, `C:\Android\private\ui-agent\`, описание — `UI_AGENT.md` там же; APK `evegf.app.macrobenchmark` на Титане уже стоит): PowerShell `$env:PATH="C:\Android\Sdk\platform-tools;$env:PATH"; $env:PYTHONUTF8="1"; python C:\Android\private\ui-agent\ui.py --serial 100.99.111.48:<порт> --start ping`, дальше `wait <текст>` · `tapText <текст>` · `tap x y` · `labels` · `tree` · `shot <файл>` | водит интерфейс за десятки мс на команду, `wait` возвращается по событию смены экрана — вместо `uiautomator dump` по 3 с (владелец 2026-10-15 ≈ 00:00: «там выжный и полезный инструмент автоматизации тестирования андроид»; рецепт — `KAST/HOUSE_RULES.md`) | медленные прогоны на Титане; без `PYTHONUTF8=1` кириллица в ответах ломается; через 10 мин без клиента агент гаснет — снова `--start` |
 | `node tools/stamp-guard.mjs --staged` (git-хук `.git/hooks/pre-commit` этого клона) | отказывает коммиту с отметкой времени позже текущего момента | время, написанное на глаз (EXP-0004, EXP-0005) |
