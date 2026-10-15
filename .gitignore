@@ -69,5 +69,5 @@ app/src/main/assets/models/
 .claude/settings.json.bak
 
 # processing variants sheet - shot by tools/shoot-processing-variants.mjs, regenerated on demand
-design/processing-variants.webp
-design/processing-variants.png
+design/processing-variants*.webp
+design/processing-variants*.png
