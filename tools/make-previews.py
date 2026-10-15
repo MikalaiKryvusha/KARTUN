@@ -37,7 +37,7 @@ SUBJECTS = {  # the owner's themes, 2026-10-16 ≈ 00:30: «природа, гр
     "4xNomos8kSC_fp16": "fjord.jpg",
     "4xHFA2k_fp16": "anime2.jpg",
     "4x-NMKD-Superscale-fp16": "greece.jpg",
-    "4x-NMKD-Siax-fp16": "panther.jpg",
+    "4x-NMKD-Siax-fp16": ("panther.jpg", 0.18, 0.42, 0.55),  # the owner: «гепард не влез» · «нужно мордовку чтобы было видно»
     "4xNomosWebPhoto-RealPLKSR-fp16": "cat.jpg",
     "4x-ClearRealityV1-fp16": "flowers_bee.jpg",  # portrait.jpg waits for the owner (an identifiable person)
     "4x-Remacri-fp16": "meadow.jpg",
@@ -60,11 +60,23 @@ def fixed_input(param):
     return None
 
 
-def small_picture(path):
-    """The subject centre-cropped to a square and shrunk to SMALL x SMALL (high-quality downscale)."""
+def subject(model_id):
+    """(file, cx, cy, size): the subject photo, the crop's centre as fractions of width and height, and the square's side
+    as a fraction of the photo's shorter side; a bare file name means the centre and the whole shorter side."""
+    v = SUBJECTS.get(model_id)
+    if v is None:
+        return FALLBACK, 0.5, 0.5, 1.0
+    if isinstance(v, str):
+        return SRC_DIR / v, 0.5, 0.5, 1.0
+    return SRC_DIR / v[0], v[1], v[2], v[3]
+
+
+def small_picture(path, cx=0.5, cy=0.5, frac=1.0):
+    """A square around (cx, cy) - kept inside the photo - shrunk to SMALL x SMALL (high-quality downscale)."""
     img = Image.open(path).convert("RGB")
-    side = min(img.size)
-    left, top = (img.width - side) // 2, (img.height - side) // 2
+    side = int(min(img.size) * frac)
+    left = min(max(int(img.width * cx) - side // 2, 0), img.width - side)
+    top = min(max(int(img.height * cy) - side // 2, 0), img.height - side)
     return np.asarray(img.crop((left, top, left + side, top + side)).resize((SMALL, SMALL), Image.LANCZOS))
 
 
@@ -74,14 +86,14 @@ def main():
     sheet = []
     credits = {}
     for m in models:
-        src = SRC_DIR / SUBJECTS[m["id"]] if m["id"] in SUBJECTS else FALLBACK
+        src, cx, cy, frac = subject(m["id"])
         credit = src.with_suffix(".credit.txt")  # nature.jpg -> nature.credit.txt
         if src != FALLBACK:
             # A subject photo ships only with its author line (CC BY / CC BY-SA ask for it; the app shows it in «О приложении»).
             if not credit.exists():
                 sys.exit(f"no credit file {credit}")
             credits[credit.read_text(encoding="utf-8").strip()] = True
-        small = small_picture(src)
+        small = small_picture(src, cx, cy, frac)
         param = cm.find(next(f["name"] for f in m["files"] if f["name"].endswith(".param")))
         binf = cm.find(next(f["name"] for f in m["files"] if f["name"].endswith(".bin")))
         size = fixed_input(param)
@@ -95,8 +107,8 @@ def main():
         pair.save(OUT / f"{m['id']}.webp", quality=QUALITY)
         sheet.append(pair)
         print(f"{m['id']}: {src.name} -> {pair.width}x{pair.height} in {dt:.1f} s")
-    credits["input2.jpg — Real-ESRGAN sample — BSD-3-Clause — https://github.com/xinntao/Real-ESRGAN"] = FALLBACK in [
-        SRC_DIR / SUBJECTS[m["id"]] if m["id"] in SUBJECTS else FALLBACK for m in models]
+    credits["input2.jpg — Real-ESRGAN sample — BSD-3-Clause — https://github.com/xinntao/Real-ESRGAN"] = any(
+        subject(m["id"])[0] == FALLBACK for m in models)
     lines = sorted(k for k, used in credits.items() if used)
     (OUT / "credits.json").write_text(json.dumps(lines, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
     if "--sheet" in sys.argv:

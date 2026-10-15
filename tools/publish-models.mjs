@@ -52,7 +52,11 @@ console.log(`${uploads.length} files checked (${models.length} models, ${licence
   `${(uploads.reduce((s, u) => s + u.bytes, 0) / 1e6).toFixed(1)} MB`);
 
 // 2. The release notes: which model, whose, under what licence (the models belong to their authors).
-const rows = models.map((m) => `| ${m.name} | ${m.author} | ${m.licence}${m.commercial ? '' : ' — not for commercial use'} | ${m.files.map((f) => `\`${f.name}\``).join(' · ')} |`);
+// A licence that allows commercial use but a model kept non-commercial = a disputed licence (ClearReality: Apache 2.0 on the
+// author's card, CC BY-NC-SA 4.0 on OpenModelDB) - say why, so the line does not read as a contradiction.
+const licenceCell = (m) => m.commercial ? m.licence : m.licence.includes('-NC-') ? `${m.licence} — not for commercial use`
+  : `${m.licence} (disputed) — treated as not for commercial use`;
+const rows = models.map((m) => `| ${m.name} | ${m.author} | ${licenceCell(m)} | ${m.files.map((f) => `\`${f.name}\``).join(' · ')} |`);
 const notes = [
   'Neural upscaling models the KARTUN app downloads on demand from its «All models» screen. Every file carries its SHA-256 in',
   '[docs/model-catalogue.json](https://github.com/MikalaiKryvusha/KARTUN/blob/main/docs/model-catalogue.json); the app refuses a',
