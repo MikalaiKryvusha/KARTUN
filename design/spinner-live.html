@@ -80,20 +80,24 @@ const formations = {
     name: 'тайлы', size: TILE_SUB, count: 36,
     target: i => { const j = i % 36, tile = Math.floor(j / 4), sub = j % 4, tx = tile % 3, ty = Math.floor(tile / 3);
       return [SQ0 + tx * (TILE + SEAM) + (sub % 2 + .5) * TILE_SUB, SQ0 + ty * (TILE + SEAM) + (Math.floor(sub / 2) + .5) * TILE_SUB]; },
-    life: (i, t) => { const tile = Math.floor((i % 36) / 4), built = tile < (t / 260) % 13;
-      // Built: every pixel keeps its gap and shimmers in its own shade of pink (the owner, ≈ 12:46: «между пикселями нет
-      // промежутка и нет перелива их разными цветами, как было в первом макете»); not built yet: small and dim.
+    life: (i, t) => {
+      // One breath, closed on itself (the owner, ≈ 12:51: «нужно, чтобы анимации начала и конец были… циклически связаны,
+      // чтобы может квадрат разобрался и обратно собрался»): tiles light up one by one, the square holds, then they go
+      // out one by one in reverse - the last lit goes first - a pause, and again. Each tile grows and lights smoothly.
+      const ph = (t / 260) % 26, level = ph < 10 ? ph : ph < 13 ? 10 : ph < 23 ? 10 - (ph - 13) : 0;
+      const tile = Math.floor((i % 36) / 4), e = easeInOut(clamp(level - tile));
       const shade = .5 + .5 * Math.sin(t / 330 + i * 2.17);
-      return built ? { k: .88, c: mix(DEEP, mix(PINK, LIGHT, shade * .5), .45 + .55 * shade) }
-                   : { k: .62, c: mix(GREY, DEEP, .35 + .3 * Math.abs(Math.sin(t / 170 + i * 2.3))) }; },
+      const lit = mix(DEEP, mix(PINK, LIGHT, shade * .5), .45 + .55 * shade);
+      const dim = mix(GREY, DEEP, .35 + .3 * Math.abs(Math.sin(t / 170 + i * 2.3)));
+      return { k: .62 + .26 * e, c: mix(dim, lit, e) };
+    },
   },
 };
 const order = Object.keys(formations);
-// A square a formation has no place for runs off the frame its own way and waits there unseen; when the next formation
-// needs it, it runs back in from there (the owner, ≈ 12:47: «лишние аккуратно незаметно скрывать, убегать за кадр» · «а когда
-// они нужны - прибегать из-за кадра обратно»).
-const offFrame = i => { const a = i * 2.399 + R() * .6; return [.5 + Math.cos(a) * .95, .5 + Math.sin(a) * .95]; };
-const placeOf = (f, i) => i < formations[f].count ? formations[f].target(i) : offFrame(i);
+// A formation has fewer places than squares: a spare square flies onto the nearest place that has the fewest guests and
+// merges with its host; when the next formation needs more squares, the merged ones split off their host and fly out
+// (the owner, ≈ 12:49: «чтобы пиксели не исчезали, и не прибегали - а когда они лишние, или их не хватает - они сливаются.
+// объединяются, или делятся»).
 
 // --- moods of a regroup: where the flight bends through (a quadratic curve's control point) and how the start is staggered
 const moods = {
@@ -105,14 +109,25 @@ const moods = {
 // --- characters: each square's own manner on top of the mood
 const characters = ['straight', 'arc', 'shy', 'spinner', 'overshooter'];
 
-const sq = Array.from({ length: N }, () => ({ from: [R(), R()], ctrl: [.5, .5], to: [.5, .5], start: 0, delay: 0, dur: 900, who: 'straight', spin: 0 }));
+const sq = Array.from({ length: N }, () => ({ from: [R(), R()], ctrl: [.5, .5], to: [.5, .5], start: 0, delay: 0, dur: 900, who: 'straight', spin: 0,
+  host: -1, merged: false, splitAt: -1, gulpAt: -1 }));
 let current = 'heart', mood = 'burst', switchAt = 0;
 
 function regroup(t, next, moodName) {
   const m = moods[moodName];
+  const guests = new Array(N).fill(0);
   for (let i = 0; i < N; i++) {
     const s = sq[i], p = pos(s, t);
-    s.from = p; s.to = placeOf(next, i); s.start = t;
+    s.from = p; s.start = t; s.host = -1; s.splitAt = s.merged ? t : -1; s.merged = false;
+    if (i < formations[next].count) s.to = formations[next].target(i);
+    else {                                                     // a spare one: pick its host - near, and not crowded
+      let best = 0, bestCost = Infinity;
+      for (let j = 0; j < formations[next].count; j++) {
+        const q = formations[next].target(j), cost = Math.hypot(q[0] - p[0], q[1] - p[1]) + guests[j] * .35;
+        if (cost < bestCost) { bestCost = cost; best = j; }
+      }
+      guests[best]++; s.host = best; s.to = formations[next].target(best);
+    }
     s.who = characters[Math.floor(R() * characters.length)];
     s.ctrl = s.who === 'straight' ? [(p[0] + s.to[0]) / 2, (p[1] + s.to[1]) / 2] : m.ctrl(p, s.to);
     const st = formations[next].stagger;
@@ -139,9 +154,14 @@ function draw(ctx, size, t) {
   const f = formations[current];
   for (let i = 0; i < N; i++) {
     const s = sq[i], k = progress(s, t), home = k >= 1, [x, y] = pos(s, t);
-    if (i >= f.count && home) continue;                                          // a spare one waits off the frame
+    if (s.host >= 0 && home) {                                                  // arrived on its host: merge
+      if (!s.merged) { s.merged = true; sq[s.host].gulpAt = t; }
+      continue;
+    }
     const l = home ? f.life(i, t, s.to) : { k: .8, c: mix(PINK, LIGHT, .4) };
-    const side = size * f.size * l.k;
+    const gulp = s.gulpAt >= 0 ? Math.max(0, 1 - (t - s.gulpAt) / 380) : 0;   // the host swells as it swallows
+    const split = s.splitAt >= 0 ? Math.max(0, 1 - (t - s.splitAt - s.delay) / 300) : 0; // a square leaving its host
+    const side = size * f.size * l.k * (1 + .22 * Math.sin(gulp * Math.PI)) * (1 - .3 * split);
     ctx.save();
     ctx.translate((x + (home && l.dx || 0)) * size, (y + (home && l.dy || 0)) * size);
     ctx.rotate(s.spin * (home ? 1 : easeInOut(k)));
