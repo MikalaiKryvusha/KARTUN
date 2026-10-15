@@ -85,10 +85,9 @@ const formations = {
     target: i => { const j = i % 36, tile = Math.floor(j / 4), sub = j % 4, tx = tile % 3, ty = Math.floor(tile / 3);
       return [SQ0 + tx * (TILE + SEAM) + (sub % 2 + .5) * TILE_SUB, SQ0 + ty * (TILE + SEAM) + (Math.floor(sub / 2) + .5) * TILE_SUB]; },
     life: (i, t) => {
-      // One breath, closed on itself (the owner, ≈ 12:51: «нужно, чтобы анимации начала и конец были… циклически связаны,
-      // чтобы может квадрат разобрался и обратно собрался»): tiles light up one by one, the square holds, then they go
-      // out one by one in reverse - the last lit goes first - a pause, and again. Each tile grows and lights smoothly.
-      const ph = (t / 260) % 26, level = ph < 10 ? ph : ph < 13 ? 10 : ph < 23 ? 10 - (ph - 13) : 0;
+      // Builds once, tile by tile, then stands built and shimmering until the next regroup - no fading back (the owner,
+      // ≈ 12:58: «квадрат обратно с яркого выцветает - не нужно такой процесс»); it builds anew each time it is formed.
+      const level = tilesLevel(t);
       const tile = Math.floor((i % 36) / 4), e = easeInOut(clamp(level - tile));
       const shade = .5 + .5 * Math.sin(t / 330 + i * 2.17);
       const lit = mix(DEEP, mix(PINK, LIGHT, shade * .5), .45 + .55 * shade);
@@ -115,7 +114,9 @@ const characters = ['straight', 'arc', 'shy', 'spinner', 'overshooter'];
 
 const sq = Array.from({ length: N }, () => ({ from: [R(), R()], ctrl: [.5, .5], to: [.5, .5], start: 0, delay: 0, dur: 900, who: 'straight', spin: 0,
   host: -1, merged: false, splitAt: -1, gulpAt: -1, look: { k: .8, c: DEEP } }));
-let current = 'heart', mood = 'burst', switchAt = 0;
+let current = 'heart', mood = 'burst', switchAt = 0, formedAt = 0;
+// How many tiles of the square are lit: 0..10, counted from the moment the square was formed (after the squares land).
+const tilesLevel = t => clamp((t - formedAt - 700) / 260, 0, 10);
 
 function regroup(t, next, moodName) {
   const m = moods[moodName];
@@ -140,7 +141,7 @@ function regroup(t, next, moodName) {
     s.dur = (s.who === 'shy' ? 500 : 800) + R() * 500;                                            // ...then dashes
     s.spin = s.who === 'spinner' ? (R() < .5 ? -1 : 1) * Math.PI * (1 + Math.floor(R() * 2)) : 0;
   }
-  current = next; mood = moodName; switchAt = t + 2500 + R() * 2500 + (formations[next].stagger || 0);
+  current = next; mood = moodName; formedAt = t; switchAt = t + 2500 + R() * 2500 + (formations[next].stagger || 0);
   document.getElementById('now').textContent = `сейчас: ${formations[next].name} · переход: ${moods[moodName].name}`;
 }
 
@@ -196,9 +197,9 @@ const q = new URLSearchParams(location.search);
 regroup(0, formations[q.get('f')] ? q.get('f') : 'heart', moods[q.get('m')] ? q.get('m') : 'burst');
 function frame(now) {
   const t = now / SLOW; performanceT = t;
-  // The tiles square leaves only once fully built and holding (the owner, ≈ 12:56: «или дать до конца завершиться циклу
-  // проявления - потом разбирать в новый стейт»): phase 10..13 of its 26-step breath.
-  const tilesPh = (t / 260) % 26, tilesHold = tilesPh >= 10.3 && tilesPh < 12.7;
+  // The tiles square leaves only once fully built (the owner, ≈ 12:56: «дать до конца проявиться - и только тогда
+  // разрешать перестройку в другой стейт»).
+  const tilesHold = tilesLevel(t) >= 10;
   if (t > switchAt && (current !== 'tiles' || tilesHold)) {
     const nextF = order.filter(o => o !== current), nextM = Object.keys(moods).filter(o => o !== mood);
     regroup(t, nextF[Math.floor(R() * nextF.length)], nextM[Math.floor(R() * nextM.length)]);
