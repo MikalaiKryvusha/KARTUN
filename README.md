@@ -19,6 +19,7 @@ Open source · Offline · AI on the device</p>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://github.com/Tencent/ncnn"><img src="https://img.shields.io/badge/engine-ncnn_%2B_Vulkan-FF1A8C.svg" alt="engine: ncnn + Vulkan"></a>
   <a href="#en-3"><img src="https://img.shields.io/badge/models-Real--ESRGAN_and_more-6A5ACD.svg" alt="models: Real-ESRGAN and more"></a>
+  <a href="#en-3"><img src="https://img.shields.io/badge/DAT2_transformer-on_the_Vulkan_GPU-FF1A8C.svg" alt="DAT2 transformer: on the Vulkan GPU"></a>
   <a href="#en-5"><img src="https://img.shields.io/badge/platform-Android_16%2B-3DDC84.svg" alt="platform: Android 16+"></a>
   <a href="#en-1"><img src="https://img.shields.io/badge/languages-10-0EA5E9.svg" alt="languages: 10"></a>
   <a href="#en-8"><img src="https://img.shields.io/badge/status-early_development-orange.svg" alt="status: early development"></a>
@@ -91,6 +92,11 @@ Two models ship inside the app; both are Real-ESRGAN under BSD-3 and free for co
 Measured on a HEADWOLF Titan 1 tablet: MediaTek MT8792, Mali-G615 MC6 graphics, Vulkan 1.3, Android 16. Without the
 graphics chip the fast model takes 85 s for the same 1024 × 1024 photo. The fast model is KARTUN's own conversion of the
 original weights; its output differs from the original PyTorch network by 52.3 dB PSNR, which the eye does not see.
+
+KARTUN also runs a transformer: 4x UltraSharp V2 by Kim2091, a DAT2 network, works entirely on the graphics chip through
+Vulkan. Its output differs from the original PyTorch network by 66.6 dB PSNR; the 960 × 1280 photo takes about 29
+minutes. On the way we found an out-of-bounds read in an ncnn attention shader and sent the fix upstream
+([Tencent/ncnn#7121](https://github.com/Tencent/ncnn/pull/7121)).
 
 <a name="en-4"></a>
 ### 4. Privacy
@@ -188,6 +194,7 @@ Author: Mikalai Kryvusha (Krinik).
   <a href="LICENSE"><img src="https://img.shields.io/badge/%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F-MIT-yellow.svg" alt="лицензия: MIT"></a>
   <a href="https://github.com/Tencent/ncnn"><img src="https://img.shields.io/badge/%D0%B4%D0%B2%D0%B8%D0%B6%D0%BE%D0%BA-ncnn_%2B_Vulkan-FF1A8C.svg" alt="движок: ncnn + Vulkan"></a>
   <a href="#ru-3"><img src="https://img.shields.io/badge/%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D0%B8-Real--ESRGAN_%D0%B8_%D0%B4%D1%80%D1%83%D0%B3%D0%B8%D0%B5-6A5ACD.svg" alt="модели: Real-ESRGAN и другие"></a>
+  <a href="#ru-3"><img src="https://img.shields.io/badge/%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%84%D0%BE%D1%80%D0%BC%D0%B5%D1%80_DAT2-%D0%BD%D0%B0_%D0%B2%D0%B8%D0%B4%D0%B5%D0%BE%D1%87%D0%B8%D0%BF%D0%B5_%28Vulkan%29-FF1A8C.svg" alt="трансформер DAT2: на видеочипе (Vulkan)"></a>
   <a href="#ru-5"><img src="https://img.shields.io/badge/%D0%BF%D0%BB%D0%B0%D1%82%D1%84%D0%BE%D1%80%D0%BC%D0%B0-Android_16%2B-3DDC84.svg" alt="платформа: Android 16+"></a>
   <a href="#ru-1"><img src="https://img.shields.io/badge/%D1%8F%D0%B7%D1%8B%D0%BA%D0%B8-10-0EA5E9.svg" alt="языки: 10"></a>
   <a href="#ru-8"><img src="https://img.shields.io/badge/%D1%81%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D0%B5-%D1%80%D0%B0%D0%BD%D0%BD%D1%8F%D1%8F_%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-orange.svg" alt="состояние: ранняя разработка"></a>
@@ -261,6 +268,11 @@ Vulkan.
 Замер на планшете HEADWOLF Titan 1: MediaTek MT8792, графика Mali-G615 MC6, Vulkan 1.3, Android 16. Без видеочипа
 быстрая модель обрабатывает то же фото 1024 × 1024 за 85 с. Быстрая модель — собственная конвертация KARTUN из исходных
 весов; её результат отличается от оригинальной нейросети PyTorch на 52,3 дБ PSNR, глазом разницы не видно.
+
+KARTUN запускает и трансформер: 4x UltraSharp V2 автора Kim2091, сеть DAT2, целиком работает на видеочипе через Vulkan.
+Её результат отличается от оригинальной нейросети PyTorch на 66,6 дБ PSNR; фото 960 × 1280 считается около 29 минут.
+По дороге мы нашли в шейдере внимания ncnn чтение за краем буфера и отправили исправление в ncnn
+([Tencent/ncnn#7121](https://github.com/Tencent/ncnn/pull/7121)).
 
 <a name="ru-4"></a>
 ### 4. Приватность
