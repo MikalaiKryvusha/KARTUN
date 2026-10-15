@@ -16,7 +16,7 @@ KARTUN upscales on the device: the picture never leaves the phone, and processin
 
 On the “Enhance” screen the photo is pinned on top. Swipe up — the photo folds into a row and shows the settings; pull down — the photo opens full screen.
 
-- **Model.** Fast removes noise and blur; Detailed makes fine details sharper and takes longer. The model loads as soon as you choose it.
+- **Model.** Here are the two models you used last; the rest are in «All models» under them. The model loads as soon as you choose it.
 - **Scale.** A slider from 1× to 16×; the result's size is shown under it.
 - **Enhance.** The button shows an estimate of the time. It learns from your previous runs.
 
@@ -47,6 +47,10 @@ On the “Enhance” screen the photo is pinned on top. Swipe up — the photo f
 
 A **model** is a trained neural network. Models differ in what pictures they learned from: one restores photos better, another drawings.
 
-| Model | Purpose | Licence |
-| General v3 | photos, fast | BSD-3 · commercial use |
-| x4plus | photos, maximum | BSD-3 · commercial use |
+Two models are built into the app; they work at once and without the network:
+
+| Model | What it is for | Licence |
+| 4xNomosWebPhoto RealPLKSR (default) | photos from the web: removes compression and blur | CC BY 4.0 · commercial use with credit |
+| 4x NMKD Siax | universal: clean or slightly compressed pictures | WTFPL · commercial use |
+
+**All models.** Twelve more models — for photos, faces, anime and drawings — download with the «⤓ MB» button on the «All models» screen. Every card shows a «Before | After» example, the author, the licence and the size; while a model downloads, a percent ring turns on its card. A downloaded model stays in KARTUN's folder and works without the network; «Delete» frees the space. «Not for commercial use» means the model's author did not allow its commercial use. The models belong to their authors.
