@@ -79,7 +79,6 @@ import androidx.compose.animation.core.animate
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import android.content.Intent
-import android.util.Log
 import com.kriniks.kartun.UpscaleViewModel
 
 private const val MAX_ZOOM = 8f
@@ -102,8 +101,10 @@ private const val PANEL_FLING = 1200f
  * Result (mockup 'result'): before/after over the whole screen. The divider moves only when the finger lands ON it (the
  * line or its pink knob, ±DIVIDER_GRAB); a finger anywhere else grabs the PHOTO and moves it (the owner, chat 2026-10-14
  * ≈ 21:00 +03:00: «перемешает слайдер до после - а должен хватать фото на навигацию»); a double tap zooms ×TAP_ZOOM at
- * that point and back; two fingers zoom and pan both images together. [NOT-TESTED] since that change. The panel shows the sizes and the time; «Сохранить» / «Поделиться» wait for
- * phase 3 and are shown disabled.
+ * that point and back; two fingers zoom and pan both images together. Divider vs photo grab and the KNOB_GRAB zone:
+ * [TESTED: 2026-10-15 · Titan, adb swipes read from screencaps - 55 dp off the line far above the knob leaves it at 800 px,
+ * 55 dp off at the knob's height drags it to 1301 px; testcases/reports/2026-10-15_F2_guarded_loop_device_run.md].
+ * The panel shows the model, the sizes and the time, «Сохранить» and «Поделиться».
  * The divider: [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md, case C4]. Pinch zoom and pan: [NOT-TESTED] (adb input has no multi-touch).
  */
 @Composable
@@ -145,7 +146,6 @@ fun ResultScreen(vm: UpscaleViewModel) {
     var panelHidden by remember { mutableStateOf(false) }
     fun settle(show: Boolean) {
         settleJob?.cancel()
-        Log.d("KARTUN_PANEL", "settle show=$show from=$panelShift screenW=$screenW")
         settleJob = scope.launch {
             animate(panelShift, if (show) 0f else screenW) { v, _ -> panelShift = v }
             panelHidden = !show
@@ -248,7 +248,6 @@ fun ResultScreen(vm: UpscaleViewModel) {
             Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(start = 12.dp, end = 12.dp, bottom = 8.dp)
                 .offset { IntOffset(panelShift.roundToInt(), 0) }.onSizeChanged { panelH = it.height.toFloat() }
                 .draggable(panelDrag, Orientation.Horizontal, onDragStarted = stopSettle, onDragStopped = { v ->
-                    Log.d("KARTUN_PANEL", "panel released at $panelShift v=$v")
                     settle(show = panelShift < screenW * PANEL_HIDE_AT && v < PANEL_FLING)
                 })
                 .widthIn(max = 600.dp).fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow.copy(alpha = 0.94f)).padding(16.dp),
@@ -297,7 +296,6 @@ fun ResultScreen(vm: UpscaleViewModel) {
                     .background(c.surfaceContainerHigh.copy(alpha = 0.85f))
                     .clickable(enabled = panelHidden) { settle(show = true) }
                     .draggable(panelDrag, Orientation.Horizontal, enabled = panelHidden, onDragStarted = stopSettle, onDragStopped = { v ->
-                        Log.d("KARTUN_PANEL", "tab released at $panelShift v=$v")
                         settle(show = panelShift < screenW * (1 - PANEL_HIDE_AT))
                     }),
                 contentAlignment = Alignment.Center,
