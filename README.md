@@ -82,16 +82,22 @@ Sections: [1 What it does](#en-1) · [2 Screens](#en-2) · [3 Models and speed](
 <a name="en-3"></a>
 ### 3. Models and speed
 
-Two models ship inside the app; both are Real-ESRGAN under BSD-3 and free for commercial use.
+Two models ship inside the app and work without the network:
 
-| Model | What it is for | Photo 1024 × 1024 → 4096 × 4096 | Photo 960 × 1280 → 3840 × 5120 |
+| Model | What it is for | Licence | 256 × 256 → 1024 × 1024 |
 |---|---|---|---|
-| Real-ESRGAN General v3 (default) | photos, fast | 5.8 s | 6.6 s |
-| Real-ESRGAN x4plus | photos, the richest texture | 89 s | 105 s |
+| 4xNomosWebPhoto RealPLKSR by Philip Hofmann (default) | photos from the web: compression and blur | CC BY 4.0 | 4.3 s |
+| 4x NMKD Siax by NMKD | universal: clean or slightly compressed pictures | WTFPL | 6.9 s |
 
-Measured on a HEADWOLF Titan 1 tablet: MediaTek MT8792, Mali-G615 MC6 graphics, Vulkan 1.3, Android 16. Without the
-graphics chip the fast model takes 85 s for the same 1024 × 1024 photo. The fast model is KARTUN's own conversion of the
-original weights; its output differs from the original PyTorch network by 52.3 dB PSNR, which the eye does not see.
+Twelve more download in the app from the «All models» screen, each with a before/after example, its author, licence and
+size: Real-ESRGAN General v3, x4plus, x4plus anime and AnimeVideo v3, 4xNomos8kSC, 4xHFA2k,
+NMKD Superscale, ClearReality V1, Remacri, UltraMix Balanced, UltraSharp V2 Lite and UltraSharp V2. The files come from
+this repository's [models release](https://github.com/MikalaiKryvusha/KARTUN/releases/tag/models), and the app checks
+every file's SHA-256 before using it. The models belong to their authors; licences and sources are in
+[docs/model-licenses.md](docs/model-licenses.md).
+
+Measured on a HEADWOLF Titan 1 tablet: MediaTek MT8792, Mali-G615 MC6 graphics, Vulkan 1.3, Android 16. A 960 × 1280
+photo enlarged 8× by ClearReality V1 takes 25 s.
 
 KARTUN also runs a transformer: 4x UltraSharp V2 by Kim2091, a DAT2 network, works entirely on the graphics chip through
 Vulkan. Its output differs from the original PyTorch network by 66.6 dB PSNR; the 960 × 1280 photo takes about 29
@@ -258,16 +264,22 @@ Vulkan.
 <a name="ru-3"></a>
 ### 3. Модели и скорость
 
-В приложение встроены две модели; обе — Real-ESRGAN под BSD-3, обе можно использовать в коммерции.
+В приложение встроены две модели, они работают без сети:
 
-| Модель | Для чего | Фото 1024 × 1024 → 4096 × 4096 | Фото 960 × 1280 → 3840 × 5120 |
+| Модель | Для чего | Лицензия | 256 × 256 → 1024 × 1024 |
 |---|---|---|---|
-| Real-ESRGAN General v3 (по умолчанию) | фото, быстро | 5,8 с | 6,6 с |
-| Real-ESRGAN x4plus | фото, самая живая фактура | 89 с | 105 с |
+| 4xNomosWebPhoto RealPLKSR, автор Philip Hofmann (по умолчанию) | фото из интернета: сжатие и размытие | CC BY 4.0 | 4,3 с |
+| 4x NMKD Siax, автор NMKD | универсальная: чистые и слегка сжатые снимки | WTFPL | 6,9 с |
 
-Замер на планшете HEADWOLF Titan 1: MediaTek MT8792, графика Mali-G615 MC6, Vulkan 1.3, Android 16. Без видеочипа
-быстрая модель обрабатывает то же фото 1024 × 1024 за 85 с. Быстрая модель — собственная конвертация KARTUN из исходных
-весов; её результат отличается от оригинальной нейросети PyTorch на 52,3 дБ PSNR, глазом разницы не видно.
+Ещё двенадцать скачиваются в приложении на экране «Все модели», у каждой — пример «до/после», автор, лицензия и размер:
+Real-ESRGAN General v3, x4plus, x4plus anime и AnimeVideo v3, 4xNomos8kSC, 4xHFA2k,
+NMKD Superscale, ClearReality V1, Remacri, UltraMix Balanced, UltraSharp V2 Lite и UltraSharp V2. Файлы лежат в
+[релизе models](https://github.com/MikalaiKryvusha/KARTUN/releases/tag/models) этого репозитория, приложение сверяет
+SHA-256 каждого файла перед работой. Модели принадлежат их авторам; лицензии и источники —
+[docs/model-licenses.md](docs/model-licenses.md).
+
+Замер на планшете HEADWOLF Titan 1: MediaTek MT8792, графика Mali-G615 MC6, Vulkan 1.3, Android 16. Фото 960 × 1280,
+увеличенное в 8 раз моделью ClearReality V1, считается 25 с.
 
 KARTUN запускает и трансформер: 4x UltraSharp V2 автора Kim2091, сеть DAT2, целиком работает на видеочипе через Vulkan.
 Её результат отличается от оригинальной нейросети PyTorch на 66,6 дБ PSNR; фото 960 × 1280 считается около 29 минут.
