@@ -353,7 +353,7 @@ private fun ModelCard(m: UpscaleViewModel.Model, on: Boolean, loading: Boolean, 
             )
         }
         // While the chosen model loads (preload on this screen) a small pink ring stands where the tick will be.
-        if (on && loading) CalmSpinner(Modifier.size(22.dp), strokeWidth = 2.5.dp)
+        if (on && loading) PixelSpinner(Modifier.size(22.dp))
         else if (on) Box(Modifier.size(22.dp).clip(CircleShape).background(c.primary), contentAlignment = Alignment.Center) {
             Icon(painterResource(R.drawable.ic_tick), null, Modifier.size(14.dp), tint = c.onPrimary)
         }

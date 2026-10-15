@@ -44,6 +44,8 @@ user's path; swipes by `adb shell input swipe`; the divider's x is read from scr
 | 20 | 2026-10-15 12:29 +03:00 | `python s_big_save.py` (JPEG q100 of the 99.5 MP result) | estimate 36,8 MB vs real 35,5 MB (+4 %), saved in 4 s |
 | 21 | 2026-10-15 12:32 +03:00 | build with B1 + 500 MP + «Прошло» + pink arrow → `python s_b1.py` (8×) | B1 tiles «ПРОХОД 2 / 2 · ТАЙЛ 64 / 165 · ПРОШЛО 15 с · ОСТАЛОСЬ ≈ 24 с»; pink heavy arrow in the result panel; the «Рендер…» card compact with «Отменить» |
 | 22 | 2026-10-15 12:37 +03:00 | smaller «Отменить» (104×36 dp), title 15 sp → `python s_b1b.py` | the title reads whole «Нейросеть улучшает фото» (it was cut at 17 sp) |
+| 23 | 2026-10-15 12:50 +03:00 | `python s_zurich.py` — a real photo (Wikimedia Commons «Zürich view Quaibrücke 20200702», CC BY-SA 3.0, EXIF stripped byte-wise) 12 732 × 6619 = 84,3 MP at 2× | «→ 25 464 × 13 238 · 337,1 Мп» allowed under the 500 MP limit; done 13:03 in «11 минут 55 секунд · GPU · Vulkan», 2176 tiles, PSS rising to ≈ 2.0 GB, no FATAL/OOM |
+| 24 | 2026-10-15 13:05 +03:00 | PixelSpinner build → `python s_pixspin.py` (PNG save; screencaps 0.4 / 0.7 s after the tap in one device shell) | the «Рендер…» card shows the pixel spinner gathering into the heart |
 | 13 | 2026-10-15 11:42 +03:00 | `python s_c13.py` twice (share timed by window focus, no UI-tree polling) | sheet after 2.4 s both times — the 16 s seen in run 10's tree-polling loop was the harness, not the app |
 
 ## 4. Checks

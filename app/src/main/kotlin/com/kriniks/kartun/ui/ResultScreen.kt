@@ -256,7 +256,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                CalmSpinner(Modifier.size(48.dp), strokeWidth = 5.dp)
+                PixelSpinner(Modifier.size(48.dp))
                 Text(stringResource(R.string.rendering), style = MaterialTheme.typography.titleSmall, color = c.onBackground)
                 // Small «Отменить»: stops a long render and deletes the half-written file (the owner, chat 2026-10-15 ≈ 11:53).
                 // A fixed width: SecondaryButton fills its parent, and the card stretched over the whole screen (the

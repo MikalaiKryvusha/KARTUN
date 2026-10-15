@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -231,34 +230,3 @@ fun durationParts(ms: Long): Pair<Int, Int> {
 
 /** Transparent-to-background fade above a pinned bottom button (.cta::before). */
 fun fadeColors(bg: Color) = listOf(bg.copy(alpha = 0f), bg, bg)
-
-/** One full turn of [CalmSpinner], ms. */
-private const val SPINNER_TURN_MS = 1600
-/** The arc's length, degrees. */
-private const val SPINNER_SWEEP = 100f
-
-/**
- * The project's only indeterminate spinner: a pink arc with round ends turning evenly, one turn in [SPINNER_TURN_MS].
- * Material's indeterminate indicator turns faster and grows/shrinks its arc, and its speed cannot be set (the owner, chat
- * 2026-10-15 ≈ 11:47 +03:00: «спинеры нужно крутить спокойнее… можно чуть-чуть спокойнее крутить спиннеры прогрессов»).
- * [NOT-TESTED]
- */
-@Composable
-fun CalmSpinner(modifier: Modifier = Modifier, strokeWidth: androidx.compose.ui.unit.Dp = 4.dp) {
-    val c = MaterialTheme.colorScheme
-    val turn by androidx.compose.animation.core.rememberInfiniteTransition(label = "spinner").animateFloat(
-        initialValue = 0f, targetValue = 360f, label = "turn",
-        animationSpec = androidx.compose.animation.core.infiniteRepeatable(
-            androidx.compose.animation.core.tween(SPINNER_TURN_MS, easing = androidx.compose.animation.core.LinearEasing),
-        ),
-    )
-    androidx.compose.foundation.Canvas(modifier) {
-        val w = strokeWidth.toPx()
-        val inset = w / 2
-        val arcSize = androidx.compose.ui.geometry.Size(size.width - w, size.height - w)
-        val topLeft = androidx.compose.ui.geometry.Offset(inset, inset)
-        val stroke = androidx.compose.ui.graphics.drawscope.Stroke(w, cap = androidx.compose.ui.graphics.StrokeCap.Round)
-        drawArc(c.surfaceContainerHigh, 0f, 360f, false, topLeft, arcSize, style = stroke)
-        drawArc(c.primary, turn - 90f, SPINNER_SWEEP, false, topLeft, arcSize, style = stroke)
-    }
-}
