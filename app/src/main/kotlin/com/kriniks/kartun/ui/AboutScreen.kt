@@ -112,6 +112,12 @@ fun AboutScreen(onBack: () -> Unit) {
                 "Unbounded, Manrope" to "SIL Open Font License 1.1",
                 "AndroidX, Jetpack Compose" to "Apache 2.0",
             ))
+            // The photos the model previews start from, with their authors and licences (docs/model-previews/credits.json).
+            val credits = remember { previewCredits(ctx) }
+            if (credits.isNotEmpty()) Group(stringResource(R.string.about_previews), credits.map { line ->
+                val parts = line.split(" — ")
+                parts.take(2).joinToString(" — ") to parts.drop(2).joinToString(" · ")
+            })
         }
     }
 }
@@ -141,6 +147,12 @@ private fun LinkGroup(title: String, links: List<Pair<String, String>>, header: 
         }
     }
 }
+
+/** The credit lines of the preview photos: «title — author — licence — source». */
+private fun previewCredits(ctx: android.content.Context): List<String> = runCatching {
+    val arr = org.json.JSONArray(ctx.assets.open("previews/credits.json").bufferedReader().use { it.readText() })
+    (0 until arr.length()).map { arr.getString(it) }
+}.getOrDefault(emptyList())
 
 /** A titled card of label · value rows. */
 @Composable

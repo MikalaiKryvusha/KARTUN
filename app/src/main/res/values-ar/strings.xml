@@ -118,6 +118,7 @@
     <string name="format_points_png">• بلا فقدان: كل بكسل كما في النتيجة\n• أكبر ملف\n• للطباعة ومتابعة التعديل</string>
     <string name="format_points_jpeg">• يفتح في كل مكان\n• أصغر بكثير من PNG\n• للإرسال ووسائل التواصل</string>
     <string name="format_points_webp">• أصغر ملف بالمظهر نفسه\n• يفتحه Android والمتصفحات وتطبيقات المراسلة\n• للحفظ والإرسال</string>
+    <string name="about_previews">صور معاينات النماذج</string>
     <string name="model_purpose_web_photo">صور من الإنترنت · يزيل الضغط والضبابية</string>
     <string name="model_purpose_universal">متعدد الاستخدام · صور نظيفة أو مضغوطة قليلًا</string>
     <string name="model_purpose_clean_photo">صور · لقطات كاميرا نظيفة</string>

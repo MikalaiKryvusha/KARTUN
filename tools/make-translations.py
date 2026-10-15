@@ -367,6 +367,7 @@ PANEL = {
 DROP = {"licence_bsd", "info_model_list"}
 CATALOGUE = {
     "es": {
+        "about_previews": "Fotos de las vistas previas de modelos",
         "model_purpose_web_photo": "Fotos de internet · quita compresión y desenfoque",
         "model_purpose_universal": "Universal · imágenes limpias o algo comprimidas",
         "model_purpose_clean_photo": "Fotos · tomas limpias de cámara",
@@ -399,6 +400,7 @@ CATALOGUE = {
         "info_model_list": "• Esta pantalla muestra los dos modelos que usaste por última vez.\\n• «Todos los modelos» lista cada modelo: para qué sirve, su autor, licencia y tamaño. Descarga los que necesites; funcionan sin red.",
     },
     "pt": {
+        "about_previews": "Fotos das prévias dos modelos",
         "model_purpose_web_photo": "Fotos da internet · remove compressão e desfoque",
         "model_purpose_universal": "Universal · imagens limpas ou pouco comprimidas",
         "model_purpose_clean_photo": "Fotos · cliques limpos de câmera",
@@ -431,6 +433,7 @@ CATALOGUE = {
         "info_model_list": "• Esta tela mostra os dois modelos que você usou por último.\\n• «Todos os modelos» lista cada modelo: para que serve, autor, licença e tamanho. Baixe os que precisar; funcionam sem rede.",
     },
     "fr": {
+        "about_previews": "Photos des aperçus des modèles",
         "model_purpose_web_photo": "Photos du web · enlève la compression et le flou",
         "model_purpose_universal": "Universel · images nettes ou peu compressées",
         "model_purpose_clean_photo": "Photos · prises nettes d’appareil photo",
@@ -463,6 +466,7 @@ CATALOGUE = {
         "info_model_list": "• Cet écran montre les deux derniers modèles utilisés.\\n• « Tous les modèles » liste chaque modèle : à quoi il sert, son auteur, sa licence et sa taille. Téléchargez ceux qu’il vous faut ; ils marchent sans réseau.",
     },
     "de": {
+        "about_previews": "Fotos der Modellvorschauen",
         "model_purpose_web_photo": "Fotos aus dem Netz · entfernt Kompression und Unschärfe",
         "model_purpose_universal": "Universell · saubere oder leicht komprimierte Bilder",
         "model_purpose_clean_photo": "Fotos · saubere Kameraaufnahmen",
@@ -495,6 +499,7 @@ CATALOGUE = {
         "info_model_list": "• Dieser Bildschirm zeigt die zwei zuletzt benutzten Modelle.\\n• „Alle Modelle“ listet jedes Modell: wofür es gut ist, Autor, Lizenz und Größe. Lade die benötigten herunter; sie arbeiten ohne Netz.",
     },
     "zh": {
+        "about_previews": "模型预览中的照片",
         "model_purpose_web_photo": "网络图片 · 去除压缩和模糊",
         "model_purpose_universal": "通用 · 干净或轻度压缩的图片",
         "model_purpose_clean_photo": "照片 · 干净的相机照片",
@@ -527,6 +532,7 @@ CATALOGUE = {
         "info_model_list": "• 此页面显示你最近使用的两个模型。\\n• “所有模型”列出每个模型：用途、作者、许可证和大小。下载你需要的模型，它们无需网络即可工作。",
     },
     "hi": {
+        "about_previews": "मॉडल प्रीव्यू की फ़ोटो",
         "model_purpose_web_photo": "इंटरनेट की फ़ोटो · कंप्रेशन और धुंधलापन हटाता है",
         "model_purpose_universal": "सार्वभौमिक · साफ़ या हल्की कंप्रेस्ड तस्वीरें",
         "model_purpose_clean_photo": "फ़ोटो · कैमरे की साफ़ तस्वीरें",
@@ -559,6 +565,7 @@ CATALOGUE = {
         "info_model_list": "• इस स्क्रीन पर आपके पिछली बार इस्तेमाल किए गए दो मॉडल हैं।\\n• «सभी मॉडल» में हर मॉडल है: किस काम का है, लेखक, लाइसेंस और आकार। ज़रूरी मॉडल डाउनलोड करें; वे बिना नेटवर्क के चलते हैं।",
     },
     "bn": {
+        "about_previews": "মডেল প্রিভিউয়ের ছবি",
         "model_purpose_web_photo": "ইন্টারনেটের ছবি · কম্প্রেশন ও ঝাপসা ভাব দূর করে",
         "model_purpose_universal": "সর্বজনীন · পরিষ্কার বা অল্প কম্প্রেস করা ছবি",
         "model_purpose_clean_photo": "ছবি · ক্যামেরার পরিষ্কার ছবি",
@@ -591,6 +598,7 @@ CATALOGUE = {
         "info_model_list": "• এই স্ক্রিনে আপনার শেষ ব্যবহার করা দুটি মডেল থাকে।\\n• «সব মডেল»-এ প্রতিটি মডেল আছে: কী কাজে লাগে, লেখক, লাইসেন্স ও আকার। দরকারি মডেল ডাউনলোড করুন; এগুলো নেটওয়ার্ক ছাড়াই চলে।",
     },
     "ar": {
+        "about_previews": "صور معاينات النماذج",
         "model_purpose_web_photo": "صور من الإنترنت · يزيل الضغط والضبابية",
         "model_purpose_universal": "متعدد الاستخدام · صور نظيفة أو مضغوطة قليلًا",
         "model_purpose_clean_photo": "صور · لقطات كاميرا نظيفة",

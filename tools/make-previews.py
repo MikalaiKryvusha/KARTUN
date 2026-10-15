@@ -56,8 +56,15 @@ def main():
     models = json.loads(Path("docs/model-catalogue.json").read_text(encoding="utf-8"))["models"]
     OUT.mkdir(parents=True, exist_ok=True)
     sheet = []
+    credits = {}
     for m in models:
         src = SRC_DIR / SUBJECTS[m["id"]] if m["id"] in SUBJECTS else FALLBACK
+        credit = src.with_name(src.name + ".credit.txt")
+        if src != FALLBACK:
+            # A subject photo ships only with its author line (CC BY / CC BY-SA ask for it; the app shows it in «О приложении»).
+            if not credit.exists():
+                sys.exit(f"no credit file {credit}")
+            credits[credit.read_text(encoding="utf-8").strip()] = True
         small = small_picture(src)
         param = cm.find(next(f["name"] for f in m["files"] if f["name"].endswith(".param")))
         binf = cm.find(next(f["name"] for f in m["files"] if f["name"].endswith(".bin")))
@@ -72,6 +79,10 @@ def main():
         pair.save(OUT / f"{m['id']}.webp", quality=QUALITY)
         sheet.append(pair)
         print(f"{m['id']}: {src.name} -> {pair.width}x{pair.height} in {dt:.1f} s")
+    credits["input2.jpg — Real-ESRGAN sample — BSD-3-Clause — https://github.com/xinntao/Real-ESRGAN"] = FALLBACK in [
+        SRC_DIR / SUBJECTS[m["id"]] if m["id"] in SUBJECTS else FALLBACK for m in models]
+    lines = sorted(k for k, used in credits.items() if used)
+    (OUT / "credits.json").write_text(json.dumps(lines, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
     if "--sheet" in sys.argv:
         w, h = sheet[0].width // 2, sheet[0].height // 2
         cols = 2

@@ -110,6 +110,7 @@
     <string name="format_points_png">• बिना नुकसान: हर पिक्सेल नतीजे जैसा\n• सबसे बड़ी फ़ाइल\n• प्रिंट और आगे की एडिटिंग के लिए</string>
     <string name="format_points_jpeg">• हर जगह खुलती है\n• PNG से काफ़ी छोटी\n• भेजने और सोशल मीडिया के लिए</string>
     <string name="format_points_webp">• वैसी ही दिखावट में सबसे छोटी फ़ाइल\n• Android, ब्राउज़र और मैसेंजर खोलते हैं\n• रखने और भेजने के लिए</string>
+    <string name="about_previews">मॉडल प्रीव्यू की फ़ोटो</string>
     <string name="model_purpose_web_photo">इंटरनेट की फ़ोटो · कंप्रेशन और धुंधलापन हटाता है</string>
     <string name="model_purpose_universal">सार्वभौमिक · साफ़ या हल्की कंप्रेस्ड तस्वीरें</string>
     <string name="model_purpose_clean_photo">फ़ोटो · कैमरे की साफ़ तस्वीरें</string>

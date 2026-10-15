@@ -112,6 +112,7 @@
     <string name="format_points_png">• Sem perdas: cada pixel como no resultado\n• O maior arquivo\n• Para imprimir e continuar editando</string>
     <string name="format_points_jpeg">• Abre em qualquer lugar\n• Bem menor que PNG\n• Para enviar e redes sociais</string>
     <string name="format_points_webp">• O menor arquivo com a mesma aparência\n• Android, navegadores e mensageiros abrem\n• Para guardar e enviar</string>
+    <string name="about_previews">Fotos das prévias dos modelos</string>
     <string name="model_purpose_web_photo">Fotos da internet · remove compressão e desfoque</string>
     <string name="model_purpose_universal">Universal · imagens limpas ou pouco comprimidas</string>
     <string name="model_purpose_clean_photo">Fotos · cliques limpos de câmera</string>

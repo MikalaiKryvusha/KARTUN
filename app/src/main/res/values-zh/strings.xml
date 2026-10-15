@@ -108,6 +108,7 @@
     <string name="format_points_png">• 无损：每个像素与结果一致\n• 文件最大\n• 适合打印和后期编辑</string>
     <string name="format_points_jpeg">• 到处都能打开\n• 比 PNG 小得多\n• 适合发送和社交媒体</string>
     <string name="format_points_webp">• 画质相同、文件最小\n• Android、浏览器和聊天应用都能打开\n• 适合保存和发送</string>
+    <string name="about_previews">模型预览中的照片</string>
     <string name="model_purpose_web_photo">网络图片 · 去除压缩和模糊</string>
     <string name="model_purpose_universal">通用 · 干净或轻度压缩的图片</string>
     <string name="model_purpose_clean_photo">照片 · 干净的相机照片</string>

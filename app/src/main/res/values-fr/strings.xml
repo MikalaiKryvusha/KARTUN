@@ -112,6 +112,7 @@
     <string name="format_points_png">• Sans perte : chaque pixel comme dans le résultat\n• Le fichier le plus lourd\n• Pour l’impression et la retouche</string>
     <string name="format_points_jpeg">• S’ouvre partout\n• Bien plus léger que PNG\n• Pour l’envoi et les réseaux sociaux</string>
     <string name="format_points_webp">• Le fichier le plus léger pour le même rendu\n• Android, navigateurs et messageries l’ouvrent\n• Pour garder et envoyer</string>
+    <string name="about_previews">Photos des aperçus des modèles</string>
     <string name="model_purpose_web_photo">Photos du web · enlève la compression et le flou</string>
     <string name="model_purpose_universal">Universel · images nettes ou peu compressées</string>
     <string name="model_purpose_clean_photo">Photos · prises nettes d’appareil photo</string>
