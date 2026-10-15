@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-14 (agent; `/plan-epic` rung 1 for `ideas/02`)
 > **Родитель:** `ideas/02_agent_api_adb_and_lan_workstation.md`; the owner's order verbatim, chat ≈ 14:15 +03:00: «в KARTUN должен быть понятный API, CLI, чтобы ИИ агенты могли им пользоваться по проводу через ADB, или еще-как-то, или в локальной вай-фай сети по HTTPS, чтобы андроид устройство с KARTUN могло выступать в качестве рабочей станции по апскейлингу»; ≈ 22:41: «оба режима сейчас наинаем делать»
-> **Статус:** ✅ written 2026-10-14 22:51 +03:00 — feeds `plans/06_EPIC_agent_station.md`
+> **Статус:** ✅ written 2026-10-14 22:51 +03:00 — feeds `plans/06_EPIC_agent_api.md`; deepened and corrected (Ktor CIO has no server TLS; the FGS start from adb) by `researches/10_agent_api_recon.md` 2026-10-16
 > **Вовне:** the forks at the end → the owner (chat / interview)
 
 ## 1. Industry sweep (web) — findings with sources
