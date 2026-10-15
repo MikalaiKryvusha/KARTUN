@@ -87,6 +87,34 @@
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
 
+### EXP-0015 · 2026-10-15 · ❌→✅ · #titan #ui-agent #harness #device
+class: stand-left-dirty
+**Context:** driving KARTUN on the Titan with the on-device UI agent through the system photo picker.
+**Tried / did:** `am force-stop` + `am start` before each scenario; reading progress by polling `tree` every 50 ms.
+**Result:** ❌ three stand artefacts read as app behaviour: the picker survived the force-stop and hung translucent over the
+owner's Telegram; the agent answered `StaleObjectException` to every query after the picker closed (the app drew 0 frames);
+a share sheet «took 16 s» under the polling and 2.4 s without it. ✅ `am start -S -W -f 0x10008000` (clears the task with the
+picker), restart the agent with `ui.py --start ping` on a stale answer, time events by `dumpsys window | grep mCurrentFocus`.
+**Lesson:** before calling something slow or broken on the device, rule out the harness: a cheaper probe (window focus,
+`dumpsys gfxinfo` frame count) must agree with what the agent's polling showed.
+**Repro:** `adb shell "dumpsys gfxinfo com.kriniks.kartun.debug reset >/dev/null; sleep 3; dumpsys gfxinfo com.kriniks.kartun.debug | grep 'Total frames'"` → 0 means the app is idle and the stale/slow reading is the harness.
+**Trigger:** the agent says ERR, or a step takes far longer than in a previous run → run the cheap probe first.
+**Not for:** crashes and logcat errors — those are the app's.
+none-cheap: the harness is a throwaway driver in the session scratchpad; the net is the Repro probe
+
+### EXP-0014 · 2026-10-15 · ❌→✅ · #owner #limits #reading
+class: question-already-answered
+**Context:** the owner asked «поддержку файлов больше 12 мб… до 100 мб»; the only «12» in the app was the 12,5 MP input limit.
+**Tried / did:** read the number against the code before answering; said in chat that the limit is megapixels and that I read
+«100 мб» as 100 MP, with the reason (the error line he saw said «12,5 Мп»).
+**Result:** ✅ he went on to «давай поднимем макс лимит до 500 Мегапикселей» — the reading held; no round trip was spent.
+**Lesson:** an owner's number about a limit is checked against every limit in the code first; the reading is said aloud in the
+same answer, never silently applied.
+**Repro:** `grep -rn "MAX_.*MP\|MAX_BYTES" app/src/main/kotlin` before answering a question about a size limit.
+**Trigger:** the owner names a size, a count or a limit → grep the code's limits, state the reading in one line.
+**Not for:** numbers he quotes from the screen verbatim.
+none-cheap: the step is a reading of the owner's words, no tool can do it
+
 ### EXP-0013 · 2026-10-15 · ❌ · #titan #media #delete #device
 class: shallow-scan
 **Context:** the owner ordered «УДАЛИТЬ» on the Titan's `/sdcard/Download`; before deleting, the agent rescued the owner's own camera shots (`YYYYMMDD_HHMMSS.*`) to the PC.
