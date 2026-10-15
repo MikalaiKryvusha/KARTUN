@@ -114,7 +114,7 @@ const moods = {
 const characters = ['straight', 'arc', 'shy', 'spinner', 'overshooter'];
 
 const sq = Array.from({ length: N }, () => ({ from: [R(), R()], ctrl: [.5, .5], to: [.5, .5], start: 0, delay: 0, dur: 900, who: 'straight', spin: 0,
-  host: -1, merged: false, splitAt: -1, gulpAt: -1 }));
+  host: -1, merged: false, splitAt: -1, gulpAt: -1, look: { k: .8, c: DEEP } }));
 let current = 'heart', mood = 'burst', switchAt = 0;
 
 function regroup(t, next, moodName) {
@@ -122,6 +122,7 @@ function regroup(t, next, moodName) {
   const guests = new Array(N).fill(0);
   for (let i = 0; i < N; i++) {
     const s = sq[i], p = pos(s, t);
+    s.look = lookOf(s, i, t);                                   // leave as it looks now
     s.from = p; s.start = t; s.host = -1; s.splitAt = s.merged ? t : -1; s.merged = false;
     if (i < formations[next].count) s.to = formations[next].target(i);
     else {                                                     // a spare one: pick its host - near, and not crowded
@@ -154,6 +155,16 @@ function pos(s, t) {
 }
 
 let performanceT = 0;
+// What a square looks like now: at home - the formation's life; in flight - the look it left with, blending into the
+// new formation's look as it flies (the owner, ≈ 12:55: «квадрат начал проявляться, наполовину проявился, а затем… он
+// резко весь проявился - некрасиво» · «нужно или его разбирать не до конца проявленным»).
+function lookOf(s, i, t) {
+  const live = formations[current].life(i, t, s.to), k = progress(s, t);
+  if (k >= 1) return live;
+  const e = easeInOut(k), lift = Math.sin(e * Math.PI) * .12;                    // a touch brighter mid-flight
+  return { k: (s.look.k + (live.k - s.look.k) * e) * (1 - lift), c: mix(mix(s.look.c, live.c, e), LIGHT, lift) };
+}
+
 function draw(ctx, size, t) {
   const f = formations[current];
   for (let i = 0; i < N; i++) {
@@ -162,7 +173,7 @@ function draw(ctx, size, t) {
       if (!s.merged) { s.merged = true; sq[s.host].gulpAt = t; }
       continue;
     }
-    const l = home ? f.life(i, t, s.to) : { k: .8, c: mix(PINK, LIGHT, .4) };
+    const l = lookOf(s, i, t);
     const gulp = s.gulpAt >= 0 ? Math.max(0, 1 - (t - s.gulpAt) / 380) : 0;   // the host swells as it swallows
     const split = s.splitAt >= 0 ? Math.max(0, 1 - (t - s.splitAt - s.delay) / 300) : 0; // a square leaving its host
     const side = size * f.size * l.k * (1 + .22 * Math.sin(gulp * Math.PI)) * (1 - .3 * split);
@@ -185,7 +196,10 @@ const q = new URLSearchParams(location.search);
 regroup(0, formations[q.get('f')] ? q.get('f') : 'heart', moods[q.get('m')] ? q.get('m') : 'burst');
 function frame(now) {
   const t = now / SLOW; performanceT = t;
-  if (t > switchAt) {
+  // The tiles square leaves only once fully built and holding (the owner, ≈ 12:56: «или дать до конца завершиться циклу
+  // проявления - потом разбирать в новый стейт»): phase 10..13 of its 26-step breath.
+  const tilesPh = (t / 260) % 26, tilesHold = tilesPh >= 10.3 && tilesPh < 12.7;
+  if (t > switchAt && (current !== 'tiles' || tilesHold)) {
     const nextF = order.filter(o => o !== current), nextM = Object.keys(moods).filter(o => o !== mood);
     regroup(t, nextF[Math.floor(R() * nextF.length)], nextM[Math.floor(R() * nextM.length)]);
   }
