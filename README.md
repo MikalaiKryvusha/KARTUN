@@ -1,20 +1,16 @@
+<a name="english"></a>
+
 <p align="center">
-  <img src="design/icon/heart_vector.svg" alt="KARTUN: a glass heart, pixels on the left, smooth gloss on the right" width="200">
+  <img src="design/icon/heart_vector.svg" alt="KARTUN: a glass heart, pixels on the left, smooth gloss on the right" width="160">
 </p>
 
-<h1 align="center">KARTUN</h1>
+<h2 align="center">KARTUN</h2>
 
 <p align="center">
   <a href="#english"><img src="https://img.shields.io/badge/English-2C7BE5?style=for-the-badge" alt="English"></a>
   &nbsp;
   <a href="#russian"><img src="https://img.shields.io/badge/Русский-C0392B?style=for-the-badge" alt="Русский"></a>
 </p>
-
----
-
-<a name="english"></a>
-
-<h2 align="center">KARTUN</h2>
 
 <p align="center"><b>Krinik Android Restoration Tool for Upscaling with Neural Networks</b><br>
 Open source · Offline · AI on the device</p>
@@ -178,6 +174,10 @@ Author: Mikalai Kryvusha (Krinik).
 ---
 
 <a name="russian"></a>
+
+<p align="center">
+  <img src="design/icon/heart_vector.svg" alt="KARTUN: стеклянное сердце, слева пиксели, справа гладкий глянец" width="160">
+</p>
 
 <h2 align="center">KARTUN</h2>
 
