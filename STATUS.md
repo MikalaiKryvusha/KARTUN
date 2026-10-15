@@ -31,15 +31,18 @@
 руками, 8 — черновик `[AI]`). Почти всё пройдено на Титане касаниями и снимками; `[NOT-TESTED]` остаётся набор
 `testcases/TC_F2_guarded_loop_device_backlog.md` (25 случаев).
 
-**Каталог моделей** (`plans/05_model_catalogue.md`; разведка `researches/07_best_models_recon.md`): `docs/model-catalogue.json` —
-12 моделей с хешами (General v3, x4plus anime, AnimeVideo v3, Nomos8kSC, HFA2k, NMKD Superscale, NMKD Siax, NomosWebPhoto
-RealPLKSR, ClearReality V1, Remacri, UltraMix Balanced, UltraSharp V2 Lite); на Титане прогнаны только 4 старые (≈ 5,3–5,4 с на
-256²); `published: false` у всех. Перевод — `tools/convert-model.py`, оригиналы весов — `engine/third_party/catalogue-src/`,
-готовые файлы — `engine/third_party/catalogue/` (вне git); копия для приложения — `node tools/catalogue.mjs` (`--check`).
+**Каталог моделей в приложении** (`plans/05`, коммит `fc6b8d5`): экран «Все модели» — фильтры, карточка с картинкой «До | После»,
+лицензией словами владельца, автором, размером; «⤓ МБ» качает из релиза `models` с проверкой SHA-256 и докачкой, «Удалить» стирает
+файлы; на «Улучшение» — две последние модели на устройстве и строка «Все модели». В APK — **NomosWebPhoto RealPLKSR (по умолчанию) +
+NMKD Siax**; General v3 и x4plus ушли в каталог. Каталог — 14 моделей (`docs/model-catalogue.json`, + x4plus и UltraSharp V2 / DAT2),
+релиз https://github.com/MikalaiKryvusha/KARTUN/releases/tag/models — 29 файлов (12 моделей + 5 лицензий), предварительный.
+Прогон на Титане 00:39–00:48: скачивание, выбор, апскейл, удаление — `testcases/reports/2026-10-16_catalogue_device_run.md`
+(partial: кольцо скачивания не увидено, две найденные ошибки исправлены, но на устройстве не пересмотрены). Инструменты:
+`node tools/catalogue.mjs`, `node tools/stage-models.mjs`, `node tools/publish-models.mjs`, `tools/make-previews.py`.
 
-**Проверки на ПК** (зелёные 2026-10-15 18:2x — см. коммит закрытия): `.\gradlew.bat :app:testDebugUnitTest assembleDebug`
-(29 JVM-тестов) · `python tools/make-translations.py --check` · `node tools/check-app-names.mjs` · `node tools/catalogue.mjs --check`;
-lint последний раз 13:10 — 0 ошибок, 15 предупреждений.
+**Проверки на ПК** (зелёные 2026-10-16 00:56): `.\gradlew.bat :app:testDebugUnitTest assembleDebug` (40 JVM-тестов) ·
+`python tools/make-translations.py --check` · `node tools/check-app-names.mjs` · `node tools/catalogue.mjs --check`;
+lint последний раз 2026-10-15 13:10 — 0 ошибок, 15 предупреждений.
 
 **Сборки:** две — `debug` («Debug KARTUN», в ней раздел «Отладка» и экран пробы движка) и `release` («KARTUN»); stage убрана владельцем 2026-10-15 ≈ 15:55 — правило R3 в `HOUSE_RULES.md`.
 
@@ -47,29 +50,27 @@ lint последний раз 13:10 — 0 ошибок, 15 предупрежд
 
 ## Где продолжить
 
-0. **В работе (2026-10-16 00:23 +03:00):** каталог моделей со скачиванием — слово владельца «каталог со скачиванием моделей · сейчас
-   делаем»; сразу за ним — **README и руководство в приложении актуализировать** (владелец ≈ 00:22: «пора редми актуализировать» ·
-   «и мануал в приложении» · «мы сильно продвинулись») с новыми скриншотами; затем API для агентов по `plans/06`–`07` (владелец:
-   «API для ИИ-агентов по ADB и HTTPS (ideas/02); Сейчас делаем!» · «чтобы IP девайса и порт приложения можно было дать, и этого хватало»).
+0. **Первым — с Титаном** (Титан до конца сессии 2026-10-16 отдан сессии Krinik Tribit): (а) **превью моделей по темам владельца**
+   — «природа, греция, пантеры, коты, цветки, луга, альпы, фьорды, снег» · «новогодняя елка» · «цветки, пчелы»; подбор снимков
+   со свободной лицензией вёл второй агент в `engine/third_party/preview-src/` (+ `.credit.txt`); вписать в `SUBJECTS` в
+   `tools/make-previews.py`, `node tools/catalogue.mjs`, показать лист владельцу (вкус — его); (б) **картинки в руководстве** —
+   отрисовщик готов (`![подпись](manual/ru/…)`, `b1b7d3f`), снять экраны и кнопки на Титане (`tools/shoot-readme.mjs`) и
+   расставить по главам EN/RU; (в) **README** — свежие скриншоты (раздел 3 о моделях уже переписан, `9b35723`); (г) пересмотреть на
+   Титане размер без «≈» и пары «До | После», увидеть кольцо скачивания на модели 34 МБ.
+0а. **API для агентов** — `plans/06_EPIC_agent_api.md`, фаза A по `plans/07_epic06_A_adb_api.md`; ждёт ответа владельца на Q3
+   интервью №005 (дверь ADB в «KARTUN»), страница показана 2026-10-16 ≈ 00:58.
 1. **ncnn PR — следить за ревью:** https://github.com/Tencent/ncnn/pull/7121 и issue https://github.com/Tencent/ncnn/issues/7120
    (`gh pr view 7121 -R Tencent/ncnn --comments`). Ответы мейнтейнеру — коротко, человеческим языком, без подписи ИИ (слово владельца
    к issue); правки — в ветке форка `fix-sdpa-cross-oob-load` (клон `D:/work/ai_sandbox/ncnn`), картинка PR — ветка форка `pr-assets`
    (не удалять до закрытия PR). Итоги бисекции и доказательства — `researches/08` §13–14. Не сделано: сравнение SPIR-V до и после
    `a2d60e2b`; PR 2 — 6-мерные тензоры как проход в pnnx (владелец: «понимаешь верно»); не заявлено: при `use_subgroup_ops = false`
    падает `Reduction_vulkan`. В приложении DAT2 работает целиком на видеочипе за счёт дополнения до 32 строк (`tools/ncnn_dat.py`).
-2. **DAT2 в каталог — первым в новом чате** (владелец: «DAT2 в каталог - в новом чате»): файлы `engine/third_party/catalogue/4x-UltraSharpV2-fp16.*` (sha256 `1c34ebe5…` / `94c82f9b…`) — в
-   `docs/model-catalogue.json`; большое фото посчитано на Титане за ≈ 29 мин (108 кусков) — `files/out_dat2-pad32_gpu_t128_photo1.png`
-   на Титане, на швы ещё не смотрено; fp16-хранение для DAT — проверить снова. На Титане в `files/` лишнее: `4x-UltraSharpV2-fp16.*`,
-   `dat2-sdpacpu.*`, `dat2-pad32.*` (по 84 МБ), `sdpa_*`, `test108/128.png`, `blob_output.f32` — удалить после (R1). Snapdragon — не
+2. **DAT2** — в каталоге (`4x-UltraSharpV2-fp16`), швов на большом фото нет (`researches/08` §15). На Титане в `files/` лишнее:
+   `4x-UltraSharpV2-fp16.*`, `dat2-sdpacpu.*`, `dat2-pad32.*` (по 84 МБ), `sdpa_*`, `test108/128.png`, `blob_output.f32`, пробы
+   `out_*` и модели ClearReality / V2 Lite / x4plus anime от замеров 2026-10-16 — удалить, когда Титан вернётся (R1). Snapdragon — не
    будет (владелец: «и не будет долго. Забей. Работаем на медиатеке 8300»).
-4. **Каталог и APK по решениям владельца** (журнал `MASTER_PLAN.md` 2026-10-15 13:57–14:21): в APK — **NomosWebPhoto RealPLKSR
-   (по умолчанию) + NMKD Siax**; General v3 и x4plus уходят в «Все модели» в ОДНОМ шаге с этим экраном; ClearReality V1 —
-   некоммерческая до решения о лицензии. Сначала прогон NomosWebPhoto и Siax на Титане (видеочип, время, картинка) через экран
-   пробы, затем `tools/stage-models.mjs` + `docs/model-licenses.md` + карточки и описания на 10 языках + автор NomosWebPhoto в
-   «О приложении» (CC BY 4.0). Дальше шаги 4–7 `plans/05`: релиз `models` (`gh release upload`, сначала сверка хешей), загрузчик с
-   SHA-256, экран «Все модели» (превью, автор, лицензия, размер в МБ, «Скачать» / «Удалить», кольцо с процентами при скачивании,
-   хранить в папке приложения), «Модель принадлежит автору», «Не для коммерческого использования» на 10 языках.
-   Превью новых моделей — `tools/compare-models.py` / `tools/titan-probe.mjs`.
+4. **Каталог — остаток:** ClearReality V1 — некоммерческая до решения о лицензии (карточка автора — Apache 2.0, OpenModelDB —
+   CC BY-NC-SA); проверка хеша на устройстве и докачка после обрыва — только JVM-тестом.
 5. **Титан** — 2026-10-15 ≈ 19:53 после перезапуска отладки владелец дал `192.168.1.3:34325` → переведён на `192.168.1.3:5555`
    (домашний Wi-Fi; `100.99.111.48:5555` через Tailscale в 19:54 не ответил, 10060). Прежний путь — `C:\Android\Sdk\platform-tools\adb.exe connect 100.99.111.48:5555` (постоянный порт с 2026-10-15 14:23 до
    перезагрузки; после неё — рецепт в `HOUSE_RULES.md` §3); команды адресовать `adb -s 100.99.111.48:5555`. **Пробы — через экран
