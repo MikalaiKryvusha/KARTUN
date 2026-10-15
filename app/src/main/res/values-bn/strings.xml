@@ -99,4 +99,5 @@
     <string name="settings_about_sub">সংস্করণ, ডিভাইস, লেখক, লাইসেন্স</string>
     <string name="terms_title">ব্যবহারের শর্তাবলি</string>
     <string name="terms_sub">মডেলের অধিকার ও দায়</string>
+    <string name="rendering">রেন্ডার হচ্ছে…</string>
 </resources>

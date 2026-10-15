@@ -50,7 +50,6 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.layout.layout
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -354,7 +353,7 @@ private fun ModelCard(m: UpscaleViewModel.Model, on: Boolean, loading: Boolean, 
             )
         }
         // While the chosen model loads (preload on this screen) a small pink ring stands where the tick will be.
-        if (on && loading) CircularProgressIndicator(Modifier.size(22.dp), color = c.primary, strokeWidth = 2.5.dp)
+        if (on && loading) CalmSpinner(Modifier.size(22.dp), strokeWidth = 2.5.dp)
         else if (on) Box(Modifier.size(22.dp).clip(CircleShape).background(c.primary), contentAlignment = Alignment.Center) {
             Icon(painterResource(R.drawable.ic_tick), null, Modifier.size(14.dp), tint = c.onPrimary)
         }

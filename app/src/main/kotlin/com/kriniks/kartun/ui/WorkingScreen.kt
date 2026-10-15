@@ -118,9 +118,11 @@ fun WorkingScreen(vm: UpscaleViewModel) {
             verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterVertically),
         ) {
             Box(contentAlignment = Alignment.Center) {
+                // Rounded ends of the arc (the owner, chat 2026-10-15 ≈ 11:35 +03:00: «если можно у кольца прогресс бара концы
+                // сделать закругленными»).
                 CircularProgressIndicator(
                     progress = { fraction }, modifier = Modifier.size(150.dp), color = c.primary,
-                    strokeWidth = 11.dp, trackColor = c.surfaceContainerHigh, strokeCap = StrokeCap.Butt, gapSize = 0.dp,
+                    strokeWidth = 11.dp, trackColor = c.surfaceContainerHigh, strokeCap = StrokeCap.Round, gapSize = 0.dp,
                 )
                 // Tabular figures: every digit takes the same width, so the number does not jitter as it counts (the owner,
                 // plan 03 step 20: «в кольце прогресса цифры процентов пляшут, вероятно из-за разной ширины цифр»).

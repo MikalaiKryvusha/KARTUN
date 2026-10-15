@@ -27,6 +27,15 @@ user's path; swipes by `adb shell input swipe`; the divider's x is read from scr
 | 2 | 2026-10-15 11:11 +03:00 | `.\gradlew.bat :app:testDebugUnitTest assembleDebug` → `adb install -r app-debug.apk` | 0 · 28 JVM tests, 0 failures; installed |
 | 3 | 2026-10-15 11:18 +03:00 | `python s_c5.py` (home → picker → `photo1.jpg` → «Улучшить» at the default 2× → result) | «960 × 1280 · 1,2 Мп», «Улучшить · ≈ 8 секунд»; processing «Тайл 6 … 14 из 35», «GPU · Vulkan»; result «960 × 1280 → 1920 × 2560», «8 секунд · GPU · Vulkan» in 10.2 s |
 | 4 | 2026-10-15 11:18 +03:00 | `python knob_control.py 100.99.111.48:35437 <dir>` on the new build | line 800 → 800 (control) → 1301 (knob zone); `logcat` FATAL/SIGSEGV count 0 |
+| 5 | 2026-10-15 11:21 +03:00 | `python s_c11.py` (dialog → PNG, then JPEG, then WEBP → the dialog's «Сохранить»; `ls /sdcard/Pictures/KARTUN` after each) | three new files `63282_kartun_realesr-general-x4v3_2x.{png,jpg,webp}` 8 082 198 / 3 340 559 / 1 896 150 bytes, all 1920×2560 (`magick identify` on pulled copies); the original's mtime and size unchanged |
+| 6 | 2026-10-15 11:23 +03:00 | `python s_c13.py` (tap «Поделиться», poll `mCurrentFocus`, screenshot, Back) | `ChooserActivityLauncher` in front after 2.2 s, sheet «Отправка изображения»; closed with Back, nothing sent |
+| 7 | 2026-10-15 11:27 +03:00 | `python s_c8.py` (scroll the settings, tap the track at 16×) | «960 × 1280 → 15 360 × 20 480 · 314,6 Мп», notice «Результат больше 200 Мп — для этого фото подойдёт масштаб до 8×», «Улучшить» grey and inert |
+| 8 | 2026-10-15 11:33 +03:00 | `python s_c8b.py --run` (track at 8× → «Улучшить») | «2 прохода · дольше · большой файл»; cards ≈ 57 s / ≈ 9 min 5 s (2×: ≈ 11 s / ≈ 1 min 49 s); «Проход 1 из 2 · тайл 5 … 32 из 165», then «Проход 2 из 2 · тайл 35 … 162 из 165»; result «960 × 1280 → 7680 × 10 240 · 1 минута 8 секунд · GPU · Vulkan» in 70.3 s; FATAL/SIGSEGV/OOM 0 |
+| 9 | 2026-10-15 11:39 +03:00 | build with the owner's 11:35–11:36 words (round ring ends, 24 dp divider fades) → `python s_look.py`, `python s_ring.py` (8× run, screenshot at 6 s, «Отменить») | ring at 9 % with round ends; fades ≈ 24 dp; «Отменить» → «Улучшение», no error notice |
+| 10 | 2026-10-15 11:43 +03:00 | build with «Рендер…» → `python s_render2.py` (PNG save; tap and `screencap` in one device shell, 0.4 s apart) | the card «Рендер…» over the picture, «Сохраняем…» on the button; at 90 % opacity the knob showed through → made opaque |
+| 11 | 2026-10-15 11:49 +03:00 | build with the knob following the panel + the calm spinner → `python s_knob2.py` | knob y = 965 px with the panel shown (was 1280); a grab 55 dp off at y 965 drags the line 799 → 1196; the same at the old y 1280 leaves it; panel swiped away → knob y = 1279 |
+| 12 | 2026-10-15 11:51 +03:00 | path to the result → `python s_render2.py` | opaque card «Рендер…» with the calm spinner, the knob above it |
+| 13 | 2026-10-15 11:42 +03:00 | `python s_c13.py` twice (share timed by window focus, no UI-tree polling) | sheet after 2.4 s both times — the 16 s seen in run 10's tree-polling loop was the harness, not the app |
 
 ## 4. Checks
 
@@ -41,6 +50,20 @@ picker, taps, swipes); READ: the screen labels through the UI agent, screencaps 
 | C5 portrait regression (run 9 path) | pass | same texts as run 9 of `2026-10-14_F2_screens_slice1.md`: «960 × 1280 → 1920 × 2560», «8 секунд · GPU · Vulkan» |
 | K1 portrait shows the portrait layouts | pass | home, «Улучшение», processing and result in their portrait layouts (`c5_*.webp`) |
 | K2 a 2× run has no «2 прохода» | pass | processing counted «из 35» tiles, no pass line |
+| C7 cancel (in-app «Отменить», not the notification's) | pass | back on «Улучшение» with no error (run 9); the notification's button is not walked yet |
+| C8 8× → 7680 × 10 240 in two passes | pass | run 8 |
+| C9 16× refused, notice names 8× | pass | run 7 |
+| C11 save PNG → new file, original intact | pass | run 5 |
+| C12 JPEG and WebP smaller than PNG | pass | run 5 (quality 100 — the dialog's remembered value, not the case's 92) |
+| C13 share sheet with the PNG | partial | sheet opens (run 6); the delivery to Telegram is not walked — the owner's account |
+| C19 card estimates grow ≈ 5× at 8× | pass | run 8: 11 s → 57 s, 1:49 → 9:05 |
+| C25 pass and tile lines | pass | run 8: one count of 165 across both passes (35 + 130) |
+| owner 11:35 round ring ends | pass | run 9 screenshot |
+| owner 11:36 short divider fades | pass | run 9 crop: ≈ 24 dp |
+| owner 11:38 «Рендер…» over the picture | pass | runs 10, 12 |
+| owner 11:45 knob between the screen top and the panel, centre when hidden | pass | run 11 (pixels) |
+| owner 11:47 calmer spinner | built, seen in run 12 | speed is the owner's eye (taste class); one turn 1.6 s × the device's animator scale 0.5 |
+| defect seen: picked photo named «63282.jpg» in the compact header | open | the picker URI's display name is the media id; `photo1.jpg` expected — S3, to EXPERIENCE/next step |
 
 ## 5. Found
 

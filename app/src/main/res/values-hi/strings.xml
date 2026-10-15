@@ -99,4 +99,5 @@
     <string name="settings_about_sub">संस्करण, डिवाइस, लेखक, लाइसेंस</string>
     <string name="terms_title">उपयोग की शर्तें</string>
     <string name="terms_sub">मॉडलों के अधिकार और ज़िम्मेदारी</string>
+    <string name="rendering">रेंडर हो रहा है…</string>
 </resources>

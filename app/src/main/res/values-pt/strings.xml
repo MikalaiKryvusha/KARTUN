@@ -101,4 +101,5 @@
     <string name="settings_about_sub">Versão, dispositivo, autor, licenças</string>
     <string name="terms_title">Termos de uso</string>
     <string name="terms_sub">Direitos dos modelos e responsabilidade</string>
+    <string name="rendering">Renderizando…</string>
 </resources>

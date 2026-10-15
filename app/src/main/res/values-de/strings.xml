@@ -99,4 +99,5 @@
     <string name="settings_about_sub">Version, Gerät, Autor, Lizenzen</string>
     <string name="terms_title">Nutzungsbedingungen</string>
     <string name="terms_sub">Rechte an Modellen und Haftung</string>
+    <string name="rendering">Wird gerendert…</string>
 </resources>

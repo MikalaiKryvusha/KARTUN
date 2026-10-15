@@ -72,6 +72,7 @@
     <string name="saved">Saved to Pictures/KARTUN</string>
     <string name="save_failed">Could not save the photo.</string>
     <string name="saving">Saving…</string>
+    <string name="rendering">Rendering…</string>
     <string name="webp_too_big">WebP holds up to 16 383 px per side; choose PNG or JPEG for this result</string>
     <!-- [AI] «Вставить ссылку» (LinkDownloader). -->
     <string name="link_title">Photo link</string>

@@ -14,6 +14,8 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.foundation.layout.Arrangement
@@ -89,8 +91,9 @@ private val DIVIDER_GRAB = 36.dp
 /** An invisible round grab zone around the pink knob, wider than the knob itself (52 dp): the owner, chat 2026-10-14
  *  ≈ 23:05 +03:00: «вокруг драга до после нужно сделать невидимую более широкую область, за которую его можно хватать». */
 private val KNOB_GRAB = 72.dp
-/** The share of the divider's length that fades in at the top and out at the bottom. */
-private const val DIVIDER_FADE = 0.12f
+/** How long the divider fades in at the top and out at the bottom: short and sharp (the owner, chat 2026-10-15 ≈ 11:36
+ *  +03:00: «фейды полоски До-После короче и резче, сейчас длинные очень - некрасиво»; was 12 % of the line, ≈ 96 dp). */
+private val DIVIDER_FADE = 24.dp
 /** The divider's gap from the status bar above and the navigation bar below. */
 private val DIVIDER_GAP = 8.dp
 /** A released panel hides when dragged past this share of the screen width (or flung right faster than PANEL_FLING px/s). */
@@ -152,9 +155,22 @@ fun ResultScreen(vm: UpscaleViewModel) {
         }
     }
     val panelDrag = rememberDraggableState { d -> panelShift = (panelShift + d).coerceIn(0f, screenW) }
+    // The knob's height on the line: halfway between the screen's top and the panel's top edge while the panel is shown -
+    // the centre of the photo that is actually visible; it slides to the screen's centre as the panel is swiped away (the
+    // owner, chat 2026-10-15 ≈ 11:45 +03:00: «кружок-ручка До-После определяла свое положение на линии по высоте ОТ верхнего
+    // края виджета-сводки результата и ДО верха экрана» · «А когда виджет всторону сммахиваешь - чтобы смещалось в центр
+    // экрана, как сейчас»). Read by both the drawing and the grab test, so the grab zone travels with the knob.
+    var screenH by remember { mutableFloatStateOf(0f) }
+    var panelTop by remember { mutableFloatStateOf(0f) }
+    fun knobY(): Float {
+        val centre = screenH / 2f
+        if (screenW <= 0f || panelTop <= 0f) return centre
+        val shown = 1f - (panelShift / screenW).coerceIn(0f, 1f)
+        return centre + (panelTop / 2f - centre) * shown
+    }
     val stopSettle: suspend CoroutineScope.(Offset) -> Unit = { settleJob?.cancel() }
 
-    Box(Modifier.fillMaxSize().background(c.background).onSizeChanged { screenW = it.width.toFloat() }) {
+    Box(Modifier.fillMaxSize().background(c.background).onSizeChanged { screenW = it.width.toFloat(); screenH = it.height.toFloat() }) {
         BoxWithConstraints(
             Modifier.fillMaxSize().pointerInput(Unit) {
                 // Keep the picture covering what it covered at 1×: pan is bounded by how much the zoom enlarged it.
@@ -165,7 +181,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 }
                 awaitEachGesture {
                     val first = awaitFirstDown(requireUnconsumed = false)
-                    val knob = Offset(split * size.width, size.height / 2f) // the knob sits at the vertical centre
+                    val knob = Offset(split * size.width, knobY())
                     val onDivider = kotlin.math.abs(first.position.x - split * size.width) <= DIVIDER_GRAB.toPx() ||
                         (first.position - knob).getDistance() <= KNOB_GRAB.toPx()
                     var pinching = false
@@ -215,15 +231,31 @@ fun ResultScreen(vm: UpscaleViewModel) {
             val bars = WindowInsets.systemBars.asPaddingValues()
             val lineTop = bars.calculateTopPadding() + DIVIDER_GAP
             val lineBottom = maxHeight - bars.calculateBottomPadding() - DIVIDER_GAP
+            val fade = (DIVIDER_FADE / (lineBottom - lineTop)).coerceIn(0f, 0.5f)
             Box(
                 Modifier.offset(x = x - 1.5.dp, y = lineTop).width(3.dp).height(lineBottom - lineTop).background(
-                    Brush.verticalGradient(0f to Color.Transparent, DIVIDER_FADE to c.primary, 1f - DIVIDER_FADE to c.primary, 1f to Color.Transparent),
+                    Brush.verticalGradient(0f to Color.Transparent, fade to c.primary, 1f - fade to c.primary, 1f to Color.Transparent),
                 ),
             )
             Box(
-                Modifier.align(Alignment.CenterStart).offset(x = x - 26.dp).size(52.dp).shadow(10.dp, CircleShape).clip(CircleShape).background(c.primary),
+                Modifier.offset { IntOffset((x - 26.dp).roundToPx(), (knobY() - 26.dp.toPx()).roundToInt()) }.size(52.dp).shadow(10.dp, CircleShape).clip(CircleShape).background(c.primary),
                 contentAlignment = Alignment.Center,
             ) { Icon(painterResource(R.drawable.ic_lr), null, Modifier.size(26.dp), tint = c.onPrimary) }
+        }
+        // «Рендер…» over the before/after picture while the file for «Сохранить» / «Поделиться» is written - before it the
+        // screen only greyed out and nothing said that work was going on (the owner, chat 2026-10-15 ≈ 11:38 +03:00:
+        // «нужно крутить спиннер "Рендер"…» · «или не в виджене крутить, а поверх канваса результата До-После»).
+        if (vm.saving) {
+            Column(
+                // Opaque: at 90 % the pink knob and the line of the divider showed through the card (Titan 11:43).
+                Modifier.align(Alignment.Center).shadow(10.dp, MaterialTheme.shapes.extraLarge).clip(MaterialTheme.shapes.extraLarge)
+                    .background(c.surfaceContainerLow).padding(horizontal = 28.dp, vertical = 22.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                CalmSpinner(Modifier.size(48.dp), strokeWidth = 5.dp)
+                Text(stringResource(R.string.rendering), style = MaterialTheme.typography.titleSmall, color = c.onBackground)
+            }
         }
         // Top bar and the two tags.
         Column(Modifier.fillMaxWidth().statusBarsPadding().padding(horizontal = 20.dp, vertical = 8.dp)) {
@@ -247,6 +279,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
             // bottom 8 dp, was 28 (the owner, chat 2026-10-14 ≈ 21:01 +03:00: «виджет сводки чуть ниже сместить»).
             Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(start = 12.dp, end = 12.dp, bottom = 8.dp)
                 .offset { IntOffset(panelShift.roundToInt(), 0) }.onSizeChanged { panelH = it.height.toFloat() }
+                .onGloballyPositioned { panelTop = it.positionInParent().y }
                 .draggable(panelDrag, Orientation.Horizontal, onDragStarted = stopSettle, onDragStopped = { v ->
                     settle(show = panelShift < screenW * PANEL_HIDE_AT && v < PANEL_FLING)
                 })

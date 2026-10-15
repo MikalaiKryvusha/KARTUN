@@ -299,6 +299,13 @@ NOTIF = {
            "الإشعارات متوقفة", "رُفض إذن الإشعارات سابقًا، ولم يعد بإمكان KARTUN طلبه بنفسه. فعّل الإشعارات يدويًا في إعدادات Android الخاصة بـ KARTUN.", "فتح الإعدادات"],
 }
 
+# The spinner over the before/after picture while the file for «Save» / «Share» is rendered (the owner, chat 2026-10-15
+# ≈ 11:38 +03:00: «нужно крутить спиннер "Рендер" пока фото рендерится для Сожранения или Поделиться»).
+RENDERING = {
+    "es": "Renderizando…", "pt": "Renderizando…", "fr": "Rendu…", "de": "Wird gerendert…",
+    "zh": "正在渲染…", "hi": "रेंडर हो रहा है…", "bn": "রেন্ডার হচ্ছে…", "ar": "جارٍ التصيير…",
+}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -335,6 +342,7 @@ def main():
         assert len(ABOUT[lang]) == len(ABOUT_KEYS), (lang, "about")
         for k, v in zip(ABOUT_KEYS, ABOUT[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
+        lines.append(f'    <string name="rendering">{xml_text(RENDERING[lang])}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         body = "\n".join(lines)

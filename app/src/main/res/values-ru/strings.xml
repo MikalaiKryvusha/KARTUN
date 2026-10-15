@@ -80,6 +80,7 @@
     <string name="saved">Сохранено в Pictures/KARTUN</string>
     <string name="save_failed">Не удалось сохранить фото.</string>
     <string name="saving">Сохраняем…</string>
+    <string name="rendering">Рендер…</string>
     <string name="webp_too_big">WebP — до 16 383 px по стороне, для этого результата выберите PNG или JPEG</string>
     <!-- [AI] «Вставить ссылку» (LinkDownloader). -->
     <string name="link_title">Ссылка на фото</string>
