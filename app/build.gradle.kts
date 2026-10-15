@@ -5,6 +5,9 @@ plugins {
 }
 
 android {
+    // The engine's NDK (engine/build.gradle.kts): AGP strips the native libraries with it - without it the default NDK is
+    // looked up, is not installed here, and libkartun_engine.so shipped with its debug symbols («Unable to strip»).
+    ndkVersion = "29.0.14206865"
     namespace = "com.kriniks.kartun"
     compileSdk = 37
 

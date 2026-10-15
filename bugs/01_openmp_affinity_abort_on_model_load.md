@@ -111,3 +111,11 @@ SIGSEGV control crash and the engine's witness line.
 ## Decisions made without the owner
 
 (filled at closing)
+
+## Note 2026-10-16 01:05 +03:00 — the engine is stripped from now on
+
+Since the app module names NDK 29 (commit after `e87c12a`), AGP strips `libkartun_engine.so` in debug and release (16.3 →
+9.9 MB). A tombstone pulled after the next crash will show offsets without `__kmp_*` names: symbolize on the PC with
+`ndk-stack -sym <unstripped dir> -dump <tombstone or _native.txt>` — the unstripped copy of each build stays in
+`app/build/intermediates/merged_native_libs/<variant>/…/arm64-v8a/` (same BuildId as on the device).
+
