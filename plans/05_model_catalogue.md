@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-14 (agent, autonomous window 21:56–22:26; the owner's orders in chat)
 > **Родитель:** `plans/03_epic01_F2_screens.md` step 22 («В экране выбора всех моделей нужно картинку показывать превью по каждой модели» · «моделей нужно сильно больше добавить») and step 40 (ToU); `MASTER_PLAN.md` phase 4 («каталог моделей со скачиванием на устройство») and the decision-log row 2026-10-14 ≈ 22:04 (variant B); interview #002 (licence badges as Upscayl shows them)
-> **Статус:** 📝 planned 2026-10-14 22:12 +03:00 — step 1 (UltraSharp on our engine) already proved on the Titan
+> **Статус:** 🔧 2026-10-15 14:17 +03:00 — step 0 done (`researches/07_best_models_recon.md`); 12 models in the catalogue, 7 converted by `tools/convert-model.py`; the owner's APK pick NomosWebPhoto RealPLKSR + NMKD Siax (journal 14:12–14:14); none of the new ones run on the Titan yet
 > **Вовне:** the owner — which non-commercial models without ready ncnn files to take (UltraMix, Remacri); the GitHub release `models` is created on the first upload
 
 ## Goal vector
@@ -44,7 +44,7 @@ licence text beside it; the non-commercial ones stay there only while KARTUN is 
 
 ## Steps
 
-0. [ ] (owner, chat 2026-10-14 ≈ 22:33 +03:00, after the close) «да, чем больше моделей, тем лучше. Смотрим на ЛУЧШИЕ, которые ОЧЕНЬ хвалят в интернете и на хаггинг фейс» — UltraMix and Remacri are in (own RRDB
+0. [x] (done 2026-10-15 14:17 — `researches/07`; the owner's cuts and picks in the MASTER_PLAN journal 13:57–14:14) (owner, chat 2026-10-14 ≈ 22:33 +03:00, after the close) «да, чем больше моделей, тем лучше. Смотрим на ЛУЧШИЕ, которые ОЧЕНЬ хвалят в интернете и на хаггинг фейс» — UltraMix and Remacri are in (own RRDB
    conversion from `.pth`, served from the release with the NC badge). FIRST a recon doc in `researches/` of the models the
    community rates highest — OpenModelDB ratings, Hugging Face downloads and likes, Reddit/forum praise — with licence,
    architecture (our engine runs ESRGAN/RRDB and SRVGG today; SwinIR/HAT/DAT/SPAN need a check) and a ready-ncnn flag;

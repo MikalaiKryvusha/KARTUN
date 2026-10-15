@@ -30,10 +30,21 @@ passes on no rights beyond each author's licence.
 
 | Model | Author | Licence | Commercial use | Original source |
 |---|---|---|---|---|
+| Real-ESRGAN General v3 | Xintao Wang | BSD 3-Clause | allowed | xinntao/Real-ESRGAN release v0.2.5.0, our conversion (above) |
 | Real-ESRGAN x4plus anime | Xintao Wang | BSD 3-Clause | allowed | xinntao/Real-ESRGAN release v0.2.5.0 |
 | Real-ESRGAN AnimeVideo v3 | Xintao Wang | BSD 3-Clause | allowed | xinntao/Real-ESRGAN release v0.2.5.0 |
 | 4xNomos8kSC | Philip Hofmann (Phhofm) | CC BY 4.0 | allowed, with credit | [Phhofm/models](https://github.com/Phhofm/models) release 4xNomos8kSC, ncnn fp16 files unchanged |
 | 4xHFA2k | Philip Hofmann (Phhofm) | CC BY 4.0 | allowed, with credit | [Phhofm/models](https://github.com/Phhofm/models) release 4xHFA2k, ncnn fp16 files unchanged |
-| 4x-UltraSharp | Kim2091 | CC BY-NC-SA 4.0 | **not allowed** | [huggingface.co/Kim2091/UltraSharp](https://huggingface.co/Kim2091/UltraSharp), `NCNN/` fp16 files unchanged |
+| 4xNomosWebPhoto RealPLKSR | Philip Hofmann (Phhofm) | CC BY 4.0 | allowed, with credit | [Phhofm/models](https://github.com/Phhofm/models) release 4xNomosWebPhoto_RealPLKSR, converted to ncnn fp16 |
+| 4x NMKD Superscale | NMKD | WTFPL | allowed | `4x_NMKD-Superscale-SP_178000_G.pth` ([OpenModelDB](https://openmodeldb.info/models/4x-NMKD-Superscale)), converted to ncnn fp16 |
+| 4x NMKD Siax | NMKD | WTFPL | allowed | `4x_NMKD-Siax_200k.pth` ([OpenModelDB](https://openmodeldb.info/models/4x-NMKD-Siax-CX)), converted to ncnn fp16 |
+| 4x ClearReality V1 | Kim2091 | Apache 2.0 by the author's card; CC BY-NC-SA 4.0 by OpenModelDB | **treated as not allowed** until settled | [huggingface.co/Kim2091/ClearRealityV1](https://huggingface.co/Kim2091/ClearRealityV1), converted to ncnn fp16 |
+| 4x Remacri | FoolhardyVEVO | CC BY-NC-SA 4.0 | **not allowed** | `4x_foolhardy_Remacri.pth` ([OpenModelDB](https://openmodeldb.info/models/4x-Remacri)), converted to ncnn fp16 |
+| 4x UltraMix Balanced | Kim2091 | CC BY-NC-SA 4.0 | **not allowed** | [huggingface.co/Kim2091/UltraSharp](https://huggingface.co/Kim2091/UltraSharp) `Interpolations/`, converted to ncnn fp16 |
+| 4x UltraSharp V2 Lite | Kim2091 | CC BY-NC-SA 4.0 | **not allowed** | [huggingface.co/Kim2091/UltraSharpV2](https://huggingface.co/Kim2091/UltraSharpV2), converted to ncnn fp16 |
 
-CC BY 4.0: https://creativecommons.org/licenses/by/4.0/ · CC BY-NC-SA 4.0: https://creativecommons.org/licenses/by-nc-sa/4.0/
+Original files, their SHA-256 and the conversion check: `researches/07_best_models_recon.md` §2–§3; the converter is
+`tools/convert-model.py`.
+
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/ · CC BY-NC-SA 4.0: https://creativecommons.org/licenses/by-nc-sa/4.0/ ·
+Apache 2.0: https://www.apache.org/licenses/LICENSE-2.0 · WTFPL: http://www.wtfpl.net/

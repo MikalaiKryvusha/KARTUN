@@ -118,29 +118,6 @@
       "preview": "model-previews/4xHFA2k_fp16.webp"
     },
     {
-      "id": "4x-UltraSharp-fp16",
-      "name": "4x-UltraSharp",
-      "author": "Kim2091",
-      "licence": "CC-BY-NC-SA-4.0",
-      "commercial": false,
-      "source": "huggingface.co/Kim2091/UltraSharp, NCNN/4x-UltraSharp-fp16.param and .bin (the author's own ncnn files, unchanged)",
-      "purpose": "photos, crisp detail",
-      "files": [
-        {
-          "name": "4x-UltraSharp-fp16.param",
-          "sha256": "0332002123306541c803cd675280eee7f9cdd96f0804a47129f86ebbf9ed4174",
-          "bytes": 165579
-        },
-        {
-          "name": "4x-UltraSharp-fp16.bin",
-          "sha256": "713ce69a8642b1907cc24da7573560dcc933faf0c74e48ab0b3b379245618701",
-          "bytes": 33424520
-        }
-      ],
-      "published": false,
-      "preview": "model-previews/4x-UltraSharp-fp16.webp"
-    },
-    {
       "id": "4x-NMKD-Superscale-fp16",
       "name": "4x NMKD Superscale",
       "author": "NMKD (Nmkd)",
