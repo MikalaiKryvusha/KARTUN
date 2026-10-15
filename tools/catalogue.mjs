@@ -11,7 +11,7 @@ import { join } from 'node:path';
 const SRC = join('docs', 'model-catalogue.json');
 const OUT_DIR = join('app', 'src', 'main', 'assets');
 const OUT = join(OUT_DIR, 'catalogue.json');
-const LICENCES = new Set(['BSD-3-Clause', 'CC-BY-4.0', 'CC-BY-NC-SA-4.0', 'MIT']);
+const LICENCES = new Set(['Apache-2.0', 'BSD-3-Clause', 'CC-BY-4.0', 'CC-BY-NC-SA-4.0', 'MIT', 'WTFPL']);
 
 const src = JSON.parse(readFileSync(SRC, 'utf8'));
 let bad = 0;

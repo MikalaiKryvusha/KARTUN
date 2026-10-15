@@ -3,6 +3,29 @@
   "release": "https://github.com/MikalaiKryvusha/KARTUN/releases/download/models/",
   "models": [
     {
+      "id": "realesr-general-x4v3",
+      "name": "Real-ESRGAN General v3",
+      "author": "Xintao Wang",
+      "licence": "BSD-3-Clause",
+      "commercial": true,
+      "source": "xinntao/Real-ESRGAN release v0.2.5.0, realesr-general-x4v3.pth (sha256 8dc7edb9ac80ccdc30c3a5dca6616509367f05fbc184ad95b731f05bece96292), converted to ncnn by tools/convert-model.py (docs/model-licenses.md); leaves the APK for the catalogue by the owner's word 2026-10-15 14:03",
+      "purpose": "photos, fast",
+      "files": [
+        {
+          "name": "realesr-general-x4v3.param",
+          "sha256": "2bf1ccee1c8b86ef4cbb23957ac4f4a0f6fbb1fca6bcc20b39caf3d7e28becfb",
+          "bytes": 6400
+        },
+        {
+          "name": "realesr-general-x4v3.bin",
+          "sha256": "8fdd6052f8931091164a570ee7b5c5b2d1dcd991112d464eb9ae1a5b52ece553",
+          "bytes": 2435272
+        }
+      ],
+      "published": false,
+      "preview": "model-previews/realesr-general-x4v3.webp"
+    },
+    {
       "id": "realesrgan-x4plus-anime",
       "name": "Real-ESRGAN x4plus anime",
       "author": "Xintao Wang",
@@ -116,6 +139,167 @@
       ],
       "published": false,
       "preview": "model-previews/4x-UltraSharp-fp16.webp"
+    },
+    {
+      "id": "4x-NMKD-Superscale-fp16",
+      "name": "4x NMKD Superscale",
+      "author": "NMKD (Nmkd)",
+      "licence": "WTFPL",
+      "commercial": true,
+      "source": "OpenModelDB 4x-NMKD-Superscale, 4x_NMKD-Superscale-SP_178000_G.pth (sha256 1d1b0078fe71446e0469d8d4df59e96baa80d83cda600d68237d655830821bcc, mirror huggingface.co/gemasai), converted to ncnn fp16 by tools/convert-model.py from the original weights",
+      "purpose": "photos, clean real-world images",
+      "files": [
+        {
+          "name": "4x-NMKD-Superscale-fp16.param",
+          "sha256": "3203034dfbcb3f1b26b7766598f2c78b809bea4e27c150f93dff66d841c29974",
+          "bytes": 102765
+        },
+        {
+          "name": "4x-NMKD-Superscale-fp16.bin",
+          "sha256": "aee8cf8c5851479fe82a9a66f1bf36d4a6c13382309f7a4170baca8d0ef14c43",
+          "bytes": 33424520
+        }
+      ],
+      "published": false,
+      "preview": "model-previews/4x-NMKD-Superscale-fp16.webp"
+    },
+    {
+      "id": "4x-NMKD-Siax-fp16",
+      "name": "4x NMKD Siax",
+      "author": "NMKD (Nmkd)",
+      "licence": "WTFPL",
+      "commercial": true,
+      "source": "OpenModelDB 4x-NMKD-Siax-CX, 4x_NMKD-Siax_200k.pth (sha256 560424d9f68625713fc47e9e7289a98aabe1d744e1cd6a9ae5a35e9957fd127e, mirror huggingface.co/uwg/upscaler), converted to ncnn fp16 by tools/convert-model.py from the original weights",
+      "purpose": "universal, clean or slightly compressed images",
+      "files": [
+        {
+          "name": "4x-NMKD-Siax-fp16.param",
+          "sha256": "3203034dfbcb3f1b26b7766598f2c78b809bea4e27c150f93dff66d841c29974",
+          "bytes": 102765
+        },
+        {
+          "name": "4x-NMKD-Siax-fp16.bin",
+          "sha256": "01f54cc3b06e13ee49c1ac601f005fffe8cb8d7a1dde98cfa8ef7541b1896f52",
+          "bytes": 33424520
+        }
+      ],
+      "published": false,
+      "preview": "model-previews/4x-NMKD-Siax-fp16.webp"
+    },
+    {
+      "id": "4xNomosWebPhoto-RealPLKSR-fp16",
+      "name": "4xNomosWebPhoto RealPLKSR",
+      "author": "Philip Hofmann (Phhofm)",
+      "licence": "CC-BY-4.0",
+      "commercial": true,
+      "source": "github.com/Phhofm/models release 4xNomosWebPhoto_RealPLKSR, 4xNomosWebPhoto_RealPLKSR.pth (sha256 a9db66c9b674c6a5025b6ef3bee71a57c33b8605d8a2de0980470f89002efbbe), converted to ncnn fp16 by tools/convert-model.py from the original weights",
+      "purpose": "web photos, compression and blur",
+      "files": [
+        {
+          "name": "4xNomosWebPhoto-RealPLKSR-fp16.param",
+          "sha256": "ca7f9eda7ff09094d18f5ad1672fddb4a71c29cb0adfe4e083ed29bb42e0cd0a",
+          "bytes": 34273
+        },
+        {
+          "name": "4xNomosWebPhoto-RealPLKSR-fp16.bin",
+          "sha256": "1b8659c1ab6858326f0b3c1cc8f5747cf80052edd71b1d3274a06599dd23366a",
+          "bytes": 14806428
+        }
+      ],
+      "published": false,
+      "preview": "model-previews/4xNomosWebPhoto-RealPLKSR-fp16.webp"
+    },
+    {
+      "id": "4x-ClearRealityV1-fp16",
+      "name": "4x ClearReality V1",
+      "author": "Kim2091",
+      "licence": "Apache-2.0",
+      "commercial": false,
+      "source": "huggingface.co/Kim2091/ClearRealityV1, 4x-ClearRealityV1.pth (sha256 a4cd3a25b00e0be949d4302fc774eb4d7f2ed5f47cdb51551e2d75fa6562e51e), converted to ncnn fp16 by tools/convert-model.py from the original weights; the author's own NCNN files do not load in ncnn 20260526 (dangling blob /Constant_output_0). Licence conflict: the author's HF card says Apache 2.0, OpenModelDB says CC BY-NC-SA 4.0 - kept non-commercial until the owner decides",
+      "purpose": "faces, hair, nature; fast",
+      "files": [
+        {
+          "name": "4x-ClearRealityV1-fp16.param",
+          "sha256": "b3c89c06d35708d1b0fee810de05561b54d52dbcb37204712536c2fc92f04984",
+          "bytes": 6131
+        },
+        {
+          "name": "4x-ClearRealityV1-fp16.bin",
+          "sha256": "7a1d09560c14e3eb110b3751e85c92b09fcca1b00f2b29f4dccdd98c82966bec",
+          "bytes": 854788
+        }
+      ],
+      "published": false,
+      "preview": "model-previews/4x-ClearRealityV1-fp16.webp"
+    },
+    {
+      "id": "4x-Remacri-fp16",
+      "name": "4x Remacri",
+      "author": "FoolhardyVEVO",
+      "licence": "CC-BY-NC-SA-4.0",
+      "commercial": false,
+      "source": "OpenModelDB 4x-Remacri, 4x_foolhardy_Remacri.pth (sha256 e1a73bd89c2da1ae494774746398689048b5a892bd9653e146713f9df8bca86a, huggingface.co/FacehugmanIII), converted to ncnn fp16 by tools/convert-model.py from the original weights",
+      "purpose": "photos, natural detail",
+      "files": [
+        {
+          "name": "4x-Remacri-fp16.param",
+          "sha256": "3203034dfbcb3f1b26b7766598f2c78b809bea4e27c150f93dff66d841c29974",
+          "bytes": 102765
+        },
+        {
+          "name": "4x-Remacri-fp16.bin",
+          "sha256": "92762f8d7ca7e536d4e5df2a00dbca7a31c32e911c00c3f6ce294d858f046b96",
+          "bytes": 33424520
+        }
+      ],
+      "published": false,
+      "preview": "model-previews/4x-Remacri-fp16.webp"
+    },
+    {
+      "id": "4x-UltraMix-Balanced-fp16",
+      "name": "4x UltraMix Balanced",
+      "author": "Kim2091",
+      "licence": "CC-BY-NC-SA-4.0",
+      "commercial": false,
+      "source": "huggingface.co/Kim2091/UltraSharp, Interpolations/4x-UltraMix_Balanced.pth (sha256 e23ca000107aae95ec9b8d7d1bf150f7884f1361cd9d669bdf824d72529f0e26), converted to ncnn fp16 by tools/convert-model.py from the original weights",
+      "purpose": "photos, balanced detail",
+      "files": [
+        {
+          "name": "4x-UltraMix-Balanced-fp16.param",
+          "sha256": "3203034dfbcb3f1b26b7766598f2c78b809bea4e27c150f93dff66d841c29974",
+          "bytes": 102765
+        },
+        {
+          "name": "4x-UltraMix-Balanced-fp16.bin",
+          "sha256": "a4deb5e889a8d63c8d92df6147c25c0d5e0f6487a5dfcf1b23101b2bf551bf9d",
+          "bytes": 33424520
+        }
+      ],
+      "published": false,
+      "preview": "model-previews/4x-UltraMix-Balanced-fp16.webp"
+    },
+    {
+      "id": "4x-UltraSharpV2-Lite-fp16",
+      "name": "4x UltraSharp V2 Lite",
+      "author": "Kim2091",
+      "licence": "CC-BY-NC-SA-4.0",
+      "commercial": false,
+      "source": "huggingface.co/Kim2091/UltraSharpV2, 4x-UltraSharpV2_Lite.safetensors (sha256 7a330ef6b7c632477d311ac03499c91c350e35c5986d4a6c295f0628cb871a09), converted to ncnn fp16 by tools/convert-model.py from the original weights",
+      "purpose": "photos, art and anime",
+      "files": [
+        {
+          "name": "4x-UltraSharpV2-Lite-fp16.param",
+          "sha256": "d7dd24a04aa575d3a63f91ffb9acfd86f349411d49e204e3fe8576bff7700dd3",
+          "bytes": 37913
+        },
+        {
+          "name": "4x-UltraSharpV2-Lite-fp16.bin",
+          "sha256": "1e18f3bbf7eaf5be23288864089dfcc397e443b7fdba8c810591eed3d5b5a583",
+          "bytes": 14806428
+        }
+      ],
+      "published": false,
+      "preview": "model-previews/4x-UltraSharpV2-Lite-fp16.webp"
     }
   ]
 }
