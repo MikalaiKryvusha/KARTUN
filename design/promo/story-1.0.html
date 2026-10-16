@@ -1,7 +1,9 @@
 <!doctype html>
 <!-- Instagram story 1080 × 1920 announcing KARTUN 1.0. Shot to PNG by design/promo/shoot-story.mjs.
-     «До» = a 128 px piece of the 256 px sample (Real-ESRGAN input2, BSD-3) stretched pixel by pixel; «После» = the same piece upscaled 4×
-     by KARTUN 1.0 (NomosWebPhoto) on the HEADWOLF Titan 1, 2026-10-16 - a real result, not an effect.
+     Photo: «Tabby cat with blue eyes» (Wikimedia Commons, CC0) - cat_source_cc0.jpg, a 960 px square of the face.
+     «До» = that square at 128 px, stretched pixel by pixel; «После» = the same square at 512 px upscaled 4× (2048 px) by
+     4x UltraSharp V2 (DAT2, KARTUN's ncnn fork) on the PC's RTX through Vulkan, 2026-10-17 - the owner's layout:
+     «слева пиксельное сильно, типа 128» · «а справа улучшение от 512 до x4» · «полосу можно между глазками провести».
      ?lang=en switches the text to English. -->
 <html lang="ru">
 <head>
@@ -9,40 +11,42 @@
 <style>
   @font-face { font-family: Unbounded; src: url(unbounded.ttf); font-weight: 200 900; }
   @font-face { font-family: Manrope; src: url(manrope.ttf); font-weight: 200 800; }
-  :root { --bg: #0D0D0D; --pink: #FF1A8C; --text: #F5F5F7; --muted: #9A9AA2; }
+  :root { --bg: #0D0D0D; --pink: #FF1A8C; --text: #F5F5F7; --muted: #9A9AA2; --split: 47%; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 1080px; height: 1920px; background: var(--bg); overflow: hidden; }
   body {
     font-family: Manrope, sans-serif; color: var(--text);
     display: flex; flex-direction: column; align-items: center;
     /* a soft pink glow behind the photo - the only decoration */
-    background: radial-gradient(900px 700px at 50% 52%, rgba(255, 26, 140, 0.16), transparent 70%), var(--bg);
+    background: radial-gradient(900px 700px at 50% 50%, rgba(255, 26, 140, 0.16), transparent 70%), var(--bg);
   }
-  .top { margin-top: 200px; display: flex; flex-direction: column; align-items: center; }
-  .heart { width: 150px; height: 140px; filter: drop-shadow(0 0 30px rgba(255, 26, 140, 0.45)); }
-  .title { margin-top: 34px; font-family: Unbounded; font-weight: 800; font-size: 112px; letter-spacing: 2px; line-height: 1; }
+  .top { margin-top: 150px; display: flex; flex-direction: column; align-items: center; }
+  .heart { width: 128px; height: 120px; filter: drop-shadow(0 0 30px rgba(255, 26, 140, 0.45)); }
+  .title { margin-top: 28px; font-family: Unbounded; font-weight: 800; font-size: 112px; letter-spacing: 2px; line-height: 1; }
   .title .k { color: var(--pink); }
   .title .v { font-weight: 300; margin-left: 18px; }
-  .kicker { margin-top: 22px; font-family: Unbounded; font-weight: 500; font-size: 28px; letter-spacing: 9px;
-            color: var(--pink); text-transform: uppercase; }
+  /* «РЕЛИЗ 🎉» - bigger, with air above and below (the owner: «чуть воздуха сверху и снизу от этого слова, больше его») */
+  .kicker { margin: 44px 0 48px; font-family: Unbounded; font-weight: 600; font-size: 58px; letter-spacing: 12px;
+            color: var(--pink); text-transform: uppercase; line-height: 1; }
+  .kicker .emoji { letter-spacing: 0; margin-left: 4px; }
 
-  .compare { position: relative; margin-top: 64px; width: 860px; height: 860px; border-radius: 56px; overflow: hidden;
+  .compare { position: relative; width: 820px; height: 820px; border-radius: 56px; overflow: hidden;
              box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(255, 255, 255, 0.06); }
   .compare img { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
-  /* the divider at 42 %: the cliff, the most detailed part, crosses it */
-  .compare .after { clip-path: inset(0 0 0 42%); image-rendering: auto; }
-  .line { position: absolute; top: 0; bottom: 0; left: 42%; width: 6px; margin-left: -3px; background: var(--pink); }
-  .knob { position: absolute; left: 42%; top: 50%; width: 92px; height: 92px; margin: -46px 0 0 -46px; border-radius: 50%;
+  /* the divider between the cat's eyes: the left eye is pixels, the right one is UltraSharp */
+  .compare .after { clip-path: inset(0 0 0 var(--split)); image-rendering: auto; }
+  .line { position: absolute; top: 0; bottom: 0; left: var(--split); width: 6px; margin-left: -3px; background: var(--pink); }
+  .knob { position: absolute; left: var(--split); top: 80%; width: 88px; height: 88px; margin: -44px 0 0 -44px; border-radius: 50%;
           background: var(--pink); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45); display: flex; align-items: center; justify-content: center; }
-  .tag { position: absolute; top: 30px; padding: 12px 26px; border-radius: 40px; font-weight: 700; font-size: 30px;
+  .tag { position: absolute; top: 28px; padding: 12px 26px; border-radius: 40px; font-weight: 700; font-size: 30px;
          background: rgba(30, 30, 34, 0.72); color: var(--text); }
-  .tag.l { left: 30px; } .tag.r { right: 30px; }
+  .tag.l { left: 28px; } .tag.r { right: 28px; }
 
-  .lead { margin-top: 64px; width: 860px; text-align: center; font-weight: 600; font-size: 46px; line-height: 1.3; }
-  .chips { margin-top: 36px; display: flex; gap: 16px; }
+  .lead { margin-top: 52px; width: 880px; text-align: center; font-weight: 600; font-size: 44px; line-height: 1.28; }
+  .chips { margin-top: 34px; display: flex; gap: 16px; }
   .chip { padding: 14px 28px; border-radius: 40px; border: 2px solid rgba(255, 255, 255, 0.14); font-weight: 600; font-size: 28px;
           color: var(--muted); }
-  .url { margin-top: 44px; font-weight: 600; font-size: 28px; color: var(--muted); letter-spacing: 0.5px; }
+  .url { margin-top: 38px; font-weight: 600; font-size: 28px; color: var(--muted); letter-spacing: 0.5px; }
   .url b { color: var(--text); font-weight: 700; }
 </style>
 </head>
@@ -50,15 +54,15 @@
   <div class="top">
     <img class="heart" src="heart.svg" alt="">
     <div class="title"><span class="k">K</span>ARTUN<span class="v">1.0</span></div>
-    <div class="kicker" data-ru="Вышел релиз" data-en="Out now">Вышел релиз</div>
+    <div class="kicker"><span data-ru="Релиз" data-en="Release">Релиз</span><span class="emoji">🎉</span></div>
   </div>
 
   <div class="compare">
-    <img src="beach_before.png" alt="">
-    <img class="after" src="beach_after.png" alt="">
+    <img src="cat_before.png" alt="">
+    <img class="after" src="cat_after.png" alt="">
     <div class="line"></div>
     <div class="knob">
-      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 6 L3 12 L9 18"/><path d="M15 6 L21 12 L15 18"/>
       </svg>
     </div>
@@ -66,10 +70,10 @@
     <div class="tag r" data-ru="После" data-en="After">После</div>
   </div>
 
-  <div class="lead" data-ru="Нейросеть делает фото большим и чётким — прямо на телефоне"
-       data-en="A neural network makes your photo big and sharp — right on your phone">Нейросеть делает фото большим и чётким — прямо на телефоне</div>
+  <div class="lead" data-ru="GPU апскейлер фото на локальных нейронных сетях для мобильных Android устройств"
+       data-en="GPU photo upscaler on local neural networks for Android mobile devices">GPU апскейлер фото на локальных нейронных сетях для мобильных Android устройств</div>
   <div class="chips">
-    <div class="chip" data-ru="Без сети" data-en="Offline">Без сети</div>
+    <div class="chip" data-ru="Без интернета" data-en="No internet">Без интернета</div>
     <div class="chip" data-ru="Открытый код" data-en="Open source">Открытый код</div>
     <div class="chip">Android 14+</div>
   </div>
