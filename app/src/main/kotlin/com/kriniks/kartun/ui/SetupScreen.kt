@@ -374,7 +374,10 @@ private fun ModelCard(m: Model, on: Boolean, loading: Boolean, estimate: String,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(m.name, style = MaterialTheme.typography.titleSmall)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(m.name, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f, fill = false))
+                ModelInfoButton(m)
+            }
             Text(stringResource(R.string.model_desc_with_estimate, stringResource(purposeRes(m.purpose)), estimate), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
             LicenceBadge(m)
         }

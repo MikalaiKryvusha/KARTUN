@@ -131,7 +131,10 @@ private fun ModelRow(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(m.name, style = MaterialTheme.typography.titleSmall)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(m.name, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f, fill = false))
+                    ModelInfoButton(m)
+                }
                 Text(stringResource(R.string.model_desc_with_size, stringResource(purposeRes(m.purpose)), sizeMb(m.bytes)),
                     style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
             }
@@ -240,6 +243,26 @@ fun LicenceBadge(m: Model) {
  *  that each purpose has its string). [NOT-TESTED: PurposeTest checks every catalogue purpose maps here] */
 @StringRes
 fun purposeRes(purpose: String): Int = purposeResOrNull(purpose) ?: R.string.model_purpose_photo
+
+/**
+ * The (i) of one model (the owner, 2026-10-16: «Можно кратко в карточке писать и подробнее - в (i) инфо кнопке по модели»):
+ * the window shows `model_info_<id>` (what pictures the model is for, what it gives) and `model_info_<id>_list` (the
+ * details: weak spots, what people say) - texts from researches/11 and researches/12. A model without these strings shows
+ * no button: no placeholder text. [NOT-TESTED]
+ */
+@Composable
+fun ModelInfoButton(m: Model) {
+    val ctx = androidx.compose.ui.platform.LocalContext.current
+    val key = "model_info_" + m.id.lowercase().replace(Regex("[^a-z0-9]"), "_")
+    @android.annotation.SuppressLint("DiscouragedApi")
+    val text = remember(key) { ctx.resources.getIdentifier(key, "string", ctx.packageName) }
+    @android.annotation.SuppressLint("DiscouragedApi")
+    val list = remember(key) { ctx.resources.getIdentifier(key + "_list", "string", ctx.packageName) }
+    if (text == 0) return
+    var open by remember { mutableStateOf(false) }
+    InfoButton { open = true }
+    if (open) InfoDialog(m.name, stringResource(text), if (list != 0) stringResource(list) else "") { open = false }
+}
 
 @StringRes
 fun purposeResOrNull(purpose: String): Int? = when (purpose) {
