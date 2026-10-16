@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-16 (agent, `/plan-epic` rung 3 on the owner's order in chat 2026-10-15: «API для ИИ-агентов по ADB и HTTPS (ideas/02); Сейчас делаем!»)
 > **Родитель:** `plans/06_EPIC_agent_api.md` §3 row «A — кабель», gate: A1–A10 pass on the Titan with a run report; recon `researches/10_agent_api_recon.md`
-> **Статус:** 🔧 written 2026-10-16; step 0 ✅ (catalogue committed `fc6b8d5`); step 1 ✅ partial 2026-10-16 11:55 +03:00 — the door works on the Titan (INFO from a stopped app, screen asleep, no notification, the app reads pushed files), A7 not observed (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`); step 2 ✅ 2026-10-16 12:15 (`UpscaleEngine`); step 3 ✅ 12:18 (`AgentJob` + test); steps 4–6 ✅ 12:24 (the service, file output, strings); step 7 ✅ 12:30 (CLI); next — step 8 (docs/agent-api.md)
+> **Статус:** 🔧 written 2026-10-16; step 0 ✅ (catalogue committed `fc6b8d5`); step 1 ✅ partial 2026-10-16 11:55 +03:00 — the door works on the Titan (INFO from a stopped app, screen asleep, no notification, the app reads pushed files), A7 not observed (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`); step 2 ✅ 2026-10-16 12:15 (`UpscaleEngine`); step 3 ✅ 12:18 (`AgentJob` + test); steps 4–6 ✅ 12:24 (the service, file output, strings); step 7 ✅ 12:30 (CLI); step 8 ✅ 12:34 (docs/agent-api.md); next — step 9 (the A1–A10 run with a case set)
 > **Вовне:** the owner's fork `plans/06` §6.3 (the ADB door in the release build) — until answered, the door is built in `src/main` and moves to `src/debug` on a «только Debug» answer
 
 ## Goal vector
@@ -144,7 +144,8 @@ quota · internal`. The CLI adds its own `no_device · adb_missing · timeout`.
    Header comment: purpose, plan, usage, `[NOT-TESTED]` until step 9 replaces it with `[TESTED: <date> · …]`.
    Exit: `node tools/kartun-cli.mjs --help` prints the usage; A1 and A2 pass on the Titan.
 
-8. [ ] **The API doc** (`plans/06` §4.4; A8). New file `docs/agent-api.md` (English — agents read it): what KARTUN is in
+8. [x] **The API doc** (done 2026-10-16 12:34 +03:00: `docs/agent-api.md`, its raw block and CLI commands run on the Titan;
+   README item 9 EN/RU, voice-checked, waits for the owner's proofreading — `testcases/reports/2026-10-16_epic06_A_step8_api_doc.md`) (`plans/06` §4.4; A8). New file `docs/agent-api.md` (English — agents read it): what KARTUN is in
    two lines; quick start (`info`, `upscale`); the CLI reference; the raw-adb protocol block for agents without Node; the
    status/info JSON fields; states; error codes and exit codes; limits (100 MP in, 500 MP out, scales, WebP side,
    `mediaProcessing` 6 h per 24 h → `quota`); privacy line «the image stays on the device you sent it to; nothing goes

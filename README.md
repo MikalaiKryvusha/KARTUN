@@ -61,6 +61,9 @@ Sections: [1 What it does](#en-1) · [2 Screens](#en-2) · [3 Models and speed](
    language follows the system or is chosen for KARTUN alone.
 8. Works in portrait and landscape; every setting has an (i) button with a short explanation, and the user guide is
    built in.
+9. Takes jobs from AI agents on a PC over adb: `node tools/kartun-cli.mjs upscale photo.jpg` sends the photo to the
+   device and brings the result back, even while KARTUN is closed. The commands and the JSON responses are in
+   [docs/agent-api.md](docs/agent-api.md).
 
 <a name="en-2"></a>
 ### 2. Screens
@@ -243,6 +246,9 @@ Vulkan.
    бенгальском, арабском. Язык берётся из системы или выбирается только для KARTUN.
 8. Работает в портретной и альбомной ориентации; у каждой настройки есть кнопка (i) с коротким пояснением, руководство
    пользователя встроено.
+9. Принимает задания от ИИ-агентов с компьютера по adb: команда `node tools/kartun-cli.mjs upscale photo.jpg` отправляет
+   фото на устройство и возвращает результат на компьютер. KARTUN при этом может быть закрыт. Команды и JSON-ответы
+   описаны в [docs/agent-api.md](docs/agent-api.md).
 
 <a name="ru-2"></a>
 ### 2. Экраны
