@@ -3,6 +3,8 @@ package com.kriniks.kartun.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -82,7 +84,9 @@ fun HomeScreen(onPick: () -> Unit, onSettings: () -> Unit, onPasteLink: () -> Un
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Row(Modifier.weight(1f).padding(bottom = 20.dp), horizontalArrangement = Arrangement.spacedBy(20.dp)) {
                 PickCard(onPick, Modifier.weight(1f).fillMaxHeight())
-                Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                // Scrolls when the cards are taller than a phone's landscape height: fixed to it, the share card squashed its
+                // «Photo → Share → KARTUN» chips to a sliver (RC smoke on the S21 FE, 2026-10-16). [NOT-TESTED]
+                Column(Modifier.weight(1f).fillMaxHeight().verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     if (error != null) Notice(error, onDismissError)
                     SecondaryButton(stringResource(if (downloading) R.string.link_downloading else R.string.home_paste_link), R.drawable.ic_link, onClick = onPasteLink, enabled = !downloading)
                     ShareHint()
@@ -123,9 +127,10 @@ private fun PickCard(onPick: () -> Unit, modifier: Modifier) {
             contentAlignment = Alignment.Center,
         ) { Icon(painterResource(R.drawable.ic_image), null, Modifier.size(44.dp), tint = c.onPrimary) }
         Spacer(Modifier.height(14.dp))
-        Text(stringResource(R.string.home_pick_title), style = MaterialTheme.typography.headlineSmall)
+        // Centred when it wraps (French «Choisissez une photo» hugged the left border - RC smoke on the S21 FE). [NOT-TESTED]
+        Text(stringResource(R.string.home_pick_title), style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
         Spacer(Modifier.height(6.dp))
-        Text(stringResource(R.string.home_pick_sub), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
+        Text(stringResource(R.string.home_pick_sub), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant, textAlign = TextAlign.Center)
     }
 }
 

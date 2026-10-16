@@ -14,6 +14,7 @@ enlargements); opened in the owner's browser]
 Usage (from the project root, conversion venv - needs ncnn, numpy, Pillow):
   .venv-convert/Scripts/python.exe -I tools/compare-models.py <photo> <out_dir> --at <x>,<y> [--input-width 600]
       [--jpeg 80] [--crop 200]
+  --crop 0: the whole shrunk copy, no crop (--at is then ignored).
   --at: the crop centre as fractions of the photo's width and height (0.55,0.22 = right of centre, upper fifth).
   <photo>.credit.txt (UTF-8, optional): the photo's author and licence, printed under the table.
 """
@@ -63,16 +64,47 @@ def run(param, binf, rgb):
     net.opt.num_threads = os.cpu_count() or 4
     if net.load_param(str(param)) != 0 or net.load_model(str(binf)) != 0:
         sys.exit(f"ncnn cannot load {param}")
-    chw = np.ascontiguousarray((rgb.astype(np.float32) / 255.0).transpose(2, 0, 1))
+    def forward(a):
+        chw = np.ascontiguousarray((a.astype(np.float32) / 255.0).transpose(2, 0, 1))
+        ex = net.create_extractor()
+        ex.input("data", ncnn.Mat(chw))
+        rc, out = ex.extract("output")
+        if rc != 0:
+            sys.exit(f"ncnn extract failed for {param}: {rc}")
+        return (np.clip(np.array(out), 0, 1).transpose(1, 2, 0) * 255.0 + 0.5).astype(np.uint8)
+
     t0 = time.perf_counter()
-    ex = net.create_extractor()
-    ex.input("data", ncnn.Mat(chw))
-    rc, out = ex.extract("output")
-    dt = time.perf_counter() - t0
-    if rc != 0:
-        sys.exit(f"ncnn extract failed for {param}: {rc}")
-    img = (np.clip(np.array(out), 0, 1).transpose(1, 2, 0) * 255.0 + 0.5).astype(np.uint8)
-    return img, dt
+    fixed = fixed_input(param)
+    if not fixed:
+        img = forward(rgb)
+    else:
+        # A net traced at one input size (DAT2 - UltraSharp V2: `Input … 0=128`) takes exactly that window: cut the picture
+        # like the app's engine (FIXED_PAD of context each side, reflect at the borders) and keep each window's core. Fed
+        # the whole crop at once it returned noise (the cat test, 2026-10-16 ≈ 20:4x).
+        core = fixed - 2 * FIXED_PAD
+        h, w, _ = rgb.shape
+        ty, tx = (h + core - 1) // core, (w + core - 1) // core
+        padded = np.pad(rgb, ((FIXED_PAD, FIXED_PAD + ty * core - h), (FIXED_PAD, FIXED_PAD + tx * core - w), (0, 0)), mode="reflect")
+        img = np.zeros((ty * core * SCALE, tx * core * SCALE, 3), np.uint8)
+        for y in range(ty):
+            for x in range(tx):
+                o = forward(padded[y * core:y * core + fixed, x * core:x * core + fixed])
+                img[y * core * SCALE:(y + 1) * core * SCALE, x * core * SCALE:(x + 1) * core * SCALE] =                     o[FIXED_PAD * SCALE:(FIXED_PAD + core) * SCALE, FIXED_PAD * SCALE:(FIXED_PAD + core) * SCALE]
+        img = img[:h * SCALE, :w * SCALE]
+    return img, time.perf_counter() - t0
+
+
+FIXED_PAD = 10  # the engine's PREPADDING (kartun_engine.cpp)
+
+
+def fixed_input(param):
+    """`0=<w>` of the .param's Input line when the net was traced at one size (DAT2), else 0."""
+    for line in Path(param).read_text(encoding="utf-8").splitlines():
+        if line.startswith("Input"):
+            for tok in line.split():
+                if tok.startswith("0="):
+                    return int(tok[2:])
+    return 0
 
 
 def mb(nbytes):
@@ -91,18 +123,26 @@ def main():
     buf = io.BytesIO()
     orig.resize((in_w, in_h), Image.LANCZOS).save(buf, "JPEG", quality=q)  # the "messenger" copy
     small = Image.open(io.BytesIO(buf.getvalue())).convert("RGB")
-    cx, cy = round(ax * in_w), round(ay * in_h)
-    x0, y0 = max(0, min(in_w - crop, cx - crop // 2)), max(0, min(in_h - crop, cy - crop // 2))
-    inp = np.asarray(small.crop((x0, y0, x0 + crop, y0 + crop)))
-    side = crop * SCALE
+    # --crop 0: the WHOLE shrunk picture goes to the models, no piece cut out (the owner, 2026-10-16 ≈ 21:2x: «можешь не
+    # кропать, а уменьшать размер найденных картинок» · «так будет честнее»).
+    if crop > 0:
+        cx, cy = round(ax * in_w), round(ay * in_h)
+        x0, y0 = max(0, min(in_w - crop, cx - crop // 2)), max(0, min(in_h - crop, cy - crop // 2))
+        cw = ch = crop
+    else:
+        x0 = y0 = 0
+        cw, ch = in_w, in_h
+    inp = np.asarray(small.crop((x0, y0, x0 + cw, y0 + ch)))
+    sw, sh = cw * SCALE, ch * SCALE
+    side = max(sw, sh)
 
-    # The truth at the output's scale: the same region of the original, resized to side x side.
+    # The truth at the output's scale: the same region of the original, resized to the output size.
     k = ow / in_w
-    truth = orig.crop((round(x0 * k), round(y0 * k), round((x0 + crop) * k), round((y0 + crop) * k))).resize((side, side), Image.LANCZOS)
+    truth = orig.crop((round(x0 * k), round(y0 * k), round((x0 + cw) * k), round((y0 + ch) * k))).resize((sw, sh), Image.LANCZOS)
     rows = [
         ("original", "Оригинал фото", "как было на самом деле, тот же масштаб", truth, None, None, None),
-        ("bicubic", "Без нейросети", "обычное увеличение 4× (бикубическое)", Image.fromarray(inp).resize((side, side), Image.BICUBIC), None, None, None),
-        ("input", "Что получила модель", f"кусок {crop}×{crop} из копии {in_w}×{in_h}, JPEG {q}", Image.fromarray(inp).resize((side, side), Image.NEAREST), None, None, None),
+        ("bicubic", "Без нейросети", "обычное увеличение 4× (бикубическое)", Image.fromarray(inp).resize((sw, sh), Image.BICUBIC), None, None, None),
+        ("input", "Что получила модель", f"{'кусок ' + str(cw) + '×' + str(ch) + ' из копии' if crop > 0 else 'вся копия'} {in_w}×{in_h}, JPEG {q}", Image.fromarray(inp).resize((sw, sh), Image.NEAREST), None, None, None),
     ]
     cat = json.loads(Path("docs/model-catalogue.json").read_text(encoding="utf-8"))["models"]
     built = {m["id"] for m in BUILT_IN}  # a model still in the APK and already in the catalogue is listed once, as in the APK
@@ -147,7 +187,7 @@ img{{display:block;border-radius:6px;width:min({side // 2}px,calc(100vw - 420px)
 .b{{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;white-space:nowrap}} .b+.s{{margin-top:4px}}
 .ok{{background:rgba(61,220,132,.15);color:var(--ok)}} .nc{{background:rgba(255,26,140,.15);color:var(--acc)}}
 </style></head><body><h1>{html.escape(title)}</h1>
-<p>Фото уменьшено до {in_w}×{in_h} и сохранено в JPEG {q} — как из мессенджера. Каждая модель увеличила кусок {crop}×{crop} в 4 раза ({side}×{side}).
+<p>Фото уменьшено до {in_w}×{in_h} и сохранено в JPEG {q} — как из мессенджера. Каждая модель увеличила {"кусок" if crop > 0 else "всю копию"} {cw}×{ch} в 4 раза ({sw}×{sh}).
 Картинка в таблице — в половину размера; нажмите, чтобы открыть в полном. Время — на ПК, только чтобы сравнить модели между собой; скорость на планшете меряется на Титане.</p>
 <table><tr><th>№</th><th>Модель · вес · где · время · лицензия</th><th>Результат</th></tr>
 {''.join(trs)}</table><p style="margin-top:16px">{credit}</p></body></html>"""

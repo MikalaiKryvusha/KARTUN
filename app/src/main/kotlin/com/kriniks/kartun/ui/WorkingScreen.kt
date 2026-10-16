@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -53,6 +54,9 @@ import com.kriniks.kartun.UpscaleViewModel
 import kotlin.math.ceil
 import kotlin.math.min
 
+/** Below this panel width the four metric tiles stand two by two (each needs ~100 dp for «5 мин 40 с»). */
+private val NARROW_PANEL = 440.dp
+
 /** Width of the side panel with the ring in landscape. */
 private val PANEL_WIDTH = 420.dp
 
@@ -82,10 +86,12 @@ internal fun Metric(label: String, value: String, modifier: Modifier) {
     }
 }
 
-/** Smallest sizes a tile's label and value may shrink to before the text is cut. */
+/** Smallest sizes a tile's label and value may shrink to before the text is cut; lowered and the title given a third line
+ *  after the RC smoke on the Redmi (1080 px wide, English): «enhancing your ph…», «≈ 3 min …» were cut (2026-10-16). [NOT-TESTED] */
+private const val TITLE_LINES = 3
 private const val MIN_LABEL_SP = 8f
-private const val MIN_VALUE_SP = 10f
-private const val MIN_TITLE_SP = 11f
+private const val MIN_VALUE_SP = 8f
+private const val MIN_TITLE_SP = 10f
 
 /** One line that shrinks from its style's size down to [minSp] to fit the width; never wraps, never cuts mid-word. */
 @Composable
@@ -210,19 +216,24 @@ fun WorkingScreen(vm: UpscaleViewModel) {
                     // 15 sp: at 17 the wide heading font cut the title even beside the small «Отменить» (Titan 12:37). Two
                     // lines and a shrink to 11 sp: landscape cut it to «Нейросеть улу…» (the owner's screenshot 2026-10-16 17:03).
                     FitText(stringResource(if (waiting) R.string.waiting_title else R.string.working_title),
-                        MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp, color = c.onSurface), MIN_TITLE_SP, maxLines = 2)
+                        MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp, color = c.onSurface), MIN_TITLE_SP, maxLines = TITLE_LINES)
                     if (waiting) Text(stringResource(R.string.waiting_text), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
-                    else Row(
-                        Modifier.clip(CircleShape).background(c.surfaceContainer).padding(horizontal = 12.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(painterResource(R.drawable.ic_cpu), null, Modifier.size(14.dp), tint = c.primary)
-                        Spacer(Modifier.width(6.dp))
-                        Text(stringResource(if (p.gpu) R.string.backend_gpu else R.string.backend_cpu), style = MaterialTheme.typography.labelMedium)
+                    // «Отменить» on the chip's line, under the title - beside the title it squeezed it to «The network is enhancing
+                    // your p…» (the owner, 2026-10-16 ≈ 21:0x: «я просил кнопку Cancel ниже, чтобы она не мешала заголовку» ·
+                    // «вниз её, где чимп GPU Vulcan»). [NOT-TESTED]
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (!waiting) Row(
+                            Modifier.clip(CircleShape).background(c.surfaceContainer).padding(horizontal = 12.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(painterResource(R.drawable.ic_cpu), null, Modifier.size(14.dp), tint = c.primary)
+                            Spacer(Modifier.width(6.dp))
+                            Text(stringResource(if (p.gpu) R.string.backend_gpu else R.string.backend_cpu), style = MaterialTheme.typography.labelMedium, maxLines = 1, softWrap = false)
+                        }
+                        Spacer(Modifier.weight(1f).widthIn(min = 8.dp))
+                        SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancel, height = 36, modifier = Modifier.width(COMPACT_BUTTON))
                     }
                 }
-                Spacer(Modifier.width(12.dp))
-                SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancel, height = 36, modifier = Modifier.width(COMPACT_BUTTON))
             }
             // The counters stand still (the owner, 11:57: «чтобы они не плясали при изменении цифр в них»): tabular figures
             // and the done count padded with figure spaces to the total's width. The pass shows on one-pass scales too
@@ -242,13 +253,15 @@ fun WorkingScreen(vm: UpscaleViewModel) {
             )
             // Portrait: one row of four. Landscape: the panel is PANEL_WIDTH wide, four tiles in a row left ~65 dp of text
             // each («ОСТАЛО», «≈ 4» on the owner's screenshot 2026-10-16 17:03) - two rows of two. [TESTED: 2026-10-16 · Titan landscape - testcases/reports/2026-10-16_fractional_scale_titan.md]
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                metrics.chunked(if (landscape) 2 else 4).forEach { row ->
+            // Phones in portrait are narrow too: four tiles on ~360 dp cut «5 min 4…», «≈ 1 min …» (RC smoke on the A52, S21 FE and
+            // Redmi, 2026-10-16; the owner ≈ 21:0x: «на а52 ужасно выблядит экран с процессом») - two rows of two below NARROW_PANEL. [NOT-TESTED]
+            BoxWithConstraints { val narrow = maxWidth < NARROW_PANEL; Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                metrics.chunked(if (landscape || narrow) 2 else 4).forEach { row ->
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         row.forEach { (label, value) -> Metric(label, value, Modifier.weight(1f)) }
                     }
                 }
-            }
+            } }
             // Small and to the left, as in the accepted mockup C - the main action stays «Отменить».
             if (waiting) SecondaryButton(stringResource(R.string.stop_api_job), null, onClick = vm::stopApiJob, height = 34,
                 modifier = Modifier.width(STOP_API_BUTTON))

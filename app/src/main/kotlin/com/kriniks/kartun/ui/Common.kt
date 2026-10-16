@@ -3,6 +3,10 @@ package com.kriniks.kartun.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -93,14 +97,25 @@ fun PrimaryButton(text: String, icon: Int?, onClick: () -> Unit, modifier: Modif
         modifier.fillMaxWidth().height(height.dp)
             .shadow(if (enabled) 18.dp else 0.dp, CircleShape, ambientColor = pink, spotColor = pink)
             .clip(CircleShape).background(if (enabled) pink else MaterialTheme.colorScheme.surfaceContainerHigh)
-            .clickable(enabled = enabled, onClick = onClick),
+            .clickable(enabled = enabled, onClick = onClick).padding(horizontal = 20.dp),
         horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically,
     ) {
         val fg = if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
         if (icon != null) { Icon(painterResource(icon), null, Modifier.size(22.dp), tint = fg); Spacer(Modifier.width(10.dp)) }
-        Text(text, style = MaterialTheme.typography.labelLarge, color = fg)
+        // One line that shrinks a little instead of wrapping: «Улучшить · ≈ 1 minute 25 / seconds» broke in two on 360 dp
+        // phones with the icon pressed to the edge (RC smoke on the S21 FE, 2026-10-16); the words stay whole (the owner,
+        // 2026-10-14 ≈ 18:58: «минут секунд в кнопке улучшения писать целым слвом»). [NOT-TESTED]
+        val style = MaterialTheme.typography.labelLarge.copy(color = fg)
+        androidx.compose.foundation.text.BasicText(
+            text, style = style, maxLines = 1, softWrap = false,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = BUTTON_MIN_SP.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+        )
     }
 }
+
+/** The smallest size a primary button's label shrinks to before it is cut. */
+private const val BUTTON_MIN_SP = 11f
 
 /** Width of a small «Отменить» that must not stretch its card (the render card, the processing panel B1): 104 dp after the
  *  owner's «Кнопку отменить меньше, ниже» · «чтобы высвободить место для заголовка» (chat 2026-10-15 ≈ 12:35 +03:00). */
@@ -215,7 +230,43 @@ fun Notice(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, suc
     )
 }
 
-/** "3840 × 5120"; numbers from 10 000 get a thin space as the mockups show ("7 680 × 10 240"). */
+/**
+ * «960 × 1280 → 3840 × 5120» on one line when it fits; when it does not, three centred lines - the source size, a pink
+ * arrow down, the result size - instead of a break inside a size (the owner, 2026-10-16 ≈ 20:4x: «если разрешение
+ * приходится перенести на вторую строку - то переноси на третью, а на товрой пусть будет розовая стрелочка по центру
+ * вниз»). The one place every screen shows a size change. [NOT-TESTED]
+ */
+@Composable
+fun SizeChange(from: String, to: String, style: TextStyle, color: Color, modifier: Modifier = Modifier) {
+    val line = boldDigits(stringResource(R.string.size_to, ltr(from), ltr(to)))
+    val measurer = rememberTextMeasurer()
+    BoxWithConstraints(modifier) {
+        val oneLine = measurer.measure(line, style, maxLines = 1, softWrap = false).size.width
+        if (oneLine <= constraints.maxWidth) {
+            Text(line, style = style, color = color, maxLines = 1, softWrap = false)
+        } else {
+            Column(Modifier.width(IntrinsicSize.Max), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(boldDigits(from), style = style, color = color, maxLines = 1, softWrap = false)
+                Text("↓", style = style.copy(fontWeight = FontWeight.ExtraBold), color = MaterialTheme.colorScheme.primary)
+                Text(boldDigits(to), style = style, color = color, maxLines = 1, softWrap = false)
+            }
+        }
+    }
+}
+
+/**
+ * A left-to-right run (a size, a file name, a version) kept whole inside right-to-left text: Unicode «left-to-right isolate»
+ * (U+2066 … U+2069). In Arabic «3840 × 5120» showed as «5120 × 3840», «IMG_1.jpg» as «jpg.IMG_1», «16 (API 36)» as
+ * «(API 36) 16» (RC smoke on the Titan, 2026-10-16); in left-to-right languages the marks change nothing. [NOT-TESTED]
+ */
+fun ltr(s: String): String = "$LTR_ISOLATE$s$POP_ISOLATE"
+
+/** The isolate marks by code point, not as literals (lint's BidiSpoofing rightly flags raw bidi controls in source). */
+private val LTR_ISOLATE = Char(0x2066)
+private val POP_ISOLATE = Char(0x2069)
+
+/** "3840 × 5120"; numbers from 10 000 get a thin space as the mockups show ("7 680 × 10 240"). Pure format - the screens wrap
+ *  it in [ltr] where they show it (FormatTest guards the format). */
 fun sizeText(w: Int, h: Int): String = "${group(w)} × ${group(h)}"
 
 /**

@@ -1,6 +1,9 @@
 package com.kriniks.kartun.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -20,6 +23,7 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -84,6 +88,7 @@ import kotlinx.coroutines.Job
 import androidx.compose.animation.core.animate
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import android.content.ClipData
 import android.content.Intent
 import com.kriniks.kartun.UpscaleViewModel
 
@@ -128,8 +133,13 @@ fun ResultScreen(vm: UpscaleViewModel) {
     val share: () -> Unit = {
         scope.launch {
             vm.shareUri()?.let { uri ->
+                // ClipData + title: the stock Android 16 share sheet shows the file's name and a preview only from them - with
+                // EXTRA_STREAM alone it said just «Отправка изображения» (RC smoke on the Titan, 2026-10-16). [NOT-TESTED]
+                val name = uri.lastPathSegment.orEmpty()
                 val send = Intent(Intent.ACTION_SEND).setType("image/png").putExtra(Intent.EXTRA_STREAM, uri)
+                    .putExtra(Intent.EXTRA_TITLE, name)
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                send.clipData = ClipData.newUri(ctx.contentResolver, name, uri)
                 ctx.startActivity(Intent.createChooser(send, shareTitle))
             }
         }
@@ -282,13 +292,15 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 // «непонятно зачем две кнопки поделиться на результате»).
                 RoundIconButton(R.drawable.ic_back, onClick = vm::back, translucent = true)
             }
-            Row(Modifier.fillMaxWidth().padding(top = 16.dp)) {
+            // The picture is not mirrored in right-to-left languages (the «before» stays left of the divider), so its tags
+            // keep the same sides: in Arabic «بعد» stood over the original (RC smoke on the S21 FE, 2026-10-16). [NOT-TESTED]
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) { Row(Modifier.fillMaxWidth().padding(top = 16.dp)) {
                 // Both tags quiet and see-through (the owner, chat 2026-10-14 ≈ 20:58 +03:00: «до после можно не ярко, а
                 // полупрозрачно» · «после сейчас слишком кричащее»); the pink stays on the divider and the buttons.
                 Pill(stringResource(R.string.before), translucent = true)
                 Spacer(Modifier.weight(1f))
                 Pill(stringResource(R.string.after), translucent = true)
-            }
+            } }
         }
         // Result panel (.result-panel).
         Column(
@@ -311,11 +323,12 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 // +03:00: «что виджет сводки можно смахнуть - никто не догадается, ему нужен или драг хендл или кнопочка-стрелочка»).
                 RoundIconButton(R.drawable.ic_back, onClick = { settle(show = false) }, modifier = Modifier.rotate(180f))
             }
-            Row(Modifier.fillMaxWidth()) {
-                Text(boldDigits(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(res.full.width, res.full.height))), Modifier.weight(1f),
-                    style = MaterialTheme.typography.bodyMedium, color = c.onBackground)
+            // The sizes never break inside («960 × 1280 → / 3840 × 5120» on a phone - the owner, 2026-10-16 ≈ 20:4x: «Чинить»):
+            // each text stays whole on its line, and when both do not fit side by side the time moves under the sizes. [NOT-TESTED]
+            FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                SizeChange(sizeText(src.width, src.height), sizeText(res.full.width, res.full.height), MaterialTheme.typography.bodyMedium, c.onBackground)
                 Text(stringResource(R.string.result_time, durationText(res.ms), stringResource(if (res.gpu) R.string.backend_gpu else R.string.backend_cpu)),
-                    style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
+                    style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant, softWrap = false, maxLines = 1)
             }
             vm.saveMessage?.let { Notice(stringResource(it), vm::dismissSaveMessage, success = it == R.string.saved) }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {

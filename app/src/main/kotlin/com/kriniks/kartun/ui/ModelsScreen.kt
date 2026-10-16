@@ -82,7 +82,10 @@ fun ModelsScreen(vm: UpscaleViewModel) {
             Spacer(Modifier.size(44.dp))
         }
         Row(
-            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 20.dp),
+            // A fixed gap under the chips: the scrolled cards stopped flush against them (the owner, 2026-10-16 ≈ 20:5x: «когда их
+            // скролишь вверху они прикасаются вплотную к чипсам фильтра - некрасиво»); the list's own top padding shrank by the
+            // same amount, so the unscrolled look is unchanged. [NOT-TESTED]
+            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(start = 20.dp, end = 20.dp, bottom = CHIPS_GAP),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Filter.entries.forEach { f -> Pill(stringResource(f.label), on = f == filter, onClick = { filter = f }) }
@@ -90,7 +93,7 @@ fun ModelsScreen(vm: UpscaleViewModel) {
         vm.modelsMessage?.let { Notice(stringResource(it), onClick = {}, modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 12.dp)) }
         LazyColumn(
             Modifier.fillMaxWidth().widthIn(max = 720.dp),
-            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 40.dp),
+            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 12.dp - CHIPS_GAP, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             items(shown, key = { it.id }) { m ->
@@ -102,6 +105,9 @@ fun ModelsScreen(vm: UpscaleViewModel) {
         }
     }
 }
+
+/** The space kept under the filter chips while the list scrolls. */
+private val CHIPS_GAP = 10.dp
 
 /** The chips of the mockup; «Для коммерческого использования» keeps the models whose licence allows it. */
 private enum class Filter(@param:StringRes val label: Int) {

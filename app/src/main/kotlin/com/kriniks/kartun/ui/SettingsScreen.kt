@@ -31,6 +31,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.Hyphens
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
@@ -153,7 +155,9 @@ internal fun SettingRow(icon: Int, title: String, sub: String, onInfo: (() -> Un
             Icon(painterResource(icon), null, Modifier.size(19.dp), tint = c.primary)
         }
         Column(Modifier.weight(1f)) {
-            Text(title, style = MaterialTheme.typography.labelMedium.copy(fontSize = MaterialTheme.typography.bodyLarge.fontSize))
+            // Hyphenated by syllables when a word is wider than the row: German «GPU-Beschleunigung» broke as «…Beschleuni / gung»
+            // (RC smoke on the S21 FE, 2026-10-16). [NOT-TESTED]
+            Text(title, style = MaterialTheme.typography.labelMedium.copy(fontSize = MaterialTheme.typography.bodyLarge.fontSize, hyphens = Hyphens.Auto, lineBreak = LineBreak.Paragraph))
             Text(sub, style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
         }
         control()

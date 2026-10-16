@@ -197,10 +197,10 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                     ) {
                         Image(src.preview.asImageBitmap(), src.name, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
                         Column(Modifier.weight(1f)) {
-                            Text(src.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            Text(boldDigits(stringResource(R.string.size_to, sizeText(src.width, src.height),
-                                vm.limited?.let { (lw, lh) -> sizeText(lw, lh) } ?: sizeText(src.width * vm.scale, src.height * vm.scale))),
-                                style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
+                            Text(ltr(src.name), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            SizeChange(sizeText(src.width, src.height),
+                                vm.limited?.let { (lw, lh) -> sizeText(lw, lh) } ?: sizeText(src.width * vm.scale, src.height * vm.scale),
+                                MaterialTheme.typography.bodySmall, c.onSurfaceVariant)
                         }
                         Pill(stringResource(R.string.setup_other_short), outlined = true, onClick = onPickOther)
                     }
@@ -276,7 +276,7 @@ private fun PhotoCard(src: UpscaleViewModel.Source, onOpen: () -> Unit, onPickOt
             Modifier.fillMaxSize().graphicsLayer { scaleX = zoom; scaleY = zoom; translationX = pan.x; translationY = pan.y },
             contentScale = ContentScale.Crop,
         )
-        Pill("${sizeText(src.width, src.height)} · ${stringResource(R.string.megapixels, mpText(src.megapixels))}",
+        Pill("${ltr(sizeText(src.width, src.height))} · ${stringResource(R.string.megapixels, mpText(src.megapixels))}",
             Modifier.align(Alignment.BottomStart).padding(12.dp), translucent = true, heavyDigits = true)
         Row(
             Modifier.align(Alignment.BottomEnd).padding(12.dp).clip(CircleShape).background(c.background.copy(alpha = 0.72f))
@@ -375,6 +375,9 @@ private fun ModelCard(m: Model, on: Boolean, loading: Boolean, estimate: String,
             .border(2.dp, if (on) c.primary else c.surfaceContainer, shape)
             .clickable(onClick = onClick).padding(14.dp),
         verticalAlignment = Alignment.CenterVertically,
+        // A gap between the text and the tick: the German description «… ≈ 1 Minute 5 Sekunden» ran into it (RC smoke on
+        // the Titan, 2026-10-16). [NOT-TESTED]
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -436,7 +439,7 @@ private fun ScaleSlider(vm: UpscaleViewModel) {
         val w = limited?.first ?: (src.width * vm.scale)
         val h = limited?.second ?: (src.height * vm.scale)
         Row(Modifier.fillMaxWidth().padding(top = 12.dp)) {
-            Text(boldDigits(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(w, h))), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = c.onBackground)
+            SizeChange(sizeText(src.width, src.height), sizeText(w, h), MaterialTheme.typography.bodyMedium, c.onBackground, Modifier.weight(1f))
             Text(stringResource(R.string.megapixels, mpText(w.toFloat() * h / 1_000_000f)), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
         }
         // 8× and 16× run two passes (plans/04 step 1): the mockup's amber «2 прохода · дольше · большой файл»; a result over
@@ -444,7 +447,7 @@ private fun ScaleSlider(vm: UpscaleViewModel) {
         val notice = when {
             limited != null -> stringResource(R.string.scale_limited, UpscaleViewModel.MAX_OUTPUT_MP.toInt().toString(), vm.scale,
                 String.format(LocalConfiguration.current.locales[0], "%.1f", UpscaleViewModel.limitedFactor(src.width, limited.first)),
-                sizeText(limited.first, limited.second))
+                ltr(sizeText(limited.first, limited.second)))
             vm.scale > UpscaleViewModel.ENGINE_SCALE -> stringResource(R.string.scale_two_pass)
             else -> null
         }

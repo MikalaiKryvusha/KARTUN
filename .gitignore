@@ -79,6 +79,27 @@ design/spinner-live*.png
 design/spinner-live*.webp
 design/spinner-live-strip.webp
 design/model-compare/
+design/model-compare-cat/
+design/model-compare-cat256/
+design/model-compare-catblur/
 
 # Claude Code local permissions (machine-specific, never shared)
 .claude/settings.local.json
+design/model-compare-cat_blurry_white/
+design/model-compare-cat_blurry_walk/
+design/model-compare-cat_blurry_toys/
+design/model-compare-msg_woman/
+design/model-compare-msg_grandma/
+design/model-compare-msg_greyhound/
+design/model-compare-msg_tabby/
+design/model-compare-old_parker/
+design/model-compare-old_whinery/
+design/model-compare-old_bride/
+design/model-compare-old_street/
+design/blind-msg/
+design/blind-old/
+design/model-compare-noisy_portrait/
+design/model-compare-noisy_crowd/
+design/model-compare-noisy_notredame/
+design/model-compare-noisy_station/
+design/model-compare-noisy_blind/

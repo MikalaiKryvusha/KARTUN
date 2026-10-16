@@ -96,10 +96,10 @@ fun AboutScreen(onBack: () -> Unit) {
             )
             Text(stringResource(R.string.about_tagline, version), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
             Group(stringResource(R.string.about_device), listOf(
-                stringResource(R.string.about_model) to "${Build.MANUFACTURER} ${Build.MODEL}",
-                "Android" to "${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})",
-                "GPU" to gpuName(gpu),
-                stringResource(R.string.about_engine) to NCNN_VERSION,
+                stringResource(R.string.about_model) to ltr("${Build.MANUFACTURER} ${Build.MODEL}"),
+                "Android" to ltr("${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})"),
+                "GPU" to ltr(gpuName(gpu)),
+                stringResource(R.string.about_engine) to ltr(NCNN_VERSION),
             ))
             LinkGroup(stringResource(R.string.about_project), listOf(stringResource(R.string.about_source) to REPO_URL))
             // The engine first - our fork (the owner, 2026-10-16 ≈ 19:1x: «где движок, пишем MikalaiKryvusha/ncnn - кастомный

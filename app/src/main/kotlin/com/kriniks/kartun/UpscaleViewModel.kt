@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.SystemClock
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.annotation.StringRes
@@ -26,6 +27,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.max
 import kotlin.math.roundToInt
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * The main path of phase 2 (plans/03): pick → set up → upscale with progress → compare. Holds the screen, the picked
@@ -617,10 +621,30 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         /** The starting rate before this device has learned one (the catalogue's, measured on the Titan). */
         fun startRate(m: Model, gpu: Boolean): Float = if (gpu) m.gpuMsPerMp else m.cpuMsPerMp
 
-        private fun displayName(ctx: Context, uri: Uri): String =
-            ctx.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use {
+        /**
+         * The photo's name for the screens and the saved result's file name. The system photo picker hides real file names
+         * on purpose (privacy): it reports `<media id>.jpg` («1000009282.jpg», seen on the Redmi 2026-10-16 for a file named
+         * kartun_smoke_noexif.jpg). A picked photo is therefore named like a camera file by its date taken -
+         * «IMG_20261016_194512.jpg»; files that come by «Share» / «Open with» keep their own names (the owner, 2026-10-16
+         * ≈ 20:4x: «имя файла из галереи приходит номером … Чинить»). [NOT-TESTED]
+         */
+        private fun displayName(ctx: Context, uri: Uri): String {
+            val name = ctx.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use {
                 if (it.moveToFirst()) it.getString(0) else null
             } ?: uri.lastPathSegment.orEmpty()
+            val picked = uri.authority == MediaStore.AUTHORITY && uri.pathSegments.any { it.startsWith("picker") }
+            if (!picked) return name
+            val taken = runCatching {
+                ctx.contentResolver.query(uri, arrayOf(MediaStore.PickerMediaColumns.DATE_TAKEN), null, null, null)?.use {
+                    if (it.moveToFirst() && !it.isNull(0)) it.getLong(0) else null
+                }
+            }.getOrNull() ?: return name
+            val ext = name.substringAfterLast('.', "").takeIf { it.isNotEmpty() }?.let { ".$it" }.orEmpty()
+            return "IMG_" + SimpleDateFormat(CAMERA_NAME_PATTERN, Locale.US).format(Date(taken)) + ext
+        }
+
+        /** The camera's file-name stamp (Android camera apps: IMG_20261016_194512.jpg). */
+        private const val CAMERA_NAME_PATTERN = "yyyyMMdd_HHmmss"
 
         fun fitForDisplay(full: Bitmap): Bitmap {
             val side = max(full.width, full.height)

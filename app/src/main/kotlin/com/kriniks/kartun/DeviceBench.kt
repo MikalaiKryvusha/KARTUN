@@ -34,15 +34,29 @@ object DeviceBench {
     /**
      * The bench's time on the reference device, ms (the catalogue's rates are the Titan's), calibrated 2026-10-16 on TWO
      * devices with real runs of the default model the same evening: per device REF = bench × catalogue rate / real rate,
-     * the constant is their geometric mean, so neither errs by more than ~1.3×.
-     * GPU (128²): Titan bench 830 ms, real photo 960 × 1280 in 74.1 s = 60 300 ms/MP -> 893; Redmi Note 12 Pro+ bench
-     * 4698 ms, real 262 s = 213 216 ms/MP -> 1429; mean 1130.
-     * CPU (32²): Titan bench 582 ms, real 256 × 256 in 40.4 s = 617 000 ms/MP -> 917; Redmi bench 1118 ms (cool), real
-     * 70.0 s = 1 068 206 ms/MP -> 1018; mean 966. A 64² GPU square under-loaded the Titan's six-core Mali (its factor
-     * came out 1.5 on the reference device itself). testcases/reports/2026-10-16_first_launch_bench.md.
+     * the constant is their geometric mean.
+     * GPU (128²): Titan bench 830 ms, real photo 960 × 1280 in 74.1 s = 60 300 ms/MP -> 893; Redmi Note 12 Pro+ COOL bench
+     * 2628 / 2682 / 2750 ms (RC smoke), real 262 s = 213 216 ms/MP -> 821; mean 856. (A hot Redmi gave 4698 ms - the
+     * first constant 1130 was taken from it.) Out of sample: S21 FE bench 1163 -> estimate 1.13 of real, A52 4439 -> 1.04.
+     * CPU (32²): Titan bench 582 ms, real 256 × 256 in 40.4 s = 617 000 ms/MP -> 917; Redmi bench 1118 ms, real 70.0 s =
+     * 1 068 206 ms/MP -> 1018; mean 966. testcases/reports/2026-10-16_first_launch_bench.md.
      */
-    private const val REF_GPU_MS = 1130f
+    private const val REF_GPU_MS = 856f
     private const val REF_CPU_MS = 966f
+
+    /**
+     * The ESRGAN family slows down more than the default model on weak GPUs (Siax on the Redmi: 0.64 of the real time with
+     * one shared factor - the owner, 2026-10-16 ≈ 20:4x: «Чинить наш эстиматор и бенч»). Two short GPU passes of [PROBE_SIDE]²
+     * - the default model and Siax (both inside the APK) - give this device's ratio; its quotient by the reference
+     * device's [REF_ESRGAN_RATIO] corrects every esrgan-family rate.
+     */
+    private const val ESRGAN_PROBE = "4x-NMKD-Siax-fp16"
+    private const val PROBE_SIDE = 64
+    /** Siax / default model at [PROBE_SIDE]² on the reference device (Titan, 2026-10-16: 2.03 and 1.69 over two first
+     *  launches - mean 1.85). The Redmi gave 2.41 / 2.59 -> its correction ×1.35. */
+    private const val REF_ESRGAN_RATIO = 1.85f
+    private const val MIN_CORRECTION = 0.5f
+    private const val MAX_CORRECTION = 3f
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(UpscaleEngine.PREFS, Context.MODE_PRIVATE)
 
@@ -62,16 +76,29 @@ object DeviceBench {
     suspend fun run(ctx: Context, cancelled: () -> Boolean): Boolean = withContext(UpscaleEngine.dispatcher) {
         val catalogue = ModelCatalog.load(ctx)
         val (param, bin) = ModelStore.files(ctx, catalogue.default)
-        val gpuMs = time(param, bin, gpu = true, side = GPU_SIDE, cancelled)
+        // One load of the default model on the GPU serves both its passes: the main square and the probe's short one.
+        val gpuTimes = time(param, bin, gpu = true, sides = listOf(GPU_SIDE, PROBE_SIDE), cancelled)
+        val gpuMs = gpuTimes?.get(0)
         if (cancelled()) return@withContext false
-        val cpuMs = time(param, bin, gpu = false, side = CPU_SIDE, cancelled)
+        // The family probe: both models' short passes on the GPU, measured back to back (same heat, same clocks).
+        val probe = catalogue.byId(ESRGAN_PROBE)
+        val esrganCorrection = if (gpuTimes == null || probe == null) 1f else runCatching {
+            val base = gpuTimes[1]
+            val (pp, pb) = ModelStore.files(ctx, probe)
+            val heavy = time(pp, pb, gpu = true, sides = listOf(PROBE_SIDE), cancelled)?.get(0)
+            if (heavy == null) 1f else ((heavy / base) / REF_ESRGAN_RATIO).coerceIn(MIN_CORRECTION, MAX_CORRECTION)
+                .also { Log.i(TAG, """{"bench_probe":true,"base_ms":$base,"esrgan_ms":$heavy,"ratio":${heavy / base}}""") }
+        }.getOrDefault(1f)
+        if (cancelled()) return@withContext false
+        val cpuMs = time(param, bin, gpu = false, sides = listOf(CPU_SIDE), cancelled)?.get(0)
         if (cancelled()) return@withContext false
         val gpuFactor = gpuMs?.let { it / REF_GPU_MS }
         val cpuFactor = cpuMs?.let { it / REF_CPU_MS }
-        Log.i(TAG, """{"bench":true,"gpu_ms":${gpuMs ?: -1},"cpu_ms":${cpuMs ?: -1},"gpu_factor":${gpuFactor ?: -1},"cpu_factor":${cpuFactor ?: -1}}""")
+        Log.i(TAG, """{"bench":true,"gpu_ms":${gpuMs ?: -1},"cpu_ms":${cpuMs ?: -1},"gpu_factor":${gpuFactor ?: -1},"cpu_factor":${cpuFactor ?: -1},"esrgan_correction":$esrganCorrection}""")
         prefs(ctx).edit {
             for (m in catalogue.models) {
-                gpuFactor?.let { putFloat(UpscaleViewModel.rateKey(m, true), UpscaleViewModel.startRate(m, true) * it) }
+                val family = if (m.family == "esrgan") esrganCorrection else 1f
+                gpuFactor?.let { putFloat(UpscaleViewModel.rateKey(m, true), UpscaleViewModel.startRate(m, true) * it * family) }
                 cpuFactor?.let { putFloat(UpscaleViewModel.rateKey(m, false), UpscaleViewModel.startRate(m, false) * it) }
             }
             putBoolean(KEY_DONE, true)
@@ -79,20 +106,22 @@ object DeviceBench {
         gpuFactor != null || cpuFactor != null
     }
 
-    /** Engine thread only: the best of [RUNS] passes of the net over a [side]² square after a warm-up, ms; null when the
-     *  backend is not there (no Vulkan: the GPU net comes up on the CPU) or a pass failed. */
-    private fun time(param: File, bin: File, gpu: Boolean, side: Int, cancelled: () -> Boolean): Float? {
+    /** Engine thread only: for each of [sides], the best of [RUNS] passes of the net over that square after one warm-up,
+     *  ms; null when the backend is not there (no Vulkan: the GPU net comes up on the CPU) or a pass failed. */
+    private fun time(param: File, bin: File, gpu: Boolean, sides: List<Int>, cancelled: () -> Boolean): List<Float>? {
         val net = NcnnUpscaler.load(param.path, bin.path, useGpu = gpu) ?: return null
         return net.use { u ->
             if (u.usesGpu != gpu || u.timeToBlob(WARMUP_SIDE, WARMUP_SIDE, OUTPUT_BLOB) < 0) return@use null
-            var best = Long.MAX_VALUE
-            repeat(RUNS) {
-                if (cancelled()) return@use null
-                val ms = u.timeToBlob(side, side, OUTPUT_BLOB)
-                if (ms < 0) return@use null
-                best = minOf(best, ms)
+            sides.map { side ->
+                var best = Long.MAX_VALUE
+                repeat(RUNS) {
+                    if (cancelled()) return@use null
+                    val ms = u.timeToBlob(side, side, OUTPUT_BLOB)
+                    if (ms < 0) return@use null
+                    best = minOf(best, ms)
+                }
+                best.coerceAtLeast(1).toFloat()
             }
-            best.coerceAtLeast(1).toFloat()
         }
     }
 }
