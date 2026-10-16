@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.kriniks.kartun"
-        minSdk = 36
+        minSdk = 34
         targetSdk = 37
         versionCode = 1
         versionName = "0.1 (1)"

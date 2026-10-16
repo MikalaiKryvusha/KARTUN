@@ -17,10 +17,10 @@ Open source · Offline · AI on the device</p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-  <a href="https://github.com/Tencent/ncnn"><img src="https://img.shields.io/badge/engine-ncnn_%2B_Vulkan-FF1A8C.svg" alt="engine: ncnn + Vulkan"></a>
+  <a href="https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1"><img src="https://img.shields.io/badge/engine-ncnn_%2B_Vulkan-FF1A8C.svg" alt="engine: ncnn + Vulkan"></a>
   <a href="#en-3"><img src="https://img.shields.io/badge/models-Real--ESRGAN_and_more-6A5ACD.svg" alt="models: Real-ESRGAN and more"></a>
   <a href="#en-3"><img src="https://img.shields.io/badge/DAT2_transformer-on_the_Vulkan_GPU-FF1A8C.svg" alt="DAT2 transformer: on the Vulkan GPU"></a>
-  <a href="#en-5"><img src="https://img.shields.io/badge/platform-Android_16%2B-3DDC84.svg" alt="platform: Android 16+"></a>
+  <a href="#en-5"><img src="https://img.shields.io/badge/platform-Android_14%2B-3DDC84.svg" alt="platform: Android 14+"></a>
   <a href="#en-1"><img src="https://img.shields.io/badge/languages-10-0EA5E9.svg" alt="languages: 10"></a>
   <a href="#en-8"><img src="https://img.shields.io/badge/status-early_development-orange.svg" alt="status: early development"></a>
   <a href="https://github.com/MikalaiKryvusha/KAIF"><img src="https://img.shields.io/badge/framework-KAIF-7F52FF.svg" alt="framework: KAIF"></a>
@@ -104,8 +104,8 @@ photo enlarged 8× by ClearReality V1 takes 25 s.
 
 KARTUN also runs a transformer: 4x UltraSharp V2 by Kim2091, a DAT2 network, works entirely on the graphics chip through
 Vulkan. Its output differs from the original PyTorch network by 66.6 dB PSNR; the 960 × 1280 photo takes about 29
-minutes. On the way we found an out-of-bounds read in an ncnn attention shader and sent the fix upstream
-([Tencent/ncnn#7121](https://github.com/Tencent/ncnn/pull/7121)).
+minutes. On the way we found an out-of-bounds read in an ncnn attention shader; the fix lives in KARTUN's engine,
+[MikalaiKryvusha/ncnn](https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1) — a custom modified and improved fork of ncnn.
 
 <a name="en-4"></a>
 ### 4. Privacy
@@ -136,7 +136,7 @@ NDK `29.0.14206865` and CMake `3.31.6`, Node.js and Python 3.
 ```powershell
 git clone https://github.com/MikalaiKryvusha/KARTUN.git
 cd KARTUN
-node tools/fetch-ncnn.mjs                     # ncnn 20260526 for Android with Vulkan, hash-checked
+node tools/build-ncnn.mjs                     # the engine: our ncnn fork 20260526-kartun.1, built from source
 ```
 
 Put the two models in place (sources and hashes: [docs/model-licenses.md](docs/model-licenses.md)):
@@ -177,7 +177,8 @@ downloadable models and preview pictures, writing very large results in strips, 
 1. [Upscayl](https://github.com/upscayl/upscayl) — the desktop app whose simplicity KARTUN follows. No Upscayl code is
    used: KARTUN's engine is written from scratch.
 2. [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) by Xintao Wang — the models (BSD-3).
-3. [ncnn](https://github.com/Tencent/ncnn) by Tencent — the neural network engine (BSD-3).
+3. [MikalaiKryvusha/ncnn](https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1) — the neural network engine, a custom modified and improved fork of
+   [ncnn](https://github.com/Tencent/ncnn) by Tencent (BSD-3).
 4. [Unbounded](https://fonts.google.com/specimen/Unbounded) and [Manrope](https://fonts.google.com/specimen/Manrope) —
    the fonts (SIL Open Font License 1.1).
 5. KARTUN is licensed under MIT ([LICENSE](LICENSE)); everything it ships is listed in
@@ -201,10 +202,10 @@ Author: Mikalai Kryvusha (Krinik).
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F-MIT-yellow.svg" alt="лицензия: MIT"></a>
-  <a href="https://github.com/Tencent/ncnn"><img src="https://img.shields.io/badge/%D0%B4%D0%B2%D0%B8%D0%B6%D0%BE%D0%BA-ncnn_%2B_Vulkan-FF1A8C.svg" alt="движок: ncnn + Vulkan"></a>
+  <a href="https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1"><img src="https://img.shields.io/badge/%D0%B4%D0%B2%D0%B8%D0%B6%D0%BE%D0%BA-ncnn_%2B_Vulkan-FF1A8C.svg" alt="движок: ncnn + Vulkan"></a>
   <a href="#ru-3"><img src="https://img.shields.io/badge/%D0%BC%D0%BE%D0%B4%D0%B5%D0%BB%D0%B8-Real--ESRGAN_%D0%B8_%D0%B4%D1%80%D1%83%D0%B3%D0%B8%D0%B5-6A5ACD.svg" alt="модели: Real-ESRGAN и другие"></a>
   <a href="#ru-3"><img src="https://img.shields.io/badge/%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%84%D0%BE%D1%80%D0%BC%D0%B5%D1%80_DAT2-%D0%BD%D0%B0_%D0%B2%D0%B8%D0%B4%D0%B5%D0%BE%D1%87%D0%B8%D0%BF%D0%B5_%28Vulkan%29-FF1A8C.svg" alt="трансформер DAT2: на видеочипе (Vulkan)"></a>
-  <a href="#ru-5"><img src="https://img.shields.io/badge/%D0%BF%D0%BB%D0%B0%D1%82%D1%84%D0%BE%D1%80%D0%BC%D0%B0-Android_16%2B-3DDC84.svg" alt="платформа: Android 16+"></a>
+  <a href="#ru-5"><img src="https://img.shields.io/badge/%D0%BF%D0%BB%D0%B0%D1%82%D1%84%D0%BE%D1%80%D0%BC%D0%B0-Android_14%2B-3DDC84.svg" alt="платформа: Android 14+"></a>
   <a href="#ru-1"><img src="https://img.shields.io/badge/%D1%8F%D0%B7%D1%8B%D0%BA%D0%B8-10-0EA5E9.svg" alt="языки: 10"></a>
   <a href="#ru-8"><img src="https://img.shields.io/badge/%D1%81%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D0%B5-%D1%80%D0%B0%D0%BD%D0%BD%D1%8F%D1%8F_%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-orange.svg" alt="состояние: ранняя разработка"></a>
   <a href="https://github.com/MikalaiKryvusha/KAIF"><img src="https://img.shields.io/badge/%D1%84%D1%80%D0%B5%D0%B9%D0%BC%D0%B2%D0%BE%D1%80%D0%BA-KAIF-7F52FF.svg" alt="фреймворк: KAIF"></a>
@@ -289,8 +290,8 @@ SHA-256 каждого файла перед работой. Модели при
 
 KARTUN запускает и трансформер: 4x UltraSharp V2 автора Kim2091, сеть DAT2, целиком работает на видеочипе через Vulkan.
 Её результат отличается от оригинальной нейросети PyTorch на 66,6 дБ PSNR; фото 960 × 1280 считается около 29 минут.
-По дороге мы нашли в шейдере внимания ncnn чтение за краем буфера и отправили исправление в ncnn
-([Tencent/ncnn#7121](https://github.com/Tencent/ncnn/pull/7121)).
+По дороге мы нашли в шейдере внимания ncnn чтение за краем буфера; исправление живёт в движке KARTUN —
+[MikalaiKryvusha/ncnn](https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1), кастомном модифицированном и улучшенном форке ncnn.
 
 <a name="ru-4"></a>
 ### 4. Приватность
@@ -321,7 +322,7 @@ NDK `29.0.14206865` и CMake `3.31.6`, Node.js и Python 3.
 ```powershell
 git clone https://github.com/MikalaiKryvusha/KARTUN.git
 cd KARTUN
-node tools/fetch-ncnn.mjs                     # ncnn 20260526 для Android с Vulkan, со сверкой хеша
+node tools/build-ncnn.mjs                     # движок: наш форк ncnn 20260526-kartun.1, сборка из исходников
 ```
 
 Положите на место две модели (источники и хеши — в [docs/model-licenses.md](docs/model-licenses.md)):
@@ -362,7 +363,8 @@ node tools/stage-models.mjs                   # кладёт модели в APK
 1. [Upscayl](https://github.com/upscayl/upscayl) — настольное приложение, простоте которого следует KARTUN. Код Upscayl
    не используется: движок KARTUN написан с нуля.
 2. [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) — модели, автор Xintao Wang (BSD-3).
-3. [ncnn](https://github.com/Tencent/ncnn) — движок нейросетей от Tencent (BSD-3).
+3. [MikalaiKryvusha/ncnn](https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1) — движок нейросетей, кастомный модифицированный и улучшенный форк
+   [ncnn](https://github.com/Tencent/ncnn) от Tencent (BSD-3).
 4. [Unbounded](https://fonts.google.com/specimen/Unbounded) и [Manrope](https://fonts.google.com/specimen/Manrope) —
    шрифты (SIL Open Font License 1.1).
 5. KARTUN распространяется по лицензии MIT ([LICENSE](LICENSE)); всё, что едет в приложении, перечислено в

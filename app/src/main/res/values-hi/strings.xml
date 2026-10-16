@@ -91,6 +91,7 @@
     <string name="settings_about_sub">संस्करण, डिवाइस, लेखक, लाइसेंस</string>
     <string name="terms_title">उपयोग की शर्तें</string>
     <string name="terms_sub">मॉडलों के अधिकार और ज़िम्मेदारी</string>
+    <string name="about_engine_fork">कस्टम, संशोधित और बेहतर फ़ोर्क</string>
     <string name="rendering">रेंडर हो रहा है…</string>
     <string name="metric_pass">पास</string>
     <string name="metric_tile">टाइल</string>

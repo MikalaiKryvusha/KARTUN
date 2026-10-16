@@ -13,6 +13,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROCESSING" />
+    <!-- Android 14 has no mediaProcessing type (API 35): there the run is a dataSync service, whose list names "local file
+         processing" (developer.android.com, foreground service types); processingServiceType() picks one at run time. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <!-- Launcher icon: adaptive, generated from the owner's picture by tools/make-icon.py (design/icon/). -->
     <application
@@ -69,13 +72,13 @@
         <service
             android:name=".UpscaleService"
             android:exported="false"
-            android:foregroundServiceType="mediaProcessing" />
+            android:foregroundServiceType="mediaProcessing|dataSync" />
         <!-- The ADB door for AI agents (plans/06 §4.2, plans/07): exported, but only a caller holding DUMP may start it -
              the adb shell does, an app on the device does not (criterion A7). Both builds: [OWNER] interview #005, Q3 = A. -->
         <service
             android:name=".agent.AgentService"
             android:exported="true"
             android:permission="android.permission.DUMP"
-            android:foregroundServiceType="mediaProcessing" />
+            android:foregroundServiceType="mediaProcessing|dataSync" />
     </application>
 </manifest>

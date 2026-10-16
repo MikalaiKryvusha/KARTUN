@@ -39,8 +39,10 @@ import androidx.core.net.toUri
 import com.kriniks.kartun.R
 import com.kriniks.kartun.engine.NcnnUpscaler
 
-/** The engine version the app is built against (tools/fetch-ncnn.mjs pins it; docs/THIRD_PARTY.md). */
-private const val NCNN_VERSION = "ncnn 20260526"
+/** The engine the app is built against: OUR ncnn fork at its tag (tools/build-ncnn.mjs pins it; docs/THIRD_PARTY.md). */
+private const val NCNN_FORK = "MikalaiKryvusha/ncnn"
+private const val NCNN_VERSION = "$NCNN_FORK 20260526-kartun.1"
+private const val NCNN_FORK_URL = "https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1"
 
 /** Our repository; the inspiration and the engine (the owner, plan 03 step 21: «ссылаться на вдохновителей - репозиторий
  *  Upscayl, и репозиторий движка, и моделей»); the author's links as KrinikCam shows them (its AuthorInfoDialog, HEAD d33c055). */
@@ -100,11 +102,14 @@ fun AboutScreen(onBack: () -> Unit) {
                 stringResource(R.string.about_engine) to NCNN_VERSION,
             ))
             LinkGroup(stringResource(R.string.about_project), listOf(stringResource(R.string.about_source) to REPO_URL))
-            LinkGroup(stringResource(R.string.about_inspired), INSPIRED)
+            // The engine first - our fork (the owner, 2026-10-16 ≈ 19:1x: «где движок, пишем MikalaiKryvusha/ncnn - кастомный
+            // модифицированный и улучшенный форк»); the original ncnn (Tencent) stays in the list as its source.
+            LinkGroup(stringResource(R.string.about_inspired), listOf("$NCNN_FORK — ${stringResource(R.string.about_engine_fork)}" to NCNN_FORK_URL) + INSPIRED)
             LinkGroup(stringResource(R.string.about_author), AUTHOR_LINKS, header = AUTHOR)
             Group(stringResource(R.string.about_licences), listOf(
                 "KARTUN" to "MIT",
-                "ncnn (Tencent)" to "BSD 3-Clause",
+                // BSD 3-Clause asks the binary to carry the original copyright: our fork keeps Tencent's licence unchanged.
+                "$NCNN_FORK · ncnn (Tencent)" to "BSD 3-Clause",
                 // The two models inside the APK (docs/model-licenses.md); CC BY 4.0 asks for the author's credit here.
                 "4xNomosWebPhoto RealPLKSR (Philip Hofmann)" to "CC BY 4.0",
                 "4x NMKD Siax (NMKD)" to "WTFPL",

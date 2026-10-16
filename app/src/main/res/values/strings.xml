@@ -128,6 +128,8 @@
     <string name="about_device">Device</string>
     <string name="about_model">Device model</string>
     <string name="about_engine">Engine</string>
+    <!-- The engine is OUR ncnn fork, MikalaiKryvusha/ncnn (the owner, 2026-10-16 ≈ 19:1x: «где движок, пишем MikalaiKryvusha/ncnn - кастомный модифицированный и улучшенный форк»). -->
+    <string name="about_engine_fork">custom modified and improved fork</string>
     <string name="about_licences">Licences</string>
     <string name="about_previews">Photos of the model previews</string>
     <string name="about_project">Project</string>

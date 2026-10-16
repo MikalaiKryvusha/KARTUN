@@ -1,10 +1,10 @@
-# KARTUN engine - native upscaler over the prebuilt NCNN android-vulkan package (tools/fetch-ncnn.mjs).
+# KARTUN engine - native upscaler over OUR ncnn fork MikalaiKryvusha/ncnn, tag 20260526-kartun.1 (tools/build-ncnn.mjs).
 cmake_minimum_required(VERSION 3.22)
 project(kartun_engine)
 
-set(ncnn_DIR ${CMAKE_SOURCE_DIR}/../../../third_party/ncnn-20260526-android-vulkan/${ANDROID_ABI}/lib/cmake/ncnn)
-# A local ncnn build (for checking an ncnn fix on the device, researches/08 section 11) replaces the release when the
-# environment names its cmake package dir; builds without the variable use the pinned release above.
+set(ncnn_DIR ${CMAKE_SOURCE_DIR}/../../../third_party/ncnn-20260526-kartun.1-android-vulkan/${ANDROID_ABI}/lib/cmake/ncnn)
+# Another local ncnn build (for checking an ncnn change on the device, researches/08 section 11) replaces it when the
+# environment names its cmake package dir; builds without the variable use the pinned fork build above.
 if(DEFINED ENV{KARTUN_NCNN_DIR})
     set(ncnn_DIR $ENV{KARTUN_NCNN_DIR})
     message(STATUS "ncnn from KARTUN_NCNN_DIR: ${ncnn_DIR}")

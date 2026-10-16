@@ -91,6 +91,7 @@
     <string name="settings_about_sub">সংস্করণ, ডিভাইস, লেখক, লাইসেন্স</string>
     <string name="terms_title">ব্যবহারের শর্তাবলি</string>
     <string name="terms_sub">মডেলের অধিকার ও দায়</string>
+    <string name="about_engine_fork">কাস্টম, পরিবর্তিত ও উন্নত ফর্ক</string>
     <string name="rendering">রেন্ডার হচ্ছে…</string>
     <string name="metric_pass">পাস</string>
     <string name="metric_tile">টাইল</string>

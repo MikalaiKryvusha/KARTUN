@@ -89,6 +89,7 @@
     <string name="settings_about_sub">版本、设备、作者、许可证</string>
     <string name="terms_title">使用条款</string>
     <string name="terms_sub">模型权利与责任</string>
+    <string name="about_engine_fork">定制、修改并改进的分支</string>
     <string name="rendering">正在渲染…</string>
     <string name="metric_pass">次</string>
     <string name="metric_tile">块</string>

@@ -8,6 +8,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.os.Build
 import android.os.IBinder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,16 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+
+/**
+ * The foreground-service type of a processing run, for [UpscaleService] and the agent door: mediaProcessing exists from
+ * Android 15 (API 35); on Android 14 (minSdk 34, the owner 2026-10-16 ≈ 19:2x: «снижаем сдк до андроид 14») the run is a
+ * dataSync service - its documented uses include local file processing. Both types are declared in the manifest.
+ * [NOT-TESTED]
+ */
+fun processingServiceType(): Int =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROCESSING
+    else ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 
 /**
  * The run's state shared by the ViewModel (which owns the engine job) and [UpscaleService] (which keeps the process alive
@@ -48,7 +59,7 @@ class UpscaleService : Service() {
             return START_NOT_STICKY
         }
         ensureChannel()
-        startForeground(NOTIFICATION_ID, build(ProcessingState.progress.value), ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROCESSING)
+        startForeground(NOTIFICATION_ID, build(ProcessingState.progress.value), processingServiceType())
         scope.launch {
             ProcessingState.progress.collect { p ->
                 if (p == null) {

@@ -99,6 +99,7 @@
     <string name="settings_about_sub">الإصدار، الجهاز، المؤلف، التراخيص</string>
     <string name="terms_title">شروط الاستخدام</string>
     <string name="terms_sub">حقوق النماذج والمسؤولية</string>
+    <string name="about_engine_fork">نسخة متفرعة مخصّصة ومعدّلة ومحسّنة</string>
     <string name="rendering">جارٍ التصيير…</string>
     <string name="metric_pass">المرور</string>
     <string name="metric_tile">البلاطة</string>

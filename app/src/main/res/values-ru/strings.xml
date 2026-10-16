@@ -126,6 +126,7 @@
     <string name="about_device">Устройство</string>
     <string name="about_model">Модель устройства</string>
     <string name="about_engine">Движок</string>
+    <string name="about_engine_fork">кастомный модифицированный и улучшенный форк</string>
     <string name="about_licences">Лицензии</string>
     <string name="about_previews">Фото в превью моделей</string>
     <string name="about_project">Проект</string>

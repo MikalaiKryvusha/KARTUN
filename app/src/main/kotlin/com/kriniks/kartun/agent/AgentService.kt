@@ -6,7 +6,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ServiceInfo
+import com.kriniks.kartun.processingServiceType
 import android.graphics.ImageDecoder
 import android.os.BatteryManager
 import android.os.Build
@@ -62,7 +62,7 @@ class AgentService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // The 10-second promise of startForegroundService is kept first, before any work (researches/10 §1.4). The
         // default behaviour defers the notification by ~10 s, so a short start shows nothing on the screen.
-        startForeground(NOTIFICATION_ID, notification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROCESSING)
+        startForeground(NOTIFICATION_ID, notification(), processingServiceType())
         scope.launch(Dispatchers.IO) { runCatching { sweep() } }
         when (intent?.action) {
             ACTION_INFO -> scope.launch {

@@ -34,8 +34,9 @@ Run: `testcases/reports/2026-10-14_F0_own_fast_model.md`.
 
 ## Engine
 
-ncnn `20260526` (Tencent, BSD 3-Clause) — prebuilt `ncnn-20260526-android-vulkan.zip`, fetched and hash-checked by
-`tools/fetch-ncnn.mjs`.
+[MikalaiKryvusha/ncnn](https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1) `20260526-kartun.1` — custom modified
+and improved fork of ncnn `20260526` (Tencent, BSD 3-Clause), built from source by `tools/build-ncnn.mjs` (tag and commit
+pinned; the build checks that the fixed shader is inside).
 
 ## Catalogue models (downloaded on demand, not in the APK)
 

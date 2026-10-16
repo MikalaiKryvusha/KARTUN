@@ -93,6 +93,7 @@
     <string name="settings_about_sub">Version, appareil, auteur, licences</string>
     <string name="terms_title">Conditions d’utilisation</string>
     <string name="terms_sub">Droits des modèles et responsabilité</string>
+    <string name="about_engine_fork">fork personnalisé, modifié et amélioré</string>
     <string name="rendering">Rendu…</string>
     <string name="metric_pass">Passe</string>
     <string name="metric_tile">Tuile</string>
