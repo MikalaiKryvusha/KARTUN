@@ -82,7 +82,9 @@ lint последний раз 2026-10-15 13:10 — 0 ошибок, 15 пред�
    (`testcases/reports/2026-10-16_epic06_A_step2_shared_engine.md`). **Шаг 3 сделан 12:18:** контракт задания `agent/AgentJob.kt` + `AgentJobTest` (54 JVM-теста). **Шаги 4–6 сделаны
    12:24:** служба агента целиком — на Титане голым adb при закрытом KARTUN прошли апскейл в png/jpg/webp, ошибки с кодами,
    отмена, очередь из трёх, CPU по запросу, уведомление «Задание агента · 50%»
-   (`testcases/reports/2026-10-16_epic06_A_steps4-6_agent_service.md`). **Дальше — шаг 7:** `tools/kartun-cli.mjs`.
+   (`testcases/reports/2026-10-16_epic06_A_steps4-6_agent_service.md`). **Шаг 7 сделан 12:30:** `node tools/kartun-cli.mjs`
+   (`info`, `models`, `upscale`, `status`, `cancel`) — на Титане прошли A1–A6 и A9 (`testcases/reports/2026-10-16_epic06_A_step7_cli.md`);
+   A10 (режим полёта) — только по кабелю. **Дальше — шаг 8:** `docs/agent-api.md` + строка в README.
 1. **ncnn PR — следить за ревью:** https://github.com/Tencent/ncnn/pull/7121 и issue https://github.com/Tencent/ncnn/issues/7120
    (`gh pr view 7121 -R Tencent/ncnn --comments`). Ответы мейнтейнеру — коротко, человеческим языком, без подписи ИИ (слово владельца
    к issue); правки — в ветке форка `fix-sdpa-cross-oob-load` (клон `D:/work/ai_sandbox/ncnn`), картинка PR — ветка форка `pr-assets`
