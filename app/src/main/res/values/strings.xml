@@ -123,6 +123,8 @@
     <string name="terms_sub">Model rights and liability</string>
     <string name="notif_done">Your photo is ready</string>
     <string name="notif_done_text">Tap to compare before and after</string>
+    <!-- The agent door (plans/07): an AI agent's job running over adb. -->
+    <string name="agent_job_progress">Agent job · %1$d%%</string>
     <!-- [OWNER] interview #004 (the permission row and its window; the window text follows his comment). -->
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notifications_on">Allowed: progress and “Your photo is ready”</string>

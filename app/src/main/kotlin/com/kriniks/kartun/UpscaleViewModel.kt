@@ -451,7 +451,8 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         private const val TAG = "KARTUN"
-        private const val PREF_GPU = "use_gpu"
+        /** «Ускорение GPU»; the agent door reads it too, as the default backend of a job (agent/AgentService). */
+        const val PREF_GPU = "use_gpu"
         private const val PREF_MODEL = "model"
         private const val PREF_MODEL_ORDER = "model_order"
 

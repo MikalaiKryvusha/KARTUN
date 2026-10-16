@@ -139,4 +139,5 @@
     <string name="model_damaged">Le fichier téléchargé était endommagé et a été supprimé. Réessayez.</string>
     <string name="error_model_downloaded">Impossible de charger le modèle. Supprimez-le dans « Tous les modèles » et téléchargez-le à nouveau.</string>
     <string name="info_model_list">• Cet écran montre les deux derniers modèles utilisés.\n• « Tous les modèles » liste chaque modèle : à quoi il sert, son auteur, sa licence et sa taille. Téléchargez ceux qu’il vous faut ; ils marchent sans réseau.</string>
+    <string name="agent_job_progress">Tâche de l’agent · %1$d%%</string>
 </resources>

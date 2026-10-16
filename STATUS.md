@@ -79,8 +79,10 @@ lint последний раз 2026-10-15 13:10 — 0 ошибок, 15 пред�
    положенные `adb push` (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`). Не проверено: отказ чужому
    приложению (A7) — `run-as` работает от нашего же uid, нужна маленькая проба-APK (шаг 9). **Шаг 2 сделан 12:15:** общий
    движок `UpscaleEngine.kt`; на Титане пальцами 8×, 4×, «Отменить», смена модели — без крешей
-   (`testcases/reports/2026-10-16_epic06_A_step2_shared_engine.md`). **Шаг 3 сделан 12:18:** контракт задания `agent/AgentJob.kt` + `AgentJobTest` (54 JVM-теста). **Дальше — шаг 4:**
-   служба агента целиком (UPSCALE, очередь, CANCEL, статус-файлы).
+   (`testcases/reports/2026-10-16_epic06_A_step2_shared_engine.md`). **Шаг 3 сделан 12:18:** контракт задания `agent/AgentJob.kt` + `AgentJobTest` (54 JVM-теста). **Шаги 4–6 сделаны
+   12:24:** служба агента целиком — на Титане голым adb при закрытом KARTUN прошли апскейл в png/jpg/webp, ошибки с кодами,
+   отмена, очередь из трёх, CPU по запросу, уведомление «Задание агента · 50%»
+   (`testcases/reports/2026-10-16_epic06_A_steps4-6_agent_service.md`). **Дальше — шаг 7:** `tools/kartun-cli.mjs`.
 1. **ncnn PR — следить за ревью:** https://github.com/Tencent/ncnn/pull/7121 и issue https://github.com/Tencent/ncnn/issues/7120
    (`gh pr view 7121 -R Tencent/ncnn --comments`). Ответы мейнтейнеру — коротко, человеческим языком, без подписи ИИ (слово владельца
    к issue); правки — в ветке форка `fix-sdpa-cross-oob-load` (клон `D:/work/ai_sandbox/ncnn`), картинка PR — ветка форка `pr-assets`

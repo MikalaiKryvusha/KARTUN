@@ -139,4 +139,5 @@
     <string name="model_damaged">El archivo descargado estaba dañado y se ha eliminado. Inténtalo de nuevo.</string>
     <string name="error_model_downloaded">No se pudo cargar el modelo. Elimínalo en «Todos los modelos» y descárgalo de nuevo.</string>
     <string name="info_model_list">• Esta pantalla muestra los dos modelos que usaste por última vez.\n• «Todos los modelos» lista cada modelo: para qué sirve, su autor, licencia y tamaño. Descarga los que necesites; funcionan sin red.</string>
+    <string name="agent_job_progress">Tarea del agente · %1$d%%</string>
 </resources>

@@ -623,6 +623,11 @@ CATALOGUE = {
     },
 }
 
+# The agent door's notification (plans/07 step 6): «Задание агента · 42 %» while an AI agent's job runs. [AI] draft, like the rest.
+AGENT = {"es": "Tarea del agente · %1$d%%", "pt": "Tarefa do agente · %1$d%%", "fr": "Tâche de l’agent · %1$d%%",
+         "de": "Agent-Auftrag · %1$d%%", "zh": "代理任务 · %1$d%%", "hi": "एजेंट का काम · %1$d%%",
+         "bn": "এজেন্টের কাজ · %1$d%%", "ar": "مهمة الوكيل · %1$d%%"}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -666,6 +671,7 @@ def main():
         assert set(CATALOGUE[lang]) == set(CATALOGUE["es"]), (lang, "catalogue keys")
         for k, v in CATALOGUE[lang].items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
+        lines.append(f'    <string name="agent_job_progress">{xml_text(AGENT[lang])}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         body = "\n".join(lines)

@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-16 (agent, `/plan-epic` rung 3 on the owner's order in chat 2026-10-15: «API для ИИ-агентов по ADB и HTTPS (ideas/02); Сейчас делаем!»)
 > **Родитель:** `plans/06_EPIC_agent_api.md` §3 row «A — кабель», gate: A1–A10 pass on the Titan with a run report; recon `researches/10_agent_api_recon.md`
-> **Статус:** 🔧 written 2026-10-16; step 0 ✅ (catalogue committed `fc6b8d5`); step 1 ✅ partial 2026-10-16 11:55 +03:00 — the door works on the Titan (INFO from a stopped app, screen asleep, no notification, the app reads pushed files), A7 not observed (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`); step 2 ✅ 2026-10-16 12:15 (`UpscaleEngine`); step 3 ✅ 12:18 (`AgentJob` + test); next — step 4
+> **Статус:** 🔧 written 2026-10-16; step 0 ✅ (catalogue committed `fc6b8d5`); step 1 ✅ partial 2026-10-16 11:55 +03:00 — the door works on the Titan (INFO from a stopped app, screen asleep, no notification, the app reads pushed files), A7 not observed (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`); step 2 ✅ 2026-10-16 12:15 (`UpscaleEngine`); step 3 ✅ 12:18 (`AgentJob` + test); steps 4–6 ✅ 12:24 (the service, file output, strings); next — step 7 (CLI)
 > **Вовне:** the owner's fork `plans/06` §6.3 (the ADB door in the release build) — until answered, the door is built in `src/main` and moves to `src/debug` on a «только Debug» answer
 
 ## Goal vector
@@ -99,7 +99,10 @@ quota · internal`. The CLI adds its own `no_device · adb_missing · timeout`.
    spec, `../x.png`, `a/b.png`, scale 3, format `gif`, a job id of 7 chars, a status with a quote and a newline in the
    message (escaped). Exit: the test is mutation-proven — break the `..` check, see it red, restore.
 
-4. [ ] **The agent service** (`plans/06` §4.2, §4.3, §4.1; A2, A4, A5, A9). Complete `AgentService.kt`:
+4. [x] **The agent service** (done 2026-10-16 12:24 +03:00 with steps 5 and 6: on the Titan by raw adb, app closed — 4×/2×/1×
+   png/jpg/webp, bad requests with codes, cancel at tile 2/1353, a queue of three, CPU on request, the notification
+   «Задание агента · 50%», the service gone after the queue; `testcases/reports/2026-10-16_epic06_A_steps4-6_agent_service.md`.
+   Not reached: the cap `busy`, `onTimeout`, the 24 h sweep, «Отменить» in the notification) (`plans/06` §4.2, §4.3, §4.1; A2, A4, A5, A9). Complete `AgentService.kt`:
    - every `onStartCommand` calls `startForeground(…, FOREGROUND_SERVICE_TYPE_MEDIA_PROCESSING)` first (the 10-second
      promise, `researches/10` §1.4), with the default notification deferral (no `FOREGROUND_SERVICE_IMMEDIATE`, so an
      `INFO` start shows nothing);
@@ -116,11 +119,12 @@ quota · internal`. The CLI adds its own `no_device · adb_missing · timeout`.
    The notification shows «Задание агента · 42 %» with «Отменить» (cancels the running job). Exit: the A2 command by raw
    adb (the protocol block above) succeeds on the Titan with KARTUN force-stopped.
 
-5. [ ] **Encode to a file** (A3). Add `ResultStore.writeFile(bmp, file, format, quality, cancel)` beside `saveToGallery`,
+5. [x] **Encode to a file** (done 12:24 — `ResultStore.writeFile`; sizes and signatures of png/jpg/webp seen; the WebP side
+   refusal not reached) (A3). Add `ResultStore.writeFile(bmp, file, format, quality, cancel)` beside `saveToGallery`,
    reusing `Format`, `Cancellable` and the WebP side limit (`fits`); a too-large WebP fails with `bad_request` and a
    message naming PNG/JPEG. Exit: A3's six runs give the right sizes and signatures (`file` on the PC).
 
-6. [ ] **Notification strings in 10 languages** (`plans/01` §2.12). New strings for step 4's notification, added through
+6. [x] **Notification strings in 10 languages** (done 12:24 — `agent_job_progress`, `make-translations.py --check` green) (`plans/01` §2.12). New strings for step 4's notification, added through
    `python tools/make-translations.py` (EN and RU by hand, eight `[AI]` drafts). Exit: `python tools/make-translations.py --check`
    and `node tools/check-app-names.mjs` green.
 

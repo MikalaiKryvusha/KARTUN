@@ -104,6 +104,28 @@ object ResultStore {
         return uri
     }
 
+    /**
+     * Writes [bmp] into [file] in [format] for the agent door (plans/07 step 5): encoded into `<file>.tmp` and renamed, so
+     * an agent polling the folder never pulls half a picture. A WebP over [WEBP_MAX_SIDE] is refused before encoding
+     * ([IllegalArgumentException] naming PNG/JPEG). Returns the bytes written. [NOT-TESTED]
+     */
+    fun writeFile(bmp: Bitmap, file: File, format: Format, quality: Int, cancel: AtomicBoolean): Long {
+        require(fits(format, bmp)) { "WebP stores at most $WEBP_MAX_SIDE px per side; this result is ${bmp.width} x ${bmp.height} - use png or jpg" }
+        val tmp = File(file.parentFile, file.name + ".tmp")
+        try {
+            Cancellable(tmp.outputStream().buffered(), cancel).use {
+                val ok = bmp.compress(format.compress, quality, it)
+                if (cancel.get()) throw RenderCancelled()
+                check(ok) { "encoder failed" }
+            }
+            check(tmp.renameTo(file)) { "rename failed: ${tmp.name}" }
+        } catch (t: Throwable) {
+            tmp.delete()
+            throw t
+        }
+        return file.length()
+    }
+
     /** Writes [bmp] as PNG into the cache and returns a content uri another app may read (the share sheet grants it). */
     fun shareCopy(ctx: Context, bmp: Bitmap, name: String, cancel: AtomicBoolean): Uri {
         val dir = File(ctx.cacheDir, SHARE_DIR).apply { mkdirs(); listFiles()?.forEach { it.delete() } }
