@@ -196,25 +196,26 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
             )
             Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 4.dp).onGloballyPositioned { previewTop = it.positionInRoot().y }) {
                 if (asRow) {
-                    // The photo, its whole name and the size change on top; «Другое фото» a thin full-width line under them - beside
-                    // the name it took the name's room and padded the row above and below (the owner, 2026-10-16 ≈ 22:1x: «в карточке
-                    // свёрнутого фото всё же целую строку выделять под имя файла» · «а кнопку Другое фото - ниже строкой» · «ну
-                    // дохуя места за зря занимает вверху и внизу от себя»). The card grows to its content (≈ 21:4x: «растянуться,
-                    // чтобы оно поместилось»). [NOT-TESTED]
-                    Column(
+                    // The photo; beside it the whole name on its own line, and under the name «было → станет» with the small «Другое
+                    // фото» to its right - beside the name the button took the name's room (the owner, 2026-10-16 ≈ 22:1x–22:2x: «в
+                    // карточке свёрнутого фото всё же целую строку выделять под имя файла» · «маленькая справа, как сейчас, но внизу»).
+                    // The card grows to its content (≈ 21:4x: «растянуться, чтобы оно поместилось»). [NOT-TESTED]
+                    Row(
                         Modifier.fillMaxWidth().heightIn(min = heroDp).then(drag).clip(MaterialTheme.shapes.medium).background(c.surfaceContainer).padding(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            Image(src.preview.asImageBitmap(), src.name, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
-                            Column(Modifier.weight(1f)) {
-                                Text(ltr(src.name), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), maxLines = NAME_LINES, overflow = TextOverflow.MiddleEllipsis)
+                        Image(src.preview.asImageBitmap(), src.name, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text(ltr(src.name), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), maxLines = NAME_LINES, overflow = TextOverflow.MiddleEllipsis)
+                            // Below the name: «было → станет» on the left, the small «Другое фото» on the right (the owner, ≈ 22:2x:
+                            // «маленькая справа, как сейчас, но внизу» · «слева от неё - разрешение было станет» · «а выше - название файла»).
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 SizeChange(sizeText(src.width, src.height),
                                     vm.limited?.let { (lw, lh) -> sizeText(lw, lh) } ?: sizeText(src.width * vm.scale, src.height * vm.scale),
-                                    MaterialTheme.typography.bodySmall, c.onSurfaceVariant)
+                                    MaterialTheme.typography.bodySmall, c.onSurfaceVariant, Modifier.weight(1f))
+                                Pill(stringResource(R.string.setup_other_short), outlined = true, onClick = onPickOther)
                             }
                         }
-                        SecondaryButton(stringResource(R.string.setup_other_short), null, onClick = onPickOther, height = OTHER_PHOTO_HEIGHT)
                     }
                 } else {
                     PhotoCard(src, onOpen = { fullscreen = true }, onPickOther = onPickOther, modifier = Modifier.fillMaxWidth().height(heroDp).then(drag))
@@ -387,8 +388,6 @@ private fun AllModelsRow(total: Int, onDevice: Int, onClick: () -> Unit) {
 /** Lines the photo's file name may take in the collapsed photo row before it is shortened in the middle. */
 private const val NAME_LINES = 3
 
-/** The thin «Другое фото» line under the collapsed photo row, dp. */
-private const val OTHER_PHOTO_HEIGHT = 36
 
 /** A model card (.mrow): name, what it is for with the estimate, the licence badge; pink border + tick when chosen. */
 @Composable
