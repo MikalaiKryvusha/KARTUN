@@ -22,7 +22,7 @@ Open source · Offline · AI on the device</p>
   <a href="#en-3"><img src="https://img.shields.io/badge/DAT2_transformer-on_the_Vulkan_GPU-FF1A8C.svg" alt="DAT2 transformer: on the Vulkan GPU"></a>
   <a href="#en-5"><img src="https://img.shields.io/badge/platform-Android_14%2B-3DDC84.svg" alt="platform: Android 14+"></a>
   <a href="#en-1"><img src="https://img.shields.io/badge/languages-10-0EA5E9.svg" alt="languages: 10"></a>
-  <a href="#en-8"><img src="https://img.shields.io/badge/status-early_development-orange.svg" alt="status: early development"></a>
+  <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest"><img src="https://img.shields.io/badge/release-1.0-FF1A8C.svg" alt="release: 1.0"></a>
   <a href="https://github.com/MikalaiKryvusha/KAIF"><img src="https://img.shields.io/badge/framework-KAIF-7F52FF.svg" alt="framework: KAIF"></a>
 </p>
 
@@ -31,6 +31,13 @@ Open source · Offline · AI on the device</p>
 **KARTUN** makes a small or blurry photo big and sharp with a neural network, right on an Android phone or tablet. Pick
 a photo, tap one button, drag the line across the picture to compare before and after, then save the result or send it
 on. The picture never leaves the device: the network runs on the phone's graphics chip through Vulkan.
+
+<p align="center">
+  <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest/download/KARTUN.apk"><img src="docs/download-en.svg" width="440" alt="Download the KARTUN APK"></a>
+</p>
+
+<p align="center">Android 14 or newer, 64-bit ARM. When Android asks, allow your browser to install apps.<br>
+Every version: <a href="https://github.com/MikalaiKryvusha/KARTUN/releases">Releases</a>.</p>
 
 <p align="center">
   <img src="docs/screenshots/en/01_home.webp" width="19%" alt="Home screen">
@@ -45,12 +52,12 @@ Sections: [1 What it does](#en-1) · [2 Screens](#en-2) · [3 Models and speed](
 <a name="en-1"></a>
 ### 1. What it does
 
-1. Enlarges a photo 1×, 2×, 4×, 8× or 16× with a Real-ESRGAN neural network. The network restores detail that plain
-   stretching does not have: edges, texture, small text.
+1. Enlarges a photo 1×, 2×, 4×, 8× or 16× with a neural network. The network restores detail that plain stretching
+   does not have: edges, texture, small text.
 2. Takes the photo three ways: from the gallery, from any app's «Share» menu (Telegram, the gallery, a browser), or from
    a link — taken from the clipboard or typed in.
-3. Estimates the time before the run and shows the progress as a percent ring over the photo's real tiles. The estimate
-   learns from the runs on your device.
+3. Estimates the time before the run and shows the progress as a percent ring over the photo's real tiles. A short
+   speed check on the first launch tunes the estimate to your device, and it keeps learning from your runs.
 4. Keeps working when you leave the app: the progress and «Cancel» stay in the notification, «Your photo is ready»
    comes when it is done.
 5. Compares before and after over the whole screen: drag the pink line, move the photo with a finger, double-tap to
@@ -130,23 +137,20 @@ minutes. On the way we found an out-of-bounds read in an ncnn attention shader; 
 <a name="en-6"></a>
 ### 6. Build
 
-There are no ready APKs yet; build the app from source on Windows. You need JDK 21, the Android SDK with platform 36,
-NDK `29.0.14206865` and CMake `3.31.6`, Node.js and Python 3.
+The ready APK is behind the button at the top. To build the app from source on Windows you need JDK 21, the Android SDK
+with platform 37, NDK `29.0.14206865` and CMake `3.31.6`, Node.js and Python 3.
 
 ```powershell
 git clone https://github.com/MikalaiKryvusha/KARTUN.git
 cd KARTUN
 node tools/build-ncnn.mjs                     # the engine: our ncnn fork 20260526-kartun.1, built from source
+node tools/fetch-libtiff.mjs                  # libtiff for TIFF input
 ```
 
-Put the two models in place (sources and hashes: [docs/model-licenses.md](docs/model-licenses.md)):
-
-1. Download `realesrgan-ncnn-vulkan-20220424-windows.zip` from the
-   [Real-ESRGAN release v0.2.5.0](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0) and unpack it into
-   `engine/third_party/realesrgan-win/`.
-2. Download `realesr-general-x4v3.pth` from the same release into `engine/third_party/` and convert it (Python with
-   `torch`, `pnnx` and `numpy`):
-   `python -I tools/convert-model.py engine/third_party/realesr-general-x4v3.pth engine/third_party/converted`
+Download the four files of the two built-in models from the
+[models release](https://github.com/MikalaiKryvusha/KARTUN/releases/tag/models) into `engine/third_party/catalogue/`:
+`4xNomosWebPhoto-RealPLKSR-fp16.param`, `4xNomosWebPhoto-RealPLKSR-fp16.bin`, `4x-NMKD-Siax-fp16.param`,
+`4x-NMKD-Siax-fp16.bin` (sources and hashes: [docs/model-licenses.md](docs/model-licenses.md)).
 
 ```powershell
 node tools/stage-models.mjs                   # copies the models into the APK and checks every hash
@@ -160,16 +164,18 @@ node tools/stage-models.mjs                   # copies the models into the APK a
 |---|---|
 | `app/` | the Android app: Kotlin, Jetpack Compose, the screens, the background service, saving and sharing |
 | `engine/` | the native engine: C++ over ncnn behind one JNI boundary, tiles, Vulkan with a CPU fallback |
-| `tools/` | build and test helpers: ncnn download, model conversion and staging, translations, the icon, device runs |
+| `tools/` | build and test helpers: the ncnn fork build, model conversion and staging, translations, the icon, device runs |
 | `docs/` | licences of everything shipped, model provenance, the README screenshots |
 | `design/` | the icon sources and the screen mockups |
 
 <a name="en-8"></a>
 ### 8. Status and plans
 
-Early development: the whole main path works on a real device, no public release yet. Next: a model catalogue with
-downloadable models and preview pictures, writing very large results in strips, a release on GitHub. The roadmap is
-[MASTER_PLAN.md](MASTER_PLAN.md), the current state is [STATUS.md](STATUS.md).
+KARTUN 1.0 is the first public release. Before it went out, it was checked on four devices: HEADWOLF Titan 1
+(Android 16, Mali-G615), Redmi Note 12 Pro+ (Android 14, Mali-G68), Galaxy S21 FE (Android 16, Adreno 660) and
+Galaxy A52 (Android 14, Adreno 618), in all ten languages and in landscape. Next: pictures in the user guide, an
+upscaling station on the home Wi-Fi and an MCP server for AI agents. The roadmap is [MASTER_PLAN.md](MASTER_PLAN.md),
+the current state is [STATUS.md](STATUS.md).
 
 <a name="en-9"></a>
 ### 9. Credits and licence
@@ -207,7 +213,7 @@ Author: Mikalai Kryvusha (Krinik).
   <a href="#ru-3"><img src="https://img.shields.io/badge/%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%84%D0%BE%D1%80%D0%BC%D0%B5%D1%80_DAT2-%D0%BD%D0%B0_%D0%B2%D0%B8%D0%B4%D0%B5%D0%BE%D1%87%D0%B8%D0%BF%D0%B5_%28Vulkan%29-FF1A8C.svg" alt="трансформер DAT2: на видеочипе (Vulkan)"></a>
   <a href="#ru-5"><img src="https://img.shields.io/badge/%D0%BF%D0%BB%D0%B0%D1%82%D1%84%D0%BE%D1%80%D0%BC%D0%B0-Android_14%2B-3DDC84.svg" alt="платформа: Android 14+"></a>
   <a href="#ru-1"><img src="https://img.shields.io/badge/%D1%8F%D0%B7%D1%8B%D0%BA%D0%B8-10-0EA5E9.svg" alt="языки: 10"></a>
-  <a href="#ru-8"><img src="https://img.shields.io/badge/%D1%81%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D0%B5-%D1%80%D0%B0%D0%BD%D0%BD%D1%8F%D1%8F_%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-orange.svg" alt="состояние: ранняя разработка"></a>
+  <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest"><img src="https://img.shields.io/badge/%D1%80%D0%B5%D0%BB%D0%B8%D0%B7-1.0-FF1A8C.svg" alt="релиз: 1.0"></a>
   <a href="https://github.com/MikalaiKryvusha/KAIF"><img src="https://img.shields.io/badge/%D1%84%D1%80%D0%B5%D0%B9%D0%BC%D0%B2%D0%BE%D1%80%D0%BA-KAIF-7F52FF.svg" alt="фреймворк: KAIF"></a>
 </p>
 
@@ -217,6 +223,13 @@ Author: Mikalai Kryvusha (Krinik).
 планшете. Выберите фото, нажмите одну кнопку, проведите линию по картинке, чтобы сравнить «до» и «после», затем
 сохраните результат или отправьте дальше. Снимок не покидает устройство: нейросеть работает на видеочипе телефона через
 Vulkan.
+
+<p align="center">
+  <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest/download/KARTUN.apk"><img src="docs/download-ru.svg" width="440" alt="Скачать APK KARTUN"></a>
+</p>
+
+<p align="center">Android 14 и новее, 64-битный ARM. Когда Android спросит, разрешите браузеру устанавливать приложения.<br>
+Все версии: <a href="https://github.com/MikalaiKryvusha/KARTUN/releases">Releases</a>.</p>
 
 <p align="center">
   <img src="docs/screenshots/ru/01_home.webp" width="19%" alt="Главный экран">
@@ -231,12 +244,12 @@ Vulkan.
 <a name="ru-1"></a>
 ### 1. Что умеет
 
-1. Увеличивает фото в 1×, 2×, 4×, 8× или 16× нейросетью Real-ESRGAN. Нейросеть восстанавливает то, чего нет при
-   обычном растяжении: края, фактуру, мелкий текст.
+1. Увеличивает фото в 1×, 2×, 4×, 8× или 16× нейросетью. Нейросеть восстанавливает то, чего нет при обычном
+   растяжении: края, фактуру, мелкий текст.
 2. Берёт фото тремя путями: из галереи, из меню «Поделиться» любого приложения (Telegram, галерея, браузер) или по
    ссылке — из буфера обмена или набранной вручную.
-3. Оценивает время до запуска и показывает ход работы кольцом процентов поверх настоящих тайлов фото. Оценка учится на
-   прогонах вашего устройства.
+3. Оценивает время до запуска и показывает ход работы кольцом процентов поверх настоящих тайлов фото. Короткий замер
+   скорости при первом запуске подстраивает оценку под ваше устройство, дальше она учится на ваших прогонах.
 4. Продолжает работу, когда вы выходите из приложения: прогресс и «Отменить» остаются в уведомлении, по готовности
    приходит «Фото готово».
 5. Сравнивает «до» и «после» на весь экран: тяните розовую линию, двигайте фото пальцем, двойное касание увеличивает,
@@ -316,23 +329,20 @@ KARTUN запускает и трансформер: 4x UltraSharp V2 автор
 <a name="ru-6"></a>
 ### 6. Сборка
 
-Готовых APK пока нет; соберите приложение из исходников под Windows. Нужны JDK 21, Android SDK с платформой 36,
-NDK `29.0.14206865` и CMake `3.31.6`, Node.js и Python 3.
+Готовый APK — под кнопкой в начале страницы. Чтобы собрать приложение из исходников под Windows, нужны JDK 21,
+Android SDK с платформой 37, NDK `29.0.14206865` и CMake `3.31.6`, Node.js и Python 3.
 
 ```powershell
 git clone https://github.com/MikalaiKryvusha/KARTUN.git
 cd KARTUN
 node tools/build-ncnn.mjs                     # движок: наш форк ncnn 20260526-kartun.1, сборка из исходников
+node tools/fetch-libtiff.mjs                  # libtiff для чтения TIFF
 ```
 
-Положите на место две модели (источники и хеши — в [docs/model-licenses.md](docs/model-licenses.md)):
-
-1. Скачайте `realesrgan-ncnn-vulkan-20220424-windows.zip` из
-   [релиза Real-ESRGAN v0.2.5.0](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0) и распакуйте в
-   `engine/third_party/realesrgan-win/`.
-2. Скачайте `realesr-general-x4v3.pth` из того же релиза в `engine/third_party/` и сконвертируйте (Python с `torch`,
-   `pnnx` и `numpy`):
-   `python -I tools/convert-model.py engine/third_party/realesr-general-x4v3.pth engine/third_party/converted`
+Скачайте четыре файла двух встроенных моделей из
+[релиза models](https://github.com/MikalaiKryvusha/KARTUN/releases/tag/models) в `engine/third_party/catalogue/`:
+`4xNomosWebPhoto-RealPLKSR-fp16.param`, `4xNomosWebPhoto-RealPLKSR-fp16.bin`, `4x-NMKD-Siax-fp16.param`,
+`4x-NMKD-Siax-fp16.bin` (источники и хеши — в [docs/model-licenses.md](docs/model-licenses.md)).
 
 ```powershell
 node tools/stage-models.mjs                   # кладёт модели в APK и сверяет каждый хеш
@@ -346,16 +356,18 @@ node tools/stage-models.mjs                   # кладёт модели в APK
 |---|---|
 | `app/` | Android-приложение: Kotlin, Jetpack Compose, экраны, фоновая служба, сохранение и «Поделиться» |
 | `engine/` | нативный движок: C++ поверх ncnn за одной границей JNI, тайлы, Vulkan с запасным путём на процессоре |
-| `tools/` | помощники сборки и проверки: загрузка ncnn, конвертация и раскладка моделей, переводы, иконка, прогоны на устройстве |
+| `tools/` | помощники сборки и проверки: сборка форка ncnn, конвертация и раскладка моделей, переводы, иконка, прогоны на устройстве |
 | `docs/` | лицензии всего, что едет в приложении, происхождение моделей, скриншоты README |
 | `design/` | исходники иконки и макеты экранов |
 
 <a name="ru-8"></a>
 ### 8. Состояние и планы
 
-Ранняя разработка: весь основной путь работает на настоящем устройстве, публичного релиза пока нет. Дальше — каталог
-моделей со скачиванием и картинками-превью, запись очень больших результатов полосами, релиз на GitHub. Дорожная
-карта — [MASTER_PLAN.md](MASTER_PLAN.md), текущее состояние — [STATUS.md](STATUS.md).
+KARTUN 1.0 — первый публичный релиз. Перед выходом его проверили на четырёх устройствах: HEADWOLF Titan 1 (Android 16,
+Mali-G615), Redmi Note 12 Pro+ (Android 14, Mali-G68), Galaxy S21 FE (Android 16, Adreno 660) и Galaxy A52 (Android 14,
+Adreno 618), на всех десяти языках и в альбомной ориентации. Дальше — картинки в руководстве пользователя, станция
+апскейлинга в домашней сети Wi-Fi и MCP-сервер для ИИ-агентов. Дорожная карта — [MASTER_PLAN.md](MASTER_PLAN.md),
+текущее состояние — [STATUS.md](STATUS.md).
 
 <a name="ru-9"></a>
 ### 9. Благодарности и лицензия
