@@ -1,5 +1,6 @@
 package com.kriniks.kartun.ui
 
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -266,14 +267,22 @@ fun ltr(s: String): String = "$LTR_ISOLATE$s$POP_ISOLATE"
 private val LTR_ISOLATE = Char(0x2066)
 private val POP_ISOLATE = Char(0x2069)
 
-/** «★ ВЫБОР KARTUN» in gold under a favourite model's name (Model.starred; the owner, 2026-10-16 ≈ 21:4x: «золотая звезда и
- *  ниже золотом текст ВЫБОР KARTUN» · ≈ 21:5x: «тут звезду слева от текста ВЫБОР ставь»). [NOT-TESTED] */
+/** «★ ВЫБОР KARTUN» - a gold chip under a favourite model's name, shaped like the licence badges (Model.starred; the owner,
+ *  2026-10-16 ≈ 21:4x: «золотая звезда и ниже золотом текст ВЫБОР KARTUN» · ≈ 21:5x: «тут звезду слева от текста ВЫБОР
+ *  ставь» · «давай выбор картун превратим в золотой чипс, и звезду выше чуть-чуть поднимем»). [NOT-TESTED] */
 @Composable
-fun ChoiceLabel() = Row(verticalAlignment = Alignment.CenterVertically) {
-    Text("★", style = MaterialTheme.typography.labelLarge, color = StarGold)
-    Spacer(Modifier.width(6.dp))
+fun ChoiceLabel() = Row(
+    Modifier.clip(CircleShape).background(StarGold.copy(alpha = 0.16f)).padding(horizontal = 9.dp, vertical = 4.dp),
+    verticalAlignment = Alignment.CenterVertically,
+) {
+    // The star's glyph sits low in its line box: lifted to the capitals' middle.
+    Text("★", Modifier.offset(y = STAR_LIFT), style = MaterialTheme.typography.labelMedium, color = StarGold)
+    Spacer(Modifier.width(5.dp))
     Text(stringResource(R.string.model_choice), style = MaterialTheme.typography.labelSmall, color = StarGold)
 }
+
+/** How far the star of [ChoiceLabel] is lifted to line up with the capitals. */
+private val STAR_LIFT = (-1.5).dp
 
 /** "3840 × 5120"; numbers from 10 000 get a thin space as the mockups show ("7 680 × 10 240"). Pure format - the screens wrap
  *  it in [ltr] where they show it (FormatTest guards the format). */

@@ -39,6 +39,9 @@ private val Blue = Color(0xFF8FB8FF)          // the «free with credit» (CC BY
 /** The gold star of the models the owner rated best in the blind tests (2026-10-16 ≈ 21:4x: «поставим золотые звезды тем
  *  можелям, которые я больше всего оценил» · «это 4 модели»). [NOT-TESTED] */
 val StarGold = Color(0xFFFFC83D)
+/** The «not for commercial use» licence badge: violet text on its dark violet tint (the owner, 2026-10-16 ≈ 21:5x: «не для
+ *  комерческого использования давай покрасим в темный фиолетовый»; it was amber). [NOT-TESTED] */
+val NonCommercialViolet = Color(0xFFA673FF)  // ≈ 21:5x: «можно чуть-чуть тяжелее фиолетовый» (was B98CFF)
 
 private val Colors = darkColorScheme(
     primary = Pink, onPrimary = Color.White, primaryContainer = PinkSoft, onPrimaryContainer = Pink,

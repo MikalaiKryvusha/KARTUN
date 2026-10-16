@@ -80,8 +80,14 @@ object ResultStore {
             bytes += out.size()
             area += side.toLong() * side
         }
-        return bytes * (bmp.width.toLong() * bmp.height) / area
+        val est = bytes * (bmp.width.toLong() * bmp.height) / area
+        // Whole-picture PNG compresses ~6 % worse than the sum of its patches (RC smoke 2026-10-16 on four devices: 38.0 MB
+        // promised, 40.4-40.45 MB saved); JPEG and WebP matched within 1 %. [NOT-TESTED]
+        return if (format == Format.Png) (est * PNG_WHOLE_FACTOR).toLong() else est
     }
+
+    /** Whole-file PNG size over the patch-based estimate, measured on photo1 4× (40.45 / 38.0). */
+    private const val PNG_WHOLE_FACTOR = 1.065
 
     /** Thrown out of the encoder when «Отменить» under «Рендер…» is tapped; the half-written file is deleted. */
     class RenderCancelled : IOException("render cancelled")

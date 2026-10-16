@@ -72,6 +72,7 @@
     <string name="bench_title">Leistung von GPU und CPU des Geräts wird gemessen…</string>
     <string name="bench_cancel">Abbrechen</string>
     <string name="model_choice">KARTUNS WAHL</string>
+    <string name="cancelling">Wird abgebrochen…</string>
     <string name="settings_notifications">Benachrichtigungen</string>
     <string name="settings_notifications_on">Erlaubt: Fortschritt und „Dein Foto ist fertig“</string>
     <string name="settings_notifications_off">Aus – tippen zum Erlauben</string>

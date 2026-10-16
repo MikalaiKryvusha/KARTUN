@@ -333,7 +333,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
             }
             vm.saveMessage?.let { Notice(stringResource(it), vm::dismissSaveMessage, success = it == R.string.saved) }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                PrimaryButton(stringResource(if (vm.saving) R.string.saving else R.string.save), R.drawable.ic_save, onClick = { saveOpen = true },
+                PrimaryButton(stringResource(if (vm.saving && !vm.sharing) R.string.saving else R.string.save), R.drawable.ic_save, onClick = { saveOpen = true },
                     modifier = Modifier.weight(1f), enabled = !vm.saving, height = 54)
                 SecondaryButton(stringResource(R.string.share), R.drawable.ic_share, onClick = share, modifier = Modifier.weight(1f),
                     outlined = false, enabled = !vm.saving, height = 54)

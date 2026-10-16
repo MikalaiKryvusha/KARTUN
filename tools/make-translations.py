@@ -256,6 +256,10 @@ BENCH = {"es": ("Midiendo el rendimiento de la GPU y la CPU del dispositivo…",
 CHOICE = {"es": "ELECCIÓN DE KARTUN", "pt": "ESCOLHA DO KARTUN", "fr": "CHOIX DE KARTUN", "de": "KARTUNS WAHL",
           "zh": "KARTUN 精选", "hi": "KARTUN की पसंद", "bn": "KARTUN-এর পছন্দ", "ar": "اختيار KARTUN"}
 
+# «Отменяем…» on the processing screen right after «Отменить» (RC smoke 2026-10-16: 4-6 s of no change on slow phones).
+CANCELLING = {"es": "Cancelando…", "pt": "Cancelando…", "fr": "Annulation…", "de": "Wird abgebrochen…",
+              "zh": "正在取消…", "hi": "रद्द किया जा रहा है…", "bn": "বাতিল করা হচ্ছে…", "ar": "جارٍ الإلغاء…"}
+
 # «О приложении»: about_title · about_tagline · about_device · about_model · about_engine · about_licences ·
 # about_project · about_inspired · about_author · about_source (the owner, chat 2026-10-14 ≈ 20:58 +03:00: «о приложении
 # и авторе нужна и ссылка на наш GH»; plan 03 step 21).
@@ -694,6 +698,7 @@ def main():
         lines.append(f'    <string name="bench_title">{xml_text(BENCH[lang][0])}</string>')
         lines.append(f'    <string name="bench_cancel">{xml_text(BENCH[lang][1])}</string>')
         lines.append(f'    <string name="model_choice">{xml_text(CHOICE[lang])}</string>')
+        lines.append(f'    <string name="cancelling">{xml_text(CANCELLING[lang])}</string>')
         assert len(NOTIF[lang]) == len(NOTIF_KEYS), (lang, "notif")
         for k, v in zip(NOTIF_KEYS, NOTIF[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')

@@ -80,6 +80,7 @@
     <string name="bench_title">جارٍ قياس أداء GPU وCPU في الجهاز…</string>
     <string name="bench_cancel">إلغاء</string>
     <string name="model_choice">اختيار KARTUN</string>
+    <string name="cancelling">جارٍ الإلغاء…</string>
     <string name="settings_notifications">الإشعارات</string>
     <string name="settings_notifications_on">مسموح بها: التقدم و«صورتك جاهزة»</string>
     <string name="settings_notifications_off">متوقفة — اضغط للسماح</string>

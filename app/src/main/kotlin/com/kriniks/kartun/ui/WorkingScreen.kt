@@ -215,7 +215,7 @@ fun WorkingScreen(vm: UpscaleViewModel) {
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     // 15 sp: at 17 the wide heading font cut the title even beside the small «Отменить» (Titan 12:37). Two
                     // lines and a shrink to 11 sp: landscape cut it to «Нейросеть улу…» (the owner's screenshot 2026-10-16 17:03).
-                    FitText(stringResource(if (waiting) R.string.waiting_title else R.string.working_title),
+                    FitText(stringResource(if (vm.cancelling) R.string.cancelling else if (waiting) R.string.waiting_title else R.string.working_title),
                         MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp, color = c.onSurface), MIN_TITLE_SP, maxLines = TITLE_LINES)
                     if (waiting) Text(stringResource(R.string.waiting_text), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
                     // «Отменить» on the chip's line, under the title - beside the title it squeezed it to «The network is enhancing
@@ -231,7 +231,7 @@ fun WorkingScreen(vm: UpscaleViewModel) {
                             Text(stringResource(if (p.gpu) R.string.backend_gpu else R.string.backend_cpu), style = MaterialTheme.typography.labelMedium, maxLines = 1, softWrap = false)
                         }
                         Spacer(Modifier.weight(1f).widthIn(min = 8.dp))
-                        SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancel, height = 36, modifier = Modifier.width(COMPACT_BUTTON))
+                        SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancel, height = 36, modifier = Modifier.width(COMPACT_BUTTON), enabled = !vm.cancelling)
                     }
                 }
             }

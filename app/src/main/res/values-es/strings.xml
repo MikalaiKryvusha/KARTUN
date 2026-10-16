@@ -74,6 +74,7 @@
     <string name="bench_title">Midiendo el rendimiento de la GPU y la CPU del dispositivo…</string>
     <string name="bench_cancel">Cancelar</string>
     <string name="model_choice">ELECCIÓN DE KARTUN</string>
+    <string name="cancelling">Cancelando…</string>
     <string name="settings_notifications">Notificaciones</string>
     <string name="settings_notifications_on">Permitidas: progreso y «Tu foto está lista»</string>
     <string name="settings_notifications_off">Desactivadas — toca para permitir</string>

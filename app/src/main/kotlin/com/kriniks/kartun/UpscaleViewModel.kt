@@ -394,6 +394,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         val src = source ?: return
         if (!scaleSupported) return
         ProcessingState.cancelRequested = false
+        cancelling = false
         error = null
         prefs.edit { putInt(PREF_SCALE, scaleIndex); putString(PREF_MODEL_ORDER, usedFirst(prefs.getString(PREF_MODEL_ORDER, null), model.id)) }
         refreshOnDevice()
@@ -441,7 +442,11 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun cancel() { ProcessingState.cancelRequested = true }
+    /** «Отменить» was pressed: the processing screen says «Отменяем…» at once - the engine stops only after its current tile,
+     *  and for 4-6 s nothing changed on a slow phone (RC smoke on the A52 and Redmi, 2026-10-16). [NOT-TESTED] */
+    var cancelling by mutableStateOf(false); private set
+
+    fun cancel() { ProcessingState.cancelRequested = true; cancelling = true }
 
     /** Saves the result into the gallery as a new file (plans/01 §2.8); the encoder runs off the main thread. */
     fun save() {
@@ -477,16 +482,21 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     fun cancelRender() { renderCancel.set(true) }
 
     /** A PNG copy of the result for the share sheet (plans/01 §2.9); null when it could not be written. */
+    /** True while the file for «Поделиться» is written: «Сохранить» keeps its own label then (it read «Сохранение…» although
+     *  Share was pressed - RC smoke on the Redmi, 2026-10-16). [NOT-TESTED] */
+    var sharing by mutableStateOf(false); private set
+
     suspend fun shareUri(): Uri? {
         val res = result ?: return null
         val src = source ?: return null
         if (saving) return null
         saving = true
+        sharing = true
         renderCancel.set(false)
         return withContext(Dispatchers.IO) {
             runCatching { ResultStore.shareCopy(getApplication(), res.full, ResultStore.fileName(src.name, res.model.id, scaleLabel(src, res), "png"), renderCancel) }
                 .onFailure { if (it !is ResultStore.RenderCancelled) Log.w(TAG, "share copy failed", it) }.getOrNull()
-        }.also { saving = false }
+        }.also { saving = false; sharing = false }
     }
 
     fun dismissSaveMessage() { saveMessage = null }

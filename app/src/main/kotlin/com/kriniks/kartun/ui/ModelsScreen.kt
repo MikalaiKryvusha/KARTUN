@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kriniks.kartun.Model
 import com.kriniks.kartun.R
+import com.kriniks.kartun.ui.theme.NonCommercialViolet
 import com.kriniks.kartun.UpscaleViewModel
 import java.util.Locale
 
@@ -238,7 +239,7 @@ fun LicenceBadge(m: Model) {
     val (text, color) = when (m.badge) {
         Model.Badge.Free -> stringResource(R.string.licence_commercial, m.licenceLabel) to c.tertiary
         Model.Badge.Credit -> stringResource(R.string.licence_commercial, m.licenceLabel) to c.secondary
-        Model.Badge.NonCommercial -> stringResource(R.string.licence_noncommercial) to c.error
+        Model.Badge.NonCommercial -> stringResource(R.string.licence_noncommercial) to NonCommercialViolet
     }
     Text(
         glueDots(text), Modifier.clip(CircleShape).background(color.copy(alpha = 0.14f)).padding(horizontal = 9.dp, vertical = 4.dp),
