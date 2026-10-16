@@ -48,6 +48,10 @@ UltraSharp V2: 11,2 млн параметров (оригинал 139,8 МБ, н
 
 ## 4. Что известно в мире (поиск 2026-10-15)
 
+- **Перепроверено 2026-10-17 ≈ 00:2x** (перед словом «первый в мире» в README и заметках 1.0, по слову владельца «ПЕРВЫЙ В
+  МИРЕ»): поиск «DAT … ncnn port Vulkan», «SwinIR OR HAT ncnn», «UltraSharpV2 DAT2 ncnn» — ncnn-сборок DAT/SwinIR/HAT не
+  найдено; у UltraSharp V2 файлы только .pth/.safetensors/ONNX (huggingface.co/Kim2091/UltraSharpV2, openmodeldb.info);
+  Upscayl закрыл просьбу о движке DAT как «not planned» (github.com/upscayl/upscayl/issues/1421).
 - **Готового DAT, SwinIR или HAT в ncnn нет ни у кого.** Сборки моделей для ncnn (TNTwise Universal-NCNN-Upscaler — ESRGAN,
   Compact, SPAN, MSDAN через chaiNNer; tumuyan RealSR-NCNN-Android; upscayl-ncnn) — только свёрточные сети.
 - **ncnn #4299** (открыта с 2022-10-22): «SwinIR models … cannot be converted to NCNN»; в 2024 nihui советует новый pnnx —

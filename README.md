@@ -33,6 +33,10 @@ a photo, tap one button, drag the line across the picture to compare before and 
 on. The picture never leaves the device: the network runs on the phone's graphics chip through Vulkan.
 
 <p align="center">
+  <img src="docs/screenshots/story-1.0-en.webp" width="360" alt="KARTUN 1.0: a cat at 128 px on the left, sharpened by 4x UltraSharp V2 on the right">
+</p>
+
+<p align="center">
   <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest/download/KARTUN.apk"><img src="docs/download-en.svg" width="440" alt="Download the KARTUN APK"></a>
 </p>
 
@@ -109,12 +113,13 @@ every file's SHA-256 before using it. The models belong to their authors; licenc
 Measured on a HEADWOLF Titan 1 tablet: MediaTek MT8792, Mali-G615 MC6 graphics, Vulkan 1.3, Android 16. A 960 × 1280
 photo enlarged 8× by ClearReality V1 takes 25 s.
 
-#### Under the hood: the first DAT2 transformer on ncnn
+#### Under the hood: the world's first DAT2 transformer on ncnn
 
-KARTUN is the first to run a window-attention transformer on ncnn: 4x UltraSharp V2 by Kim2091, a DAT2 network, works
-entirely on the phone's graphics chip through Vulkan. ncnn could not run this family (DAT, SwinIR, HAT) — its issues
-[#3542](https://github.com/Tencent/ncnn/issues/3542) and [#4299](https://github.com/Tencent/ncnn/issues/4299) are open
-since 2022, and no ncnn upscaler ships such a model. What it took:
+KARTUN is the first in the world to run a window-attention transformer on ncnn: 4x UltraSharp V2 by Kim2091, a DAT2
+network, works entirely on the phone's graphics chip through Vulkan. ncnn could not run this family (DAT, SwinIR, HAT) —
+its issues [#3542](https://github.com/Tencent/ncnn/issues/3542) and [#4299](https://github.com/Tencent/ncnn/issues/4299)
+are open since 2022, Upscayl closed its request for a DAT engine as not planned
+([upscayl #1421](https://github.com/upscayl/upscayl/issues/1421)), and no ncnn upscaler ships such a model. What it took:
 
 1. **6-D tensors folded into 4-D.** DAT cuts the picture into attention windows with 6-dimensional reshapes; ncnn keeps
    at most 4 dimensions. We rewrote the window cutting and assembly in ≤ 4 dimensions without changing the maths — each
@@ -242,6 +247,10 @@ Author: Mikalai Kryvusha (Krinik).
 Vulkan.
 
 <p align="center">
+  <img src="docs/screenshots/story-1.0-ru.webp" width="360" alt="KARTUN 1.0: слева кот в 128 точек, справа он же, увеличенный 4x UltraSharp V2">
+</p>
+
+<p align="center">
   <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest/download/KARTUN.apk"><img src="docs/download-ru.svg" width="440" alt="Скачать APK KARTUN"></a>
 </p>
 
@@ -318,12 +327,14 @@ SHA-256 каждого файла перед работой. Модели при
 Замер на планшете HEADWOLF Titan 1: MediaTek MT8792, графика Mali-G615 MC6, Vulkan 1.3, Android 16. Фото 960 × 1280,
 увеличенное в 8 раз моделью ClearReality V1, считается 25 с.
 
-#### Под капотом: первый трансформер DAT2 на ncnn
+#### Под капотом: первый в мире трансформер DAT2 на ncnn
 
-KARTUN первым запустил на ncnn трансформер с оконным вниманием: 4x UltraSharp V2 автора Kim2091, сеть DAT2, целиком
-работает на видеочипе телефона через Vulkan. Это семейство (DAT, SwinIR, HAT) ncnn запускать не умел — его тикеты
+KARTUN первым в мире запустил на ncnn трансформер с оконным вниманием: 4x UltraSharp V2 автора Kim2091, сеть DAT2,
+целиком работает на видеочипе телефона через Vulkan. Это семейство (DAT, SwinIR, HAT) ncnn запускать не умел — его тикеты
 [#3542](https://github.com/Tencent/ncnn/issues/3542) и [#4299](https://github.com/Tencent/ncnn/issues/4299) открыты с
-2022 года, и ни один апскейлер на ncnn такой модели не возит. Что для этого понадобилось:
+2022 года, Upscayl закрыл просьбу о движке DAT как «не в планах»
+([upscayl #1421](https://github.com/upscayl/upscayl/issues/1421)), и ни один апскейлер на ncnn такой модели не возит. Что
+для этого понадобилось:
 
 1. **6-мерные тензоры свёрнуты в 4-мерные.** DAT режет картинку на окна внимания 6-мерными reshape, а ncnn держит не
    больше 4 измерений. Мы переписали нарезку окон и сборку в ≤ 4 измерениях, не меняя математику, — каждый шаг сверен с
