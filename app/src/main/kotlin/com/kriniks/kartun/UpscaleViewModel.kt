@@ -1,6 +1,10 @@
 package com.kriniks.kartun
 
 import android.app.Application
+import android.os.PowerManager
+import android.content.IntentFilter
+import android.content.Intent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -195,9 +199,44 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         startBenchIfNeeded()
     }
 
+    /** True while battery saver holds the first-launch check back: the home screen warns and offers to turn it off (the
+     *  owner, 2026-10-16 ≈ 22:1x: «предупреждать, что он включен на устройстве. Предлагается выключить, а затем запустить
+     *  бенч»; ≈ 22:1x «ЗАПУСКАТЬ!» - «Замерить так» runs it anyway). In saver the GPU ran the short check 1.7× slower while a
+     *  real run was only 1.1× slower - the estimate came out 0.59 of the real time (RC3 check on the Titan). [NOT-TESTED] */
+    var benchSaver by mutableStateOf(false); private set
+    private var saverWatch: BroadcastReceiver? = null
+
     private fun startBenchIfNeeded() {
         val app = getApplication<Application>()
         if (!DeviceBench.needed(app)) return
+        if (app.getSystemService(PowerManager::class.java).isPowerSaveMode) {
+            benchSaver = true
+            // Battery saver turned off (here or in the system settings) -> the check starts by itself.
+            val r = object : BroadcastReceiver() {
+                override fun onReceive(c: Context, i: Intent) {
+                    if (benchSaver && !app.getSystemService(PowerManager::class.java).isPowerSaveMode) runBench()
+                }
+            }
+            app.registerReceiver(r, IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED), Context.RECEIVER_NOT_EXPORTED)
+            saverWatch = r
+            return
+        }
+        runBench()
+    }
+
+    private fun stopSaverWatch() {
+        saverWatch?.let { runCatching { getApplication<Application>().unregisterReceiver(it) } }
+        saverWatch = null
+        benchSaver = false
+    }
+
+    /** «Замерить так»: the check runs although battery saver is on. */
+    fun benchAnyway() = runBench()
+
+    private fun runBench() {
+        stopSaverWatch()
+        if (benchRunning) return
+        val app = getApplication<Application>()
         benchRunning = true
         viewModelScope.launch {
             runCatching { DeviceBench.run(app) { !benchRunning } }.onFailure { Log.w("KARTUN", "bench failed", it) }
@@ -207,6 +246,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
     /** «Отмена» of the check: the dialog closes now, the engine stops after its current pass and nothing is written. */
     fun cancelBench() {
+        stopSaverWatch()
         DeviceBench.skip(getApplication())
         benchRunning = false
     }
@@ -527,6 +567,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     fun dismissError() { error = null }
 
     override fun onCleared() {
+        stopSaverWatch()
         // The screen is gone for good (Back from the app mid-run): stop the run between tiles and let the service go,
         // so no notification is left behind for a result nobody will see.
         ProcessingState.cancelRequested = true

@@ -35,11 +35,14 @@
     <!-- The first-launch speed check (ideas/04; the owner, 2026-10-16 ≈ 20:0x: «"Измеряем производительность GPU и CPU устройства..."» · «Закрыть можно кнопкой [Отмена]»). -->
     <string name="bench_title">Measuring the device’s GPU and CPU performance…</string>
     <string name="bench_cancel">Cancel</string>
+    <string name="bench_saver_title">Battery saver is on</string>
+    <string name="bench_saver_text">In this mode the graphics chip runs slower in a short test, so the time estimate would be off. Turn battery saver off and the test starts by itself.</string>
+    <string name="bench_saver_open">Turn off battery saver</string>
+    <string name="bench_saver_anyway">Test anyway</string>
     <!-- The gold label under the owner's favourite models (the owner, 2026-10-16 ≈ 21:4x: «золотая звезда и ниже золотом текст ВЫБОР KARTUN»). -->
     <string name="model_choice">KARTUN\'S CHOICE</string>
     <string name="cancelling">Cancelling…</string>
-    <string name="about_speed_gpu">GPU speed</string>
-    <string name="about_speed_cpu">CPU speed</string>
+    <string name="about_speed">Benchmark</string>
     <string name="about_speed_value">%1$s MP/s</string>
     <string name="backend_gpu" translatable="false">GPU · Vulkan</string>
     <string name="backend_cpu" translatable="false">CPU</string>

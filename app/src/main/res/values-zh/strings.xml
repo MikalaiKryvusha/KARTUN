@@ -71,9 +71,12 @@
     <string name="bench_cancel">取消</string>
     <string name="model_choice">KARTUN 精选</string>
     <string name="cancelling">正在取消…</string>
-    <string name="about_speed_gpu">GPU 速度</string>
-    <string name="about_speed_cpu">CPU 速度</string>
+    <string name="about_speed">基准测试</string>
     <string name="about_speed_value">%1$s 百万像素/秒</string>
+    <string name="bench_saver_title">省电模式已开启</string>
+    <string name="bench_saver_text">此模式下 GPU 在短测试中会变慢，时间估算将不准确。关闭省电模式后，测试会自动开始。</string>
+    <string name="bench_saver_open">关闭省电模式</string>
+    <string name="bench_saver_anyway">仍然测量</string>
     <string name="settings_notifications">通知</string>
     <string name="settings_notifications_on">已允许：进度和“照片已完成”</string>
     <string name="settings_notifications_off">已关闭——点按以允许</string>

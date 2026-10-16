@@ -35,10 +35,13 @@
     <string name="cancel">Отменить</string>
     <string name="bench_title">Измеряем производительность GPU и CPU устройства…</string>
     <string name="bench_cancel">Отмена</string>
+    <string name="bench_saver_title">Включён режим экономии батареи</string>
+    <string name="bench_saver_text">В этом режиме видеочип на коротком замере работает медленнее, и оценка времени выйдет неточной. Выключите экономию — замер начнётся сам.</string>
+    <string name="bench_saver_open">Выключить экономию</string>
+    <string name="bench_saver_anyway">Замерить так</string>
     <string name="model_choice">ВЫБОР KARTUN</string>
     <string name="cancelling">Отменяем…</string>
-    <string name="about_speed_gpu">Скорость GPU</string>
-    <string name="about_speed_cpu">Скорость CPU</string>
+    <string name="about_speed">Бенчмарк</string>
     <string name="about_speed_value">%1$s Мп/с</string>
     <string name="backend_gpu">GPU · Vulkan</string>
     <string name="backend_cpu">CPU</string>

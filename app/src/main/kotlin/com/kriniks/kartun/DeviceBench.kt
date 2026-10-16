@@ -52,6 +52,9 @@ object DeviceBench {
      */
     private const val ESRGAN_PROBE = "4x-NMKD-Siax-fp16"
     private const val PROBE_SIDE = 64
+    /** Best of two for the probe's short passes: one sample swung the ratio from 1.56 to 1.04 on the S21 FE and left Siax's
+     *  estimate 30 % short (RC3 check, 2026-10-16). [NOT-TESTED] */
+    private const val PROBE_RUNS = 2
     /** Siax / default model at [PROBE_SIDE]² on the reference device (Titan, 2026-10-16: 2.03 and 1.69 over two first
      *  launches - mean 1.85). The Redmi gave 2.41 / 2.59 -> its correction ×1.35. */
     private const val REF_ESRGAN_RATIO = 1.85f
@@ -77,7 +80,7 @@ object DeviceBench {
         val catalogue = ModelCatalog.load(ctx)
         val (param, bin) = ModelStore.files(ctx, catalogue.default)
         // One load of the default model on the GPU serves both its passes: the main square and the probe's short one.
-        val gpuTimes = time(param, bin, gpu = true, sides = listOf(GPU_SIDE, PROBE_SIDE), cancelled)
+        val gpuTimes = time(param, bin, gpu = true, sides = listOf(GPU_SIDE to RUNS, PROBE_SIDE to PROBE_RUNS), cancelled)
         val gpuMs = gpuTimes?.get(0)
         if (cancelled()) return@withContext false
         // The family probe: both models' short passes on the GPU, measured back to back (same heat, same clocks).
@@ -85,12 +88,12 @@ object DeviceBench {
         val esrganCorrection = if (gpuTimes == null || probe == null) 1f else runCatching {
             val base = gpuTimes[1]
             val (pp, pb) = ModelStore.files(ctx, probe)
-            val heavy = time(pp, pb, gpu = true, sides = listOf(PROBE_SIDE), cancelled)?.get(0)
+            val heavy = time(pp, pb, gpu = true, sides = listOf(PROBE_SIDE to PROBE_RUNS), cancelled)?.get(0)
             if (heavy == null) 1f else ((heavy / base) / REF_ESRGAN_RATIO).coerceIn(MIN_CORRECTION, MAX_CORRECTION)
                 .also { Log.i(TAG, """{"bench_probe":true,"base_ms":$base,"esrgan_ms":$heavy,"ratio":${heavy / base}}""") }
         }.getOrDefault(1f)
         if (cancelled()) return@withContext false
-        val cpuMs = time(param, bin, gpu = false, sides = listOf(CPU_SIDE), cancelled)?.get(0)
+        val cpuMs = time(param, bin, gpu = false, sides = listOf(CPU_SIDE to RUNS), cancelled)?.get(0)
         if (cancelled()) return@withContext false
         val gpuFactor = gpuMs?.let { it / REF_GPU_MS }
         val cpuFactor = cpuMs?.let { it / REF_CPU_MS }
@@ -108,13 +111,13 @@ object DeviceBench {
 
     /** Engine thread only: for each of [sides], the best of [RUNS] passes of the net over that square after one warm-up,
      *  ms; null when the backend is not there (no Vulkan: the GPU net comes up on the CPU) or a pass failed. */
-    private fun time(param: File, bin: File, gpu: Boolean, sides: List<Int>, cancelled: () -> Boolean): List<Float>? {
+    private fun time(param: File, bin: File, gpu: Boolean, sides: List<Pair<Int, Int>>, cancelled: () -> Boolean): List<Float>? {
         val net = NcnnUpscaler.load(param.path, bin.path, useGpu = gpu) ?: return null
         return net.use { u ->
             if (u.usesGpu != gpu || u.timeToBlob(WARMUP_SIDE, WARMUP_SIDE, OUTPUT_BLOB) < 0) return@use null
-            sides.map { side ->
+            sides.map { (side, runs) ->
                 var best = Long.MAX_VALUE
-                repeat(RUNS) {
+                repeat(runs) {
                     if (cancelled()) return@use null
                     val ms = u.timeToBlob(side, side, OUTPUT_BLOB)
                     if (ms < 0) return@use null

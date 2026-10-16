@@ -75,9 +75,12 @@
     <string name="bench_cancel">Cancelar</string>
     <string name="model_choice">ELECCIÓN DE KARTUN</string>
     <string name="cancelling">Cancelando…</string>
-    <string name="about_speed_gpu">Velocidad GPU</string>
-    <string name="about_speed_cpu">Velocidad CPU</string>
+    <string name="about_speed">Benchmark</string>
     <string name="about_speed_value">%1$s MP/s</string>
+    <string name="bench_saver_title">El ahorro de batería está activado</string>
+    <string name="bench_saver_text">En este modo la GPU va más lenta en una prueba corta y la estimación del tiempo saldrá inexacta. Desactiva el ahorro y la prueba empezará sola.</string>
+    <string name="bench_saver_open">Desactivar el ahorro</string>
+    <string name="bench_saver_anyway">Medir igualmente</string>
     <string name="settings_notifications">Notificaciones</string>
     <string name="settings_notifications_on">Permitidas: progreso y «Tu foto está lista»</string>
     <string name="settings_notifications_off">Desactivadas — toca para permitir</string>

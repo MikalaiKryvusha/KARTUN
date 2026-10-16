@@ -307,5 +307,5 @@ fun mb(bytes: Long): String {
 
 /** «33 МБ» in the user's language. */
 @Composable
-fun sizeMb(bytes: Long): String = stringResource(R.string.model_size_mb, mb(bytes))
+fun sizeMb(bytes: Long): String = glue(stringResource(R.string.model_size_mb, mb(bytes)))
 

@@ -312,6 +312,14 @@ private fun group(n: Int): String =
 /** Megapixels with one decimal in the user's locale ("1,2" in Russian). */
 fun mpText(mp: Float): String = String.format(Locale.getDefault(), "%.1f", mp)
 
+/** Spaces inside a value («960 × 1280», «1,2 Мп», «15 МБ») made non-breaking: a narrow chip broke «960 × / 1280» and «1,2 /
+ *  Мп» (RC3 check on the S21 FE and the Redmi, 2026-10-16). [NOT-TESTED] */
+fun glue(s: String): String = s.replace(' ', NBSP)
+private const val NBSP = ' '
+
+/** A file name that wraps only after «_» (zero-width spaces there): it broke inside the extension, «…220332.j / pg». */
+fun nameBreaks(name: String): String = name.replace("_", "_​")
+
 /**
  * A duration for people in whole words with the language's plural forms: «7 секунд», «1 минута 50 секунд», «2 минуты»
  * (the owner, 2026-10-14: «минут секунд в кнопке улучшения писать целым слвом»).

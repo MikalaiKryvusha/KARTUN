@@ -73,9 +73,12 @@
     <string name="bench_cancel">रद्द करें</string>
     <string name="model_choice">KARTUN की पसंद</string>
     <string name="cancelling">रद्द किया जा रहा है…</string>
-    <string name="about_speed_gpu">GPU गति</string>
-    <string name="about_speed_cpu">CPU गति</string>
+    <string name="about_speed">बेंचमार्क</string>
     <string name="about_speed_value">%1$s MP/से</string>
+    <string name="bench_saver_title">बैटरी सेवर चालू है</string>
+    <string name="bench_saver_text">इस मोड में छोटे परीक्षण में GPU धीमा चलता है, इसलिए समय का अनुमान सटीक नहीं होगा। बैटरी सेवर बंद करें — परीक्षण अपने आप शुरू होगा।</string>
+    <string name="bench_saver_open">बैटरी सेवर बंद करें</string>
+    <string name="bench_saver_anyway">फिर भी मापें</string>
     <string name="settings_notifications">सूचनाएँ</string>
     <string name="settings_notifications_on">अनुमति है: प्रगति और «आपकी फ़ोटो तैयार है»</string>
     <string name="settings_notifications_off">बंद — अनुमति देने के लिए दबाएँ</string>

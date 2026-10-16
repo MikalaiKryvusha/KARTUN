@@ -260,11 +260,23 @@ CHOICE = {"es": "ELECCIÓN DE KARTUN", "pt": "ESCOLHA DO KARTUN", "fr": "CHOIX D
 CANCELLING = {"es": "Cancelando…", "pt": "Cancelando…", "fr": "Annulation…", "de": "Wird abgebrochen…",
               "zh": "正在取消…", "hi": "रद्द किया जा रहा है…", "bn": "বাতিল করা হচ্ছে…", "ar": "جارٍ الإلغاء…"}
 
-# Measured speed in «О приложении» → Device (the owner, 2026-10-16 ≈ 22:1x): about_speed_gpu · about_speed_cpu · about_speed_value.
-SPEED = {"es": ("Velocidad GPU", "Velocidad CPU", "%1$s MP/s"), "pt": ("Velocidade da GPU", "Velocidade da CPU", "%1$s MP/s"),
-         "fr": ("Vitesse GPU", "Vitesse CPU", "%1$s Mpx/s"), "de": ("GPU-Geschwindigkeit", "CPU-Geschwindigkeit", "%1$s MP/s"),
-         "zh": ("GPU 速度", "CPU 速度", "%1$s 百万像素/秒"), "hi": ("GPU गति", "CPU गति", "%1$s MP/से"),
-         "bn": ("GPU গতি", "CPU গতি", "%1$s MP/সে"), "ar": ("سرعة GPU", "سرعة CPU", "%1$s ميغابكسل/ث")}
+# Measured speed in «О приложении» → Device, one row (the owner, 2026-10-16 ≈ 22:1x-22:2x): about_speed · about_speed_value.
+SPEED = {"es": ("Benchmark", "%1$s MP/s"), "pt": ("Benchmark", "%1$s MP/s"), "fr": ("Benchmark", "%1$s Mpx/s"),
+         "de": ("Benchmark", "%1$s MP/s"), "zh": ("基准测试", "%1$s 百万像素/秒"), "hi": ("बेंचमार्क", "%1$s MP/से"),
+         "bn": ("বেঞ্চমার্ক", "%1$s MP/সে"), "ar": ("اختبار الأداء", "%1$s ميغابكسل/ث")}  # label: the owner ≈ 22:2x «Бенчмарк»
+
+# Battery saver before the first-launch check (the owner, ≈ 22:1x: «предупреждать, что он включен на устройстве. Предлагается
+# выключить, а затем запустить бенч»): bench_saver_title · bench_saver_text · bench_saver_open · bench_saver_anyway.
+SAVER = {
+    "es": ("El ahorro de batería está activado", "En este modo la GPU va más lenta en una prueba corta y la estimación del tiempo saldrá inexacta. Desactiva el ahorro y la prueba empezará sola.", "Desactivar el ahorro", "Medir igualmente"),
+    "pt": ("A economia de bateria está ativada", "Neste modo a GPU fica mais lenta num teste curto e a estimativa de tempo sairá imprecisa. Desative a economia e o teste começa sozinho.", "Desativar a economia", "Medir mesmo assim"),
+    "fr": ("L’économiseur de batterie est activé", "Dans ce mode, le GPU ralentit pendant un test court et l’estimation du temps sera inexacte. Désactivez l’économiseur et le test démarrera tout seul.", "Désactiver l’économiseur", "Mesurer quand même"),
+    "de": ("Energiesparmodus ist an", "In diesem Modus läuft die GPU bei einem kurzen Test langsamer, und die Zeitschätzung wird ungenau. Schalten Sie den Energiesparmodus aus – der Test startet dann von selbst.", "Energiesparmodus ausschalten", "Trotzdem messen"),
+    "zh": ("省电模式已开启", "此模式下 GPU 在短测试中会变慢，时间估算将不准确。关闭省电模式后，测试会自动开始。", "关闭省电模式", "仍然测量"),
+    "hi": ("बैटरी सेवर चालू है", "इस मोड में छोटे परीक्षण में GPU धीमा चलता है, इसलिए समय का अनुमान सटीक नहीं होगा। बैटरी सेवर बंद करें — परीक्षण अपने आप शुरू होगा।", "बैटरी सेवर बंद करें", "फिर भी मापें"),
+    "bn": ("ব্যাটারি সেভার চালু আছে", "এই মোডে ছোট পরীক্ষায় GPU ধীরে চলে, তাই সময়ের হিসাব ঠিক হবে না। ব্যাটারি সেভার বন্ধ করুন — পরীক্ষা নিজেই শুরু হবে।", "ব্যাটারি সেভার বন্ধ করুন", "তবুও মাপুন"),
+    "ar": ("وضع توفير البطارية مفعّل", "في هذا الوضع يعمل معالج الرسومات أبطأ في اختبار قصير، فيأتي تقدير الوقت غير دقيق. أوقف توفير البطارية وسيبدأ الاختبار تلقائيًا.", "إيقاف توفير البطارية", "قِس على أي حال"),
+}
 
 # «О приложении»: about_title · about_tagline · about_device · about_model · about_engine · about_licences ·
 # about_project · about_inspired · about_author · about_source (the owner, chat 2026-10-14 ≈ 20:58 +03:00: «о приложении
@@ -705,9 +717,10 @@ def main():
         lines.append(f'    <string name="bench_cancel">{xml_text(BENCH[lang][1])}</string>')
         lines.append(f'    <string name="model_choice">{xml_text(CHOICE[lang])}</string>')
         lines.append(f'    <string name="cancelling">{xml_text(CANCELLING[lang])}</string>')
-        lines.append(f'    <string name="about_speed_gpu">{xml_text(SPEED[lang][0])}</string>')
-        lines.append(f'    <string name="about_speed_cpu">{xml_text(SPEED[lang][1])}</string>')
-        lines.append(f'    <string name="about_speed_value">{xml_text(SPEED[lang][2])}</string>')
+        lines.append(f'    <string name="about_speed">{xml_text(SPEED[lang][0])}</string>')
+        lines.append(f'    <string name="about_speed_value">{xml_text(SPEED[lang][1])}</string>')
+        for k, v in zip(("bench_saver_title", "bench_saver_text", "bench_saver_open", "bench_saver_anyway"), SAVER[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         assert len(NOTIF[lang]) == len(NOTIF_KEYS), (lang, "notif")
         for k, v in zip(NOTIF_KEYS, NOTIF[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')

@@ -73,9 +73,12 @@
     <string name="bench_cancel">Abbrechen</string>
     <string name="model_choice">KARTUNS WAHL</string>
     <string name="cancelling">Wird abgebrochen…</string>
-    <string name="about_speed_gpu">GPU-Geschwindigkeit</string>
-    <string name="about_speed_cpu">CPU-Geschwindigkeit</string>
+    <string name="about_speed">Benchmark</string>
     <string name="about_speed_value">%1$s MP/s</string>
+    <string name="bench_saver_title">Energiesparmodus ist an</string>
+    <string name="bench_saver_text">In diesem Modus läuft die GPU bei einem kurzen Test langsamer, und die Zeitschätzung wird ungenau. Schalten Sie den Energiesparmodus aus – der Test startet dann von selbst.</string>
+    <string name="bench_saver_open">Energiesparmodus ausschalten</string>
+    <string name="bench_saver_anyway">Trotzdem messen</string>
     <string name="settings_notifications">Benachrichtigungen</string>
     <string name="settings_notifications_on">Erlaubt: Fortschritt und „Dein Foto ist fertig“</string>
     <string name="settings_notifications_off">Aus – tippen zum Erlauben</string>

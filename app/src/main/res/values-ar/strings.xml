@@ -81,9 +81,12 @@
     <string name="bench_cancel">إلغاء</string>
     <string name="model_choice">اختيار KARTUN</string>
     <string name="cancelling">جارٍ الإلغاء…</string>
-    <string name="about_speed_gpu">سرعة GPU</string>
-    <string name="about_speed_cpu">سرعة CPU</string>
+    <string name="about_speed">اختبار الأداء</string>
     <string name="about_speed_value">%1$s ميغابكسل/ث</string>
+    <string name="bench_saver_title">وضع توفير البطارية مفعّل</string>
+    <string name="bench_saver_text">في هذا الوضع يعمل معالج الرسومات أبطأ في اختبار قصير، فيأتي تقدير الوقت غير دقيق. أوقف توفير البطارية وسيبدأ الاختبار تلقائيًا.</string>
+    <string name="bench_saver_open">إيقاف توفير البطارية</string>
+    <string name="bench_saver_anyway">قِس على أي حال</string>
     <string name="settings_notifications">الإشعارات</string>
     <string name="settings_notifications_on">مسموح بها: التقدم و«صورتك جاهزة»</string>
     <string name="settings_notifications_off">متوقفة — اضغط للسماح</string>

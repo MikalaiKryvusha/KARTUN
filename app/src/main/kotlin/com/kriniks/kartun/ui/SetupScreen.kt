@@ -206,7 +206,7 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                     ) {
                         Image(src.preview.asImageBitmap(), src.name, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text(ltr(src.name), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), maxLines = NAME_LINES, overflow = TextOverflow.MiddleEllipsis)
+                            Text(ltr(nameBreaks(src.name)), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), maxLines = NAME_LINES, overflow = TextOverflow.MiddleEllipsis)
                             // Below the name: «было → станет» on the left, the small «Другое фото» on the right (the owner, ≈ 22:2x:
                             // «маленькая справа, как сейчас, но внизу» · «слева от неё - разрешение было станет» · «а выше - название файла»).
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -295,7 +295,7 @@ private fun PhotoCard(src: UpscaleViewModel.Source, onOpen: () -> Unit, onPickOt
             Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(12.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom,
         ) {
-            Pill("${ltr(sizeText(src.width, src.height))} · ${stringResource(R.string.megapixels, mpText(src.megapixels))}",
+            Pill("${ltr(glue(sizeText(src.width, src.height)))} · ${glue(stringResource(R.string.megapixels, mpText(src.megapixels)))}",
                 Modifier.weight(1f, fill = false), translucent = true, heavyDigits = true)
             Spacer(Modifier.weight(0.001f))
             Row(

@@ -199,6 +199,33 @@ fun LinkDialog(onDownload: (String) -> Unit, onClose: () -> Unit) {
  * ниже наша анимация живого спинера» · «Диалог сам заркывается после выполнения замера. Закрыть можно кнопкой [Отмена]»).
  * The dialog window dims the screen behind it; a tap outside does nothing, the system Back is the same «Отмена». [NOT-TESTED]
  */
+/**
+ * Battery saver is on before the first-launch check: the check would measure a throttled GPU, so the home screen says so and
+ * offers to turn the saver off; once it is off the check starts by itself (UpscaleViewModel.benchSaver; the owner,
+ * 2026-10-16 ≈ 22:1x: «предупреждать, что он включен на устройстве. Предлагается выключить, а затем запустить бенч»).
+ * «Замерить так» runs it now, «Отмена» skips it. [NOT-TESTED]
+ */
+@Composable
+fun BenchSaverDialog(onTurnOff: () -> Unit, onAnyway: () -> Unit, onCancel: () -> Unit) {
+    val c = MaterialTheme.colorScheme
+    Dialog(onDismissRequest = onCancel, properties = DialogProperties(dismissOnClickOutside = false)) {
+        (LocalView.current.parent as? DialogWindowProvider)?.window?.setDimAmount(BENCH_DIM)
+        Column(
+            Modifier.fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow)
+                .padding(start = 22.dp, end = 22.dp, top = 22.dp, bottom = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Text(stringResource(R.string.bench_saver_title), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.bench_saver_text), style = MaterialTheme.typography.bodyLarge, color = c.onSurfaceVariant)
+            PrimaryButton(stringResource(R.string.bench_saver_open), null, onClick = onTurnOff, height = 54)
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)) {
+                Pill(stringResource(R.string.bench_saver_anyway), outlined = true, onClick = onAnyway)
+                Pill(stringResource(R.string.bench_cancel), outlined = true, onClick = onCancel)
+            }
+        }
+    }
+}
+
 /** How dark the screen behind the speed check gets (0 = clear, 1 = black). */
 private const val BENCH_DIM = 0.85f
 

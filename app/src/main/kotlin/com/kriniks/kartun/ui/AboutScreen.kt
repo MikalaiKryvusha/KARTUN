@@ -128,8 +128,8 @@ fun AboutScreen(onBack: () -> Unit) {
                 "Android" to ltr("${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})"),
                 "GPU" to ltr(gpuName(gpu)),
                 stringResource(R.string.about_engine) to ltr(NCNN_VERSION),
-                stringResource(R.string.about_speed_gpu) to speedText(speed.first),
-                stringResource(R.string.about_speed_cpu) to speedText(speed.second),
+                // One line for both chips (the owner, ≈ 22:2x: «в одну строку»).
+                stringResource(R.string.about_speed) to "GPU ${speedText(speed.first)} · CPU ${speedText(speed.second)}",
             ))
             LinkGroup(stringResource(R.string.about_project), listOf(stringResource(R.string.about_source) to REPO_URL))
             // The engine first - our fork (the owner, 2026-10-16 ≈ 19:1x: «где движок, пишем MikalaiKryvusha/ncnn - кастомный

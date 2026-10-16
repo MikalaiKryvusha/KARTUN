@@ -73,9 +73,12 @@
     <string name="bench_cancel">বাতিল</string>
     <string name="model_choice">KARTUN-এর পছন্দ</string>
     <string name="cancelling">বাতিল করা হচ্ছে…</string>
-    <string name="about_speed_gpu">GPU গতি</string>
-    <string name="about_speed_cpu">CPU গতি</string>
+    <string name="about_speed">বেঞ্চমার্ক</string>
     <string name="about_speed_value">%1$s MP/সে</string>
+    <string name="bench_saver_title">ব্যাটারি সেভার চালু আছে</string>
+    <string name="bench_saver_text">এই মোডে ছোট পরীক্ষায় GPU ধীরে চলে, তাই সময়ের হিসাব ঠিক হবে না। ব্যাটারি সেভার বন্ধ করুন — পরীক্ষা নিজেই শুরু হবে।</string>
+    <string name="bench_saver_open">ব্যাটারি সেভার বন্ধ করুন</string>
+    <string name="bench_saver_anyway">তবুও মাপুন</string>
     <string name="settings_notifications">বিজ্ঞপ্তি</string>
     <string name="settings_notifications_on">অনুমোদিত: অগ্রগতি ও «আপনার ছবি প্রস্তুত»</string>
     <string name="settings_notifications_off">বন্ধ — অনুমতি দিতে চাপুন</string>

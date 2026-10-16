@@ -1,6 +1,8 @@
 package com.kriniks.kartun.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.runtime.CompositionLocalProvider
@@ -266,25 +268,6 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 contentAlignment = Alignment.Center,
             ) { Icon(painterResource(R.drawable.ic_lr), stringResource(R.string.compare_handle), Modifier.size(26.dp), tint = c.onPrimary) }
         }
-        // «Рендер…» over the before/after picture while the file for «Сохранить» / «Поделиться» is written - before it the
-        // screen only greyed out and nothing said that work was going on (the owner, chat 2026-10-15 ≈ 11:38 +03:00:
-        // «нужно крутить спиннер "Рендер"…» · «или не в виджене крутить, а поверх канваса результата До-После»).
-        if (vm.saving) {
-            Column(
-                // Opaque: at 90 % the pink knob and the line of the divider showed through the card (Titan 11:43).
-                Modifier.align(Alignment.Center).shadow(10.dp, MaterialTheme.shapes.extraLarge).clip(MaterialTheme.shapes.extraLarge)
-                    .background(c.surfaceContainerLow).padding(horizontal = 28.dp, vertical = 22.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-                PixelSpinner(Modifier.size(48.dp))
-                Text(stringResource(R.string.rendering), style = MaterialTheme.typography.titleSmall, color = c.onBackground)
-                // Small «Отменить»: stops a long render and deletes the half-written file (the owner, chat 2026-10-15 ≈ 11:53).
-                // A fixed width: SecondaryButton fills its parent, and the card stretched over the whole screen (the
-                // owner, chat 2026-10-15 ≈ 12:31 +03:00: «диалог Рендер некрасиво растянуло на весь экран у тебя»).
-                SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancelRender, height = 36, modifier = Modifier.width(COMPACT_BUTTON))
-            }
-        }
         // Top bar and the two tags.
         Column(Modifier.fillMaxWidth().statusBarsPadding().padding(horizontal = 20.dp, vertical = 8.dp)) {
             Row(Modifier.fillMaxWidth()) {
@@ -366,9 +349,37 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 contentAlignment = Alignment.Center,
             ) { Icon(painterResource(R.drawable.ic_back), stringResource(R.string.panel_show), Modifier.size(16.dp), tint = c.onBackground) }
         }
+        // The whole result screen dims to 50 % while «Рендер…» works, fading in and out in 0.3 s; the render card stays on
+        // top (the owner, 2026-10-16 ≈ 22:2x: «давай экран результата на 50% тонировать во время рендеринга результата» ·
+        // «тонировку, если можно, включать мягко анимацией и снимать мягко анимацией в 0.3 секунды»). [NOT-TESTED]
+        val veil by animateFloatAsState(if (vm.saving) RENDER_VEIL else 0f, tween(RENDER_VEIL_MS), label = "renderVeil")
+        if (veil > 0f) Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = veil)))
+        // «Рендер…» over the before/after picture while the file for «Сохранить» / «Поделиться» is written - before it the
+        // screen only greyed out and nothing said that work was going on (the owner, chat 2026-10-15 ≈ 11:38 +03:00:
+        // «нужно крутить спиннер "Рендер"…» · «или не в виджене крутить, а поверх канваса результата До-После»).
+        if (vm.saving) {
+            Column(
+                // Opaque: at 90 % the pink knob and the line of the divider showed through the card (Titan 11:43).
+                Modifier.align(Alignment.Center).shadow(10.dp, MaterialTheme.shapes.extraLarge).clip(MaterialTheme.shapes.extraLarge)
+                    .background(c.surfaceContainerLow).padding(horizontal = 28.dp, vertical = 22.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                PixelSpinner(Modifier.size(48.dp))
+                Text(stringResource(R.string.rendering), style = MaterialTheme.typography.titleSmall, color = c.onBackground)
+                // Small «Отменить»: stops a long render and deletes the half-written file (the owner, chat 2026-10-15 ≈ 11:53).
+                // A fixed width: SecondaryButton fills its parent, and the card stretched over the whole screen (the
+                // owner, chat 2026-10-15 ≈ 12:31 +03:00: «диалог Рендер некрасиво растянуло на весь экран у тебя»).
+                SecondaryButton(stringResource(R.string.cancel), null, onClick = vm::cancelRender, height = 36, modifier = Modifier.width(COMPACT_BUTTON))
+            }
+        }
     }
     if (saveOpen) SaveDialog(vm, res.full) { saveOpen = false }
 }
+
+/** How dark the result screen gets under «Рендер…» and how long the veil takes to come and go. */
+private const val RENDER_VEIL = 0.5f
+private const val RENDER_VEIL_MS = 300
 
 /**
  * «Сохранить в галерею» (mockup 'save': format chips, the quality slider, the folder line, the pink button). A centred
