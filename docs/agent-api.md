@@ -42,13 +42,17 @@ KARTUN does not need to be open, and the device screen may be off. The CLI never
 | `--format` | `png`, `jpg` (`jpeg`), `webp` | `png` |
 | `--quality` | `1`–`100` (jpg and webp) | `92` |
 | `--gpu` / `--cpu` | force the backend | the app's «GPU acceleration» setting |
-| `--out` | a file path, or a directory (ending with `/`, existing, or several inputs) | `<name>_x<scale>.<format>` next to the input |
+| `--out` | a file path, or a directory (ending with `/`, existing, or several inputs); missing folders are created | `<name>_x<scale>.<format>` next to the input |
 | `--timeout` | seconds; on expiry the job is canceled | `3600` |
-| `--keep` | leave the job's files on the device | off |
+| `--keep` | leave the job's files on the device (they also stay when the copy to the PC fails) | off |
 
 Device selection: `--serial` or the `KARTUN_SERIAL` environment variable; without either, adb's single connected device.
 adb: `KARTUN_ADB`, else `C:/Android/Sdk/platform-tools/adb.exe` if present, else `adb` on `PATH`. Package: `--pkg`, else
 the installed one of `com.kriniks.kartun` (release) and `com.kriniks.kartun.debug`.
+
+`ok` is the verdict for you: true only when the result file is on the PC. `state` is the job's state on the device — a
+line can carry `"state":"succeeded"` with `"ok":false` when the result was made but could not be copied to the PC
+(`pull_failed`; the file then stays on the device and the message gives the `adb pull` command).
 
 Progress goes to stderr: first `job <id> · <file> · <scale>x <format>` (use that id with `cancel` from another shell),
 then `photo.jpg: 42% · tiles 21/50 · 3.2 s of ≈ 8 s · GPU`. Ctrl+C cancels the running job on the device before exiting.
@@ -136,10 +140,11 @@ Jobs run one at a time, in the order they were sent; at most 8 wait. A running j
 | `engine_failed` | the network failed on GPU and CPU | retry with `--cpu`, or a smaller picture |
 | `busy` | 8 jobs are already waiting | retry later |
 | `quota` | Android's limit of 6 h of media processing per 24 h is used up | retry tomorrow |
-| `internal` | writing the result failed | check the device's free space |
+| `internal` | writing the result on the device failed | check the device's free space |
 
 The CLI adds `bad_arguments` (exit 2), `no_device`, `adb_missing`, `timeout` (exit 3), `unknown_job` (`status` of a job
-with no status file, exit 1), and `canceled` on Ctrl+C.
+with no status file, exit 1), `pull_failed` (the result is on the device, the copy to the PC failed — a folder or a disk
+problem on the PC; exit 1), and `canceled` on Ctrl+C.
 
 ## Limits
 

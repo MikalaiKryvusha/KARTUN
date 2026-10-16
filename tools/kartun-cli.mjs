@@ -16,7 +16,7 @@
 // Exit codes: 0 ok · 1 the job failed or was canceled · 2 bad arguments · 3 no device, no adb, timeout.
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, statSync } from 'node:fs';
 import { basename, dirname, extname, join, resolve } from 'node:path';
 import { randomBytes } from 'node:crypto';
 
@@ -179,14 +179,21 @@ async function upscaleOne(file, settings) {
   process.stderr.write('\n');
   current = null;
   let result = { ok: s.state === 'succeeded', file, ...s };
+  let pulledOk = true;
   if (s.state === 'succeeded') {
     const dest = outputPath(file, settings.scale, settings.format);
+    // The folder of --out is made here (a fresh agent's first run failed on a missing folder - step 10 of plans/07).
+    try { mkdirSync(dirname(dest), { recursive: true }); } catch { /* the pull below fails and names the path */ }
     const pulled = adb(['pull', `${DIR}/${s.out.file}`, dest]);
-    if (pulled.status !== 0) result = { ...result, ok: false, error: { code: 'internal', message: `pull failed: ${String(pulled.stderr).trim()}` } };
-    else result.output = dest;
+    if (pulled.status !== 0) {
+      pulledOk = false;
+      result = { ...result, ok: false, error: { code: 'pull_failed',
+        message: `the result is ready on the device but could not be copied to ${dest}: ${String(pulled.stderr).trim()}; ` +
+          `it stays there - adb pull ${DIR}/${s.out.file}` } };
+    } else result.output = dest;
   }
-  // R1: nothing of the job stays on the device unless --keep.
-  if (!opt.keep) adb(['shell', `rm -f ${DIR}/${job}.*`]);
+  // R1: nothing of the job stays on the device unless --keep - but a finished result that did not reach the PC stays.
+  if (!opt.keep && pulledOk) adb(['shell', `rm -f ${DIR}/${job}.*`]);
   return result;
 }
 

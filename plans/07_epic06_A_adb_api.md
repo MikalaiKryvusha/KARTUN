@@ -172,7 +172,10 @@ quota · internal`. The CLI adds its own `no_device · adb_missing · timeout`.
    Leave the Titan as found (EXP-0010, R1): KARTUN on its home screen if it was, test files deleted.
    Exit: every A-row has an observed PASS in the report.
 
-10. [ ] **Fresh-agent check of the doc** (A8). A subagent gets only `docs/agent-api.md` and the serial, no repo access
+10. [x] **Fresh-agent check of the doc** (A8). (done 2026-10-16 13:08 +03:00: a clean subagent with only the doc and the CLI
+    got `info` and a 4× upscale; its first upscale lost the result — `--out` into a missing folder, the pull failed and the
+    CLI still wiped the device copy. Fixed: the CLI makes the folder, keeps the device copy on a failed pull, answers
+    `pull_failed` with the `adb pull` command; the doc says `ok` vs `state`; both paths re-run on the Titan) A subagent gets only `docs/agent-api.md` and the serial, no repo access
     beyond `tools/kartun-cli.mjs`, and is told: «get the device info, upscale this 256×256 PNG 4×». Exit: it succeeds
     without questions; anything it asked or got wrong becomes a doc fix and a rerun.
 
