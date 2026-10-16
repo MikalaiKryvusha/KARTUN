@@ -355,20 +355,11 @@ PANEL = {
 # the rest; `info_model_list` replaces the positional one of KEYS (DROP below), and `licence_bsd` gave way to
 # `licence_commercial` with the licence as its argument. `working_tiles` / `working_starting` gave way to the metric tiles of
 # panel B1 (PANEL below) - lint: unused.
-DROP = {"licence_bsd", "info_model_list", "working_tiles", "working_starting"}
+# `model_fast_desc` / `model_max_desc` gave way to the per-model card lines of MODEL_TEXTS (2026-10-16).
+DROP = {"licence_bsd", "info_model_list", "working_tiles", "working_starting", "model_fast_desc", "model_max_desc"}
 CATALOGUE = {
     "es": {
         "about_previews": "Fotos de las vistas previas de modelos",
-        "model_purpose_web_photo": "Para fotos de internet, comprimidas y borrosas",
-        "model_purpose_universal": "Universal · para imágenes limpias pero algo comprimidas",
-        "model_purpose_clean_photo": "Para tomas limpias de cámara",
-        "model_purpose_photo": "Para fotos que necesitan detalle natural",
-        "model_purpose_balanced": "Para fotos que necesitan nitidez y detalle",
-        "model_purpose_faces": "Rápido · para caras, pelo y naturaleza",
-        "model_purpose_anime": "Para anime y dibujos",
-        "model_purpose_anime_fast": "El más ligero · para anime y fotogramas de vídeo",
-        "model_purpose_sharp": "Para fotos, arte y anime que necesitan nitidez",
-        "model_purpose_sharpest": "Muy lento · para imágenes que necesitan el mayor detalle",
         "licence_commercial": "Uso comercial permitido · %1$s",
         "licence_noncommercial": "No apto para uso comercial",
         "models_title": "Modelos",
@@ -392,16 +383,6 @@ CATALOGUE = {
     },
     "pt": {
         "about_previews": "Fotos das prévias dos modelos",
-        "model_purpose_web_photo": "Para fotos da internet, comprimidas e desfocadas",
-        "model_purpose_universal": "Universal · para imagens limpas, mas pouco comprimidas",
-        "model_purpose_clean_photo": "Para cliques limpos de câmera",
-        "model_purpose_photo": "Para fotos que precisam de detalhe natural",
-        "model_purpose_balanced": "Para fotos que precisam de nitidez e detalhe",
-        "model_purpose_faces": "Rápido · para rostos, cabelo e natureza",
-        "model_purpose_anime": "Para anime e desenhos",
-        "model_purpose_anime_fast": "O mais leve · para anime e quadros de vídeo",
-        "model_purpose_sharp": "Para fotos, arte e anime que precisam de nitidez",
-        "model_purpose_sharpest": "Muito lento · para imagens que precisam do máximo de detalhe",
         "licence_commercial": "Uso comercial permitido · %1$s",
         "licence_noncommercial": "Não para uso comercial",
         "models_title": "Modelos",
@@ -425,16 +406,6 @@ CATALOGUE = {
     },
     "fr": {
         "about_previews": "Photos des aperçus des modèles",
-        "model_purpose_web_photo": "Pour les photos du web, compressées et floues",
-        "model_purpose_universal": "Universel · pour les images nettes mais un peu compressées",
-        "model_purpose_clean_photo": "Pour les prises nettes d’appareil photo",
-        "model_purpose_photo": "Pour les photos qui demandent un détail naturel",
-        "model_purpose_balanced": "Pour les photos qui demandent netteté et détail",
-        "model_purpose_faces": "Rapide · pour les visages, les cheveux et la nature",
-        "model_purpose_anime": "Pour l’anime et les dessins",
-        "model_purpose_anime_fast": "Le plus léger · pour l’anime et les images de vidéo",
-        "model_purpose_sharp": "Pour les photos, l’art et l’anime qui demandent de la netteté",
-        "model_purpose_sharpest": "Très lent · pour les images qui demandent le plus de détail",
         "licence_commercial": "Usage commercial autorisé · %1$s",
         "licence_noncommercial": "Pas d’usage commercial",
         "models_title": "Modèles",
@@ -458,16 +429,6 @@ CATALOGUE = {
     },
     "de": {
         "about_previews": "Fotos der Modellvorschauen",
-        "model_purpose_web_photo": "Für Fotos aus dem Netz, komprimiert und unscharf",
-        "model_purpose_universal": "Universell · für saubere, aber leicht komprimierte Bilder",
-        "model_purpose_clean_photo": "Für saubere Kameraaufnahmen",
-        "model_purpose_photo": "Für Fotos, die natürliche Details brauchen",
-        "model_purpose_balanced": "Für Fotos, die Schärfe und Detail brauchen",
-        "model_purpose_faces": "Schnell · für Gesichter, Haare und Natur",
-        "model_purpose_anime": "Für Anime und Zeichnungen",
-        "model_purpose_anime_fast": "Das leichteste · für Anime und Videobilder",
-        "model_purpose_sharp": "Für Fotos, Kunst und Anime, die Schärfe brauchen",
-        "model_purpose_sharpest": "Sehr langsam · für Bilder, die die meisten Details brauchen",
         "licence_commercial": "Kommerzielle Nutzung erlaubt · %1$s",
         "licence_noncommercial": "Nicht für kommerzielle Nutzung",
         "models_title": "Modelle",
@@ -491,16 +452,6 @@ CATALOGUE = {
     },
     "zh": {
         "about_previews": "模型预览中的照片",
-        "model_purpose_web_photo": "适用于网络上压缩、模糊的图片",
-        "model_purpose_universal": "通用 · 适用于干净但轻度压缩的图片",
-        "model_purpose_clean_photo": "适用于干净的相机照片",
-        "model_purpose_photo": "适用于需要自然细节的照片",
-        "model_purpose_balanced": "适用于需要清晰度和细节的照片",
-        "model_purpose_faces": "快速 · 适用于人脸、头发和自然",
-        "model_purpose_anime": "适用于动漫和绘画",
-        "model_purpose_anime_fast": "最轻量 · 适用于动漫和视频帧",
-        "model_purpose_sharp": "适用于需要锐利的照片、艺术和动漫",
-        "model_purpose_sharpest": "非常慢 · 适用于需要最多细节的图片",
         "licence_commercial": "允许商业使用 · %1$s",
         "licence_noncommercial": "不可用于商业用途",
         "models_title": "模型",
@@ -524,16 +475,6 @@ CATALOGUE = {
     },
     "hi": {
         "about_previews": "मॉडल प्रीव्यू की फ़ोटो",
-        "model_purpose_web_photo": "इंटरनेट की कंप्रेस्ड और धुंधली फ़ोटो के लिए",
-        "model_purpose_universal": "सार्वभौमिक · साफ़ लेकिन हल्की कंप्रेस्ड तस्वीरों के लिए",
-        "model_purpose_clean_photo": "कैमरे की साफ़ तस्वीरों के लिए",
-        "model_purpose_photo": "उन फ़ोटो के लिए जिन्हें प्राकृतिक बारीकियाँ चाहिए",
-        "model_purpose_balanced": "उन फ़ोटो के लिए जिन्हें तीक्ष्णता और बारीकी दोनों चाहिए",
-        "model_purpose_faces": "तेज़ · चेहरों, बालों और प्रकृति के लिए",
-        "model_purpose_anime": "एनीमे और चित्रों के लिए",
-        "model_purpose_anime_fast": "सबसे हल्का · एनीमे और वीडियो फ़्रेम के लिए",
-        "model_purpose_sharp": "उन फ़ोटो, कला और एनीमे के लिए जिन्हें तीक्ष्णता चाहिए",
-        "model_purpose_sharpest": "बहुत धीमा · उन तस्वीरों के लिए जिन्हें सबसे ज़्यादा बारीकी चाहिए",
         "licence_commercial": "व्यावसायिक उपयोग की अनुमति · %1$s",
         "licence_noncommercial": "व्यावसायिक उपयोग के लिए नहीं",
         "models_title": "मॉडल",
@@ -557,16 +498,6 @@ CATALOGUE = {
     },
     "bn": {
         "about_previews": "মডেল প্রিভিউয়ের ছবি",
-        "model_purpose_web_photo": "ইন্টারনেটের কম্প্রেস করা ও ঝাপসা ছবির জন্য",
-        "model_purpose_universal": "সর্বজনীন · পরিষ্কার কিন্তু অল্প কম্প্রেস করা ছবির জন্য",
-        "model_purpose_clean_photo": "ক্যামেরার পরিষ্কার ছবির জন্য",
-        "model_purpose_photo": "যে ছবিতে স্বাভাবিক খুঁটিনাটি দরকার তার জন্য",
-        "model_purpose_balanced": "যে ছবিতে তীক্ষ্ণতা ও খুঁটিনাটি দুটোই দরকার তার জন্য",
-        "model_purpose_faces": "দ্রুত · মুখ, চুল ও প্রকৃতির জন্য",
-        "model_purpose_anime": "অ্যানিমে ও আঁকা ছবির জন্য",
-        "model_purpose_anime_fast": "সবচেয়ে হালকা · অ্যানিমে ও ভিডিও ফ্রেমের জন্য",
-        "model_purpose_sharp": "যে ছবি, শিল্প ও অ্যানিমেতে তীক্ষ্ণতা দরকার তার জন্য",
-        "model_purpose_sharpest": "খুব ধীর · যে ছবিতে সবচেয়ে বেশি খুঁটিনাটি দরকার তার জন্য",
         "licence_commercial": "বাণিজ্যিক ব্যবহার অনুমোদিত · %1$s",
         "licence_noncommercial": "বাণিজ্যিক ব্যবহারের জন্য নয়",
         "models_title": "মডেল",
@@ -590,16 +521,6 @@ CATALOGUE = {
     },
     "ar": {
         "about_previews": "صور معاينات النماذج",
-        "model_purpose_web_photo": "لصور الإنترنت المضغوطة والضبابية",
-        "model_purpose_universal": "متعدد الاستخدام · للصور النظيفة لكن المضغوطة قليلًا",
-        "model_purpose_clean_photo": "للقطات الكاميرا النظيفة",
-        "model_purpose_photo": "للصور التي تحتاج تفاصيل طبيعية",
-        "model_purpose_balanced": "للصور التي تحتاج الحدة والتفاصيل معًا",
-        "model_purpose_faces": "سريع · للوجوه والشعر والطبيعة",
-        "model_purpose_anime": "للأنمي والرسومات",
-        "model_purpose_anime_fast": "الأخف · للأنمي ولقطات الفيديو",
-        "model_purpose_sharp": "للصور والفن والأنمي التي تحتاج الحدة",
-        "model_purpose_sharpest": "بطيء جدًا · للصور التي تحتاج أكبر قدر من التفاصيل",
         "licence_commercial": "مسموح بالاستخدام التجاري · %1$s",
         "licence_noncommercial": "ليس للاستخدام التجاري",
         "models_title": "النماذج",
@@ -641,6 +562,16 @@ WAITING = {
     "bn": ["সারিতে", "KARTUN এখন API-র একটি কাজে ব্যস্ত। আপনার ছবি পরেরটি।", "অপেক্ষা", "কাজ", "API-র কাজ থামান"],
     "ar": ["في الانتظار", "KARTUN مشغول بمهمة عبر الـ API. صورتك هي التالية.", "انتظار", "العمل", "إيقاف مهمة الـ API"],
 }
+
+# The model card lines (model_purpose_*) and the (i) texts (model_info_*) of every catalogue model, one data file for the 8
+# languages (tools/model-texts.json, `[AI]` like the rest; sources researches/11 and 12). Its keys must be exactly the
+# model_purpose_* / model_info_* names of values/strings.xml - a key missing on either side reddens here.
+import json as _json
+import re as _re
+MODEL_TEXTS = _json.loads((ROOT / "tools" / "model-texts.json").read_text(encoding="utf-8"))
+MODEL_TEXTS.pop("_comment", None)
+_EN_MODEL_KEYS = _re.findall(r'<string name="(model_(?:purpose|info)_\w+)"',
+                             (ROOT / "app" / "src" / "main" / "res" / "values" / "strings.xml").read_text(encoding="utf-8"))
 
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
@@ -684,6 +615,9 @@ def main():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         assert set(CATALOGUE[lang]) == set(CATALOGUE["es"]), (lang, "catalogue keys")
         for k, v in CATALOGUE[lang].items():
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
+        assert list(MODEL_TEXTS[lang]) == _EN_MODEL_KEYS, (lang, "model texts: keys differ from values/strings.xml")
+        for k, v in MODEL_TEXTS[lang].items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="agent_job_progress">{xml_text(AGENT[lang])}</string>')
         assert len(WAITING[lang]) == len(WAITING_KEYS), (lang, "waiting")

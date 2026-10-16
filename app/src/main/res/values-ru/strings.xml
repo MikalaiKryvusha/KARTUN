@@ -15,8 +15,6 @@
     <string name="setup_other_short">Другое фото</string>
     <string name="label_model">Модель</string>
     <string name="label_scale">Масштаб</string>
-    <string name="model_fast_desc">Быстрая · для фото с шумом и размытием</string>
-    <string name="model_max_desc">Детальная · для фото, где важны мелкие детали</string>
     <string name="megapixels">%1$s Мп</string>
     <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
     <string name="scale_too_big">Результат больше %1$s Мп — для этого фото подойдёт масштаб до %2$d×</string>
@@ -145,18 +143,54 @@
     <string name="notif_open_settings">Открыть настройки</string>
 
     <!-- The model catalogue and «All models» (plans/05 step 5). -->
-    <!-- Purposes say what the model is FOR, the pictures fed to it (the owner, 2026-10-16 ≈ 12:52: «Нужно писать для каких
-         целей модель» · «Для чистых, но слегка сжатых снимков» · «и так в описаниях по всем моделям»). -->
+    <!-- The card line says what the model is FOR, the pictures fed to it (the owner, 2026-10-16 ≈ 12:52: «Нужно писать для
+         каких целей модель» · «Для чистых, но слегка сжатых снимков» · «и так в описаниях по всем моделям»), and, where the
+         sources say it, what it gives (≈ 13:2x: «Можно писать и что на выходе получается»). [AI] the lines, by
+         researches/11 (authors) and researches/12 (users). -->
+    <string name="model_purpose_fast_photo">Быстрая · слабое подавление шума и размытия</string>
+    <string name="model_purpose_detail">Для старых и сжатых фото · чистый результат</string>
     <string name="model_purpose_web_photo">Для сжатых и размытых фото из интернета</string>
     <string name="model_purpose_universal">Универсальная · для чистых, но слегка сжатых снимков</string>
-    <string name="model_purpose_clean_photo">Для чистых снимков с камеры</string>
-    <string name="model_purpose_photo">Для фото, где нужны естественные детали</string>
-    <string name="model_purpose_balanced">Для фото, где нужны и резкость, и детали</string>
-    <string name="model_purpose_faces">Быстрая · для лиц, волос и природы</string>
-    <string name="model_purpose_anime">Для аниме и рисунков</string>
-    <string name="model_purpose_anime_fast">Самая лёгкая · для аниме и кадров из видео</string>
-    <string name="model_purpose_sharp">Для фото, арта и аниме, которым нужна резкость</string>
-    <string name="model_purpose_sharpest">Очень медленная · для снимков, где нужно больше всего деталей</string>
+    <string name="model_purpose_noisy_photo">Для фото с шумом · сохраняет мелкие детали</string>
+    <string name="model_purpose_photo_jpeg">Для фото со сжатием JPEG и лёгким размытием</string>
+    <string name="model_purpose_skin_texture">Для фото, где важны кожа и фактура</string>
+    <string name="model_purpose_photo">Для фото</string>
+    <string name="model_purpose_balanced">Для размытых изображений · резкость и детали</string>
+    <string name="model_purpose_faces">Быстрая · для лиц, волос и природы · мягкий естественный результат</string>
+    <string name="model_purpose_anime">Для аниме и рисунков с чёткими линиями</string>
+    <string name="model_purpose_anime_film">Для кадров из аниме-фильмов</string>
+    <string name="model_purpose_anime_fast">Самая быстрая · для аниме, комиксов и манги</string>
+    <string name="model_purpose_sharp">Облегчённая UltraSharp V2 · фото, рисунки, аниме</string>
+    <string name="model_purpose_sharpest">Очень медленная · максимум деталей на фото и рисунках</string>
+    <!-- [AI] (i) каждой модели: текст — для чего модель (researches/11), список — сильные и слабые стороны (researches/12;
+         в текст идёт только то, что подтверждают несколько голосов). Язык — строгий, понятный, без ссылок на «пользователей»
+         и «авторов» (слово владельца 2026-10-16, HOUSE_RULES R6). -->
+    <string name="model_info_realesr_general_x4v3">Компактная модель Real-ESRGAN для любых изображений. Работает быстро и слабо подавляет шум и размытие.</string>
+    <string name="model_info_realesr_general_x4v3_list">• На фотографиях даёт более мягкий результат, чем Real-ESRGAN x4plus.</string>
+    <string name="model_info_realesrgan_x4plus">Основная модель Real-ESRGAN для реальных фотографий. Обучена на фотографиях с искусственными дефектами: размытием, шумом, уменьшением размера и сжатием JPEG. Такие дефекты накапливаются у старого снимка с телефона после обработки и публикации в соцсетях.</string>
+    <string name="model_info_realesrgan_x4plus_list">• Даёт чистый результат с минимумом искажений.\n• Мелкая фактура может сглаживаться, и фото становится похожим на рисунок.</string>
+    <string name="model_info_realesrgan_x4plus_anime">Модель Real-ESRGAN для аниме и иллюстраций, компактнее Real-ESRGAN x4plus.</string>
+    <string name="model_info_realesrgan_x4plus_anime_list">• Сохраняет ровные однотонные участки и чёткие линии.\n• Может терять мелкие детали.</string>
+    <string name="model_info_realesr_animevideov3_x4">Самая компактная модель Real-ESRGAN, создана для кадров аниме-видео. Точно передаёт исходные цвета и даёт мало искажений.</string>
+    <string name="model_info_realesr_animevideov3_x4_list">• Подходит для рисованных изображений, мультфильмов, комиксов и манги.\n• Не подходит для фотографий и видео с реальными людьми.</string>
+    <string name="model_info_4xnomos8ksc_fp16">Модель для фотографий со сжатием JPEG и лёгким размытием. Обучена на наборе фотографий Nomos8k и даёт реалистичный результат.</string>
+    <string name="model_info_4xhfa2k_fp16">Модель для аниме. Обучена на кадрах из современных аниме-фильмов, к которым добавлено лёгкое сжатие JPEG и размытие.</string>
+    <string name="model_info_4x_nmkd_superscale_fp16">Модель для фотографий с шумом и следами сжатия. Очищает фото от шума и следов сжатия.</string>
+    <string name="model_info_4x_nmkd_superscale_fp16_list">• Сохраняет мелкие детали.</string>
+    <string name="model_info_4x_nmkd_siax_fp16">Универсальная модель для чистых и слегка сжатых изображений (качество JPEG от 75 из 100).</string>
+    <string name="model_info_4x_nmkd_siax_fp16_list">• Хорошо справляется с реалистичными фото: люди, кожа, шерсть, мелкие детали.\n• Добавляет зерно и может давать избыточную резкость.\n• На тёмных и однотонных участках возможны белые точки.</string>
+    <string name="model_info_4xnomoswebphoto_realplksr_fp16">Модель для фотографий из интернета. Обучена на снимках с шумом, размытием объектива и повторным сжатием JPEG и WebP.</string>
+    <string name="model_info_4xnomoswebphoto_realplksr_fp16_list">• Не предназначена для изображений, которые уже увеличивали.</string>
+    <string name="model_info_4x_clearrealityv1_fp16">Модель для реалистичных снимков: лица, волосы, природа. Даёт мягкий естественный результат с минимумом искажений. Предназначена для достаточно чистых кадров без сильного зерна.</string>
+    <string name="model_info_4x_clearrealityv1_fp16_list">• Работает быстро, файл модели меньше 1 МБ.\n• На кадрах с размытым фоном (боке) возможны искажения.</string>
+    <string name="model_info_4x_remacri_fp16">Смесь нескольких моделей для фотографий, среди них 4x NMKD Siax и 4x NMKD Superscale. Сохраняет детали и слабо сглаживает: кожа не расплывается.</string>
+    <string name="model_info_4x_remacri_fp16_list">• Хорошо сохраняет кожу, волосы и фактуру; подходит для страниц комиксов и кадров мультфильмов.\n• Может давать избыточную резкость и искажения.</string>
+    <string name="model_info_4x_ultramix_balanced_fp16">Модель семейства UltraMix: смесь первой версии UltraSharp и других моделей её автора. Модели UltraMix дают более сбалансированный результат, чем UltraSharp.</string>
+    <string name="model_info_4x_ultramix_balanced_fp16_list">• Сохраняет резкость и детали, подходит для размытых сканов перед печатью.</string>
+    <string name="model_info_4x_ultrasharpv2_lite_fp16">Облегчённая версия UltraSharp V2 для фото, аниме, рисунков, компьютерной графики и текста.</string>
+    <string name="model_info_4x_ultrasharpv2_lite_fp16_list">• Работает значительно быстрее полной UltraSharp V2.</string>
+    <string name="model_info_4x_ultrasharpv2_fp16">Полная версия UltraSharp V2 для фото, аниме, мультфильмов, рисунков, компьютерной графики и текста. Убирает шум и следы сжатия JPEG.</string>
+    <string name="model_info_4x_ultrasharpv2_fp16_list">• Хорошо прорисовывает детали, материалы и здания; точно передаёт рисунки и иллюстрации.\n• Работает очень медленно.</string>
     <string name="licence_commercial">Разрешена для коммерческого использования · %1$s</string>
     <string name="licence_noncommercial">Не для коммерческого использования</string>
     <string name="models_title">Модели</string>

@@ -45,6 +45,16 @@ class CatalogueTest {
         assertEquals(runs.distinct(), runs)
     }
 
+    /** The owner, chat 2026-10-16 ≈ 14:52: «ультрашарп модели в самый верх списка, под ними ультрамикс». */
+    @Test fun ultraSharpModelsOnTopUltraMixUnderThem() {
+        val names = cat.byAuthor.map { it.name }
+        val sharp = names.count { "UltraSharp" in it }
+        val mix = names.count { "UltraMix" in it }
+        assertTrue("the catalogue lost its UltraSharp or UltraMix models", sharp > 0 && mix > 0)
+        assertTrue(names.take(sharp).toString(), names.take(sharp).all { "UltraSharp" in it })
+        assertTrue(names.drop(sharp).take(mix).toString(), names.drop(sharp).take(mix).all { "UltraMix" in it })
+    }
+
     @Test fun filesComeFromTheModelsRelease() {
         val m = cat.models.first { !it.builtin }
         assertEquals("https://github.com/MikalaiKryvusha/KARTUN/releases/download/models/${m.bin.name}", cat.url(m.bin))

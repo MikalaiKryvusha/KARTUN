@@ -378,7 +378,7 @@ private fun ModelCard(m: Model, on: Boolean, loading: Boolean, estimate: String,
                 Text(m.name, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f, fill = false))
                 ModelInfoButton(m)
             }
-            Text(stringResource(R.string.model_desc_with_estimate, stringResource(purposeRes(m.purpose)), estimate), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
+            Text(glueDots(stringResource(R.string.model_desc_with_estimate, stringResource(purposeRes(m.purpose)), estimate)), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
             LicenceBadge(m)
         }
         // While the chosen model loads (preload on this screen) a small pink ring stands where the tick will be.

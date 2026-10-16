@@ -17,8 +17,11 @@ const OUT = join(OUT_DIR, 'catalogue.json');
 const PREVIEW_DIR = join(OUT_DIR, 'previews');
 const LICENCES = new Set(['Apache-2.0', 'BSD-3-Clause', 'CC-BY-4.0', 'CC-BY-NC-SA-4.0', 'MIT', 'WTFPL']);
 // Each purpose is a string resource model_purpose_<purpose> in all 10 languages; each kind a filter chip of «Все модели».
-const PURPOSES = new Set(['fast_photo', 'detail', 'web_photo', 'universal', 'clean_photo', 'photo', 'balanced', 'faces',
-  'anime', 'anime_fast', 'sharp', 'sharpest']);
+// Since 2026-10-16 every model has a purpose of its own (researches/11 + 12: models that shared one disagreed with it).
+const PURPOSES = new Set(['fast_photo', 'detail', 'web_photo', 'universal', 'noisy_photo', 'photo_jpeg', 'skin_texture',
+  'balanced', 'faces', 'anime', 'anime_film', 'anime_fast', 'sharp', 'sharpest']);
+// The (i) of a model: model_info_<key> (+ optional _list), the key as ModelInfoButton (ui/ModelsScreen.kt) builds it.
+const infoKey = (id) => 'model_info_' + id.toLowerCase().replace(/[^a-z0-9]/g, '_');
 const KINDS = new Set(['photo', 'anime']);
 const STRINGS = readFileSync(join('app', 'src', 'main', 'res', 'values', 'strings.xml'), 'utf8');
 
@@ -34,6 +37,8 @@ for (const m of src.models) {
   for (const f of m.files || []) if (!/^[0-9a-f]{64}$/.test(f.sha256) || !(f.bytes > 0)) fail(`${m.id}: ${f.name} hash or size`);
   if (!PURPOSES.has(m.purpose)) fail(`${m.id}: unknown purpose ${m.purpose}`);
   else if (!STRINGS.includes(`name="model_purpose_${m.purpose}"`)) fail(`${m.id}: no string model_purpose_${m.purpose}`);
+  // The _list (strong and weak sides) is optional: a model with too few sources has the text only.
+  if (!STRINGS.includes(`name="${infoKey(m.id)}"`)) fail(`${m.id}: no string ${infoKey(m.id)} (its (i) would stay hidden)`);
   if (!KINDS.has(m.kind)) fail(`${m.id}: unknown kind ${m.kind}`);
   if (typeof m.builtin !== 'boolean') fail(`${m.id}: builtin must be true or false`);
   if (!(m.gpuMsPerMp > 0) || !(m.cpuMsPerMp > m.gpuMsPerMp)) fail(`${m.id}: rates`);

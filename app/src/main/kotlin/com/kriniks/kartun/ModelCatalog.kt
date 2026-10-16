@@ -61,12 +61,15 @@ class Catalogue(val release: String, val models: List<Model>) {
     /** Where [file] of a catalogue model is downloaded from. */
     fun url(file: ModelFile): String = release.trimEnd('/') + "/" + file.name
 
-    /** The list of «Все модели», grouped by author (the owner, chat 2026-10-16, before 10:48 +03:00: «Список всех моделей
-     *  сортируем по авторам моделей. В начале вверху списка модели автора моделей Ультрамикс ультрашарп»): [LEAD_AUTHOR]
-     *  first, then the other authors A-Z; `[AI]` inside one author - by name A-Z. [NOT-TESTED] */
+    /** The list of «Все модели»: the UltraSharp models on top, UltraMix under them (the owner, chat 2026-10-16 ≈ 14:52:
+     *  «ультрашарп модели в самый верх списка, под ними ультрамикс» · «они мне больше всего нравятся из моего прошлого
+     *  опыта»), then grouped by author (before 10:48: «Список всех моделей сортируем по авторам моделей. В начале вверху
+     *  списка модели автора моделей Ультрамикс ультрашарп»): the rest of [LEAD_AUTHOR], then the other authors A-Z;
+     *  `[AI]` inside one group - by name A-Z. [NOT-TESTED: CatalogueTest checks the order of the shipped catalogue] */
     val byAuthor: List<Model>
         get() = models.sortedWith(
-            compareBy<Model> { it.author != LEAD_AUTHOR }
+            compareBy<Model> { if ("UltraSharp" in it.name) 0 else if ("UltraMix" in it.name) 1 else 2 }
+                .thenBy { it.author != LEAD_AUTHOR }
                 .thenBy(String.CASE_INSENSITIVE_ORDER) { it.author }
                 .thenBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 .thenBy { it.id },

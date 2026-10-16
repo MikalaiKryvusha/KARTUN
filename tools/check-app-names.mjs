@@ -10,7 +10,9 @@
 import { readFileSync } from 'node:fs';
 
 const file = process.argv[2] ?? 'app/build.gradle.kts';
-const text = readFileSync(file, 'utf8');
+// Only the buildTypes block: signingConfigs { create("release") } above it is a signing key, not a build (2026-10-16).
+const whole = readFileSync(file, 'utf8');
+const text = whole.includes('buildTypes {') ? whole.slice(whole.indexOf('buildTypes {')) : whole;
 const want = { debug: 'Debug KARTUN', release: 'KARTUN' };
 let bad = 0;
 for (const [type, name] of Object.entries(want)) {
@@ -19,6 +21,6 @@ for (const [type, name] of Object.entries(want)) {
   const got = text.match(re)?.[1];
   if (got !== name) { console.error(`DRIFT ${type}: «${got}» in ${file}, R3 wants «${name}»`); bad++; }
 }
-if (/create\("stage"\)|getByName\("stage"\)/.test(text)) { console.error(`DRIFT stage: ${file} has a stage build again, R3 keeps two`); bad++; }
+if (/create\("stage"\)|getByName\("stage"\)/.test(whole)) { console.error(`DRIFT stage: ${file} has a stage build again, R3 keeps two`); bad++; }
 if (!bad) console.log(`app names match R3: ${Object.values(want).join(' · ')}`);
 process.exit(bad ? 1 : 0);

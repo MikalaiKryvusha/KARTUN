@@ -135,7 +135,7 @@ private fun ModelRow(
                     Text(m.name, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f, fill = false))
                     ModelInfoButton(m)
                 }
-                Text(stringResource(R.string.model_desc_with_size, stringResource(purposeRes(m.purpose)), sizeMb(m.bytes)),
+                Text(glueDots(stringResource(R.string.model_desc_with_size, stringResource(purposeRes(m.purpose)), sizeMb(m.bytes))),
                     style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
             }
             when {
@@ -234,7 +234,7 @@ fun LicenceBadge(m: Model) {
         Model.Badge.NonCommercial -> stringResource(R.string.licence_noncommercial) to c.error
     }
     Text(
-        text, Modifier.clip(CircleShape).background(color.copy(alpha = 0.14f)).padding(horizontal = 9.dp, vertical = 4.dp),
+        glueDots(text), Modifier.clip(CircleShape).background(color.copy(alpha = 0.14f)).padding(horizontal = 9.dp, vertical = 4.dp),
         style = MaterialTheme.typography.labelSmall.copy(letterSpacing = MaterialTheme.typography.bodySmall.letterSpacing), color = color,
     )
 }
@@ -270,16 +270,25 @@ fun purposeResOrNull(purpose: String): Int? = when (purpose) {
     "detail" -> R.string.model_purpose_detail
     "web_photo" -> R.string.model_purpose_web_photo
     "universal" -> R.string.model_purpose_universal
-    "clean_photo" -> R.string.model_purpose_clean_photo
+    "noisy_photo" -> R.string.model_purpose_noisy_photo
+    "photo_jpeg" -> R.string.model_purpose_photo_jpeg
+    "skin_texture" -> R.string.model_purpose_skin_texture
     "photo" -> R.string.model_purpose_photo
     "balanced" -> R.string.model_purpose_balanced
     "faces" -> R.string.model_purpose_faces
     "anime" -> R.string.model_purpose_anime
+    "anime_film" -> R.string.model_purpose_anime_film
     "anime_fast" -> R.string.model_purpose_anime_fast
     "sharp" -> R.string.model_purpose_sharp
     "sharpest" -> R.string.model_purpose_sharpest
     else -> null
 }
+
+/** The « · » separators of a card line with no-break spaces on both sides: a line never ends or starts with a hanging
+ *  «·» - the line breaks at an ordinary space before it, so «·» always stands between two words (the owner, 2026-10-16
+ *  ≈ 14:58: «разделители булет-дотом, которые остаются на строке в конце, и после него перенос … некрасиво»).
+ *  [TESTED: GlueDotsTest - the separator loses its breaking spaces; the look on the Titan - see plans/08 step 2] */
+fun glueDots(s: String): String = s.replace(" · ", " · ").replace("≈ ", "≈ ")  // «≈» stays with its number too
 
 /** Megabytes as the cards show them: «33» from 1 MB up, «1,2» below 10 MB (the owner: «Там нужно писатьих размер в
  *  мегабайтах»); decimal MB like the release page shows. */

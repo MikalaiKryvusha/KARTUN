@@ -14,8 +14,6 @@
     <string name="setup_other_short">Another photo</string>
     <string name="label_model">Model</string>
     <string name="label_scale">Scale</string>
-    <string name="model_fast_desc">Fast · for noisy, blurry photos</string>
-    <string name="model_max_desc">Detailed · for photos where fine details matter</string>
     <string name="megapixels">%1$s MP</string>
     <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
     <string name="scale_too_big">The result would exceed %1$s MP — for this photo choose up to %2$d×</string>
@@ -141,19 +139,56 @@
     <string name="notif_open_settings">Open settings</string>
 
     <!-- The model catalogue and «All models» (plans/05 step 5). -->
-    <string name="model_purpose_fast_photo" translatable="false">@string/model_fast_desc</string>
-    <string name="model_purpose_detail" translatable="false">@string/model_max_desc</string>
-    <!-- Purposes say what the model is FOR - the pictures fed to it, never the result (the owner, 2026-10-16). -->
+    <!-- [AI] The card line says what pictures the model is for and, where the sources say it, what it gives (the owner,
+         2026-10-16: «Можно писать и что на выходе получается, и для каких фото на входе предназначена. Можно кратко в
+         карточке писать и подробнее - в (i) инфо кнопке по модели»). Every claim is the authors' (researches/11) or the
+         users' (researches/12); «Fast» and «Very slow» are also the Titan rates of docs/model-catalogue.json. -->
+    <string name="model_purpose_fast_photo">Fast · light noise and blur removal</string>
+    <string name="model_purpose_detail">For old, compressed photos · clean result</string>
     <string name="model_purpose_web_photo">For compressed, blurry photos from the web</string>
     <string name="model_purpose_universal">Universal · for clean but slightly compressed pictures</string>
-    <string name="model_purpose_clean_photo">For clean camera shots</string>
-    <string name="model_purpose_photo">For photos that need natural detail</string>
-    <string name="model_purpose_balanced">For photos that need both sharpness and detail</string>
-    <string name="model_purpose_faces">Fast · for faces, hair and nature</string>
-    <string name="model_purpose_anime">For anime and drawings</string>
-    <string name="model_purpose_anime_fast">Lightest · for anime and video frames</string>
-    <string name="model_purpose_sharp">For photos, art and anime that need sharpness</string>
-    <string name="model_purpose_sharpest">Very slow · for pictures that need the most detail</string>
+    <string name="model_purpose_noisy_photo">For noisy photos · keeps fine detail</string>
+    <string name="model_purpose_photo_jpeg">For photos with JPEG compression and slight blur</string>
+    <string name="model_purpose_skin_texture">For photos where skin and texture matter</string>
+    <!-- The fallback for a purpose this build does not know yet (purposeRes). -->
+    <string name="model_purpose_photo">For photos</string>
+    <string name="model_purpose_balanced">For blurry images · sharpness and detail</string>
+    <string name="model_purpose_faces">Fast · for faces, hair and nature · soft, natural result</string>
+    <string name="model_purpose_anime">For anime and drawings with clean lines</string>
+    <string name="model_purpose_anime_film">For frames from anime films</string>
+    <string name="model_purpose_anime_fast">Fastest · for anime, comics and manga</string>
+    <string name="model_purpose_sharp">Light version of UltraSharp V2 · photos, art, anime</string>
+    <string name="model_purpose_sharpest">Very slow · the most detail in photos and art</string>
+    <!-- [AI] The (i) of each model: the text - what the model is for (researches/11); _list (optional) - its strong and weak
+         sides (researches/12; only what several voices back). KARTUN speaks as the brand, in plain strict language, with no
+         «users say» / «the author thinks» (the owner, 2026-10-16, HOUSE_RULES R6). Key: model_info_ + the catalogue id,
+         lowercase, other signs «_». -->
+    <string name="model_info_realesr_general_x4v3">A compact Real-ESRGAN model for any image. It is fast and removes noise and blur only lightly.</string>
+    <string name="model_info_realesr_general_x4v3_list">• On photos it gives a softer result than Real-ESRGAN x4plus.</string>
+    <string name="model_info_realesrgan_x4plus">The main Real-ESRGAN model for real-world photos. It was trained on photos with artificial defects: blur, noise, downscaling and JPEG compression. An old phone photo collects such defects after editing and posting to social media.</string>
+    <string name="model_info_realesrgan_x4plus_list">• Gives a clean result with minimal distortion.\n• Fine texture can be smoothed out, and the photo starts to look like a drawing.</string>
+    <string name="model_info_realesrgan_x4plus_anime">The Real-ESRGAN model for anime and illustrations, more compact than Real-ESRGAN x4plus.</string>
+    <string name="model_info_realesrgan_x4plus_anime_list">• Keeps flat colour areas even and lines clean.\n• Can lose fine detail.</string>
+    <string name="model_info_realesr_animevideov3_x4">The most compact Real-ESRGAN model, made for anime video frames. It renders the original colours faithfully and gives little distortion.</string>
+    <string name="model_info_realesr_animevideov3_x4_list">• Suits drawn images, cartoons, comics and manga.\n• Does not suit photos and videos of real people.</string>
+    <string name="model_info_4xnomos8ksc_fp16">A model for photos with JPEG compression and slight blur. It was trained on the Nomos8k photo set and gives a realistic result.</string>
+    <string name="model_info_4xhfa2k_fp16">An anime model. It was trained on frames from modern anime films with light JPEG compression and blur added.</string>
+    <string name="model_info_4x_nmkd_superscale_fp16">A model for photos with noise and compression traces. It cleans the photo of noise and compression traces.</string>
+    <string name="model_info_4x_nmkd_superscale_fp16_list">• Keeps fine detail.</string>
+    <string name="model_info_4x_nmkd_siax_fp16">A universal model for clean and slightly compressed images (JPEG quality 75 out of 100 and above).</string>
+    <string name="model_info_4x_nmkd_siax_fp16_list">• Handles realistic photos well: people, skin, fur, fine detail.\n• Adds grain and can give excessive sharpness.\n• White dots may appear on dark and flat areas.</string>
+    <string name="model_info_4xnomoswebphoto_realplksr_fp16">A model for photos from the web. It was trained on shots with noise, lens blur and repeated JPEG and WebP compression.</string>
+    <string name="model_info_4xnomoswebphoto_realplksr_fp16_list">• Not meant for images that were already enlarged.</string>
+    <string name="model_info_4x_clearrealityv1_fp16">A model for realistic shots: faces, hair, nature. It gives a soft, natural result with minimal distortion. It is meant for fairly clean shots without heavy grain.</string>
+    <string name="model_info_4x_clearrealityv1_fp16_list">• Fast; the model file is under 1 MB.\n• Shots with a blurred background (bokeh) may get distortion.</string>
+    <string name="model_info_4x_remacri_fp16">A blend of several photo models, among them 4x NMKD Siax and 4x NMKD Superscale. It keeps detail and smooths little: skin does not blur.</string>
+    <string name="model_info_4x_remacri_fp16_list">• Keeps skin, hair and texture well; suits comic pages and cartoon frames.\n• Can give excessive sharpness and distortion.</string>
+    <string name="model_info_4x_ultramix_balanced_fp16">A model of the UltraMix family: a blend of the first UltraSharp and other models by the same maker. UltraMix models give a more balanced result than UltraSharp.</string>
+    <string name="model_info_4x_ultramix_balanced_fp16_list">• Keeps sharpness and detail; suits blurry scans before printing.</string>
+    <string name="model_info_4x_ultrasharpv2_lite_fp16">The light version of UltraSharp V2 for photos, anime, drawings, computer graphics and text.</string>
+    <string name="model_info_4x_ultrasharpv2_lite_fp16_list">• Much faster than the full UltraSharp V2.</string>
+    <string name="model_info_4x_ultrasharpv2_fp16">The full version of UltraSharp V2 for photos, anime, cartoons, drawings, computer graphics and text. It removes noise and traces of JPEG compression.</string>
+    <string name="model_info_4x_ultrasharpv2_fp16_list">• Draws detail, materials and buildings well; renders drawings and illustrations faithfully.\n• Very slow.</string>
     <string name="licence_commercial">Commercial use allowed · %1$s</string>
     <string name="licence_noncommercial">Not for commercial use</string>
     <string name="models_title">Models</string>

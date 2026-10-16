@@ -20,6 +20,21 @@ android {
         ndk { abiFilters += "arm64-v8a" }
     }
 
+    // The release key lives in .env + kartun-release.jks at the project root, outside git (owner's rule R2; made by
+    // tools/make-release-key.py on the owner's word 2026-10-16 «ты создай в .env, вне гита»). Without .env the release
+    // build stays unsigned - a clean clone still builds. [NOT-TESTED]
+    val releaseEnv = rootProject.file(".env").takeIf { it.exists() }?.readLines()
+        ?.mapNotNull { line -> line.trim().takeIf { it.isNotEmpty() && !it.startsWith("#") && "=" in it } }
+        ?.associate { it.substringBefore("=").trim() to it.substringAfter("=").trim() }
+    if (releaseEnv != null) signingConfigs {
+        create("release") {
+            storeFile = rootProject.file(releaseEnv.getValue("KARTUN_KEYSTORE"))
+            storePassword = releaseEnv.getValue("KARTUN_KEYSTORE_PASSWORD")
+            keyAlias = releaseEnv.getValue("KARTUN_KEY_ALIAS")
+            keyPassword = releaseEnv.getValue("KARTUN_KEY_PASSWORD")
+        }
+    }
+
     // Two builds (owner's rule R3, HOUSE_RULES.md; the stage build was dropped by the owner 2026-10-15 ≈ 15:55 +03:00:
     // «не нужно три варианта сборки. Два достаточно. Для разработки дебаг. Прод версия.»): debug is «Debug KARTUN»,
     // prod is just «KARTUN»; the .debug suffix lets both install side by side on the Titan.
@@ -35,6 +50,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+            if (releaseEnv != null) signingConfig = signingConfigs.getByName("release")
         }
     }
     // The «Отладка» section and the engine probe screen live in src/debug (code and strings ship only in «Debug KARTUN»,
