@@ -73,7 +73,7 @@ Sections: [1 What it does](#en-1) · [2 Screens](#en-2) · [3 Models and speed](
    zoom in, pinch to zoom further. The panel with the buttons slides away to the edge.
 6. Saves into `Pictures/KARTUN` as PNG, JPEG or WebP with a quality slider, always as a new file, or sends the result
    through the system «Share» menu.
-7. Speaks ten languages: English, Russian, Spanish, Portuguese, French, German, Chinese, Hindi, Bengali, Arabic. The
+7. Is localized into ten languages: English, Russian, Spanish, Portuguese, French, German, Chinese, Hindi, Bengali, Arabic. The
    language follows the system or is chosen for KARTUN alone.
 8. Works in portrait and landscape; every setting has an (i) button with a short explanation, and the user guide is
    built in.
@@ -292,8 +292,8 @@ Vulkan.
    двумя пальцами — ещё крупнее. Панель с кнопками уезжает за край экрана.
 6. Сохраняет в `Pictures/KARTUN` в PNG, JPEG или WebP с ползунком качества, всегда новым файлом, или отправляет
    результат через системное меню «Поделиться».
-7. Говорит на десяти языках: английском, русском, испанском, португальском, французском, немецком, китайском, хинди,
-   бенгальском, арабском. Язык берётся из системы или выбирается только для KARTUN.
+7. Локализовано на десять языков: английский, русский, испанский, португальский, французский, немецкий, китайский, хинди,
+   бенгальский, арабский. Язык берётся из системы или выбирается только для KARTUN.
 8. Работает в портретной и альбомной ориентации; у каждой настройки есть кнопка (i) с коротким пояснением, руководство
    пользователя встроено.
 9. Принимает задания от ИИ-агентов с компьютера по adb: команда `node tools/kartun-cli.mjs upscale photo.jpg` отправляет
