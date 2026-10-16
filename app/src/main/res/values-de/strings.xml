@@ -20,8 +20,8 @@
     <string name="upscale">Verbessern</string>
     <string name="upscale_with_estimate">Verbessern · ≈ %1$s</string>
     <string name="info_close">Schließen</string>
-    <string name="info_scale_text">Der Maßstab gibt an, wie oft Breite und Höhe des Fotos wachsen: 1×, 2×, 4×, 8× oder 16×; standardmäßig 2×.</string>
-    <string name="info_scale_list">• 1× – gleiche Größe; das Netz entfernt nur Rauschen und Unschärfe.\n• 2× und 4× – ein Durchgang; reicht für Bildschirm und Druck.\n• 8× und 16× – zwei Durchgänge: 4- bis 16-mal länger, sehr große Datei.</string>
+    <string name="info_scale_text">Der Maßstab gibt an, wie oft Breite und Höhe des Fotos wachsen: 1×, 2×, 4×, 8× oder 16×; standardmäßig 4×.</string>
+    <string name="info_scale_list">• 4× – der native Maßstab der Modelle: Sie sind darauf trainiert, genau 4-fach zu vergrößern, und liefern bei 4× das beste Ergebnis.\n• 1× und 2× – derselbe 4×-Durchgang, danach wird das Ergebnis auf die gewählte Größe verkleinert; 1× entfernt nur Rauschen und Unschärfe.\n• 8× und 16× – zwei Durchgänge: 4- bis 16-mal länger, sehr große Datei.</string>
     <string name="info_model_text">Ein Modell ist ein trainiertes neuronales Netz. Modelle unterscheiden sich darin, womit sie gelernt haben: eines stellt Fotos besser wieder her, ein anderes Zeichnungen.</string>
     <string name="working_title">Das Netz verbessert dein Foto</string>
     <string name="cancel">Abbrechen</string>
@@ -124,7 +124,7 @@
     <string name="model_download_failed">Das Modell konnte nicht heruntergeladen werden. Prüfe die Verbindung und versuche es erneut.</string>
     <string name="model_damaged">Die heruntergeladene Datei war beschädigt und wurde gelöscht. Versuche es erneut.</string>
     <string name="error_model_downloaded">Das Modell konnte nicht geladen werden. Lösche es unter „Alle Modelle“ und lade es erneut herunter.</string>
-    <string name="info_model_list">• Dieser Bildschirm zeigt die zwei zuletzt benutzten Modelle.\n• „Alle Modelle“ listet jedes Modell: wofür es gut ist, Autor, Lizenz und Größe. Lade die benötigten herunter; sie arbeiten ohne Netz.</string>
+    <string name="info_model_list">• Jedes Modell im Katalog ist darauf trainiert, 4-fach zu vergrößern: Bei 4× liefert es das beste Ergebnis.\n• Dieser Bildschirm zeigt die zwei zuletzt benutzten Modelle.\n• „Alle Modelle“ listet jedes Modell: wofür es gut ist, Autor, Lizenz und Größe. Lade die benötigten herunter; sie arbeiten ohne Netz.</string>
     <string name="model_purpose_fast_photo">Schnell · entfernt Rauschen und Unschärfe nur leicht</string>
     <string name="model_purpose_detail">Für alte, komprimierte Fotos · sauberes Ergebnis</string>
     <string name="model_purpose_web_photo">Für Fotos aus dem Netz, komprimiert und unscharf</string>

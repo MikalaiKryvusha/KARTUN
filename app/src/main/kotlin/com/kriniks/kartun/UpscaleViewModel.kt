@@ -101,7 +101,11 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
             error = null
             val ctx = getApplication<Application>()
             val decoded = withContext(UpscaleEngine.dispatcher) {
-                runCatching { UpscaleEngine.decode(ImageDecoder.createSource(ctx.contentResolver, uri)) }
+                runCatching {
+                    UpscaleEngine.decodeAny(ImageDecoder.createSource(ctx.contentResolver, uri)) {
+                        ctx.contentResolver.openFileDescriptor(uri, "r")
+                    }
+                }
             }
             decoded.onSuccess { bmp ->
                 source = Source(uri, displayName(ctx, uri), bmp)
@@ -499,7 +503,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         private const val PREF_QUALITY = "save_quality"
         /** The owner's scale steps: «x1, x2 (по умолчанию), x4, x8, x16» (interview #002). */
         val SCALES = listOf(1, 2, 4, 8, 16)
-        const val DEFAULT_SCALE_INDEX = 1
+        const val DEFAULT_SCALE_INDEX = 2  // 4× (the owner, 2026-10-16 ≈ 15:03: «давай увеличение x4 сделаем на ползунке по умолчанию»)
         /** The shipped models are 4x; 1x and 2x are the 4x result scaled down (plans/01 §4.5.1). */
         const val ENGINE_SCALE = 4
         /** Tile edge in px - the value of every phase 0 run on the Titan (plans/02). */

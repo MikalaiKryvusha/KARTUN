@@ -20,8 +20,8 @@
     <string name="upscale">Améliorer</string>
     <string name="upscale_with_estimate">Améliorer · ≈ %1$s</string>
     <string name="info_close">Fermer</string>
-    <string name="info_scale_text">L’échelle indique combien de fois la largeur et la hauteur de la photo augmentent : 1×, 2×, 4×, 8× ou 16× ; 2× par défaut.</string>
-    <string name="info_scale_list">• 1× — même taille ; le réseau retire seulement le bruit et le flou.\n• 2× et 4× — une passe du réseau ; assez pour l’écran et l’impression.\n• 8× et 16× — deux passes : 4 à 16 fois plus long, fichier très volumineux.</string>
+    <string name="info_scale_text">L’échelle indique combien de fois la largeur et la hauteur de la photo augmentent : 1×, 2×, 4×, 8× ou 16× ; 4× par défaut.</string>
+    <string name="info_scale_list">• 4× — l’échelle native des modèles : ils sont entraînés pour agrandir exactement 4 fois et donnent le meilleur résultat à 4×.\n• 1× et 2× — la même passe à 4×, puis le résultat est réduit à la taille choisie ; 1× retire seulement le bruit et le flou.\n• 8× et 16× — deux passes : 4 à 16 fois plus long, fichier très volumineux.</string>
     <string name="info_model_text">Un modèle est un réseau de neurones entraîné. Les modèles diffèrent par les images apprises : l’un restaure mieux les photos, l’autre les dessins.</string>
     <string name="working_title">Le réseau améliore votre photo</string>
     <string name="cancel">Annuler</string>
@@ -126,7 +126,7 @@
     <string name="model_download_failed">Impossible de télécharger le modèle. Vérifiez la connexion et réessayez.</string>
     <string name="model_damaged">Le fichier téléchargé était endommagé et a été supprimé. Réessayez.</string>
     <string name="error_model_downloaded">Impossible de charger le modèle. Supprimez-le dans « Tous les modèles » et téléchargez-le à nouveau.</string>
-    <string name="info_model_list">• Cet écran montre les deux derniers modèles utilisés.\n• « Tous les modèles » liste chaque modèle : à quoi il sert, son auteur, sa licence et sa taille. Téléchargez ceux qu’il vous faut ; ils marchent sans réseau.</string>
+    <string name="info_model_list">• Chaque modèle du catalogue est entraîné pour agrandir 4 fois : à 4×, il donne le meilleur résultat.\n• Cet écran montre les deux derniers modèles utilisés.\n• « Tous les modèles » liste chaque modèle : à quoi il sert, son auteur, sa licence et sa taille. Téléchargez ceux qu’il vous faut ; ils marchent sans réseau.</string>
     <string name="model_purpose_fast_photo">Rapide · débruitage et défloutage légers</string>
     <string name="model_purpose_detail">Pour les photos anciennes et compressées · rendu propre</string>
     <string name="model_purpose_web_photo">Pour les photos du web, compressées et floues</string>

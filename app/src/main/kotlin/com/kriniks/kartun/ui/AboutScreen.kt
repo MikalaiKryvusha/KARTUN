@@ -109,6 +109,10 @@ fun AboutScreen(onBack: () -> Unit) {
                 "4xNomosWebPhoto RealPLKSR (Philip Hofmann)" to "CC BY 4.0",
                 "4x NMKD Siax (NMKD)" to "WTFPL",
                 "Real-ESRGAN (Xintao Wang)" to "BSD 3-Clause",
+                // The second decoder (plans/08 step 3): texts in docs/licenses/ (libtiff, stb_image; QOI's MIT is in qoi.h).
+                "libtiff (Sam Leffler, Silicon Graphics)" to "libtiff licence",
+                "stb_image (Sean Barrett)" to "Public domain",
+                "QOI (Dominic Szablewski)" to "MIT",
                 "Unbounded, Manrope" to "SIL Open Font License 1.1",
                 "AndroidX, Jetpack Compose" to "Apache 2.0",
             ))

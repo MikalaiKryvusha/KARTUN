@@ -14,6 +14,7 @@ import com.kriniks.kartun.UpscaleViewModel.Companion.rateKey
 import com.kriniks.kartun.UpscaleViewModel.Companion.secondPassInput
 import com.kriniks.kartun.UpscaleViewModel.Companion.startRate
 import com.kriniks.kartun.UpscaleViewModel.Companion.tiles
+import com.kriniks.kartun.engine.ImageCodec
 import com.kriniks.kartun.engine.NcnnUpscaler
 import com.kriniks.kartun.engine.TileListener
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -142,6 +143,21 @@ object UpscaleEngine {
             decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
             decoder.setTargetColorSpace(android.graphics.ColorSpace.get(android.graphics.ColorSpace.Named.SRGB))
         }.let { if (it.config == Bitmap.Config.ARGB_8888) it else it.copy(Bitmap.Config.ARGB_8888, false) }
+
+    /**
+     * Opens a photo by both doors (plans/08 step 3): Android's ImageDecoder first ([decode]); when it refuses the file
+     * (TGA, PSD, PPM/PGM, HDR, QOI - «unimplemented» on the Titan, 2026-10-16), the engine's second decoder [ImageCodec]
+     * reads it through [openFd]. The size limit holds on both doors; the first door's error is rethrown when the second
+     * cannot read the file either. [TESTED: 2026-10-16 · agent door on the Titan - testcases/reports/2026-10-16_input_formats_titan.md; the screen path - NOT-TESTED]
+     */
+    fun decodeAny(source: ImageDecoder.Source, openFd: () -> android.os.ParcelFileDescriptor?): Bitmap =
+        try {
+            decode(source)
+        } catch (e: java.io.IOException) {
+            openFd()?.use { pfd ->
+                ImageCodec.decode(pfd.fd) { w, h -> if (w.toFloat() * h / 1_000_000f > MAX_INPUT_MP) throw TooBig() }
+            } ?: throw e
+        }
 
     /** Engine thread only: makes [m] on [useGpu] the loaded net, releasing the previous one. */
     private fun ensureLoaded(ctx: Context, m: Model, useGpu: Boolean): NcnnUpscaler {

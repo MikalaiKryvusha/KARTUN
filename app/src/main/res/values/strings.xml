@@ -22,10 +22,10 @@
     <string name="upscale_with_estimate">Enhance · ≈ %1$s</string>
 
     <string name="info_close">Close</string>
-    <string name="info_scale_text">Scale is how many times the photo\'s width and height grow: 1×, 2×, 4×, 8× or 16×; 2× by default.</string>
-    <string name="info_scale_list">• 1× — same size; the network only removes noise and blur.\n• 2× and 4× — one pass of the network; enough for a screen and for print.\n• 8× and 16× — two passes: 4–16 times longer, a very large file.</string>
+    <string name="info_scale_text">Scale is how many times the photo\'s width and height grow: 1×, 2×, 4×, 8× or 16×; 4× by default.</string>
+    <string name="info_scale_list">• 4× — the native scale of the models: they are trained to enlarge exactly 4 times and give the best result at 4×.\n• 1× and 2× — the same 4× pass, then the result is reduced to the chosen size; 1× only removes noise and blur.\n• 8× and 16× — two passes: 4–16 times longer, a very large file.</string>
     <string name="info_model_text">A model is a trained neural network. Models differ in what pictures they learned from: one restores photos better, another drawings.</string>
-    <string name="info_model_list">• This screen shows the two models you used last.\n• «All models» lists every model: what it is for, its author, licence and size. Download the ones you need; they work without the network.</string>
+    <string name="info_model_list">• Every model in the catalogue is trained to enlarge 4 times: at 4× it gives the best result.\n• This screen shows the two models you used last.\n• «All models» lists every model: what it is for, its author, licence and size. Download the ones you need; they work without the network.</string>
 
     <string name="working_title">The network is enhancing your photo</string>
     <string name="cancel">Cancel</string>

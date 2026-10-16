@@ -20,8 +20,8 @@
     <string name="upscale">Melhorar</string>
     <string name="upscale_with_estimate">Melhorar · ≈ %1$s</string>
     <string name="info_close">Fechar</string>
-    <string name="info_scale_text">A escala diz quantas vezes a largura e a altura da foto crescem: 1×, 2×, 4×, 8× ou 16×; 2× por padrão.</string>
-    <string name="info_scale_list">• 1× — mesmo tamanho; a rede só remove ruído e desfoque.\n• 2× e 4× — uma passagem da rede; basta para tela e impressão.\n• 8× e 16× — duas passagens: de 4 a 16 vezes mais demorado, arquivo muito grande.</string>
+    <string name="info_scale_text">A escala diz quantas vezes a largura e a altura da foto crescem: 1×, 2×, 4×, 8× ou 16×; 4× por padrão.</string>
+    <string name="info_scale_list">• 4× — a escala nativa dos modelos: eles são treinados para ampliar exatamente 4 vezes e dão o melhor resultado em 4×.\n• 1× e 2× — a mesma passagem de 4×, depois o resultado é reduzido ao tamanho escolhido; 1× só remove ruído e desfoque.\n• 8× e 16× — duas passagens: de 4 a 16 vezes mais demorado, arquivo muito grande.</string>
     <string name="info_model_text">Um modelo é uma rede neural treinada. Os modelos diferem nas imagens com que aprenderam: um restaura melhor fotos, outro desenhos.</string>
     <string name="working_title">A rede está melhorando sua foto</string>
     <string name="cancel">Cancelar</string>
@@ -126,7 +126,7 @@
     <string name="model_download_failed">Não foi possível baixar o modelo. Verifique a conexão e tente de novo.</string>
     <string name="model_damaged">O arquivo baixado estava corrompido e foi excluído. Tente de novo.</string>
     <string name="error_model_downloaded">Não foi possível carregar o modelo. Exclua-o em «Todos os modelos» e baixe de novo.</string>
-    <string name="info_model_list">• Esta tela mostra os dois modelos que você usou por último.\n• «Todos os modelos» lista cada modelo: para que serve, autor, licença e tamanho. Baixe os que precisar; funcionam sem rede.</string>
+    <string name="info_model_list">• Todo modelo do catálogo é treinado para ampliar 4 vezes: em 4× ele dá o melhor resultado.\n• Esta tela mostra os dois modelos que você usou por último.\n• «Todos os modelos» lista cada modelo: para que serve, autor, licença e tamanho. Baixe os que precisar; funcionam sem rede.</string>
     <string name="model_purpose_fast_photo">Rápido · remove pouco ruído e desfoque</string>
     <string name="model_purpose_detail">Para fotos antigas e comprimidas · resultado limpo</string>
     <string name="model_purpose_web_photo">Para fotos da internet, comprimidas e desfocadas</string>

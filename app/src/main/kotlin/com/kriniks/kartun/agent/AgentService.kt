@@ -143,7 +143,11 @@ class AgentService : Service() {
         val input = File(dir, spec.input)
         if (!input.isFile) return fail(ErrorCode.INPUT_MISSING, "no file '${spec.input}' in files/agent/")
         val bitmap = try {
-            withContext(UpscaleEngine.dispatcher) { UpscaleEngine.decode(ImageDecoder.createSource(input)) }
+            withContext(UpscaleEngine.dispatcher) {
+                UpscaleEngine.decodeAny(ImageDecoder.createSource(input)) {
+                    android.os.ParcelFileDescriptor.open(input, android.os.ParcelFileDescriptor.MODE_READ_ONLY)
+                }
+            }
         } catch (e: UpscaleEngine.TooBig) {
             return fail(ErrorCode.TOO_BIG, "the photo is over ${UpscaleViewModel.mpLimitText()} MP")
         } catch (e: Exception) {

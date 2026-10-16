@@ -28,12 +28,12 @@ On the “Enhance” screen the photo is pinned on top. Swipe up — the photo f
 
 | Scale | Passes | Photo 960 × 1280 |
 | 1× | 1 | 960 × 1280 |
-| **2× · default** | 1 | 1920 × 2560 |
-| 4× | 1 | 3840 × 5120 |
+| 2× | 1 | 1920 × 2560 |
+| **4× · default** | 1 | 3840 × 5120 |
 | 8× | 2 | 7680 × 10 240 |
 | 16× | 2 | 15 360 × 20 480 |
 
-> The network always enlarges the picture exactly 4 times in one pass. Scales 1× and 2× come from scaling the result down, 8× and 16× from a second pass.
+> The network always enlarges the picture exactly 4 times in one pass: every model is trained for 4×, so 4× gives the best result. Scales 1× and 2× come from scaling the result down, 8× and 16× from a second pass.
 
 ## 5 Compare and save
 

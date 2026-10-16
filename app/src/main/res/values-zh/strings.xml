@@ -20,8 +20,8 @@
     <string name="upscale">增强</string>
     <string name="upscale_with_estimate">增强 · 约 %1$s</string>
     <string name="info_close">关闭</string>
-    <string name="info_scale_text">放大倍数表示照片的宽和高增大几倍：1×、2×、4×、8× 或 16×；默认 2×。</string>
-    <string name="info_scale_list">• 1×——尺寸不变，神经网络只去除噪点和模糊。\n• 2× 和 4×——神经网络处理一次，足够屏幕显示和打印。\n• 8× 和 16×——处理两次：时间长 4–16 倍，文件非常大。</string>
+    <string name="info_scale_text">放大倍数表示照片的宽和高增大几倍：1×、2×、4×、8× 或 16×；默认 4×。</string>
+    <string name="info_scale_list">• 4×——模型的原生倍数：模型经过训练，正好放大 4 倍，在 4× 时效果最好。\n• 1× 和 2×——同样先处理一次 4×，再把结果缩小到所选尺寸；1× 只去除噪点和模糊。\n• 8× 和 16×——处理两次：时间长 4–16 倍，文件非常大。</string>
     <string name="info_model_text">模型是训练好的神经网络。模型的区别在于学习过的图片：有的更擅长修复照片，有的更擅长修复绘画。</string>
     <string name="working_title">神经网络正在增强你的照片</string>
     <string name="cancel">取消</string>
@@ -122,7 +122,7 @@
     <string name="model_download_failed">无法下载模型。请检查网络后重试。</string>
     <string name="model_damaged">下载的文件已损坏并已删除。请重试。</string>
     <string name="error_model_downloaded">无法加载模型。请在“所有模型”中删除后重新下载。</string>
-    <string name="info_model_list">• 此页面显示你最近使用的两个模型。\n• “所有模型”列出每个模型：用途、作者、许可证和大小。下载你需要的模型，它们无需网络即可工作。</string>
+    <string name="info_model_list">• 目录中的每个模型都经过训练，可放大 4 倍：在 4× 时效果最好。\n• 此页面显示你最近使用的两个模型。\n• “所有模型”列出每个模型：用途、作者、许可证和大小。下载你需要的模型，它们无需网络即可工作。</string>
     <string name="model_purpose_fast_photo">快速 · 轻度去噪和去模糊</string>
     <string name="model_purpose_detail">适用于老旧、压缩过的照片 · 效果干净</string>
     <string name="model_purpose_web_photo">适用于网络上压缩、模糊的图片</string>
