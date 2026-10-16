@@ -75,6 +75,9 @@
     <string name="bench_cancel">Cancelar</string>
     <string name="model_choice">ESCOLHA DO KARTUN</string>
     <string name="cancelling">Cancelando…</string>
+    <string name="about_speed_gpu">Velocidade da GPU</string>
+    <string name="about_speed_cpu">Velocidade da CPU</string>
+    <string name="about_speed_value">%1$s MP/s</string>
     <string name="settings_notifications">Notificações</string>
     <string name="settings_notifications_on">Permitidas: progresso e «Sua foto está pronta»</string>
     <string name="settings_notifications_off">Desativadas — toque para permitir</string>

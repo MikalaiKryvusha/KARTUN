@@ -73,6 +73,9 @@
     <string name="bench_cancel">বাতিল</string>
     <string name="model_choice">KARTUN-এর পছন্দ</string>
     <string name="cancelling">বাতিল করা হচ্ছে…</string>
+    <string name="about_speed_gpu">GPU গতি</string>
+    <string name="about_speed_cpu">CPU গতি</string>
+    <string name="about_speed_value">%1$s MP/সে</string>
     <string name="settings_notifications">বিজ্ঞপ্তি</string>
     <string name="settings_notifications_on">অনুমোদিত: অগ্রগতি ও «আপনার ছবি প্রস্তুত»</string>
     <string name="settings_notifications_off">বন্ধ — অনুমতি দিতে চাপুন</string>

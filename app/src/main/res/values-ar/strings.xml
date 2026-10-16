@@ -81,6 +81,9 @@
     <string name="bench_cancel">إلغاء</string>
     <string name="model_choice">اختيار KARTUN</string>
     <string name="cancelling">جارٍ الإلغاء…</string>
+    <string name="about_speed_gpu">سرعة GPU</string>
+    <string name="about_speed_cpu">سرعة CPU</string>
+    <string name="about_speed_value">%1$s ميغابكسل/ث</string>
     <string name="settings_notifications">الإشعارات</string>
     <string name="settings_notifications_on">مسموح بها: التقدم و«صورتك جاهزة»</string>
     <string name="settings_notifications_off">متوقفة — اضغط للسماح</string>

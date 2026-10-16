@@ -38,6 +38,9 @@
     <!-- The gold label under the owner's favourite models (the owner, 2026-10-16 ≈ 21:4x: «золотая звезда и ниже золотом текст ВЫБОР KARTUN»). -->
     <string name="model_choice">KARTUN\'S CHOICE</string>
     <string name="cancelling">Cancelling…</string>
+    <string name="about_speed_gpu">GPU speed</string>
+    <string name="about_speed_cpu">CPU speed</string>
+    <string name="about_speed_value">%1$s MP/s</string>
     <string name="backend_gpu" translatable="false">GPU · Vulkan</string>
     <string name="backend_cpu" translatable="false">CPU</string>
 

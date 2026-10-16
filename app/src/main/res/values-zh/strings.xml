@@ -71,6 +71,9 @@
     <string name="bench_cancel">取消</string>
     <string name="model_choice">KARTUN 精选</string>
     <string name="cancelling">正在取消…</string>
+    <string name="about_speed_gpu">GPU 速度</string>
+    <string name="about_speed_cpu">CPU 速度</string>
+    <string name="about_speed_value">%1$s 百万像素/秒</string>
     <string name="settings_notifications">通知</string>
     <string name="settings_notifications_on">已允许：进度和“照片已完成”</string>
     <string name="settings_notifications_off">已关闭——点按以允许</string>

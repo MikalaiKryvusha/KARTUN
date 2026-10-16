@@ -73,6 +73,9 @@
     <string name="bench_cancel">रद्द करें</string>
     <string name="model_choice">KARTUN की पसंद</string>
     <string name="cancelling">रद्द किया जा रहा है…</string>
+    <string name="about_speed_gpu">GPU गति</string>
+    <string name="about_speed_cpu">CPU गति</string>
+    <string name="about_speed_value">%1$s MP/से</string>
     <string name="settings_notifications">सूचनाएँ</string>
     <string name="settings_notifications_on">अनुमति है: प्रगति और «आपकी फ़ोटो तैयार है»</string>
     <string name="settings_notifications_off">बंद — अनुमति देने के लिए दबाएँ</string>
