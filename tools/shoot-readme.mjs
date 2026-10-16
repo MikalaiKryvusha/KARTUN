@@ -17,6 +17,7 @@
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 
 const ADB = process.env.KARTUN_ADB || 'C:/Android/Sdk/platform-tools/adb.exe';
 const PKG = process.env.KARTUN_PKG || 'com.kriniks.kartun';
@@ -25,6 +26,8 @@ const OUT = 'docs/screenshots';
 const WIDTH = 540;
 const PHOTO_LOCAL = 'engine/third_party/testdata/test256.png';
 const PHOTO_DEVICE = '/sdcard/Pictures/KARTUN_test/beach.png';
+const PHOTO_SIDE = 768;        // px of the pushed input (the sample is 256)
+const WORKING_SHOT_MS = 6000;  // the processing screen is shot this long after «Улучшить»
 const LANGS = { ru: 'ru-RU', en: 'en-US' };
 
 const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : d; };
@@ -94,10 +97,12 @@ async function walk(lang, photoId) {
   shot(lang, '02_enhance');
   sh('input swipe 800 1900 800 900 600'); await sleep(1500); // scroll to the model cards and the scale slider (4× by default)
   shot(lang, '03_setup');
-  // The 256 px beach takes a few seconds at 4x on the Titan: the processing screen is shot right after it opens.
+  // The 768 px beach runs ~ 25 s at 4x on the Titan; the shot is taken a few seconds in, with tiles done. No tree read
+  // between the tap and the shot: a uiautomator dump costs 2-3 s, and with the 256 px photo the result came first (2026-10-16).
   await tapText(W.enhance, 900);
-  const allow = find(W.allow);
-  if (allow) { tap(allow.x, allow.y); await sleep(900); }
+  const allow = find(W.allow);   // the notification dialog of a fresh install
+  if (allow) { tap(allow.x, allow.y); }
+  await sleep(WORKING_SHOT_MS);
   shot(lang, '04_working');
   await waitFor(W.result, 180000); await sleep(1200);
   shot(lang, '05_result');
@@ -117,10 +122,13 @@ const which = arg('lang', 'all');
 const rotation = sh('settings get system accelerometer_rotation').trim();
 const locales = sh(`cmd locale get-app-locales ${PKG}`);
 try {
-  adb('push', PHOTO_LOCAL, PHOTO_DEVICE);
+  // The 256 px sample enlarged 3x (Lanczos) as the input: big enough for the processing screen to show its ring and tiles.
+  const big = join(tmpdir(), 'kartun-readme-beach.png');
+  spawnSync('magick', [PHOTO_LOCAL, '-filter', 'Lanczos', '-resize', `${PHOTO_SIDE}x${PHOTO_SIDE}`, big]);
+  adb('push', big, PHOTO_DEVICE);
   sh(`am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://${PHOTO_DEVICE} >/dev/null`);
   await sleep(1500);
-  const row = sh(`content query --uri content://media/external/images/media --projection _id --where "_data='${PHOTO_DEVICE}'"`);
+  const row = sh(`content query --uri content://media/external/images/media --projection _id --where "_display_name='beach.png' AND relative_path='Pictures/KARTUN_test/'"`);
   const photoId = (row.match(/_id=(\d+)/) || [])[1];
   if (!photoId) throw new Error(`the pushed photo is not in MediaStore: ${row.trim()}`);
   sh('settings put system accelerometer_rotation 0; settings put system user_rotation 0');
