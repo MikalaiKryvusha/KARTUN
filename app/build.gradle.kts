@@ -24,7 +24,7 @@ android {
         minSdk = 34
         targetSdk = 37
         versionCode = buildNumber
-        versionName = "0.1 ($buildNumber)"
+        versionName = "1.0 ($buildNumber)"  // release 1.0 (plans/08 step 8: «1.0 (<число коммитов>)»)
         ndk { abiFilters += "arm64-v8a" }
     }
 
