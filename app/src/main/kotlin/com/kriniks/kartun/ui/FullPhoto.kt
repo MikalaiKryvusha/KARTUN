@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.calculatePan
 import androidx.compose.foundation.gestures.calculateZoom
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -35,6 +36,8 @@ import com.kriniks.kartun.R
 import kotlin.math.abs
 
 private const val MAX_ZOOM = 8f
+/** One double-tap step: ×2.5 at the tapped point, the same step as the preview's double tap (SetupScreen PREVIEW_ZOOM). */
+private const val DOUBLE_TAP_ZOOM = 2.5f
 /** A vertical swipe this long on the un-zoomed photo closes the viewer. */
 private val CLOSE_SWIPE = 120.dp
 
@@ -50,9 +53,33 @@ fun FullPhoto(bitmap: Bitmap, onClose: () -> Unit) {
         BackHandler(onBack = onClose)
         var zoom by remember { mutableFloatStateOf(1f) }
         var pan by remember { mutableStateOf(Offset.Zero) }
+        // Double tap (the owner, 2026-10-16 ≈ 13:2x: «дабл тап во фул скрин превью фото увеличивал фото» · «а повторный дабл
+        // тап - уменьшал на шаг назад»): a double tap zooms DOUBLE_TAP_ZOOM× more at the tapped point and remembers where it
+        // was; the next double tap goes back to that zoom and pan.
+        // [TESTED: 2026-10-16 · Titan - testcases/reports/2026-10-16_fullphoto_double_tap.md]
+        var before by remember { mutableStateOf<Pair<Float, Offset>?>(null) }
         val closePx = with(LocalDensity.current) { CLOSE_SWIPE.toPx() }
         Box(
             Modifier.fillMaxSize().background(Color.Black).pointerInput(Unit) {
+                detectTapGestures(onDoubleTap = { at ->
+                    val back = before
+                    if (back != null) {
+                        zoom = back.first; pan = back.second; before = null
+                    } else {
+                        before = zoom to pan
+                        val next = (zoom * DOUBLE_TAP_ZOOM).coerceAtMost(MAX_ZOOM)
+                        // Keep the tapped point under the finger: with the scale around the centre, a point d from the
+                        // centre lands at d * k + pan, so pan grows by (centre - at) * (k - 1) scaled from the old zoom.
+                        val centre = Offset(size.width / 2f, size.height / 2f)
+                        val k = next / zoom
+                        val p = (pan - (at - centre)) * k + (at - centre)
+                        val maxX = size.width * (next - 1) / 2
+                        val maxY = size.height * (next - 1) / 2
+                        zoom = next
+                        pan = Offset(p.x.coerceIn(-maxX, maxX), p.y.coerceIn(-maxY, maxY))
+                    }
+                })
+            }.pointerInput(Unit) {
                 awaitEachGesture {
                     awaitFirstDown(requireUnconsumed = false)
                     var dragY = 0f

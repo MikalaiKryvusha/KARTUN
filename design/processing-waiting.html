@@ -1,0 +1,133 @@
+<!doctype html>
+<!-- The processing screen while the engine is busy with an AI agent's job (the owner, chat 2026-10-16: «Экран обработки, пока
+     ждёт задание агента … покажешь мне макет»). Same look as WorkingScreen.kt (ring left, four tiles). Frames are the Titan's
+     portrait in dp (533 x 853). [AI] variants for the owner's choice; shot to WebP by a throwaway script. -->
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0D0D0D; --card: #1C1C1E; --card2: #262628; --low: #151516; --text: #F2F2F3; --sub: #9A9AA0;
+    --pink: #FF1A8C; --font: 'Manrope', sans-serif; --head: 'Unbounded', sans-serif; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #070707; color: var(--text); font-family: var(--font); padding: 28px; }
+  .sheet { display: flex; gap: 28px; align-items: flex-start; padding: 18px; }
+  .col h2 { font: 700 20px var(--head); margin: 0 0 6px; } .col h2 b { color: var(--pink); }
+  .col p { font-size: 14px; color: var(--sub); width: 533px; height: 58px; margin-bottom: 12px; line-height: 1.4; }
+  .screen { width: 533px; height: 853px; background: var(--bg); border-radius: 36px; overflow: hidden; position: relative; border: 1px solid #222; }
+  .status { position: absolute; top: 0; left: 0; right: 0; height: 30px; display: flex; justify-content: space-between; padding: 6px 22px;
+    font: 600 13px var(--font); color: #ddd; z-index: 5; }
+  .photo { position: absolute; left: 0; right: 0; top: 30px; background: url('mockups/local/preview.jpg') center / cover; }
+  .tiles { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(7, 1fr); }
+  .tiles i { border: .5px solid rgba(255,255,255,.10); background: rgba(13,13,13,.62); display: block; }
+  .ring { border-radius: 50%; display: grid; place-items: center; position: relative; flex: none; }
+  .ring::before { content: ''; position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(var(--pink) 0 var(--p), var(--card2) var(--p) 100%);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--w)), #000 calc(100% - var(--w) + 1px)); }
+  .ring.wait::before { background: repeating-conic-gradient(#4A4A4F 0 6deg, transparent 6deg 14deg); }
+  .ring b { font: 800 var(--fs) var(--head); font-variant-numeric: tabular-nums; position: relative; }
+  .btn { height: 40px; padding: 0 20px; border-radius: 999px; border: 1.5px solid #3A3A3E; display: inline-grid; place-items: center;
+    font: 700 15px var(--font); color: var(--text); white-space: nowrap; }
+  .btn.small { height: 34px; padding: 0 14px; font-size: 13px; color: var(--sub); }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: var(--card);
+    font: 600 13px var(--font); color: var(--text); white-space: nowrap; } .pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); }
+  .pill.grey i { background: #8A8A90; }
+  .title { font: 700 17px var(--head); } .note { font-size: 13px; color: var(--sub); line-height: 1.35; }
+  .card { position: absolute; left: 0; right: 0; bottom: 0; background: var(--low); border-radius: 30px 30px 0 0;
+    padding: 20px 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .cell { background: var(--card); border-radius: 16px; padding: 10px 12px; }
+  .cell small { display: block; font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: .8px; }
+  .cell b { font: 700 16px var(--font); font-variant-numeric: tabular-nums; } .cell b.dim { color: var(--sub); }
+  .chip { position: absolute; left: 50%; top: 44%; transform: translate(-50%,-50%); width: 400px; padding: 18px 20px; border-radius: 22px;
+    background: rgba(13,13,13,.82); backdrop-filter: blur(6px); text-align: center; display: flex; flex-direction: column; gap: 8px; }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- NOW: what the Titan showed in U1 (testcases/reports/2026-10-16_epic06_A_agent_api.md #6) -->
+  <div class="col"><h2>Сейчас</h2><p>Кольцо стоит на 0 %, тайл «—», «прошло» идёт. Почему стоит, не написано; ожидание входит во время результата.</p>
+    <div class="screen"><div class="status"><span>12:43</span><span>25 %</span></div>
+      <div class="photo" style="bottom:232px"><div class="tiles">${TILES}</div></div>
+      <div class="card" style="height:250px">
+        <div style="display:flex; align-items:center; gap:16px">
+          <div class="ring" style="--p:0%; --w:8px; --fs:18px; width:84px; height:84px"><b>0%</b></div>
+          <div style="display:flex; flex-direction:column; gap:6px; flex:1"><div class="title">Нейросеть улучшает фото</div><span class="pill" style="align-self:flex-start"><i></i>GPU · Vulkan</span></div>
+          <div class="btn">Отменить</div>
+        </div>
+        <div class="grid4">
+          <div class="cell"><small>Проход</small><b>1 / 2</b></div>
+          <div class="cell"><small>Тайл</small><b>—</b></div>
+          <div class="cell"><small>Прошло</small><b>12 с</b></div>
+          <div class="cell"><small>Осталось</small><b>≈ 34 с</b></div>
+        </div>
+      </div></div></div>
+
+  <!-- A: the panel says it waits -->
+  <div class="col"><h2><b>A</b> · Подпись в панели</h2><p>Заголовок «Ждёт очереди», под ним причина. Кольцо пунктиром без процентов. «Прошло» не идёт, пока фото ждёт; «Ждёт» считает ожидание отдельно.</p>
+    <div class="screen"><div class="status"><span>12:43</span><span>25 %</span></div>
+      <div class="photo" style="bottom:250px"><div class="tiles">${TILES}</div></div>
+      <div class="card" style="height:268px">
+        <div style="display:flex; align-items:center; gap:16px">
+          <div class="ring wait" style="--w:8px; --fs:22px; width:84px; height:84px"><b style="color:var(--sub)">⏳</b></div>
+          <div style="display:flex; flex-direction:column; gap:6px; flex:1"><div class="title">Ждёт очереди</div>
+            <div class="note">Нейросеть сейчас выполняет задание ИИ-агента. Ваше фото — следующее.</div></div>
+          <div class="btn">Отменить</div>
+        </div>
+        <div class="grid4">
+          <div class="cell"><small>Проход</small><b class="dim">—</b></div>
+          <div class="cell"><small>Тайл</small><b class="dim">—</b></div>
+          <div class="cell"><small>Ждёт</small><b>12 с</b></div>
+          <div class="cell"><small>Работа</small><b>≈ 34 с</b></div>
+        </div>
+      </div></div></div>
+
+  <!-- B: a plate over the photo, the panel as it is -->
+  <div class="col"><h2><b>B</b> · Табличка на фото</h2><p>Панель как сейчас, но кольцо и «прошло» стоят на нуле, а на фото — табличка с причиной. Когда агент закончит, табличка исчезает и всё идёт как обычно.</p>
+    <div class="screen"><div class="status"><span>12:43</span><span>25 %</span></div>
+      <div class="photo" style="bottom:232px"><div class="tiles">${TILES}</div>
+        <div class="chip"><div class="title" style="font-size:16px">Нейросеть занята</div>
+          <div class="note">Сейчас выполняется задание ИИ-агента. Ваше фото начнётся сразу после него.</div></div></div>
+      <div class="card" style="height:250px">
+        <div style="display:flex; align-items:center; gap:16px">
+          <div class="ring" style="--p:0%; --w:8px; --fs:18px; width:84px; height:84px"><b>0%</b></div>
+          <div style="display:flex; flex-direction:column; gap:6px; flex:1"><div class="title">Нейросеть улучшает фото</div><span class="pill grey" style="align-self:flex-start"><i></i>В очереди</span></div>
+          <div class="btn">Отменить</div>
+        </div>
+        <div class="grid4">
+          <div class="cell"><small>Проход</small><b class="dim">—</b></div>
+          <div class="cell"><small>Тайл</small><b class="dim">—</b></div>
+          <div class="cell"><small>Прошло</small><b class="dim">0 с</b></div>
+          <div class="cell"><small>Осталось</small><b>≈ 34 с</b></div>
+        </div>
+      </div></div></div>
+
+  <!-- C: A + a way to stop the agent's job -->
+  <div class="col"><h2><b>C</b> · Подпись + «Остановить агента»</h2><p>Как A, плюс маленькая кнопка «Остановить задание агента»: ваше фото начнётся сразу. «Отменить» — ваше фото, как и раньше.</p>
+    <div class="screen"><div class="status"><span>12:43</span><span>25 %</span></div>
+      <div class="photo" style="bottom:300px"><div class="tiles">${TILES}</div></div>
+      <div class="card" style="height:318px">
+        <div style="display:flex; align-items:center; gap:16px">
+          <div class="ring wait" style="--w:8px; --fs:22px; width:84px; height:84px"><b style="color:var(--sub)">⏳</b></div>
+          <div style="display:flex; flex-direction:column; gap:6px; flex:1"><div class="title">Ждёт очереди</div>
+            <div class="note">Нейросеть сейчас выполняет задание ИИ-агента. Ваше фото — следующее.</div></div>
+          <div class="btn">Отменить</div>
+        </div>
+        <div class="grid4">
+          <div class="cell"><small>Проход</small><b class="dim">—</b></div>
+          <div class="cell"><small>Тайл</small><b class="dim">—</b></div>
+          <div class="cell"><small>Ждёт</small><b>12 с</b></div>
+          <div class="cell"><small>Работа</small><b>≈ 34 с</b></div>
+        </div>
+        <div class="btn small" style="align-self:flex-start">Остановить задание агента</div>
+      </div></div></div>
+
+</div>
+<script>
+  // 35 tiles (5 x 7): nothing done yet - the photo waits.
+  const tiles = Array.from({ length: 35 }, () => '<i></i>').join('');
+  document.querySelectorAll('.tiles').forEach(t => t.innerHTML = tiles);
+</script>
+</body>
+</html>

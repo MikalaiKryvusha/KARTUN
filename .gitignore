@@ -71,6 +71,8 @@ app/src/main/assets/models/
 # processing variants sheet - shot by tools/shoot-processing-variants.mjs, regenerated on demand
 design/processing-variants*.webp
 design/processing-variants*.png
+design/processing-waiting.webp
+design/processing-waiting.png
 design/spinner-variants.png
 design/spinner-variants.webp
 design/spinner-live*.png
