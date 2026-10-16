@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Resources the release build's shrinker must keep: the models' (i) texts are looked up by NAME
+     (ModelInfoButton: getIdentifier("model_info_<id>")), so the shrinker saw no reference and removed all 26 -
+     every model's (i) button was missing in the release (found 2026-10-16 on the Titan, RC3: 0 of 26 in the APK). -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@string/model_info_*" />

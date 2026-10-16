@@ -71,6 +71,7 @@
     <string name="info_open_guide">पूरी गाइड खोलें</string>
     <string name="bench_title">डिवाइस के GPU और CPU का प्रदर्शन मापा जा रहा है…</string>
     <string name="bench_cancel">रद्द करें</string>
+    <string name="model_choice">KARTUN की पसंद</string>
     <string name="settings_notifications">सूचनाएँ</string>
     <string name="settings_notifications_on">अनुमति है: प्रगति और «आपकी फ़ोटो तैयार है»</string>
     <string name="settings_notifications_off">बंद — अनुमति देने के लिए दबाएँ</string>
@@ -111,7 +112,7 @@
     <string name="licence_noncommercial">व्यावसायिक उपयोग के लिए नहीं</string>
     <string name="models_title">मॉडल</string>
     <string name="models_all">सभी मॉडल</string>
-    <string name="models_count">मॉडल: %1$d · डिवाइस पर: %2$d</string>
+    <string name="models_count">कैटलॉग: %1$d · डाउनलोड किए गए: %2$d</string>
     <string name="models_choose">चुनें</string>
     <string name="filter_all">सभी</string>
     <string name="filter_photo">फ़ोटो</string>

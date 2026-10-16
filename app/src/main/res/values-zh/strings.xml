@@ -69,6 +69,7 @@
     <string name="info_open_guide">打开完整指南</string>
     <string name="bench_title">正在测量设备 GPU 和 CPU 的性能…</string>
     <string name="bench_cancel">取消</string>
+    <string name="model_choice">KARTUN 精选</string>
     <string name="settings_notifications">通知</string>
     <string name="settings_notifications_on">已允许：进度和“照片已完成”</string>
     <string name="settings_notifications_off">已关闭——点按以允许</string>
@@ -109,7 +110,7 @@
     <string name="licence_noncommercial">不可用于商业用途</string>
     <string name="models_title">模型</string>
     <string name="models_all">所有模型</string>
-    <string name="models_count">模型：%1$d · 设备上：%2$d</string>
+    <string name="models_count">目录：%1$d · 已下载：%2$d</string>
     <string name="models_choose">选择</string>
     <string name="filter_all">全部</string>
     <string name="filter_photo">照片</string>

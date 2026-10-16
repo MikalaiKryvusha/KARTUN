@@ -252,6 +252,10 @@ BENCH = {"es": ("Midiendo el rendimiento de la GPU y la CPU del dispositivo…",
          "bn": ("ডিভাইসের GPU ও CPU-এর কার্যক্ষমতা মাপা হচ্ছে…", "বাতিল"),
          "ar": ("جارٍ قياس أداء GPU وCPU في الجهاز…", "إلغاء")}
 
+# The gold label under the owner's favourite models (2026-10-16 ≈ 21:4x: «золотая звезда и ниже золотом текст ВЫБОР KARTUN»).
+CHOICE = {"es": "ELECCIÓN DE KARTUN", "pt": "ESCOLHA DO KARTUN", "fr": "CHOIX DE KARTUN", "de": "KARTUNS WAHL",
+          "zh": "KARTUN 精选", "hi": "KARTUN की पसंद", "bn": "KARTUN-এর পছন্দ", "ar": "اختيار KARTUN"}
+
 # «О приложении»: about_title · about_tagline · about_device · about_model · about_engine · about_licences ·
 # about_project · about_inspired · about_author · about_source (the owner, chat 2026-10-14 ≈ 20:58 +03:00: «о приложении
 # и авторе нужна и ссылка на наш GH»; plan 03 step 21).
@@ -376,7 +380,7 @@ CATALOGUE = {
         "licence_noncommercial": "No apto para uso comercial",
         "models_title": "Modelos",
         "models_all": "Todos los modelos",
-        "models_count": "Modelos: %1$d · en el dispositivo: %2$d",
+        "models_count": "Catálogo: %1$d · Descargados: %2$d",
         "models_choose": "Elegir",
         "filter_all": "Todos",
         "filter_photo": "Fotos",
@@ -399,7 +403,7 @@ CATALOGUE = {
         "licence_noncommercial": "Não para uso comercial",
         "models_title": "Modelos",
         "models_all": "Todos os modelos",
-        "models_count": "Modelos: %1$d · no aparelho: %2$d",
+        "models_count": "Catálogo: %1$d · Baixados: %2$d",
         "models_choose": "Escolher",
         "filter_all": "Todos",
         "filter_photo": "Fotos",
@@ -422,7 +426,7 @@ CATALOGUE = {
         "licence_noncommercial": "Pas d’usage commercial",
         "models_title": "Modèles",
         "models_all": "Tous les modèles",
-        "models_count": "Modèles : %1$d · sur l’appareil : %2$d",
+        "models_count": "Catalogue : %1$d · Téléchargés : %2$d",
         "models_choose": "Choisir",
         "filter_all": "Tous",
         "filter_photo": "Photos",
@@ -445,7 +449,7 @@ CATALOGUE = {
         "licence_noncommercial": "Nicht für kommerzielle Nutzung",
         "models_title": "Modelle",
         "models_all": "Alle Modelle",
-        "models_count": "Modelle: %1$d · auf dem Gerät: %2$d",
+        "models_count": "Katalog: %1$d · Heruntergeladen: %2$d",
         "models_choose": "Wählen",
         "filter_all": "Alle",
         "filter_photo": "Fotos",
@@ -468,7 +472,7 @@ CATALOGUE = {
         "licence_noncommercial": "不可用于商业用途",
         "models_title": "模型",
         "models_all": "所有模型",
-        "models_count": "模型：%1$d · 设备上：%2$d",
+        "models_count": "目录：%1$d · 已下载：%2$d",
         "models_choose": "选择",
         "filter_all": "全部",
         "filter_photo": "照片",
@@ -491,7 +495,7 @@ CATALOGUE = {
         "licence_noncommercial": "व्यावसायिक उपयोग के लिए नहीं",
         "models_title": "मॉडल",
         "models_all": "सभी मॉडल",
-        "models_count": "मॉडल: %1$d · डिवाइस पर: %2$d",
+        "models_count": "कैटलॉग: %1$d · डाउनलोड किए गए: %2$d",
         "models_choose": "चुनें",
         "filter_all": "सभी",
         "filter_photo": "फ़ोटो",
@@ -514,7 +518,7 @@ CATALOGUE = {
         "licence_noncommercial": "বাণিজ্যিক ব্যবহারের জন্য নয়",
         "models_title": "মডেল",
         "models_all": "সব মডেল",
-        "models_count": "মডেল: %1$d · ডিভাইসে: %2$d",
+        "models_count": "ক্যাটালগ: %1$d · ডাউনলোড করা: %2$d",
         "models_choose": "বেছে নিন",
         "filter_all": "সব",
         "filter_photo": "ছবি",
@@ -537,7 +541,7 @@ CATALOGUE = {
         "licence_noncommercial": "ليس للاستخدام التجاري",
         "models_title": "النماذج",
         "models_all": "كل النماذج",
-        "models_count": "النماذج: %1$d · على الجهاز: %2$d",
+        "models_count": "الكتالوج: %1$d · تم التنزيل: %2$d",
         "models_choose": "اختيار",
         "filter_all": "الكل",
         "filter_photo": "صور",
@@ -689,6 +693,7 @@ def main():
         lines.append(f'    <string name="info_open_guide">{xml_text(OPEN_GUIDE[lang])}</string>')
         lines.append(f'    <string name="bench_title">{xml_text(BENCH[lang][0])}</string>')
         lines.append(f'    <string name="bench_cancel">{xml_text(BENCH[lang][1])}</string>')
+        lines.append(f'    <string name="model_choice">{xml_text(CHOICE[lang])}</string>')
         assert len(NOTIF[lang]) == len(NOTIF_KEYS), (lang, "notif")
         for k, v in zip(NOTIF_KEYS, NOTIF[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')

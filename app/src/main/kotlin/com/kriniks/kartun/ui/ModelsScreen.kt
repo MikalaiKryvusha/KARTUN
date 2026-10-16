@@ -141,6 +141,7 @@ private fun ModelRow(
                     Text(m.name, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f, fill = false))
                     ModelInfoButton(m)
                 }
+                if (m.starred) ChoiceLabel()
                 Text(glueDots(stringResource(R.string.model_desc_with_size, stringResource(purposeRes(m.purpose)), sizeMb(m.bytes))),
                     style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
             }

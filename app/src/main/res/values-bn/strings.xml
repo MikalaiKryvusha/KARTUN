@@ -71,6 +71,7 @@
     <string name="info_open_guide">পুরো নির্দেশিকা খুলুন</string>
     <string name="bench_title">ডিভাইসের GPU ও CPU-এর কার্যক্ষমতা মাপা হচ্ছে…</string>
     <string name="bench_cancel">বাতিল</string>
+    <string name="model_choice">KARTUN-এর পছন্দ</string>
     <string name="settings_notifications">বিজ্ঞপ্তি</string>
     <string name="settings_notifications_on">অনুমোদিত: অগ্রগতি ও «আপনার ছবি প্রস্তুত»</string>
     <string name="settings_notifications_off">বন্ধ — অনুমতি দিতে চাপুন</string>
@@ -111,7 +112,7 @@
     <string name="licence_noncommercial">বাণিজ্যিক ব্যবহারের জন্য নয়</string>
     <string name="models_title">মডেল</string>
     <string name="models_all">সব মডেল</string>
-    <string name="models_count">মডেল: %1$d · ডিভাইসে: %2$d</string>
+    <string name="models_count">ক্যাটালগ: %1$d · ডাউনলোড করা: %2$d</string>
     <string name="models_choose">বেছে নিন</string>
     <string name="filter_all">সব</string>
     <string name="filter_photo">ছবি</string>

@@ -313,7 +313,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
                 .draggable(panelDrag, Orientation.Horizontal, onDragStarted = stopSettle, onDragStopped = { v ->
                     settle(show = panelShift < screenW * PANEL_HIDE_AT && v < PANEL_FLING)
                 })
-                .widthIn(max = 600.dp).fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow.copy(alpha = 0.94f)).padding(16.dp),
+                .widthIn(max = 600.dp).fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow).padding(16.dp),  // opaque: at 94 % the divider showed through (RC2 check, Titan)
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             // Which model made it (the owner, chat 2026-10-14 ≈ 20:59 +03:00: «в сводке внизу нужно писать, какая модель улучшила»).
@@ -326,7 +326,8 @@ fun ResultScreen(vm: UpscaleViewModel) {
             // The sizes never break inside («960 × 1280 → / 3840 × 5120» on a phone - the owner, 2026-10-16 ≈ 20:4x: «Чинить»):
             // each text stays whole on its line, and when both do not fit side by side the time moves under the sizes. [NOT-TESTED]
             FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                SizeChange(sizeText(src.width, src.height), sizeText(res.full.width, res.full.height), MaterialTheme.typography.bodyMedium, c.onBackground)
+                SizeChange(sizeText(src.width, src.height), sizeText(res.full.width, res.full.height), MaterialTheme.typography.bodyMedium, c.onBackground,
+                    Modifier.padding(end = 12.dp))  // a gap to the time when both share a line: in Arabic they ran together (RC2, Redmi)
                 Text(stringResource(R.string.result_time, durationText(res.ms), stringResource(if (res.gpu) R.string.backend_gpu else R.string.backend_cpu)),
                     style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant, softWrap = false, maxLines = 1)
             }

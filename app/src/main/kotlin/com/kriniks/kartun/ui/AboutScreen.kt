@@ -94,7 +94,7 @@ fun AboutScreen(onBack: () -> Unit) {
                 buildAnnotatedString { withStyle(SpanStyle(color = c.primary)) { append("K") }; append("ARTUN") },
                 style = MaterialTheme.typography.displaySmall,
             )
-            Text(stringResource(R.string.about_tagline, version), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
+            Text(stringResource(R.string.about_tagline, ltr(version)), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
             Group(stringResource(R.string.about_device), listOf(
                 stringResource(R.string.about_model) to ltr("${Build.MANUFACTURER} ${Build.MODEL}"),
                 "Android" to ltr("${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})"),

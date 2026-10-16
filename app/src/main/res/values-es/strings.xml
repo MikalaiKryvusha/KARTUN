@@ -73,6 +73,7 @@
     <string name="info_open_guide">Abrir la guía completa</string>
     <string name="bench_title">Midiendo el rendimiento de la GPU y la CPU del dispositivo…</string>
     <string name="bench_cancel">Cancelar</string>
+    <string name="model_choice">ELECCIÓN DE KARTUN</string>
     <string name="settings_notifications">Notificaciones</string>
     <string name="settings_notifications_on">Permitidas: progreso y «Tu foto está lista»</string>
     <string name="settings_notifications_off">Desactivadas — toca para permitir</string>
@@ -113,7 +114,7 @@
     <string name="licence_noncommercial">No apto para uso comercial</string>
     <string name="models_title">Modelos</string>
     <string name="models_all">Todos los modelos</string>
-    <string name="models_count">Modelos: %1$d · en el dispositivo: %2$d</string>
+    <string name="models_count">Catálogo: %1$d · Descargados: %2$d</string>
     <string name="models_choose">Elegir</string>
     <string name="filter_all">Todos</string>
     <string name="filter_photo">Fotos</string>

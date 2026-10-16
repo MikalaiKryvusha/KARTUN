@@ -71,6 +71,7 @@
     <string name="info_open_guide">Die ganze Anleitung öffnen</string>
     <string name="bench_title">Leistung von GPU und CPU des Geräts wird gemessen…</string>
     <string name="bench_cancel">Abbrechen</string>
+    <string name="model_choice">KARTUNS WAHL</string>
     <string name="settings_notifications">Benachrichtigungen</string>
     <string name="settings_notifications_on">Erlaubt: Fortschritt und „Dein Foto ist fertig“</string>
     <string name="settings_notifications_off">Aus – tippen zum Erlauben</string>
@@ -111,7 +112,7 @@
     <string name="licence_noncommercial">Nicht für kommerzielle Nutzung</string>
     <string name="models_title">Modelle</string>
     <string name="models_all">Alle Modelle</string>
-    <string name="models_count">Modelle: %1$d · auf dem Gerät: %2$d</string>
+    <string name="models_count">Katalog: %1$d · Heruntergeladen: %2$d</string>
     <string name="models_choose">Wählen</string>
     <string name="filter_all">Alle</string>
     <string name="filter_photo">Fotos</string>

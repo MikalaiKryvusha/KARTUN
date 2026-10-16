@@ -35,6 +35,8 @@
     <!-- The first-launch speed check (ideas/04; the owner, 2026-10-16 ≈ 20:0x: «"Измеряем производительность GPU и CPU устройства..."» · «Закрыть можно кнопкой [Отмена]»). -->
     <string name="bench_title">Measuring the device’s GPU and CPU performance…</string>
     <string name="bench_cancel">Cancel</string>
+    <!-- The gold label under the owner's favourite models (the owner, 2026-10-16 ≈ 21:4x: «золотая звезда и ниже золотом текст ВЫБОР KARTUN»). -->
+    <string name="model_choice">KARTUN\'S CHOICE</string>
     <string name="backend_gpu" translatable="false">GPU · Vulkan</string>
     <string name="backend_cpu" translatable="false">CPU</string>
 
@@ -216,7 +218,7 @@
     <string name="licence_noncommercial">Not for commercial use</string>
     <string name="models_title">Models</string>
     <string name="models_all">All models</string>
-    <string name="models_count">Models: %1$d · on the device: %2$d</string>
+    <string name="models_count">Catalogue: %1$d · Downloaded: %2$d</string>
     <string name="models_choose">Choose</string>
     <string name="filter_all">All</string>
     <string name="filter_photo">Photos</string>

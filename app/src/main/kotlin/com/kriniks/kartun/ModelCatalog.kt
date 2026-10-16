@@ -29,6 +29,8 @@ data class Model(
     /** The network family read from its graph (compact · plksr · esrgan · dat): the first-launch check corrects the esrgan
      *  family's estimate by its own measured slowdown ([DeviceBench]). */
     val family: String = "",
+    /** A gold star in the model lists: the owner's favourites by the blind tests (docs/model-catalogue.json → starred). */
+    val starred: Boolean = false,
 ) {
     val param: ModelFile get() = files.first { it.name.endsWith(".param") }
     val bin: ModelFile get() = files.first { it.name.endsWith(".bin") }
@@ -109,7 +111,7 @@ object ModelCatalog {
             Model(
                 id = m.getString("id"), name = m.getString("name"), author = m.getString("author"),
                 licence = m.getString("licence"), commercial = m.getBoolean("commercial"),
-                purpose = m.getString("purpose"), kind = m.getString("kind"), family = m.optString("family", ""), builtin = m.getBoolean("builtin"),
+                purpose = m.getString("purpose"), kind = m.getString("kind"), family = m.optString("family", ""), starred = m.optBoolean("starred", false), builtin = m.getBoolean("builtin"),
                 isDefault = m.optBoolean("default", false),
                 gpuMsPerMp = m.getDouble("gpuMsPerMp").toFloat(), cpuMsPerMp = m.getDouble("cpuMsPerMp").toFloat(),
                 files = files,

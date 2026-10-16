@@ -79,6 +79,7 @@
     <string name="info_open_guide">افتح الدليل كاملًا</string>
     <string name="bench_title">جارٍ قياس أداء GPU وCPU في الجهاز…</string>
     <string name="bench_cancel">إلغاء</string>
+    <string name="model_choice">اختيار KARTUN</string>
     <string name="settings_notifications">الإشعارات</string>
     <string name="settings_notifications_on">مسموح بها: التقدم و«صورتك جاهزة»</string>
     <string name="settings_notifications_off">متوقفة — اضغط للسماح</string>
@@ -119,7 +120,7 @@
     <string name="licence_noncommercial">ليس للاستخدام التجاري</string>
     <string name="models_title">النماذج</string>
     <string name="models_all">كل النماذج</string>
-    <string name="models_count">النماذج: %1$d · على الجهاز: %2$d</string>
+    <string name="models_count">الكتالوج: %1$d · تم التنزيل: %2$d</string>
     <string name="models_choose">اختيار</string>
     <string name="filter_all">الكل</string>
     <string name="filter_photo">صور</string>

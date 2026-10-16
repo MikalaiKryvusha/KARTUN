@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.kriniks.kartun.R
+import com.kriniks.kartun.ui.theme.StarGold
 import java.util.Locale
 
 /*
@@ -246,9 +247,9 @@ fun SizeChange(from: String, to: String, style: TextStyle, color: Color, modifie
             Text(line, style = style, color = color, maxLines = 1, softWrap = false)
         } else {
             Column(Modifier.width(IntrinsicSize.Max), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(boldDigits(from), style = style, color = color, maxLines = 1, softWrap = false)
+                Text(boldDigits(ltr(from)), style = style, color = color, maxLines = 1, softWrap = false)
                 Text("↓", style = style.copy(fontWeight = FontWeight.ExtraBold), color = MaterialTheme.colorScheme.primary)
-                Text(boldDigits(to), style = style, color = color, maxLines = 1, softWrap = false)
+                Text(boldDigits(ltr(to)), style = style, color = color, maxLines = 1, softWrap = false)
             }
         }
     }
@@ -264,6 +265,15 @@ fun ltr(s: String): String = "$LTR_ISOLATE$s$POP_ISOLATE"
 /** The isolate marks by code point, not as literals (lint's BidiSpoofing rightly flags raw bidi controls in source). */
 private val LTR_ISOLATE = Char(0x2066)
 private val POP_ISOLATE = Char(0x2069)
+
+/** «★ ВЫБОР KARTUN» in gold under a favourite model's name (Model.starred; the owner, 2026-10-16 ≈ 21:4x: «золотая звезда и
+ *  ниже золотом текст ВЫБОР KARTUN» · ≈ 21:5x: «тут звезду слева от текста ВЫБОР ставь»). [NOT-TESTED] */
+@Composable
+fun ChoiceLabel() = Row(verticalAlignment = Alignment.CenterVertically) {
+    Text("★", style = MaterialTheme.typography.labelLarge, color = StarGold)
+    Spacer(Modifier.width(6.dp))
+    Text(stringResource(R.string.model_choice), style = MaterialTheme.typography.labelSmall, color = StarGold)
+}
 
 /** "3840 × 5120"; numbers from 10 000 get a thin space as the mockups show ("7 680 × 10 240"). Pure format - the screens wrap
  *  it in [ltr] where they show it (FormatTest guards the format). */

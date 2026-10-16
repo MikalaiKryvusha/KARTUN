@@ -92,6 +92,22 @@
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
 
+### EXP-0034 · 2026-10-16 · ❌→✅ · #owner-word #ui #layout
+class: owner-word-retold
+**Context:** the processing panel; the owner had asked (2026-10-15 ≈ 12:35) «Кнопку отменить меньше, ниже» · «чтобы высвободить
+место для заголовка».
+**Tried / did:** the agent kept «Отменить» in the title's row (only smaller); a later session retold the word as «поднять над
+тайтлами метрик» and built from the retelling.
+**Result:** ❌ on phones the title stayed cut («The network is enhancing your p…»); the owner, 2026-10-16 ≈ 21:0x: «я просил кнопку
+Cancel ниже, чтобы она не мешала заголовку» · «давно просил» · «вниз её, где чимп GPU Vulcan». ✅ «Отменить» on the GPU chip's line.
+**Lesson:** an owner's layout word is applied from his VERBATIM quote and checked against its PURPOSE («чтобы высвободить место
+для заголовка») on the narrowest device — a retelling in a plan or a comment drops the purpose, and the purpose is the test.
+**Repro:** `git log -S"ниже" -- app/src/main/kotlin/com/kriniks/kartun/ui/WorkingScreen.kt` shows the comment quoting the word; a
+screenshot on a 360 dp phone shows whether the purpose holds.
+**Trigger:** applying an owner's layout word, or reading «the owner asked …» in a code comment.
+**Not for:** words with no stated purpose — then ask once.
+mechanized: no - judgement; the narrow-device screenshot is the net
+
 ### EXP-0033 · 2026-10-16 · ❌→✅ · #mutation #git #test
 class: revert-wiped-work
 **Context:** proving a new unit test red by a mutation of a source file that also held this session's UNCOMMITTED edits.

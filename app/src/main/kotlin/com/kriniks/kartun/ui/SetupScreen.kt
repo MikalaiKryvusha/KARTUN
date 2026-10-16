@@ -1,10 +1,15 @@
 package com.kriniks.kartun.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -192,12 +197,18 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
             Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 4.dp).onGloballyPositioned { previewTop = it.positionInRoot().y }) {
                 if (asRow) {
                     Row(
-                        Modifier.fillMaxWidth().height(heroDp).then(drag).clip(MaterialTheme.shapes.medium).background(c.surfaceContainer).padding(8.dp),
+                        Modifier.fillMaxWidth().heightIn(min = heroDp).then(drag).clip(MaterialTheme.shapes.medium).background(c.surfaceContainer).padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
+                        // The row grows to show the whole size change - three lines on a narrow phone - instead of clipping it
+                        // (the owner, 2026-10-16 ≈ 21:4x: «оно обязано было показать результирующее разрешение, растянуться, чтобы
+                        // оно поместилось»). [NOT-TESTED]
                         Image(src.preview.asImageBitmap(), src.name, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
                         Column(Modifier.weight(1f)) {
-                            Text(ltr(src.name), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            // The whole name, in the narrower text font and smaller, wrapping onto more lines - the wide heading font cut it to
+                            // «IMG_20261…» (the owner, 2026-10-16 ≈ 21:5x: «название можно шрифтом поменьше, поуже, и переносить на несколько
+                            // строк»). [NOT-TESTED]
+                            Text(ltr(src.name), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), maxLines = NAME_LINES, overflow = TextOverflow.MiddleEllipsis)
                             SizeChange(sizeText(src.width, src.height),
                                 vm.limited?.let { (lw, lh) -> sizeText(lw, lh) } ?: sizeText(src.width * vm.scale, src.height * vm.scale),
                                 MaterialTheme.typography.bodySmall, c.onSurfaceVariant)
@@ -364,6 +375,9 @@ private fun AllModelsRow(total: Int, onDevice: Int, onClick: () -> Unit) {
     }
 }
 
+/** Lines the photo's file name may take in the collapsed photo row before it is shortened in the middle. */
+private const val NAME_LINES = 3
+
 /** A model card (.mrow): name, what it is for with the estimate, the licence badge; pink border + tick when chosen. */
 @Composable
 private fun ModelCard(m: Model, on: Boolean, loading: Boolean, estimate: String, onClick: () -> Unit) {
@@ -384,6 +398,7 @@ private fun ModelCard(m: Model, on: Boolean, loading: Boolean, estimate: String,
                 Text(m.name, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f, fill = false))
                 ModelInfoButton(m)
             }
+            if (m.starred) ChoiceLabel()
             Text(glueDots(stringResource(R.string.model_desc_with_estimate, stringResource(purposeRes(m.purpose)), estimate)), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
             LicenceBadge(m)
         }
@@ -411,6 +426,10 @@ private fun ScaleSlider(vm: UpscaleViewModel) {
         // The native Material 3 slider, styled like the quality slider of the save dialog (the owner, chat 2026-10-14
         // ≈ 22:41 +03:00: «как ползунок качества сделал - по дизайну современного андроид. Так и сделай в таком стиле выбор
         // масштаба» · «нативным элементом ползунка»): five positions, the chosen one lit in the marks below.
+        // The slider and its marks run left to right in every language: in Arabic the slider mirrored (its fill ran toward
+        // ×16 on the right of the 4× thumb) while the marks kept ×1 on the left (RC2 check on the Titan, 2026-10-16) -
+        // numbers and the size line stay left-to-right as well. [NOT-TESTED]
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
         Slider(
             value = minOf(vm.scaleIndex, last).toFloat(), onValueChange = { vm.scaleIndex = it.roundToInt().coerceIn(0, last) },
             valueRange = 0f..maxOf(last, 1).toFloat(), steps = maxOf(last - 1, 0),
@@ -435,6 +454,7 @@ private fun ScaleSlider(vm: UpscaleViewModel) {
                     color = if (i == minOf(vm.scaleIndex, last)) c.primary else c.onSurfaceVariant,
                 )
             }
+        }
         }
         val w = limited?.first ?: (src.width * vm.scale)
         val h = limited?.second ?: (src.height * vm.scale)

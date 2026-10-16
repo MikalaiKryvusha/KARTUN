@@ -36,6 +36,9 @@ private val PinkSoft = Color(0x24FF1A8C)      // --pink-soft, rgba(255,26,140,.1
 private val Green = Color(0xFF3DDC84)         // the "on device" dot and badge
 private val Amber = Color(0xFFFFB020)         // warnings (8x/16x, licences)
 private val Blue = Color(0xFF8FB8FF)          // the «free with credit» (CC BY) licence badge (mockup .badge.by)
+/** The gold star of the models the owner rated best in the blind tests (2026-10-16 ≈ 21:4x: «поставим золотые звезды тем
+ *  можелям, которые я больше всего оценил» · «это 4 модели»). [NOT-TESTED] */
+val StarGold = Color(0xFFFFC83D)
 
 private val Colors = darkColorScheme(
     primary = Pink, onPrimary = Color.White, primaryContainer = PinkSoft, onPrimaryContainer = Pink,
