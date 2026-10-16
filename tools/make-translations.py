@@ -356,7 +356,7 @@ PANEL = {
 # `licence_commercial` with the licence as its argument. `working_tiles` / `working_starting` gave way to the metric tiles of
 # panel B1 (PANEL below) - lint: unused.
 # `model_fast_desc` / `model_max_desc` gave way to the per-model card lines of MODEL_TEXTS (2026-10-16).
-DROP = {"licence_bsd", "info_model_list", "working_tiles", "working_starting", "model_fast_desc", "model_max_desc"}
+DROP = {"licence_bsd", "info_model_list", "working_tiles", "working_starting", "model_fast_desc", "model_max_desc", "webp_too_big"}
 CATALOGUE = {
     "es": {
         "about_previews": "Fotos de las vistas previas de modelos",
@@ -563,6 +563,19 @@ WAITING = {
     "ar": ["في الانتظار", "KARTUN مشغول بمهمة عبر الـ API. صورتك هي التالية.", "انتظار", "العمل", "إيقاف مهمة الـ API"],
 }
 
+# The save dialog's format size limit (the owner: warn about the limit and offer to reduce) - (save_too_big, save_reduced);
+# they replace webp_too_big (DROP above). %1$s the format name, %2$s the limit, %3$s × %4$s the new size. [AI] draft, like the rest.
+SAVE_LIMIT = {
+    "es": ("%1$s guarda como máximo %2$s px por lado. La imagen se reducirá a %3$s × %4$s.", "Reducir y guardar"),
+    "pt": ("%1$s armazena no máximo %2$s px por lado. A imagem será reduzida para %3$s × %4$s.", "Reduzir e salvar"),
+    "fr": ("Le %1$s accepte au plus %2$s px par côté. L’image sera réduite à %3$s × %4$s.", "Réduire et enregistrer"),
+    "de": ("%1$s speichert höchstens %2$s px pro Seite. Das Bild wird auf %3$s × %4$s verkleinert.", "Verkleinern und speichern"),
+    "zh": ("%1$s 每边最多 %2$s 像素。图片将缩小到 %3$s × %4$s。", "缩小并保存"),
+    "hi": ("%1$s में हर तरफ़ ज़्यादा से ज़्यादा %2$s px आते हैं। तस्वीर %3$s × %4$s तक छोटी की जाएगी।", "छोटा करें और सहेजें"),
+    "bn": ("%1$s প্রতি পাশে সর্বোচ্চ %2$s px রাখে। ছবিটি %3$s × %4$s-এ ছোট করা হবে।", "ছোট করে সংরক্ষণ"),
+    "ar": ("تحفظ صيغة %1$s حتى %2$s بكسل لكل جانب كحد أقصى. ستُصغَّر الصورة إلى %3$s × %4$s.", "تصغير وحفظ"),
+}
+
 # The model card lines (model_purpose_*) and the (i) texts (model_info_*) of every catalogue model, one data file for the 8
 # languages (tools/model-texts.json, `[AI]` like the rest; sources researches/11 and 12). Its keys must be exactly the
 # model_purpose_* / model_info_* names of values/strings.xml - a key missing on either side reddens here.
@@ -622,6 +635,8 @@ def main():
         lines.append(f'    <string name="agent_job_progress">{xml_text(AGENT[lang])}</string>')
         assert len(WAITING[lang]) == len(WAITING_KEYS), (lang, "waiting")
         for k, v in zip(WAITING_KEYS, WAITING[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
+        for k, v in zip(("save_too_big", "save_reduced"), SAVE_LIMIT[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
