@@ -57,7 +57,7 @@
 >      claim-before-evidence, owner-decision-not-applied, text-in-agents-world,
 >      etalon-from-dirty-tree, shell-lied, escaping-layer, twins-missed,
 >      field-dropped-in-rebuild, platform-layer-unseen, silent-noop-edit, replace-crossed-scope, stand-left-dirty, shallow-scan,
->      proxy-for-the-thing, stale-artifact, guessed-instead-of-looked -->
+>      proxy-for-the-thing, stale-artifact, guessed-instead-of-looked, revert-wiped-work -->
 >
 > | Class slug | The failure it names |
 > |---|---|
@@ -80,6 +80,7 @@
 | `proxy-for-the-thing` | a check on a stand-in (the desktop GPU, the PC) taken as the check on the target (the phone's GPU) |
 | `stale-artifact` | a build or file believed to carry a change that it does not carry (timestamps, caches) |
 | `guessed-instead-of-looked` | a cause hunted on a guessed axis while the evidence (a journal, a thread name) already named it |
+| `revert-wiped-work` | an undo through git (checkout, reset) took the tree back past uncommitted work it was not meant to touch |
 >
 > The `#tags` are **trigger-tags**: before a task, grep by the task's tags and QUOTE the relevant
 > lessons in your report (id + one line) — or state "no relevant lessons". An unquoted recall is
@@ -90,6 +91,21 @@
 ## Entries
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
+
+### EXP-0033 · 2026-10-16 · ❌→✅ · #mutation #git #test
+class: revert-wiped-work
+**Context:** proving a new unit test red by a mutation of a source file that also held this session's UNCOMMITTED edits.
+**Tried / did:** `sed -i` the mutation, run the test, then `git checkout -- <file>` to undo the mutation.
+**Result:** ❌ the checkout restored the last COMMIT, wiping the uncommitted feature edits too (journal note, openError);
+saved only by a `cp` made before the mutation. A second try ran the mutant under a tool timeout - the restore step queued after
+gradle never ran while the file sat mutated for minutes. ✅ a PowerShell script: read the file, write the mutant, run the test,
+restore the read text in `finally` (`mutate-openerror.ps1` pattern, prints `restored: True`).
+**Lesson:** a mutation is undone from a copy taken right before it, in a `finally`, never by `git checkout` - git knows only
+the commit, not the work in the tree.
+**Repro:** `git diff --stat <file>` before the mutation is non-empty → `git checkout -- <file>` would lose exactly that diff.
+**Trigger:** about to mutate a file to prove a test red.
+**Not for:** files with no uncommitted changes (`git diff --quiet <file>` exits 0) - there checkout is the same as the copy.
+mechanized: no - one-off scripts; the finally-restore script shape is the net
 
 ### EXP-0032 · 2026-10-16 · ✅ · #docs #agent-api #fresh-agent
 class: proxy-for-the-thing

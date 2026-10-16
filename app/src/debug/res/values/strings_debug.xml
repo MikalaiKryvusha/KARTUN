@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Debug build only (src/debug): the «Debug» settings group and the engine probe screen. -->
-<resources>
+<!-- Debug build only (src/debug): the «Debug» settings group and the engine probe screen. English and Russian only - the
+     debug build is the agent's and the owner's tool (HOUSE_RULES.md R3), so lint does not ask for the other 8 languages. -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="dbg_section">Debug</string>
     <string name="dbg_probe">Engine probe</string>
     <string name="dbg_probe_sub">One model on one picture, on the GPU or the CPU, with live logs and device load</string>
