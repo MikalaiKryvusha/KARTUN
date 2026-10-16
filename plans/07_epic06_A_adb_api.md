@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-16 (agent, `/plan-epic` rung 3 on the owner's order in chat 2026-10-15: «API для ИИ-агентов по ADB и HTTPS (ideas/02); Сейчас делаем!»)
 > **Родитель:** `plans/06_EPIC_agent_api.md` §3 row «A — кабель», gate: A1–A10 pass on the Titan with a run report; recon `researches/10_agent_api_recon.md`
-> **Статус:** 🔧 written 2026-10-16; step 0 ✅ (catalogue committed `fc6b8d5`); step 1 ✅ partial 2026-10-16 11:55 +03:00 — the door works on the Titan (INFO from a stopped app, screen asleep, no notification, the app reads pushed files), A7 not observed (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`); next — step 2
+> **Статус:** 🔧 written 2026-10-16; step 0 ✅ (catalogue committed `fc6b8d5`); step 1 ✅ partial 2026-10-16 11:55 +03:00 — the door works on the Titan (INFO from a stopped app, screen asleep, no notification, the app reads pushed files), A7 not observed (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`); step 2 ✅ 2026-10-16 12:15 (`UpscaleEngine`); next — step 3
 > **Вовне:** the owner's fork `plans/06` §6.3 (the ADB door in the release build) — until answered, the door is built in `src/main` and moves to `src/debug` on a «только Debug» answer
 
 ## Goal vector
@@ -76,7 +76,9 @@ quota · internal`. The CLI adds its own `no_device · adb_missing · timeout`.
    Exit: all five observations in the run report. Any of 1–4 fails → stop, write the failure into `researches/10` §5
    `FORK: ADB door` and switch to option (b) (`content call` provider) before step 4. Remove the `probe_read` field.
 
-2. [ ] **One shared engine** (`plans/06` §4.1; risk 5.1.1–2). New file `app/src/main/kotlin/com/kriniks/kartun/UpscaleEngine.kt`:
+2. [x] **One shared engine** (done 2026-10-16 12:15 +03:00: `UpscaleEngine.kt`, the net keyed by model AND backend; 43 JVM
+   tests; Titan by touch — 8×, 4×, «Отменить» at tile 2/13, model switch, no crash —
+   `testcases/reports/2026-10-16_epic06_A_step2_shared_engine.md`) (`plans/06` §4.1; risk 5.1.1–2). New file `app/src/main/kotlin/com/kriniks/kartun/UpscaleEngine.kt`:
    a process-wide `object UpscaleEngine` that owns what `UpscaleViewModel` owns today — the single-thread dispatcher
    (`engineThread`), the loaded net (`loaded`, `loadedModel`, `ensureLoaded`, `release`), the pass plan and the progress
    mapping of `start()`'s engine block, `withFallback`, `decode` with `MAX_INPUT_MP`, the `fits`/`MAX_OUTPUT_MP` check and

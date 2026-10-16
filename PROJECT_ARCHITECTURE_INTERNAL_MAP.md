@@ -18,6 +18,7 @@
 | `UpscaleJob` | one run in a foreground service (`mediaProcessing`) | owns the engine call, progress, cancel, error mapping, atomic publish |
 | `ResultImage` | the output file in app cache, streamed tile by tile | compared to the source; then saved or shared |
 | `ResultStore` | MediaStore (`Pictures/KARTUN`) + FileProvider share | save without overwriting the original; share via the system sheet |
+| `UpscaleEngine` | the process's one engine (`UpscaleEngine.kt`, plans/07 step 2) | loaded net keyed by model + backend, pass plan, fallback ladder, decode, learned speed; used by the screens and the agent door |
 | `AgentService` | the ADB door for AI agents (`agent/AgentService.kt`, plans/07): exported, guarded by `DUMP` | answers `INFO` into `files/agent/info.json`; UPSCALE/CANCEL and the job queue come in plans/07 step 4 |
 | `DeviceProfile` | Vulkan presence/version, GPU name, fp16 safety, heap budget | chooses tile size, precision and the fallback ladder; shown in diagnostics |
 

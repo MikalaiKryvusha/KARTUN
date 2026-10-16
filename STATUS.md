@@ -77,8 +77,9 @@ lint последний раз 2026-10-15 13:10 — 0 ошибок, 15 пред�
    Tailscale, MCP сразу после фазы A). **Шаг 1 сделан 2026-10-16 11:55:** служба `agent/AgentService.kt` (exported, DUMP)
    на Титане отвечает на `INFO` из закрытого и остановленного KARTUN при спящем экране, без уведомления, и читает файлы,
    положенные `adb push` (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`). Не проверено: отказ чужому
-   приложению (A7) — `run-as` работает от нашего же uid, нужна маленькая проба-APK (шаг 9). **Дальше — шаг 2:** общий движок
-   `UpscaleEngine.kt` (перенос из `UpscaleViewModel` без смены поведения).
+   приложению (A7) — `run-as` работает от нашего же uid, нужна маленькая проба-APK (шаг 9). **Шаг 2 сделан 12:15:** общий
+   движок `UpscaleEngine.kt`; на Титане пальцами 8×, 4×, «Отменить», смена модели — без крешей
+   (`testcases/reports/2026-10-16_epic06_A_step2_shared_engine.md`). **Дальше — шаг 3:** контракт задания `agent/AgentJob.kt` + тест.
 1. **ncnn PR — следить за ревью:** https://github.com/Tencent/ncnn/pull/7121 и issue https://github.com/Tencent/ncnn/issues/7120
    (`gh pr view 7121 -R Tencent/ncnn --comments`). Ответы мейнтейнеру — коротко, человеческим языком, без подписи ИИ (слово владельца
    к issue); правки — в ветке форка `fix-sdpa-cross-oob-load` (клон `D:/work/ai_sandbox/ncnn`), картинка PR — ветка форка `pr-assets`

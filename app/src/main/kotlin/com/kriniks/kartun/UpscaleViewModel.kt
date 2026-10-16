@@ -17,8 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.kriniks.kartun.engine.NcnnUpscaler
-import com.kriniks.kartun.engine.TileListener
 import com.kriniks.kartun.engine.UpscaleCancelledException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,7 +29,8 @@ import kotlin.math.roundToInt
 
 /**
  * The main path of phase 2 (plans/03): pick → set up → upscale with progress → compare. Holds the screen, the picked
- * photo, the choices and the result; runs the engine on ONE dedicated thread (research 03 §B, lesson 7). [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
+ * photo, the choices and the result; the runs themselves go through the shared [UpscaleEngine] on the process's one
+ * engine thread (research 03 §B, lesson 7; plans/07 step 2). [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
  */
 class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
@@ -83,29 +82,26 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     /** The largest scale of the slider whose result fits the limit for the picked photo (for the notice). */
     val largestFittingScale get() = source?.let { s -> SCALES.lastOrNull { fits(s.megapixels, it) } } ?: SCALES.first()
 
-    // The process-wide engine thread, shared by every screen and never closed (bugs/01 - see EngineThread).
-    private val engineThread = EngineThread.dispatcher
     // One preferences file for the learned speed AND the remembered settings (its name predates the settings).
-    private val prefs = app.getSharedPreferences("estimates", Context.MODE_PRIVATE)
+    private val prefs = app.getSharedPreferences(UpscaleEngine.PREFS, Context.MODE_PRIVATE)
     private var job: Job? = null
     private var preload: Job? = null
-    // The loaded net lives on the engine thread only (touched inside withContext(engineThread)).
-    private var loaded: NcnnUpscaler? = null
-    private var loadedModel: Model? = null
 
     /** Opens a picked or shared photo; on success goes to the setup screen. */
     fun open(uri: Uri) {
         viewModelScope.launch {
             error = null
             val ctx = getApplication<Application>()
-            val decoded = withContext(engineThread) { runCatching { decode(ctx, uri) } }
+            val decoded = withContext(UpscaleEngine.dispatcher) {
+                runCatching { UpscaleEngine.decode(ImageDecoder.createSource(ctx.contentResolver, uri)) }
+            }
             decoded.onSuccess { bmp ->
                 source = Source(uri, displayName(ctx, uri), bmp)
                 result = null
                 screen = Screen.Setup
                 preload()
             }.onFailure {
-                error = if (it is TooBig) R.string.error_too_big to mpLimitText() else R.string.error_decode to null
+                error = if (it is UpscaleEngine.TooBig) R.string.error_too_big to mpLimitText() else R.string.error_decode to null
             }
         }
     }
@@ -147,7 +143,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         useGpu = on
         prefs.edit { putBoolean(PREF_GPU, on) }
         // The loaded net was built for the other backend: drop it, the next screen loads the right one.
-        viewModelScope.launch { withContext(engineThread) { release() } }
+        viewModelScope.launch { UpscaleEngine.release() }
     }
 
     fun openSettings() { beforeSettings = screen; screen = Screen.Settings }
@@ -261,7 +257,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     fun deleteModel(m: Model) {
         if (m.builtin || m.id in downloads) return
         viewModelScope.launch {
-            withContext(engineThread) { if (loadedModel == m) release() }
+            UpscaleEngine.releaseIf(m)
             withContext(Dispatchers.IO) { ModelStore.delete(getApplication(), m) }
             refreshOnDevice()
             if (model == m) {
@@ -297,33 +293,12 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         modelLoading = true
         preload?.cancel()
         preload = viewModelScope.launch {
-            val ok = withContext(engineThread) { runCatching { ensureLoaded(m) }.isSuccess }
+            val ok = runCatching { UpscaleEngine.preload(getApplication(), m, useGpu) }.isSuccess
             if (m == model) {
                 modelLoading = false
                 if (!ok) error = (if (m.builtin) R.string.error_model else R.string.error_model_downloaded) to null
             }
         }
-    }
-
-    /** Engine thread only: makes [m] the loaded net, releasing the previous one. */
-    private fun ensureLoaded(m: Model): NcnnUpscaler {
-        loaded?.let { if (loadedModel == m) return it }
-        release()
-        val (param, bin) = ModelStore.files(getApplication(), m)
-        // bugs/01: the journal keeps the engine's stderr and the CPU set this load starts on.
-        CrashLog.beforeEngine()
-        CrashLog.note("load ${m.id} gpu=$useGpu ${CrashLog.cpuState()}")
-        val up = NcnnUpscaler.load(param.path, bin.path, useGpu = useGpu) ?: throw ModelLoadFailed()
-        loaded = up
-        loadedModel = m
-        return up
-    }
-
-    /** Engine thread only. */
-    private fun release() {
-        loaded?.close()
-        loaded = null
-        loadedModel = null
     }
 
     /**
@@ -357,41 +332,20 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         UpscaleService.start(getApplication())
         job = viewModelScope.launch {
             val t0 = SystemClock.elapsedRealtime()
-            val outcome = withContext(engineThread) {
-                runCatching {
-                    // Normally already loaded by preload(); a start during loading waits for it on this same thread.
-                    ensureLoaded(chosen).let { u ->
-                        publish(_progress.value.copy(gpu = u.usesGpu))
-                        // Tiles of both passes are known up front, so the ring runs 0..100 % once across the whole run.
-                        val mid = secondPassInput(target)
-                        val pass1 = tiles(src.width, src.height)
-                        val pass2 = mid?.let { tiles(src.width * it, src.height * it) } ?: 0
-                        val grand = pass1 + pass2
-                        // The ring counts in 200 px tiles; a retry with smaller tiles reports more of them, so each
-                        // pass maps its own done/total onto its share of the ring.
-                        val report = { offset: Int, share: Int ->
-                            TileListener { done, total ->
-                                publish(_progress.value.copy(done = offset + done * share / total, total = grand, elapsedMs = SystemClock.elapsedRealtime() - t0))
-                                !ProcessingState.cancelRequested
-                            }
-                        }
-                        var gpuUsed = u.usesGpu
-                        val pass = { input: Bitmap, outScale: Int, listener: TileListener ->
-                            withFallback(chosen, u, input, outScale, listener).also { (_, gpu) -> gpuUsed = gpuUsed && gpu }.first
-                        }
-                        val tRun = SystemClock.elapsedRealtime()
-                        // Pass 1 comes out of the engine already at the size it is needed at - the target for 1×/2×/4×,
-                        // the second pass's input (2× for 8×, 4× for 16×) otherwise: the network's 4× tiles are shrunk
-                        // inside the engine, so no full 4× image is held (photos up to MAX_INPUT_MP, the owner 11:35).
-                        val first = pass(src.bitmap, mid ?: target, report(0, pass1))
-                        learnRate(chosen, gpuUsed, src.megapixels, SystemClock.elapsedRealtime() - tRun)
-                        // 8×: the 2× result feeds the second 4× pass (2 x 4 = 8); 16×: the 4× result does (4 x 4 = 16).
-                        // [TESTED: 2026-10-15 · 8× on the Titan - testcases/reports/2026-10-15_F2_guarded_loop_device_run.md run 8, before this change]
-                        val full = if (mid == null) first else pass(first, ENGINE_SCALE, report(pass1, pass2)).also { first.recycle() }
-                        val display = fitForDisplay(full)
-                        val before = Bitmap.createScaledBitmap(src.preview, display.width, display.height, true)
-                        Result(full, display, before, SystemClock.elapsedRealtime() - t0, gpuUsed, chosen, target)
-                    }
+            val outcome = runCatching {
+                // The shared engine runs the passes (UpscaleEngine.run); the screen only maps its progress and the result.
+                val out = UpscaleEngine.run(
+                    getApplication(), src.bitmap, chosen, target, useGpu,
+                    onProgress = { done, total, gpu ->
+                        publish(_progress.value.copy(done = done, total = total, elapsedMs = SystemClock.elapsedRealtime() - t0, gpu = gpu))
+                    },
+                    cancelled = { ProcessingState.cancelRequested },
+                )
+                // The display copies are drawn off the main thread, off the engine thread too: no engine call here.
+                withContext(Dispatchers.Default) {
+                    val display = fitForDisplay(out.bitmap)
+                    val before = Bitmap.createScaledBitmap(src.preview, display.width, display.height, true)
+                    Result(out.bitmap, display, before, SystemClock.elapsedRealtime() - t0, out.gpuUsed, chosen, target)
                 }
             }
             ProcessingState.progress.value = null // the run is over: the service stops itself
@@ -403,7 +357,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                     screen = Screen.Setup
                     error = when (it) {
                         is UpscaleCancelledException -> null
-                        is ModelLoadFailed -> (if (chosen.builtin) R.string.error_model else R.string.error_model_downloaded) to null
+                        is UpscaleEngine.ModelLoadFailed -> (if (chosen.builtin) R.string.error_model else R.string.error_model_downloaded) to null
                         else -> R.string.error_engine to null
                     }
                 }
@@ -460,34 +414,6 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
     fun dismissSaveMessage() { saveMessage = null }
 
-    /**
-     * Engine thread only. One 4× pass with the fallback ladder of plans/04 step 2 (research 03 §B lessons 2 and 4: device
-     * lost on large tiles is the most common failure of Android upscalers): the loaded net with 200 px tiles → the same
-     * net with 100 px tiles → a CPU net → an honest error. A cancel is never retried. Returns the bitmap and whether the
-     * GPU did the work. [NOT-TESTED: the forced GPU failure on the device - deferred by the owner]
-     */
-    private fun withFallback(m: Model, u: NcnnUpscaler, input: Bitmap, outScale: Int, listener: TileListener): Pair<Bitmap, Boolean> {
-        try {
-            return u.upscale(input, ENGINE_SCALE, TILE_PX, listener, outScale) to u.usesGpu
-        } catch (e: IllegalStateException) {
-            Log.w(TAG, "pass failed with tile $TILE_PX (${e.message}); retry with ${TILE_PX / 2}")
-        }
-        try {
-            return u.upscale(input, ENGINE_SCALE, TILE_PX / 2, listener, outScale) to u.usesGpu
-        } catch (e: IllegalStateException) {
-            Log.w(TAG, "pass failed with tile ${TILE_PX / 2} (${e.message}); retry on the CPU")
-        }
-        if (!u.usesGpu) throw EngineFailed()
-        publish(_progress.value.copy(gpu = false))
-        val (param, bin) = ModelStore.files(getApplication(), m)
-        CrashLog.note("load ${m.id} gpu=false (fallback) ${CrashLog.cpuState()}")
-        val cpu = NcnnUpscaler.load(param.path, bin.path, useGpu = false) ?: throw EngineFailed()
-        return cpu.use {
-            try { it.upscale(input, ENGINE_SCALE, TILE_PX, listener, outScale) to false }
-            catch (e: IllegalStateException) { Log.w(TAG, "CPU pass failed too (${e.message})"); throw EngineFailed() }
-        }
-    }
-
     /** One progress value for the screen and for the notification of [UpscaleService]. */
     private fun publish(p: Progress) {
         _progress.value = p
@@ -498,7 +424,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         when (screen) {
             Screen.Setup -> {
                 screen = Screen.Home; source = null; error = null
-                viewModelScope.launch { withContext(engineThread) { release() } }
+                viewModelScope.launch { UpscaleEngine.release() }
             }
             Screen.Working -> cancel()
             Screen.Result -> { screen = Screen.Setup; result = null; saveMessage = null }
@@ -513,14 +439,6 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
     fun dismissError() { error = null }
 
-    /** Keeps a running average of ms per input MP for each model and backend on THIS device (the estimate learns);
-     *  [gpu] is the backend that actually ran - a GPU failure that fell back to the CPU teaches the CPU rate. */
-    private fun learnRate(m: Model, gpu: Boolean, mp: Float, ms: Long) {
-        if (mp < MIN_MP_TO_LEARN) return
-        val old = prefs.getFloat(rateKey(m, gpu), startRate(m, gpu))
-        prefs.edit { putFloat(rateKey(m, gpu), old * (1 - LEARN_WEIGHT) + (ms / mp) * LEARN_WEIGHT) }
-    }
-
     override fun onCleared() {
         // The screen is gone for good (Back from the app mid-run): stop the run between tiles and let the service go,
         // so no notification is left behind for a result nobody will see.
@@ -528,12 +446,8 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         ProcessingState.progress.value = null
         // Release the net on its own thread (ncnn/Vulkan objects must not cross threads). The thread itself stays: it is
         // the process's one engine thread, and stopping it is what aborted the next screen's model load (bugs/01).
-        EngineThread.executor.execute { release() }
+        UpscaleEngine.releaseLater()
     }
-
-    private class TooBig : RuntimeException()
-    private class ModelLoadFailed : RuntimeException()
-    private class EngineFailed : RuntimeException()
 
     companion object {
         private const val TAG = "KARTUN"
@@ -600,8 +514,6 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         fun tiles(w: Int, h: Int) = ((w + TILE_PX - 1) / TILE_PX) * ((h + TILE_PX - 1) / TILE_PX)
         /** Longest side of the bitmap the compare screen draws (Android refuses to draw bitmaps over ~100 MB). */
         private const val DISPLAY_MAX_SIDE = 4096
-        private const val MIN_MP_TO_LEARN = 0.2f
-        private const val LEARN_WEIGHT = 0.5f
 
         /** The preference key of a learned rate: one per model and backend. New keys on purpose - the old one per model
          *  mixed GPU and CPU runs, so a CPU run had inflated the GPU estimate too. [TESTED: 2026-10-14 · EstimateTest] */
@@ -609,13 +521,6 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
         /** The starting rate before this device has learned one (the catalogue's, measured on the Titan). */
         fun startRate(m: Model, gpu: Boolean): Float = if (gpu) m.gpuMsPerMp else m.cpuMsPerMp
-
-        private fun decode(ctx: Context, uri: Uri): Bitmap =
-            ImageDecoder.decodeBitmap(ImageDecoder.createSource(ctx.contentResolver, uri)) { decoder, info, _ ->
-                if (info.size.width.toFloat() * info.size.height / 1_000_000f > MAX_INPUT_MP) throw TooBig()
-                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                decoder.setTargetColorSpace(android.graphics.ColorSpace.get(android.graphics.ColorSpace.Named.SRGB))
-            }.let { if (it.config == Bitmap.Config.ARGB_8888) it else it.copy(Bitmap.Config.ARGB_8888, false) }
 
         private fun displayName(ctx: Context, uri: Uri): String =
             ctx.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use {
