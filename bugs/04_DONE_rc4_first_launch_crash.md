@@ -1,6 +1,6 @@
 # Bug 04 — RC4: первый запуск падает в конструкторе UpscaleViewModel (поле объявлено ниже `init`)
 
-**Status:** 🔧 fix pending verification · **Severity:** S1 · **Fixing:** this session (RC5)
+**Status:** ✅ DONE · **Severity:** S1 · **Fixing:** this session (RC5)
 **Version/build:** release `0.1 (275)`, commit `3c8ca15` (RC4) · **When/context:** 2026-10-16 22:32 +03:00, the final RC4
 round — the owner on the Titan: «КРЕШ НА ТИТАНЕ!!!!!!»; the Redmi agent hit the same crash at the same time after `pm clear`.
 
@@ -64,3 +64,10 @@ TWINS: searched `^\s*init {` in `app/src` — found 0 other sites (UpscaleViewMo
 ## Links
 
 `testcases/TC_release_1_0_rc4.md` H1/H2 · commit `0e418fd` (where `benchSaver` came in) · EXP entry for the class
+
+## ✅ STATUS: DONE (2026-10-16 23:51 +03:00)
+
+- Hygiene: InitLastGuardTest red on `3c8ca15`, green on `c66468f`; full suite 78/78.
+- Functional run: RC5 `0.1 (277)` — `pm clear` + launch with no crash on all four devices (H1: Titan, Redmi, S21 FE, A52 —
+  `testcases/reports/2026-10-16_rc5_*.md`), and with battery saver ON on the Titan (H2, the path that crashed); shipped in
+  release 1.0 `1.0 (285)`.
