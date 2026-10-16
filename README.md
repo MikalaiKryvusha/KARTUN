@@ -28,7 +28,12 @@ Open source · Offline · AI on the device</p>
 
 [Читать по-русски →](#russian)
 
-**KARTUN** makes a small or blurry photo big and sharp with a neural network, right on an Android phone or tablet. Pick
+**KARTUN is the world's first ncnn-based image upscaler to run a DAT2 transformer entirely on an Android device's GPU
+through Vulkan.** The DAT2 graph is rewritten for ncnn: the 6D attention-window tensors are folded into 4D. A bug in the
+attention shader of ncnn itself was found and fixed in our own fork of the engine. Model weights are fp16. The picture on
+the phone matches the original PyTorch network to 66.6 dB PSNR.
+
+KARTUN makes a small or blurry photo big and sharp with a neural network, right on an Android phone or tablet. Pick
 a photo, tap one button, drag the line across the picture to compare before and after, then save the result or send it
 on. The picture never leaves the device: the network runs on the phone's graphics chip through Vulkan.
 
@@ -241,7 +246,12 @@ Author: Mikalai Kryvusha (Krinik).
 
 [Read in English →](#english)
 
-**KARTUN** делает маленькое или размытое фото большим и чётким с помощью нейросети прямо на Android-телефоне или
+**KARTUN — первый в мире апскейлер изображений на ncnn, который запускает трансформер DAT2 целиком на видеочипе
+Android-устройства через Vulkan.** Граф DAT2 переписан под ncnn: 6D-тензоры окон внимания свёрнуты в 4D. Ошибка в шейдере
+внимания самого ncnn найдена и исправлена в собственном форке движка. Веса моделей — в fp16. Картинка на телефоне
+совпадает с оригинальной нейросетью PyTorch с точностью 66,6 дБ PSNR.
+
+KARTUN делает маленькое или размытое фото большим и чётким с помощью нейросети прямо на Android-телефоне или
 планшете. Выберите фото, нажмите одну кнопку, проведите линию по картинке, чтобы сравнить «до» и «после», затем
 сохраните результат или отправьте дальше. Снимок не покидает устройство: нейросеть работает на видеочипе телефона через
 Vulkan.
