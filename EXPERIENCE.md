@@ -175,6 +175,9 @@ heredoc inside a tool command — the text-through-files rule applies to the age
 **Trigger:** about to put a multi-line script with quotes into a single Bash-tool call.
 **Not for:** short heredocs of plain text without quote characters (they pass).
 mechanized: no — the parser is the tool's, not the project's; the rule is AGENT_GUIDE.md «TEXT TRAVELS THROUGH FILES»
+Seen again 2026-10-16 ≈ 14:40 in a second face: a `<<'EOF'` Python script wrote `"\\n"` and Android strings got REAL line
+breaks (the backslash pair came out single, and nothing failed); the file-tool script with `chr(92) + "n"` was right first
+time. A script that must emit a backslash is written with the file tool, and the result is read back (`grep -vc '</string>$'`).
 
 ### EXP-0026 · 2026-10-16 · ❌→✅ · #adb #titan #harness #device
 class: stand-left-dirty

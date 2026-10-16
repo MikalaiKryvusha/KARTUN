@@ -120,8 +120,8 @@ minutes. On the way we found an out-of-bounds read in an ncnn attention shader a
 
 | | |
 |---|---|
-| Input | any picture format Android itself opens: JPEG, PNG, WebP, HEIC, AVIF, GIF, BMP and others |
-| Output | PNG (lossless), JPEG and WebP with a quality slider; WebP up to 16 383 px per side |
+| Input | what Android itself opens (JPEG, PNG, WebP, HEIC, AVIF, GIF, BMP, ICO) plus TGA, PSD, PPM/PGM, HDR, QOI and TIFF |
+| Output | PNG (lossless), JPEG and WebP with a quality slider; a result wider than WebP's 16 383 px or JPEG's 65 500 px per side is offered reduced to fit |
 | Largest input photo | 200 MP |
 | Largest result | 536 MP |
 | 8× and 16× | two passes of the network: four to sixteen times longer than 2×–4× |
@@ -305,8 +305,8 @@ KARTUN запускает и трансформер: 4x UltraSharp V2 автор
 
 | | |
 |---|---|
-| Вход | любой формат картинки, который открывает сам Android: JPEG, PNG, WebP, HEIC, AVIF, GIF, BMP и другие |
-| Выход | PNG без потерь, JPEG и WebP с ползунком качества; WebP — до 16 383 пикселей по стороне |
+| Вход | всё, что открывает сам Android (JPEG, PNG, WebP, HEIC, AVIF, GIF, BMP, ICO), а также TGA, PSD, PPM/PGM, HDR, QOI и TIFF |
+| Выход | PNG без потерь, JPEG и WebP с ползунком качества; результат шире 16 383 точек для WebP или 65 500 для JPEG KARTUN предлагает уменьшить до допустимого размера |
 | Самое большое исходное фото | 200 Мп |
 | Самый большой результат | 536 Мп |
 | 8× и 16× | два прохода нейросети: в 4–16 раз дольше, чем 2×–4× |
