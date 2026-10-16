@@ -26,8 +26,6 @@
     <string name="info_scale_list">• 1×——尺寸不变，神经网络只去除噪点和模糊。\n• 2× 和 4×——神经网络处理一次，足够屏幕显示和打印。\n• 8× 和 16×——处理两次：时间长 4–16 倍，文件非常大。</string>
     <string name="info_model_text">模型是训练好的神经网络。模型的区别在于学习过的图片：有的更擅长修复照片，有的更擅长修复绘画。</string>
     <string name="working_title">神经网络正在增强你的照片</string>
-    <string name="working_tiles">第 %1$s / %2$d 块</string>
-    <string name="working_starting">剩余约 %1$s</string>
     <string name="cancel">取消</string>
     <string name="before">处理前</string>
     <string name="after">处理后</string>
@@ -72,7 +70,6 @@
     <string name="settings_manual">用户指南</string>
     <string name="settings_manual_sub">如何使用 KARTUN 及其模型</string>
     <string name="info_open_guide">打开完整指南</string>
-    <string name="working_pass">第 %1$d / 2 次 · 第 %2$s / %3$d 块</string>
     <string name="settings_notifications">通知</string>
     <string name="settings_notifications_on">已允许：进度和“照片已完成”</string>
     <string name="settings_notifications_off">已关闭——点按以允许</string>
@@ -96,7 +93,6 @@
     <string name="terms_title">使用条款</string>
     <string name="terms_sub">模型权利与责任</string>
     <string name="rendering">正在渲染…</string>
-    <string name="working_elapsed">已用 %1$s</string>
     <string name="metric_pass">次</string>
     <string name="metric_tile">块</string>
     <string name="metric_elapsed">已用</string>

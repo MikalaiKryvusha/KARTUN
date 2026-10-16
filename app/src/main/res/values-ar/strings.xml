@@ -26,8 +26,6 @@
     <string name="info_scale_list">• 1× — الحجم نفسه؛ تزيل الشبكة الضجيج والضبابية فقط.\n• 2× و4× — مرور واحد للشبكة؛ يكفي للشاشة والطباعة.\n• 8× و16× — مروران: أطول بـ 4 إلى 16 مرة، وملف كبير جدًا.</string>
     <string name="info_model_text">النموذج شبكة عصبية مدرَّبة. تختلف النماذج في الصور التي تعلّمت منها: أحدها يرمّم الصور أفضل، والآخر الرسوم.</string>
     <string name="working_title">الشبكة العصبية تحسّن صورتك</string>
-    <string name="working_tiles">البلاطة %1$s من %2$d</string>
-    <string name="working_starting">المتبقي ≈ %1$s</string>
     <string name="cancel">إلغاء</string>
     <string name="before">قبل</string>
     <string name="after">بعد</string>
@@ -82,7 +80,6 @@
     <string name="settings_manual">دليل المستخدم</string>
     <string name="settings_manual_sub">كيف تستخدم KARTUN ونماذجه</string>
     <string name="info_open_guide">افتح الدليل كاملًا</string>
-    <string name="working_pass">المرور %1$d من 2 · البلاطة %2$s من %3$d</string>
     <string name="settings_notifications">الإشعارات</string>
     <string name="settings_notifications_on">مسموح بها: التقدم و«صورتك جاهزة»</string>
     <string name="settings_notifications_off">متوقفة — اضغط للسماح</string>
@@ -106,7 +103,6 @@
     <string name="terms_title">شروط الاستخدام</string>
     <string name="terms_sub">حقوق النماذج والمسؤولية</string>
     <string name="rendering">جارٍ التصيير…</string>
-    <string name="working_elapsed">مضى %1$s</string>
     <string name="metric_pass">المرور</string>
     <string name="metric_tile">البلاطة</string>
     <string name="metric_elapsed">مضى</string>

@@ -263,11 +263,6 @@ DONE = {"es": ("Tu foto está lista", "Toca para comparar antes y después"), "p
         "zh": ("照片已完成", "点按以对比处理前后"), "hi": ("आपकी फ़ोटो तैयार है", "पहले और बाद की तुलना के लिए दबाएँ"),
         "bn": ("আপনার ছবি প্রস্তুত", "আগে ও পরে তুলনা করতে চাপুন"), "ar": ("صورتك جاهزة", "اضغط للمقارنة بين قبل وبعد")}
 
-# The processing line of the two-pass scales (8×, 16×).
-PASS = {"es": "Pasada %1$d de 2 · mosaico %2$s de %3$d", "pt": "Passagem %1$d de 2 · bloco %2$s de %3$d",
-        "fr": "Passe %1$d sur 2 · tuile %2$s sur %3$d", "de": "Durchgang %1$d von 2 · Kachel %2$s von %3$d",
-        "zh": "第 %1$d / 2 次 · 第 %2$s / %3$d 块", "hi": "पास %1$d / 2 · टाइल %2$s / %3$d",
-        "bn": "পাস %1$d / ২ · টাইল %2$s / %3$d", "ar": "المرور %1$d من 2 · البلاطة %2$s من %3$d"}
 
 # Notification permission (interview #004): settings_notifications · _on · _off · info_notifications_text · notif_denied_title · notif_denied_text · notif_open_settings.
 NOTIF_KEYS = ["settings_notifications", "settings_notifications_on", "settings_notifications_off", "info_notifications_text",
@@ -343,11 +338,6 @@ SAVE_INFO = {
            "• أصغر ملف بالمظهر نفسه\\n• يفتحه Android والمتصفحات وتطبيقات المراسلة\\n• للحفظ والإرسال"),
 }
 
-# «Прошло …» on the processing screen (the owner, chat 2026-10-15 ≈ 12:18 +03:00: «Нужно еще считать время, сколько уже
-# длиться процесс»).
-ELAPSED = {"es": "Transcurrido %1$s", "pt": "Decorrido %1$s", "fr": "Écoulé %1$s", "de": "Vergangen %1$s",
-           "zh": "已用 %1$s", "hi": "बीता %1$s", "bn": "পেরিয়েছে %1$s", "ar": "مضى %1$s"}
-
 # The processing panel B1 (the owner, chat 2026-10-15 ≈ 12:30 +03:00): metric_pass · metric_tile · metric_elapsed ·
 # metric_left · duration_short_ms · duration_short_s · duration_short_m.
 PANEL = {
@@ -363,8 +353,9 @@ PANEL = {
 
 # The model catalogue and «All models» (plans/05 step 5), keyed by name - not positional (EXP-0011). `[AI]` drafts like
 # the rest; `info_model_list` replaces the positional one of KEYS (DROP below), and `licence_bsd` gave way to
-# `licence_commercial` with the licence as its argument.
-DROP = {"licence_bsd", "info_model_list"}
+# `licence_commercial` with the licence as its argument. `working_tiles` / `working_starting` gave way to the metric tiles of
+# panel B1 (PANEL below) - lint: unused.
+DROP = {"licence_bsd", "info_model_list", "working_tiles", "working_starting"}
 CATALOGUE = {
     "es": {
         "about_previews": "Fotos de las vistas previas de modelos",
@@ -659,7 +650,6 @@ def main():
         for k, v in zip(("manual_title", "settings_manual", "settings_manual_sub"), GUIDE[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="info_open_guide">{xml_text(OPEN_GUIDE[lang])}</string>')
-        lines.append(f'    <string name="working_pass">{xml_text(PASS[lang])}</string>')
         assert len(NOTIF[lang]) == len(NOTIF_KEYS), (lang, "notif")
         for k, v in zip(NOTIF_KEYS, NOTIF[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
@@ -669,7 +659,6 @@ def main():
         for k, v in zip(ABOUT_KEYS, ABOUT[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="rendering">{xml_text(RENDERING[lang])}</string>')
-        lines.append(f'    <string name="working_elapsed">{xml_text(ELAPSED[lang])}</string>')
         for k, v in zip(("metric_pass", "metric_tile", "metric_elapsed", "metric_left", "duration_short_ms", "duration_short_s", "duration_short_m"), PANEL[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in zip(("save_estimate", "format_points_png", "format_points_jpeg", "format_points_webp"), SAVE_INFO[lang]):

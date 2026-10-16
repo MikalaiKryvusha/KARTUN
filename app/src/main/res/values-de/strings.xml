@@ -26,8 +26,6 @@
     <string name="info_scale_list">• 1× – gleiche Größe; das Netz entfernt nur Rauschen und Unschärfe.\n• 2× und 4× – ein Durchgang; reicht für Bildschirm und Druck.\n• 8× und 16× – zwei Durchgänge: 4- bis 16-mal länger, sehr große Datei.</string>
     <string name="info_model_text">Ein Modell ist ein trainiertes neuronales Netz. Modelle unterscheiden sich darin, womit sie gelernt haben: eines stellt Fotos besser wieder her, ein anderes Zeichnungen.</string>
     <string name="working_title">Das Netz verbessert dein Foto</string>
-    <string name="working_tiles">Kachel %1$s von %2$d</string>
-    <string name="working_starting">Noch ≈ %1$s</string>
     <string name="cancel">Abbrechen</string>
     <string name="before">Vorher</string>
     <string name="after">Nachher</string>
@@ -74,7 +72,6 @@
     <string name="settings_manual">Benutzeranleitung</string>
     <string name="settings_manual_sub">So nutzt du KARTUN und seine Modelle</string>
     <string name="info_open_guide">Die ganze Anleitung öffnen</string>
-    <string name="working_pass">Durchgang %1$d von 2 · Kachel %2$s von %3$d</string>
     <string name="settings_notifications">Benachrichtigungen</string>
     <string name="settings_notifications_on">Erlaubt: Fortschritt und „Dein Foto ist fertig“</string>
     <string name="settings_notifications_off">Aus – tippen zum Erlauben</string>
@@ -98,7 +95,6 @@
     <string name="terms_title">Nutzungsbedingungen</string>
     <string name="terms_sub">Rechte an Modellen und Haftung</string>
     <string name="rendering">Wird gerendert…</string>
-    <string name="working_elapsed">Vergangen %1$s</string>
     <string name="metric_pass">Durchgang</string>
     <string name="metric_tile">Kachel</string>
     <string name="metric_elapsed">Vergangen</string>

@@ -32,8 +32,6 @@
     <string name="info_model_list">• На этом экране — две модели, которыми вы пользовались последними.\n• «Все модели» — весь каталог: для чего модель, её автор, лицензия и размер. Скачайте нужные — работают они без сети.</string>
 
     <string name="working_title">Нейросеть улучшает фото</string>
-    <string name="working_tiles">Тайл %1$s из %2$d</string>
-    <string name="working_starting">Осталось ≈ %1$s</string>
     <string name="cancel">Отменить</string>
     <string name="backend_gpu">GPU · Vulkan</string>
     <string name="backend_cpu">CPU</string>
@@ -78,7 +76,6 @@
     <string name="save_failed">Не удалось сохранить фото.</string>
     <string name="saving">Сохраняем…</string>
     <string name="rendering">Рендер…</string>
-    <string name="working_elapsed">Прошло %1$s</string>
     <string name="metric_pass">Проход</string>
     <string name="metric_tile">Тайл</string>
     <string name="metric_elapsed">Прошло</string>
@@ -130,7 +127,6 @@
     <string name="terms_sub">Права на модели и ответственность</string>
     <string name="notif_done">Фото готово</string>
     <string name="notif_done_text">Нажмите, чтобы сравнить «до» и «после»</string>
-    <string name="working_pass">Проход %1$d из 2 · тайл %2$s из %3$d</string>
     <!-- [OWNER] interview #004 (the permission row and its window; the window text follows his comment). -->
     <string name="settings_notifications">Уведомления</string>
     <string name="settings_notifications_on">Разрешены: прогресс и «Фото готово»</string>

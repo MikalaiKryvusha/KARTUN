@@ -26,8 +26,6 @@
     <string name="info_scale_list">• 1× — même taille ; le réseau retire seulement le bruit et le flou.\n• 2× et 4× — une passe du réseau ; assez pour l’écran et l’impression.\n• 8× et 16× — deux passes : 4 à 16 fois plus long, fichier très volumineux.</string>
     <string name="info_model_text">Un modèle est un réseau de neurones entraîné. Les modèles diffèrent par les images apprises : l’un restaure mieux les photos, l’autre les dessins.</string>
     <string name="working_title">Le réseau améliore votre photo</string>
-    <string name="working_tiles">Tuile %1$s sur %2$d</string>
-    <string name="working_starting">Reste ≈ %1$s</string>
     <string name="cancel">Annuler</string>
     <string name="before">Avant</string>
     <string name="after">Après</string>
@@ -76,7 +74,6 @@
     <string name="settings_manual">Guide de l’utilisateur</string>
     <string name="settings_manual_sub">Comment utiliser KARTUN et ses modèles</string>
     <string name="info_open_guide">Ouvrir le guide complet</string>
-    <string name="working_pass">Passe %1$d sur 2 · tuile %2$s sur %3$d</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notifications_on">Autorisées : progression et « Votre photo est prête »</string>
     <string name="settings_notifications_off">Désactivées — touchez pour autoriser</string>
@@ -100,7 +97,6 @@
     <string name="terms_title">Conditions d’utilisation</string>
     <string name="terms_sub">Droits des modèles et responsabilité</string>
     <string name="rendering">Rendu…</string>
-    <string name="working_elapsed">Écoulé %1$s</string>
     <string name="metric_pass">Passe</string>
     <string name="metric_tile">Tuile</string>
     <string name="metric_elapsed">Écoulé</string>

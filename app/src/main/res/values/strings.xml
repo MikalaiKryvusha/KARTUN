@@ -30,8 +30,6 @@
     <string name="info_model_list">• This screen shows the two models you used last.\n• «All models» lists every model: what it is for, its author, licence and size. Download the ones you need; they work without the network.</string>
 
     <string name="working_title">The network is enhancing your photo</string>
-    <string name="working_tiles">Tile %1$s of %2$d</string>
-    <string name="working_starting">≈ %1$s left</string>
     <string name="cancel">Cancel</string>
     <string name="backend_gpu" translatable="false">GPU · Vulkan</string>
     <string name="backend_cpu" translatable="false">CPU</string>
@@ -70,7 +68,6 @@
     <string name="save_failed">Could not save the photo.</string>
     <string name="saving">Saving…</string>
     <string name="rendering">Rendering…</string>
-    <string name="working_elapsed">Elapsed %1$s</string>
     <string name="metric_pass">Pass</string>
     <string name="metric_tile">Tile</string>
     <string name="metric_elapsed">Elapsed</string>
@@ -126,7 +123,6 @@
     <string name="terms_sub">Model rights and liability</string>
     <string name="notif_done">Your photo is ready</string>
     <string name="notif_done_text">Tap to compare before and after</string>
-    <string name="working_pass">Pass %1$d of 2 · tile %2$s of %3$d</string>
     <!-- [OWNER] interview #004 (the permission row and its window; the window text follows his comment). -->
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notifications_on">Allowed: progress and “Your photo is ready”</string>

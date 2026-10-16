@@ -26,8 +26,6 @@
     <string name="info_scale_list">• 1× — mismo tamaño; la red solo quita ruido y desenfoque.\n• 2× y 4× — una pasada de la red; suficiente para pantalla e impresión.\n• 8× y 16× — dos pasadas: de 4 a 16 veces más lento, archivo muy grande.</string>
     <string name="info_model_text">Un modelo es una red neuronal entrenada. Los modelos se diferencian por las imágenes con las que aprendieron: uno restaura mejor fotos, otro dibujos.</string>
     <string name="working_title">La red está mejorando tu foto</string>
-    <string name="working_tiles">Mosaico %1$s de %2$d</string>
-    <string name="working_starting">Quedan ≈ %1$s</string>
     <string name="cancel">Cancelar</string>
     <string name="before">Antes</string>
     <string name="after">Después</string>
@@ -76,7 +74,6 @@
     <string name="settings_manual">Guía del usuario</string>
     <string name="settings_manual_sub">Cómo usar KARTUN y sus modelos</string>
     <string name="info_open_guide">Abrir la guía completa</string>
-    <string name="working_pass">Pasada %1$d de 2 · mosaico %2$s de %3$d</string>
     <string name="settings_notifications">Notificaciones</string>
     <string name="settings_notifications_on">Permitidas: progreso y «Tu foto está lista»</string>
     <string name="settings_notifications_off">Desactivadas — toca para permitir</string>
@@ -100,7 +97,6 @@
     <string name="terms_title">Condiciones de uso</string>
     <string name="terms_sub">Derechos de los modelos y responsabilidad</string>
     <string name="rendering">Renderizando…</string>
-    <string name="working_elapsed">Transcurrido %1$s</string>
     <string name="metric_pass">Pasada</string>
     <string name="metric_tile">Mosaico</string>
     <string name="metric_elapsed">Transcurrido</string>

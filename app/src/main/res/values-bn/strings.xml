@@ -26,8 +26,6 @@
     <string name="info_scale_list">• 1× — একই আকার; নিউরাল নেটওয়ার্ক শুধু নয়েজ ও ঝাপসা ভাব সরায়।\n• 2× ও 4× — নেটওয়ার্ক একবার; স্ক্রিন ও প্রিন্টের জন্য যথেষ্ট।\n• 8× ও 16× — দুবার: ৪–১৬ গুণ বেশি সময়, খুব বড় ফাইল।</string>
     <string name="info_model_text">মডেল হলো একটি প্রশিক্ষিত নিউরাল নেটওয়ার্ক। মডেলগুলো আলাদা কোন ছবি থেকে শিখেছে তাতে: একটি ছবি ভালো সারায়, অন্যটি আঁকা।</string>
     <string name="working_title">নিউরাল নেটওয়ার্ক আপনার ছবি উন্নত করছে</string>
-    <string name="working_tiles">টাইল %1$s / %2$d</string>
-    <string name="working_starting">বাকি ≈ %1$s</string>
     <string name="cancel">বাতিল</string>
     <string name="before">আগে</string>
     <string name="after">পরে</string>
@@ -74,7 +72,6 @@
     <string name="settings_manual">ব্যবহারকারী নির্দেশিকা</string>
     <string name="settings_manual_sub">KARTUN ও এর মডেল কীভাবে ব্যবহার করবেন</string>
     <string name="info_open_guide">পুরো নির্দেশিকা খুলুন</string>
-    <string name="working_pass">পাস %1$d / ২ · টাইল %2$s / %3$d</string>
     <string name="settings_notifications">বিজ্ঞপ্তি</string>
     <string name="settings_notifications_on">অনুমোদিত: অগ্রগতি ও «আপনার ছবি প্রস্তুত»</string>
     <string name="settings_notifications_off">বন্ধ — অনুমতি দিতে চাপুন</string>
@@ -98,7 +95,6 @@
     <string name="terms_title">ব্যবহারের শর্তাবলি</string>
     <string name="terms_sub">মডেলের অধিকার ও দায়</string>
     <string name="rendering">রেন্ডার হচ্ছে…</string>
-    <string name="working_elapsed">পেরিয়েছে %1$s</string>
     <string name="metric_pass">পাস</string>
     <string name="metric_tile">টাইল</string>
     <string name="metric_elapsed">পেরিয়েছে</string>

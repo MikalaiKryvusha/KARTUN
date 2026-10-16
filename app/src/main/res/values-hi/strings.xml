@@ -26,8 +26,6 @@
     <string name="info_scale_list">• 1× — आकार वही; न्यूरल नेटवर्क सिर्फ़ शोर और धुंधलापन हटाता है।\n• 2× और 4× — नेटवर्क एक बार; स्क्रीन और प्रिंट के लिए काफ़ी।\n• 8× और 16× — दो बार: 4–16 गुना ज़्यादा समय, बहुत बड़ी फ़ाइल।</string>
     <string name="info_model_text">मॉडल एक प्रशिक्षित न्यूरल नेटवर्क है। मॉडल इस बात में अलग हैं कि उन्होंने किन तस्वीरों से सीखा: एक फ़ोटो बेहतर सुधारता है, दूसरा चित्र।</string>
     <string name="working_title">न्यूरल नेटवर्क आपकी फ़ोटो बेहतर बना रहा है</string>
-    <string name="working_tiles">टाइल %1$s / %2$d</string>
-    <string name="working_starting">बाक़ी ≈ %1$s</string>
     <string name="cancel">रद्द करें</string>
     <string name="before">पहले</string>
     <string name="after">बाद में</string>
@@ -74,7 +72,6 @@
     <string name="settings_manual">उपयोगकर्ता गाइड</string>
     <string name="settings_manual_sub">KARTUN और उसके मॉडल कैसे इस्तेमाल करें</string>
     <string name="info_open_guide">पूरी गाइड खोलें</string>
-    <string name="working_pass">पास %1$d / 2 · टाइल %2$s / %3$d</string>
     <string name="settings_notifications">सूचनाएँ</string>
     <string name="settings_notifications_on">अनुमति है: प्रगति और «आपकी फ़ोटो तैयार है»</string>
     <string name="settings_notifications_off">बंद — अनुमति देने के लिए दबाएँ</string>
@@ -98,7 +95,6 @@
     <string name="terms_title">उपयोग की शर्तें</string>
     <string name="terms_sub">मॉडलों के अधिकार और ज़िम्मेदारी</string>
     <string name="rendering">रेंडर हो रहा है…</string>
-    <string name="working_elapsed">बीता %1$s</string>
     <string name="metric_pass">पास</string>
     <string name="metric_tile">टाइल</string>
     <string name="metric_elapsed">बीता</string>
