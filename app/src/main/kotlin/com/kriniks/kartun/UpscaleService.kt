@@ -76,7 +76,8 @@ class UpscaleService : Service() {
     private fun ensureChannel() = ensureChannel(this)
 
     companion object {
-        private const val CHANNEL_ID = "processing"
+        /** Also used by the agent service (agent/AgentService.kt) for its foreground notification. */
+        const val CHANNEL_ID = "processing"
         private const val NOTIFICATION_ID = 1
         private const val DONE_ID = 2
         private const val ACTION_CANCEL = "com.kriniks.kartun.CANCEL"
@@ -99,7 +100,7 @@ class UpscaleService : Service() {
             context.getSystemService(NotificationManager::class.java).notify(DONE_ID, n)
         }
 
-        private fun ensureChannel(context: Context) {
+        fun ensureChannel(context: Context) {
             val nm = context.getSystemService(NotificationManager::class.java)
         if (nm.getNotificationChannel(CHANNEL_ID) == null) {
             // Low importance: a silent progress notification, no sound or heads-up for a run the user started.

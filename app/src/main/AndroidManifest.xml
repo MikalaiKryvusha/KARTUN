@@ -51,5 +51,12 @@
             android:name=".UpscaleService"
             android:exported="false"
             android:foregroundServiceType="mediaProcessing" />
+        <!-- The ADB door for AI agents (plans/06 §4.2, plans/07): exported, but only a caller holding DUMP may start it -
+             the adb shell does, an app on the device does not (criterion A7). Both builds: [OWNER] interview #005, Q3 = A. -->
+        <service
+            android:name=".agent.AgentService"
+            android:exported="true"
+            android:permission="android.permission.DUMP"
+            android:foregroundServiceType="mediaProcessing" />
     </application>
 </manifest>

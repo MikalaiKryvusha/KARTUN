@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-16 (agent, `/plan-epic` rung 3 on the owner's order in chat 2026-10-15: «API для ИИ-агентов по ADB и HTTPS (ideas/02); Сейчас делаем!»)
 > **Родитель:** `plans/06_EPIC_agent_api.md` §3 row «A — кабель», gate: A1–A10 pass on the Titan with a run report; recon `researches/10_agent_api_recon.md`
-> **Статус:** 📝 written 2026-10-16; no step started — steps 2+ wait for the catalogue work (`plans/05`) to be committed in `UpscaleViewModel.kt` / `ModelStore.kt`
+> **Статус:** 🔧 written 2026-10-16; step 0 ✅ (catalogue committed `fc6b8d5`); step 1 ✅ partial 2026-10-16 11:55 +03:00 — the door works on the Titan (INFO from a stopped app, screen asleep, no notification, the app reads pushed files), A7 not observed (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`); next — step 2
 > **Вовне:** the owner's fork `plans/06` §6.3 (the ADB door in the release build) — until answered, the door is built in `src/main` and moves to `src/debug` on a «только Debug» answer
 
 ## Goal vector
@@ -53,12 +53,15 @@ quota · internal`. The CLI adds its own `no_device · adb_missing · timeout`.
 
 ## Steps
 
-0. [ ] **Coordination gate** (`plans/06` §5.1 risk 3). Exit: `git log -- app/src/main/kotlin/com/kriniks/kartun/UpscaleViewModel.kt
+0. [x] **Coordination gate** (`plans/06` §5.1 risk 3). Exit: `git log -- app/src/main/kotlin/com/kriniks/kartun/UpscaleViewModel.kt
    app/src/main/kotlin/com/kriniks/kartun/ModelStore.kt app/src/main/AndroidManifest.xml` shows the catalogue commit of
    `plans/05`, and `git status --short app/` is empty. Then re-read `UpscaleViewModel.kt`, `ModelStore.kt`,
    `UpscaleService.kt`, `ResultStore.kt` — the line references in step 2 are from 2026-10-16 and may have moved.
 
-1. [ ] **Device spike: the door's five unverified facts** (`plans/06` §4.2, §4.3; `researches/10` §1.2, §1.4 `[UNVERIFIED]`).
+1. [x] **Device spike: the door's five unverified facts** (done 2026-10-16 11:55 +03:00: facts 1, 2, 3, 5 pass; fact 4 blocked —
+   `run-as <our package>` runs as OUR uid, which a component's permission never blocks, so the check below cannot fail on
+   the door; A7 moves to step 9 with a caller of another uid — a tiny probe APK of our own; report
+   `testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`) (`plans/06` §4.2, §4.3; `researches/10` §1.2, §1.4 `[UNVERIFIED]`).
    Build only the skeleton: `app/src/main/kotlin/com/kriniks/kartun/agent/AgentService.kt` answering `INFO` (writes
    `files/agent/info.json` with `app`, `device`, `gpu`), its manifest entry (exported, DUMP, `mediaProcessing`), and
    nothing else. On the Titan (`KARTUN_SERIAL=<serial>`, small files only — the owner 2026-10-15 15:34):
@@ -104,7 +107,9 @@ quota · internal`. The CLI adds its own `no_device · adb_missing · timeout`.
    - `INFO` → write `info.json` (models from the catalogue/`ModelStore` as landed in step 0; `charging` from
      `BatteryManager`; `gpu_default` from the app's GPU setting);
    - `onTimeout` → running job `failed`/`quota`, `stopSelf()`;
-   - stop the service when the queue is empty; on each start delete `files/agent/*` older than 24 h (R1).
+   - stop the service when the queue is empty; on each start delete `files/agent/*` older than 24 h (R1) — by the time
+     the APP last wrote the job's `<job>.json`, never by the pushed input's mtime: `adb push` keeps the PC file's date
+     (step 1: `x.in.png` arrived dated two days back), so an mtime rule would delete a fresh input.
    The notification shows «Задание агента · 42 %» with «Отменить» (cancels the running job). Exit: the A2 command by raw
    adb (the protocol block above) succeeds on the Titan with KARTUN force-stopped.
 
@@ -146,7 +151,8 @@ quota · internal`. The CLI adds its own `no_device · adb_missing · timeout`.
      KARTUN force-stopped and the screen off (`input keyevent 223`), one while the owner's other app is on top;
    - A5: `realesrgan-x4plus` on `test1mp.png`, `cancel` at 30 s, seconds until `canceled` ≤ 5;
    - A6: `--model nope` → `model_not_installed`, exit 1; adb disconnected (`--serial 1.2.3.4:5555`) → `no_device`, exit 3;
-   - A7: the `run-as` refusal of step 1.4 repeated on the final build;
+   - A7: a caller of ANOTHER uid without DUMP is refused — not `run-as <our package>` (step 1.4 showed it runs as our own
+     uid); a tiny probe APK of our own that calls `startForegroundService` on the door, installed and removed in the run;
    - A9: `adb shell ls /sdcard/Android/data/<pkg>/files/agent/` after A2 → only `info.json` (or empty);
    - A10: A2 with airplane mode on (`cmd connectivity airplane-mode enable`, then `disable`) — over a USB cable, since
      airplane mode drops adb over Wi-Fi;
