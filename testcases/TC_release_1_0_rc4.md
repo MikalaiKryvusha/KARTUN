@@ -1,11 +1,11 @@
 # Test cases — RC4: the final round, every language, both orientations (one run per device)
 
 > **Created:** 2026-10-16 · **Parent:** `TC_release_1_0_rc3.md` and its four reports · the owner ≈ 22:2x «проверить на разных локалях на разных девайсах в разных ориентациях»
-> **Status:** in use 2026-10-16 (4 devices)
+> **Status:** in use 2026-10-16 (4 devices) · RC4 `0.1 (275)` stopped 22:33 on its first-launch crash (bugs/04) — the round runs on RC5 `0.1 (277)`, commit `c66468f`
 > **Outbound:** —
 
-Build under test: `C:\Users\krinik\AppData\Local\Temp\rc\kartun-rc4.apk` — release `com.kriniks.kartun` `0.1 (275)`, commit
-`3c8ca15`. Install with `adb install -r`, never rebuild. Rules as before: the UI agent by locators (`tree` node coordinates for
+Build under test: `C:\Users\krinik\AppData\Local\Temp\rc\kartun-rc5.apk` — release `com.kriniks.kartun` `0.1 (277)`, commit
+`c66468f` (RC4 `0.1 (275)` / `3c8ca15` crashed on the first launch — bugs/04). Install with `adb install -r`, never rebuild. Rules as before: the UI agent by locators (`tree` node coordinates for
 a button whose word repeats in a title; `adb shell input swipe` only for a drag or a scroll that has no locator — say so in the
 report), WebP screenshots you READ yourself (full-resolution crops where text edges matter), touch nothing of the owner's,
 delete your test files, reset locale (`--locales ""`) and rotation at the end.
@@ -16,7 +16,7 @@ then `am force-stop` + `am start -n com.kriniks.kartun/.MainActivity`). Landscap
 
 | ID | What | Check | Expected |
 |---|---|---|---|
-| H0 | version | About | «0.1 (275)» |
+| H0 | version | About | «0.1 (277)» |
 | H1 | first-launch bench | `pm clear`, launch, time `Start proc` → `{"bench":true`; screenshots at +2 s and +3 s | darker screen, dialog closes itself; the title's letters are never covered by the flying squares; note seconds and the two `bench_probe` lines' numbers |
 | H2 | battery saver (Titan only — the owner allowed the agent to switch it there) | `adb shell cmd power set-mode 1`, `pm clear`, launch | a dialog «Включён режим экономии батареи» with «Выключить экономию», «Замерить так», «Отмена»; then `cmd power set-mode 0` — the dialog goes and the check starts by itself; restore the saver to how it was |
 | H3 | language × screen matrix, portrait | for each of the 10 languages: home, «Enhance» with the test photo (collapsed card), «All models» (top and one scroll), Settings, About (top and the Device group with «Benchmark») | right language; nothing cut, overlapping or running out of a card/button; no English left except names, «GPU», «CPU», «KARTUN», numbers; Arabic mirrored with numbers whole (LTR) |
