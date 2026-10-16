@@ -22,12 +22,10 @@ import com.kriniks.kartun.engine.TileListener
 import com.kriniks.kartun.engine.UpscaleCancelledException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.concurrent.Executors
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -85,7 +83,8 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     /** The largest scale of the slider whose result fits the limit for the picked photo (for the notice). */
     val largestFittingScale get() = source?.let { s -> SCALES.lastOrNull { fits(s.megapixels, it) } } ?: SCALES.first()
 
-    private val engineThread = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    // The process-wide engine thread, shared by every screen and never closed (bugs/01 - see EngineThread).
+    private val engineThread = EngineThread.dispatcher
     // One preferences file for the learned speed AND the remembered settings (its name predates the settings).
     private val prefs = app.getSharedPreferences("estimates", Context.MODE_PRIVATE)
     private var job: Job? = null
@@ -527,9 +526,9 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         // so no notification is left behind for a result nobody will see.
         ProcessingState.cancelRequested = true
         ProcessingState.progress.value = null
-        // Release the net on its own thread, then stop the thread (ncnn/Vulkan objects must not cross threads).
-        engineThread.executor.execute { release() }
-        engineThread.close()
+        // Release the net on its own thread (ncnn/Vulkan objects must not cross threads). The thread itself stays: it is
+        // the process's one engine thread, and stopping it is what aborted the next screen's model load (bugs/01).
+        EngineThread.executor.execute { release() }
     }
 
     private class TooBig : RuntimeException()

@@ -1,6 +1,6 @@
 # Bug 01 — the app aborts in libomp's affinity init on the first model load (`__kmp_create_affinity_none_places`)
 
-**Status:** 🔴 OPEN — reproduction being hunted
+**Status:** ✅ DONE 2026-10-16 11:13 +03:00 — reproduced deterministically 11:08, fixed (one process-wide engine thread), the repro runs clean on the Titan
 **Severity:** S2 — the owner's run was lost (a crash in front of the owner; no data harmed)
 **Version/build:** debug build installed on the Titan by the 2026-10-15 16:15–18:23 session (spinner tweaks, `376dd03`); libkartun_engine.so BuildId `c474378f83ced813dd3eb24fc1ee6370fa09fd91`; NDK `29.0.14206865` (its libomp is linked into libkartun_engine.so — `__kmp_*` frames are inside it)
 **When/context:** 2026-10-15 19:00:21 +03:00, the owner on the Titan («и я сегодня запускал сборку - и креш поймал» · «в часов 19 вечера +-»); reported 20:52, found in the dropbox 20:53
@@ -108,9 +108,63 @@ SIGSEGV control crash and the engine's witness line.
   https://ide-kyxt.pcl.ac.cn/nihui/ncnn/raw/commit/f1bdc87478c64e0dfdba3d679e6e0dfd4b84df80/docs/how-to-use-and-FAQ/FAQ-ncnn-throw-error.md
 - LLVM `kmp_affinity.cpp`: https://raw.githubusercontent.com/llvm/llvm-project/main/openmp/runtime/src/kmp_affinity.cpp
 
+## The owner's second crash — 2026-10-16 10:23:32, the journal caught the text
+
+`files/crashes/2026-10-16_10-23-32_native.txt` + `engine-stderr.log` (pulled 11:04):
+
+```
+2026-10-16_00-45-18 load 4x-ClearRealityV1-fp16 gpu=true thread=pool-5-thread-1 cpuset=/top-app cpus=0-7
+native stderr -> this file, pid 981
+2026-10-16_01-36-22 load 4xNomosWebPhoto-RealPLKSR-fp16 gpu=true thread=pool-5-thread-1 cpuset=/top-app cpus=0-7
+2026-10-16_01-36-37 load realesrgan-x4plus gpu=true thread=pool-5-thread-1 cpuset=/top-app cpus=0-7
+2026-10-16_10-23-31 load realesrgan-x4plus gpu=true thread=pool-7-thread-1 cpuset=/top-app cpus=0-7
+OMP: Error #13: Assertion failure at kmp_affinity.cpp(4755).
+```
+
+The same process (pid 981) loaded models on `pool-5-thread-1` at night and died loading on a NEW thread `pool-7-thread-1`
+in the morning — and the 2026-10-15 19:00 crash was on `pool-7-thread-1` too. Line 4755 of NDK r29's libomp (LLVM
+`386af4a5`, `clang_source_info.md` of the NDK) is the third assert:
+`KMP_ASSERT(__kmp_avail_proc == __kmp_topology->get_num_hw_threads())`.
+
+## Root cause
+
+`UpscaleViewModel` owned its engine thread (`Executors.newSingleThreadExecutor()`) and closed it in `onCleared` — when the
+screen leaves for good (Back out of the app; the process stays). libomp is linked STATICALLY into the engine, and a static
+libomp shuts itself down when the last thread that used it exits (`__kmp_internal_end_thread` in `kmp_runtime.cpp`: the
+`KMP_DYNAMIC_LIB` early return is compiled out, all roots gone → `__kmp_internal_end`). The next screen's new thread
+re-initialises libomp from that torn-down state and its affinity init fails the assert above. Variants 1–6 never stopped
+the first OpenMP thread, so they could not see it.
+
+**Deterministic repro (old build, Titan 11:06–11:08):** open KARTUN, pick a photo (the model loads) → Back, Back (the app
+leaves, the process stays — `pidof` 10628 before and after) → open KARTUN from the launcher → pick a photo → the process is
+gone; `engine-stderr.log`: `load realesr-general-x4v3 … thread=pool-7-thread-1` + `OMP: Error #13: Assertion failure at
+kmp_affinity.cpp(4755)`; journal `2026-10-16_11-08-10_native.txt`.
+
+## Fix
+
+`EngineThread.kt`: one engine thread for the whole process (`kartun-engine`), never shut down; `UpscaleViewModel` and the
+debug probe (`DebugTools`, it had a second engine thread of its own) both use it; `onCleared` releases the net on it and no
+longer closes it. This is architecture invariant 4 ("all ncnn/Vulkan calls run on ONE dedicated thread") made true per
+process instead of per screen. Guard: `EngineThreadGuardTest` (red on `eda6a40`'s sources — three offenders named; green
+after the fix).
+
+**Verified (new build, Titan 11:10–11:13):** the repro script (pick → Back out → reopen → pick, 3 rounds, twice) — the
+process lived through every round (pid 12185, then 12615), loads after a Back-out on `thread=kartun-engine`
+(11:10:38 → 11:11:08; 11:12:20 → 11:12:50), no new crash record. Run report:
+`testcases/reports/2026-10-16_setup_cards_and_bug01.md`.
+
+Hygiene: 43 JVM tests green (`.\gradlew.bat :app:testDebugUnitTest assembleDebug`) · Functional run: the owner's path on
+the Titan, above.
+
+TWINS: searched `Executors\.new\w+` in `app/src/main` and `app/src/debug` — 2 sites, both engine threads, both moved to
+`EngineThread`; no other executor in the app.
+
 ## Decisions made without the owner
 
-(filled at closing)
+- `[AI]` The fix is the shared thread, not `NCNN_SIMPLEOMP` (a rebuilt ncnn) from the options above: the cause is the
+  thread's exit, and one never-stopped thread removes it without touching the engine or its speed.
+- `[AI]` The debug probe shares the same thread (two engine threads would let the second one's exit matter again).
+- Hypotheses 1 and 2 above: refuted — the cpuset was `/top-app 0-7` at both crashes; the trigger is the thread's exit.
 
 ## Note 2026-10-16 01:05 +03:00 — the engine is stripped from now on
 
@@ -119,3 +173,7 @@ Since the app module names NDK 29 (commit after `e87c12a`), AGP strips `libkartu
 `ndk-stack -sym <unstripped dir> -dump <tombstone or _native.txt>` — the unstripped copy of each build stays in
 `app/build/intermediates/merged_native_libs/<variant>/…/arm64-v8a/` (same BuildId as on the device).
 
+
+## ✅ STATUS: DONE (2026-10-16 11:13 +03:00)
+
+Reproduced on the old build, clean on the fixed one, both on the Titan by the owner's path; guard `EngineThreadGuardTest`.

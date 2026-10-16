@@ -65,7 +65,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.concurrent.Executors
 
 /**
  * Debug build only: the «Отладка» group in Settings and the engine probe screen (the owner, chat 2026-10-15 ≈ 15:35 +03:00:
@@ -85,9 +84,8 @@ object DebugTools {
     private const val TAG = "KARTUN_PROBE"
     private const val PREPADDING = 10  // the engine's context pixels on each side of a tile (kartun_engine.cpp)
 
-    // One dedicated thread for every engine call (research 03, section B, lesson 7); named so the thread list shows it.
-    private const val ENGINE_THREAD = "kartun-engine"
-    private val engineThread = Executors.newSingleThreadExecutor { r -> Thread(r, ENGINE_THREAD) }
+    // The app's one engine thread (research 03, section B, lesson 7; bugs/01 - a second OpenMP thread that exits breaks it).
+    private val engineThread = EngineThread.executor
     private val main = Handler(Looper.getMainLooper())
 
     /** What the probe screen shows; null = the screen is closed. */

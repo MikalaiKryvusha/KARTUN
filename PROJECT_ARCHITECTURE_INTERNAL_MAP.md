@@ -35,7 +35,7 @@ Photo Picker / SAF / share-in ─▶ SourceImage ─▶ UpscaleRequest ─▶ Up
 1. The image never leaves the device in the processing path; the neural upscale happens only inside `Engine`.
 2. No fake upscale: if the engine cannot run, the user gets an honest error — never an interpolated result.
 3. The original is never overwritten; output names are new files.
-4. All ncnn/Vulkan calls run on ONE dedicated thread; create/release are serialized (research 03 §B lesson 7).
+4. All ncnn/Vulkan calls run on ONE dedicated thread per PROCESS (`EngineThread`, never stopped — bugs/01); create/release are serialized (research 03 §B lesson 7).
 5. The full 4× output is never held as one Java `Bitmap`; tiles stream to the encoder (research 03 §D).
 6. Engine fallback ladder on GPU failure: smaller tile → fp32 → CPU → honest error (research 03 §B lessons 2, 4).
 

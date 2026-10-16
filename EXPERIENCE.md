@@ -90,6 +90,17 @@
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
 
+### EXP-0029 · 2026-10-16 · ❌→✅ · #crash #openmp #ncnn #thread #device
+class: guessed-instead-of-looked
+**Context:** bugs/01 — the app aborted in libomp's affinity init on a model load; six repro variants (masks, cpusets, races) all ran clean.
+**Tried / did:** varied the CPU mask of the ONE thread that initialises OpenMP; the owner's second crash then left the assert line and the thread name in the app's own crash journal.
+**Result:** ❌ every mask variant was clean — the axis was wrong. ✅ both crashes ran on a NEW thread `pool-7-thread-1` in a process whose earlier loads used `pool-5`: the screen's own engine thread had exited (`onCleared` closed it), a static libomp shuts down with its last thread, and the next thread re-initialises it into the assert. Repro in one minute: Back out → reopen → pick a photo.
+**Lesson:** for a native runtime crash "after a while", vary the THREAD's life (who initialises the runtime, who exits) before the CPU state; and a thread name in the journal is evidence — compare it across crashes.
+**Repro:** old build: pick a photo, Back, Back, `am start …/MainActivity` (same pid), pick a photo → process gone, `kmp_affinity.cpp(4755)`.
+**Trigger:** a native library (OpenMP, Vulkan, any runtime with global state) called from an executor owned by a screen or ViewModel.
+**Not for:** pure Kotlin work on per-screen executors.
+mechanized: app/src/test/kotlin/com/kriniks/kartun/EngineThreadGuardTest.kt
+
 ### EXP-0028 · 2026-10-16 · ❌ · #owner-reviews #contour #timeout
 class: stand-left-dirty
 **Context:** raising interview #005 to the owner with the review contour's page.
