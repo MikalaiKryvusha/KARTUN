@@ -260,7 +260,7 @@ fun ModelInfoButton(m: Model) {
     val list = remember(key) { ctx.resources.getIdentifier(key + "_list", "string", ctx.packageName) }
     if (text == 0) return
     var open by remember { mutableStateOf(false) }
-    InfoButton { open = true }
+    InfoButton(m.name) { open = true }
     if (open) InfoDialog(m.name, stringResource(text), if (list != 0) stringResource(list) else "") { open = false }
 }
 

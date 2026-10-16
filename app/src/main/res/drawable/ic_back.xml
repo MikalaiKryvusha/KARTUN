@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Stroke icon "back" from the accepted mockups (design/kartun-mockups.html, const I); tinted at the call site. -->
+<!-- Stroke icon "back" from the accepted mockups (design/kartun-mockups.html, const I); tinted at the call site. Mirrored in
+     Arabic: back points right there, and the forward chevron made from it (ui/Common.kt Chevron) left (the owner 2026-10-16
+     ≈ 17:55: «арабский перевод остаётся, с зеркалирвоанием интерфейса делаем … и тестируем»). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24"
+    android:autoMirrored="true">
     <path android:pathData="M15 18l-6-6 6-6" android:strokeColor="#FFFFFFFF" android:strokeWidth="1.9"
         android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000" />
 </vector>

@@ -195,7 +195,7 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                         Modifier.fillMaxWidth().height(heroDp).then(drag).clip(MaterialTheme.shapes.medium).background(c.surfaceContainer).padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        Image(src.preview.asImageBitmap(), null, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
+                        Image(src.preview.asImageBitmap(), src.name, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
                         Column(Modifier.weight(1f)) {
                             Text(src.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(boldDigits(stringResource(R.string.size_to, sizeText(src.width, src.height),
@@ -359,6 +359,8 @@ private fun AllModelsRow(total: Int, onDevice: Int, onClick: () -> Unit) {
             Text(stringResource(R.string.models_count, total, onDevice), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
         }
         Text(stringResource(R.string.models_choose), style = MaterialTheme.typography.labelMedium.copy(fontWeight = androidx.compose.ui.text.font.FontWeight(700)), color = c.primary)
+        Spacer(Modifier.width(4.dp))
+        Chevron(c.primary)
     }
 }
 

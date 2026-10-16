@@ -116,6 +116,6 @@ private fun StateMark(on: Boolean) {
     if (on) androidx.compose.foundation.layout.Box(
         Modifier.size(24.dp).clip(androidx.compose.foundation.shape.CircleShape).background(c.primary),
         contentAlignment = androidx.compose.ui.Alignment.Center,
-    ) { androidx.compose.material3.Icon(painterResource(R.drawable.ic_tick), null, Modifier.size(15.dp), tint = c.onPrimary) }
-    else androidx.compose.material3.Text("›", style = androidx.compose.material3.MaterialTheme.typography.titleMedium, color = c.onSurfaceVariant)
+    ) { androidx.compose.material3.Icon(painterResource(R.drawable.ic_tick), stringResource(R.string.settings_notifications_on), Modifier.size(15.dp), tint = c.onPrimary) }
+    else Chevron(c.onSurfaceVariant)
 }

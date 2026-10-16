@@ -117,7 +117,7 @@
     <string name="models_title">النماذج</string>
     <string name="models_all">كل النماذج</string>
     <string name="models_count">النماذج: %1$d · على الجهاز: %2$d</string>
-    <string name="models_choose">اختيار ‹</string>
+    <string name="models_choose">اختيار</string>
     <string name="filter_all">الكل</string>
     <string name="filter_photo">صور</string>
     <string name="filter_anime">أنمي</string>
@@ -186,6 +186,10 @@
     <string name="error_no_access">لا يمكن الوصول إلى الملف. إذا كانت الصورة محفوظة في السحابة، فنزّلها إلى الهاتف أولًا.</string>
     <string name="error_memory">لا تكفي ذاكرة الجهاز لفتح هذه الصورة. أغلق التطبيقات الأخرى وحاول مرة أخرى.</string>
     <string name="scale_limited">الحد %1$s ميغابكسل. لا يتسع %2$d× لهذه الصورة؛ يمكن %3$s× (%4$s)</string>
+    <string name="action_back">رجوع</string>
+    <string name="info_about">المزيد عن: %1$s</string>
+    <string name="compare_handle">فاصل قبل وبعد</string>
+    <string name="panel_show">إظهار الملخص</string>
     <string name="arrow">←</string>
     <string name="size_to">%1$s ← %2$s</string>
 </resources>

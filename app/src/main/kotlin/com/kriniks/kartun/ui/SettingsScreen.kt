@@ -33,6 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -83,7 +85,7 @@ fun SettingsScreen(vm: UpscaleViewModel, onBack: () -> Unit) {
                     Text(stringResource(R.string.settings_manual), style = MaterialTheme.typography.titleSmall)
                     Text(stringResource(R.string.settings_manual_sub), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
                 }
-                Text("›", style = MaterialTheme.typography.titleMedium, color = c.onSurfaceVariant)
+                Chevron(c.onSurfaceVariant)
             }
             Text(stringResource(R.string.settings_processing).uppercase(), Modifier.padding(start = 4.dp, top = 4.dp),
                 style = MaterialTheme.typography.labelSmall, color = c.primary)
@@ -94,8 +96,11 @@ fun SettingsScreen(vm: UpscaleViewModel, onBack: () -> Unit) {
                     onInfo = { info = R.string.settings_gpu },
                     onClick = { vm.chooseGpu(!vm.useGpu) },
                 ) {
+                    // Named for TalkBack: the switch is its own touch target beside the row (a11y-scan found it unnamed).
+                    val gpuTitle = stringResource(R.string.settings_gpu)
                     Switch(
                         checked = vm.useGpu, onCheckedChange = { vm.chooseGpu(it) },
+                        modifier = Modifier.semantics { contentDescription = gpuTitle },
                         colors = SwitchDefaults.colors(checkedTrackColor = c.primary, checkedThumbColor = c.onPrimary, uncheckedTrackColor = c.surfaceContainerHigh),
                     )
                 }
@@ -112,17 +117,17 @@ fun SettingsScreen(vm: UpscaleViewModel, onBack: () -> Unit) {
                         // Android 13+: the system list of this app's languages (the ones locales_config.xml names).
                         ctx.startActivity(Intent(Settings.ACTION_APP_LOCALE_SETTINGS, Uri.fromParts("package", ctx.packageName, null)))
                     },
-                ) { Text("›", style = MaterialTheme.typography.titleMedium, color = c.onSurfaceVariant) }
+                ) { Chevron(c.onSurfaceVariant) }
                 // «О приложении»: a row like the others - not a setting, so no (i).
                 SettingRow(
                     R.drawable.ic_about, stringResource(R.string.about_title), stringResource(R.string.settings_about_sub),
                     onInfo = null, onClick = vm::openAbout,
-                ) { Text("›", style = MaterialTheme.typography.titleMedium, color = c.onSurfaceVariant) }
+                ) { Chevron(c.onSurfaceVariant) }
                 // «Условия использования»: model ownership, the user's rights to photos, the device, the result (plan 03 step 40).
                 SettingRow(
                     R.drawable.ic_book, stringResource(R.string.terms_title), stringResource(R.string.terms_sub),
                     onInfo = null, onClick = vm::openTerms,
-                ) { Text("›", style = MaterialTheme.typography.titleMedium, color = c.onSurfaceVariant) }
+                ) { Chevron(c.onSurfaceVariant) }
             }
             // «Отладка» - the debug build only (src/debug); empty in stage and release.
             com.kriniks.kartun.DebugTools.SettingsSection()
@@ -152,7 +157,7 @@ internal fun SettingRow(icon: Int, title: String, sub: String, onInfo: (() -> Un
             Text(sub, style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
         }
         control()
-        onInfo?.let { InfoButton(it) }
+        onInfo?.let { InfoButton(title, it) }
     }
     HorizontalDivider(color = c.outline)
 }

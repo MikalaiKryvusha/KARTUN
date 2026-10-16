@@ -107,7 +107,7 @@
     <string name="models_title">模型</string>
     <string name="models_all">所有模型</string>
     <string name="models_count">模型：%1$d · 设备上：%2$d</string>
-    <string name="models_choose">选择 ›</string>
+    <string name="models_choose">选择</string>
     <string name="filter_all">全部</string>
     <string name="filter_photo">照片</string>
     <string name="filter_anime">动漫</string>
@@ -176,4 +176,8 @@
     <string name="error_no_access">无法访问该文件。如果照片存放在云端，请先将其下载到手机。</string>
     <string name="error_memory">设备内存不足，无法打开这张照片。请关闭其他应用后重试。</string>
     <string name="scale_limited">上限 %1$s 百万像素。此照片放不下 %2$d×，可以 %3$s×（%4$s）</string>
+    <string name="action_back">返回</string>
+    <string name="info_about">详细了解：%1$s</string>
+    <string name="compare_handle">前后对比分隔线</string>
+    <string name="panel_show">显示摘要</string>
 </resources>

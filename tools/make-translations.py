@@ -365,7 +365,7 @@ CATALOGUE = {
         "models_title": "Modelos",
         "models_all": "Todos los modelos",
         "models_count": "Modelos: %1$d · en el dispositivo: %2$d",
-        "models_choose": "Elegir ›",
+        "models_choose": "Elegir",
         "filter_all": "Todos",
         "filter_photo": "Fotos",
         "filter_anime": "Anime",
@@ -388,7 +388,7 @@ CATALOGUE = {
         "models_title": "Modelos",
         "models_all": "Todos os modelos",
         "models_count": "Modelos: %1$d · no aparelho: %2$d",
-        "models_choose": "Escolher ›",
+        "models_choose": "Escolher",
         "filter_all": "Todos",
         "filter_photo": "Fotos",
         "filter_anime": "Anime",
@@ -411,7 +411,7 @@ CATALOGUE = {
         "models_title": "Modèles",
         "models_all": "Tous les modèles",
         "models_count": "Modèles : %1$d · sur l’appareil : %2$d",
-        "models_choose": "Choisir ›",
+        "models_choose": "Choisir",
         "filter_all": "Tous",
         "filter_photo": "Photos",
         "filter_anime": "Anime",
@@ -434,7 +434,7 @@ CATALOGUE = {
         "models_title": "Modelle",
         "models_all": "Alle Modelle",
         "models_count": "Modelle: %1$d · auf dem Gerät: %2$d",
-        "models_choose": "Wählen ›",
+        "models_choose": "Wählen",
         "filter_all": "Alle",
         "filter_photo": "Fotos",
         "filter_anime": "Anime",
@@ -457,7 +457,7 @@ CATALOGUE = {
         "models_title": "模型",
         "models_all": "所有模型",
         "models_count": "模型：%1$d · 设备上：%2$d",
-        "models_choose": "选择 ›",
+        "models_choose": "选择",
         "filter_all": "全部",
         "filter_photo": "照片",
         "filter_anime": "动漫",
@@ -480,7 +480,7 @@ CATALOGUE = {
         "models_title": "मॉडल",
         "models_all": "सभी मॉडल",
         "models_count": "मॉडल: %1$d · डिवाइस पर: %2$d",
-        "models_choose": "चुनें ›",
+        "models_choose": "चुनें",
         "filter_all": "सभी",
         "filter_photo": "फ़ोटो",
         "filter_anime": "एनीमे",
@@ -503,7 +503,7 @@ CATALOGUE = {
         "models_title": "মডেল",
         "models_all": "সব মডেল",
         "models_count": "মডেল: %1$d · ডিভাইসে: %2$d",
-        "models_choose": "বেছে নিন ›",
+        "models_choose": "বেছে নিন",
         "filter_all": "সব",
         "filter_photo": "ছবি",
         "filter_anime": "অ্যানিমে",
@@ -526,7 +526,7 @@ CATALOGUE = {
         "models_title": "النماذج",
         "models_all": "كل النماذج",
         "models_count": "النماذج: %1$d · على الجهاز: %2$d",
-        "models_choose": "اختيار ‹",
+        "models_choose": "اختيار",
         "filter_all": "الكل",
         "filter_photo": "صور",
         "filter_anime": "أنمي",
@@ -626,6 +626,18 @@ SCALE_LIMITED = {
     "ar": "الحد %1$s ميغابكسل. لا يتسع %2$d× لهذه الصورة؛ يمكن %3$s× (%4$s)",
 }
 
+# The round back button's name for TalkBack and test automation (ui/Common.kt RoundIconButton). [AI] like the rest.
+ACTION_BACK = {"es": "Atrás", "pt": "Voltar", "fr": "Retour", "de": "Zurück", "zh": "返回", "hi": "वापस", "bn": "ফিরে যান",
+               "ar": "رجوع"}
+# TalkBack names on the result screen (compare_handle, panel_show). [AI] like the rest.
+A11Y = {"es": ("Divisor de antes y después", "Mostrar el resumen"), "pt": ("Divisor de antes e depois", "Mostrar o resumo"),
+        "fr": ("Séparateur avant / après", "Afficher le résumé"), "de": ("Trennlinie vorher / nachher", "Zusammenfassung zeigen"),
+        "zh": ("前后对比分隔线", "显示摘要"), "hi": ("पहले और बाद की विभाजक रेखा", "सारांश दिखाएँ"),
+        "bn": ("আগে ও পরের বিভাজক", "সারসংক্ষেপ দেখান"), "ar": ("فاصل قبل وبعد", "إظهار الملخص")}
+# The (i) button's name for TalkBack, %1$s = what it explains (ui/Common.kt InfoButton). [AI] like the rest.
+INFO_ABOUT = {"es": "Más sobre: %1$s", "pt": "Mais sobre: %1$s", "fr": "En savoir plus : %1$s", "de": "Mehr über: %1$s",
+              "zh": "详细了解：%1$s", "hi": "और जानें: %1$s", "bn": "আরও জানুন: %1$s", "ar": "المزيد عن: %1$s"}
+
 # The model card lines (model_purpose_*) and the (i) texts (model_info_*) of every catalogue model, one data file for the 8
 # languages (tools/model-texts.json, `[AI]` like the rest; sources researches/11 and 12). Its keys must be exactly the
 # model_purpose_* / model_info_* names of values/strings.xml - a key missing on either side reddens here.
@@ -691,6 +703,10 @@ def main():
         for k, v in zip(("error_not_photo", "error_incomplete", "error_no_access", "error_memory"), OPEN_ERRORS[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="scale_limited">{xml_text(SCALE_LIMITED[lang])}</string>')
+        lines.append(f'    <string name="action_back">{xml_text(ACTION_BACK[lang])}</string>')
+        lines.append(f'    <string name="info_about">{xml_text(INFO_ABOUT[lang])}</string>')
+        for k, v in zip(("compare_handle", "panel_show"), A11Y[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         body = "\n".join(lines)

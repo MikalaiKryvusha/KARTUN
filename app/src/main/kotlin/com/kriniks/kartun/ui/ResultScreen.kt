@@ -231,10 +231,11 @@ fun ResultScreen(vm: UpscaleViewModel) {
             // 2026-10-16 ≈ 15:30: «нужно в центр между верхом экрана и верхней границей нижнего виджета сводки»). [NOT-TESTED]
             val visibleDp = with(LocalDensity.current) { visibleH().toDp() }
             val layer = Modifier.fillMaxWidth().height(visibleDp).graphicsLayer { scaleX = zoom; scaleY = zoom; translationX = pan.x; translationY = pan.y }
-            Image(res.before.asImageBitmap(), null, layer, contentScale = ContentScale.Fit)
+            // Named for TalkBack: the photo before and after (the owner ≈ 17:43: «Все им должно быть описано»).
+            Image(res.before.asImageBitmap(), stringResource(R.string.before), layer, contentScale = ContentScale.Fit)
             // «После» is the same frame clipped to the right of the divider (screen space, so zoom keeps them aligned).
             Box(Modifier.fillMaxSize().drawWithContent { clipRect(left = split * size.width) { this@drawWithContent.drawContent() } }) {
-                Image(res.display.asImageBitmap(), null, layer, contentScale = ContentScale.Fit)
+                Image(res.display.asImageBitmap(), stringResource(R.string.after), layer, contentScale = ContentScale.Fit)
             }
             val x = maxWidth * split
             // The divider runs the screen's height inside the system bars with a small gap from each, and fades to
@@ -253,7 +254,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
             Box(
                 Modifier.offset { IntOffset((x - 26.dp).roundToPx(), (knobY() - 26.dp.toPx()).roundToInt()) }.size(52.dp).shadow(10.dp, CircleShape).clip(CircleShape).background(c.primary),
                 contentAlignment = Alignment.Center,
-            ) { Icon(painterResource(R.drawable.ic_lr), null, Modifier.size(26.dp), tint = c.onPrimary) }
+            ) { Icon(painterResource(R.drawable.ic_lr), stringResource(R.string.compare_handle), Modifier.size(26.dp), tint = c.onPrimary) }
         }
         // «Рендер…» over the before/after picture while the file for «Сохранить» / «Поделиться» is written - before it the
         // screen only greyed out and nothing said that work was going on (the owner, chat 2026-10-15 ≈ 11:38 +03:00:
@@ -349,7 +350,7 @@ fun ResultScreen(vm: UpscaleViewModel) {
                         settle(show = panelShift < screenW * (1 - PANEL_HIDE_AT))
                     }),
                 contentAlignment = Alignment.Center,
-            ) { Icon(painterResource(R.drawable.ic_back), null, Modifier.size(16.dp), tint = c.onBackground) }
+            ) { Icon(painterResource(R.drawable.ic_back), stringResource(R.string.panel_show), Modifier.size(16.dp), tint = c.onBackground) }
         }
     }
     if (saveOpen) SaveDialog(vm, res.full) { saveOpen = false }

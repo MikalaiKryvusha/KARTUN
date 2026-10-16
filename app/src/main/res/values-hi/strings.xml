@@ -109,7 +109,7 @@
     <string name="models_title">मॉडल</string>
     <string name="models_all">सभी मॉडल</string>
     <string name="models_count">मॉडल: %1$d · डिवाइस पर: %2$d</string>
-    <string name="models_choose">चुनें ›</string>
+    <string name="models_choose">चुनें</string>
     <string name="filter_all">सभी</string>
     <string name="filter_photo">फ़ोटो</string>
     <string name="filter_anime">एनीमे</string>
@@ -178,4 +178,8 @@
     <string name="error_no_access">फ़ाइल तक पहुँच नहीं है। अगर फ़ोटो क्लाउड में है, तो पहले उसे फ़ोन पर डाउनलोड करें।</string>
     <string name="error_memory">इस फ़ोटो को खोलने के लिए डिवाइस में पर्याप्त मेमोरी नहीं है। दूसरे ऐप बंद करें और फिर से कोशिश करें।</string>
     <string name="scale_limited">सीमा — %1$s MP। इस फ़ोटो के लिए %2$d× नहीं समाएगा; %3$s× हो सकता है (%4$s)</string>
+    <string name="action_back">वापस</string>
+    <string name="info_about">और जानें: %1$s</string>
+    <string name="compare_handle">पहले और बाद की विभाजक रेखा</string>
+    <string name="panel_show">सारांश दिखाएँ</string>
 </resources>

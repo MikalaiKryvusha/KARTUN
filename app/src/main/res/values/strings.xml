@@ -43,6 +43,12 @@
 
     <string name="error_too_big">Photos over %1$s MP are not supported.</string>
     <string name="error_decode">Could not open this photo.</string>
+    <!-- The round back button's name for TalkBack and test automation (ui/Common.kt RoundIconButton). -->
+    <string name="action_back">Back</string>
+    <!-- The (i) button's name for TalkBack: %1$s is what it explains (ui/Common.kt InfoButton). -->
+    <string name="compare_handle">Before and after divider</string>
+    <string name="panel_show">Show the summary</string>
+    <string name="info_about">More about: %1$s</string>
     <!-- Why a photo did not open (the owner 2026-10-16 ≈ 16:26: «можем в ошибке писать причину понятную?»); chosen by
          UpscaleViewModel.openError, error_decode stays for anything else. -->
     <string name="error_not_photo">KARTUN found no photo in this file: the format is not supported or the file is damaged.</string>
@@ -206,7 +212,7 @@
     <string name="models_title">Models</string>
     <string name="models_all">All models</string>
     <string name="models_count">Models: %1$d · on the device: %2$d</string>
-    <string name="models_choose">Choose ›</string>
+    <string name="models_choose">Choose</string>
     <string name="filter_all">All</string>
     <string name="filter_photo">Photos</string>
     <string name="filter_anime">Anime</string>

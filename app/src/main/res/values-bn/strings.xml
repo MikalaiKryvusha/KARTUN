@@ -109,7 +109,7 @@
     <string name="models_title">মডেল</string>
     <string name="models_all">সব মডেল</string>
     <string name="models_count">মডেল: %1$d · ডিভাইসে: %2$d</string>
-    <string name="models_choose">বেছে নিন ›</string>
+    <string name="models_choose">বেছে নিন</string>
     <string name="filter_all">সব</string>
     <string name="filter_photo">ছবি</string>
     <string name="filter_anime">অ্যানিমে</string>
@@ -178,4 +178,8 @@
     <string name="error_no_access">ফাইলটিতে প্রবেশাধিকার নেই। ছবিটি ক্লাউডে থাকলে আগে সেটি ফোনে ডাউনলোড করুন।</string>
     <string name="error_memory">এই ছবি খোলার মতো যথেষ্ট মেমরি ডিভাইসে নেই। অন্য অ্যাপ বন্ধ করে আবার চেষ্টা করুন।</string>
     <string name="scale_limited">সীমা — %1$s MP। এই ছবির জন্য %2$d× আঁটবে না; %3$s× সম্ভব (%4$s)</string>
+    <string name="action_back">ফিরে যান</string>
+    <string name="info_about">আরও জানুন: %1$s</string>
+    <string name="compare_handle">আগে ও পরের বিভাজক</string>
+    <string name="panel_show">সারসংক্ষেপ দেখান</string>
 </resources>

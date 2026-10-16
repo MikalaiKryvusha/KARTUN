@@ -45,6 +45,10 @@
     <!-- [AI] error lines (the mockups have none; GOAL.md §3: understandable errors, not exception codes). -->
     <string name="error_too_big">Фото больше %1$s Мп не поддерживается.</string>
     <string name="error_decode">Не удалось открыть это фото.</string>
+    <string name="action_back">Назад</string>
+    <string name="compare_handle">Граница «до» и «после»</string>
+    <string name="panel_show">Показать сводку</string>
+    <string name="info_about">Подробнее: %1$s</string>
     <!-- Почему фото не открылось (владелец 2026-10-16 ≈ 16:26: «можем в ошибке писать причину понятную?»). -->
     <string name="error_not_photo">В этом файле KARTUN не нашёл фото: формат не поддерживается или файл повреждён.</string>
     <string name="error_incomplete">Файл фото обрывается — похоже, он скачан не до конца.</string>
@@ -204,7 +208,7 @@
     <string name="models_title">Модели</string>
     <string name="models_all">Все модели</string>
     <string name="models_count">Моделей: %1$d · на устройстве: %2$d</string>
-    <string name="models_choose">Выбрать ›</string>
+    <string name="models_choose">Выбрать</string>
     <string name="filter_all">Все</string>
     <string name="filter_photo">Фото</string>
     <string name="filter_anime">Аниме</string>

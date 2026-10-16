@@ -23,12 +23,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,6 +48,20 @@ import java.util.Locale
  * section labels with an (i) button (.label + .info), the (i) bottom sheet. [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
  */
 
+/** Size of the chevron that ends a row or a link: the 16 sp «›» glyph was invisible even on the tablet (the owner,
+ *  2026-10-16 ≈ 17:46: «шевроны на кнопочках > нужно больше сделать. Сейчас малые даже на планшете, не видно их»). */
+private val CHEVRON = 20.dp
+
+/** The one chevron of every row and link (settings rows, the guide link, «Выбрать»): the back button's thin stroke arrow
+ *  turned to point forward, not a font glyph (the owner ≈ 17:48: «другой шрифт поставить, чтобы они были локаничными,
+ *  тонкими, аля кнопка Назад <»). ic_back is auto-mirrored, so in Arabic the chevron points left (the owner ≈ 17:55:
+ *  «арабский перевод остаётся, с зеркалирвоанием интерфейса делаем»). Decorative: the row's text names it for TalkBack.
+ *  [NOT-TESTED] */
+@Composable
+fun Chevron(color: androidx.compose.ui.graphics.Color) {
+    Icon(painterResource(R.drawable.ic_back), null, Modifier.size(CHEVRON).rotate(180f), tint = color)
+}
+
 /** 44 dp round dark button with a stroke icon (.icon-btn). */
 @Composable
 fun RoundIconButton(icon: Int, onClick: () -> Unit, modifier: Modifier = Modifier, translucent: Boolean = false, enabled: Boolean = true) {
@@ -53,7 +72,17 @@ fun RoundIconButton(icon: Int, onClick: () -> Unit, modifier: Modifier = Modifie
         modifier.size(44.dp).clip(CircleShape).background(bg).alpha(if (enabled) 1f else 0.4f)
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
-    ) { Icon(painterResource(icon), null, Modifier.size(22.dp), tint = MaterialTheme.colorScheme.onBackground) }
+    ) {
+        // The button's name for TalkBack and for the UI agent (HOUSE_RULES R7 - «где локатора нет, добавь его»): the gear
+        // on the home screen had none, so the release walk of 2026-10-16 could not find «Настройки». Taken from the icon,
+        // so no call site can forget it. [NOT-TESTED]
+        val name = when (icon) {
+            R.drawable.ic_back -> stringResource(R.string.action_back)
+            R.drawable.ic_gear -> stringResource(R.string.settings_title)
+            else -> null
+        }
+        Icon(painterResource(icon), name, Modifier.size(22.dp), tint = MaterialTheme.colorScheme.onBackground)
+    }
 }
 
 /** The pink 60 dp pill button with the main action of a screen (.btn.primary). */
@@ -117,15 +146,20 @@ fun Pill(text: String, modifier: Modifier = Modifier, on: Boolean = false, outli
 fun SectionLabel(text: String, onInfo: () -> Unit) {
     Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(text.uppercase(LocalConfiguration.current.locales[0]), Modifier.weight(1f), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
-        InfoButton(onInfo)
+        InfoButton(text, onInfo)
     }
 }
 
 /** The (i) button every setting carries (AGENT_GUIDE.md -> Code style; the owner's rule from KrinikCam). */
 @Composable
-fun InfoButton(onClick: () -> Unit) {
+fun InfoButton(about: String, onClick: () -> Unit) {
+    // TalkBack reads «Подробнее: Масштаб», not the letter «i» (the owner, 2026-10-16 ≈ 17:43: «TalkBack должен работать
+    // корректно. Все им должно быть описано»). [NOT-TESTED]
+    val name = stringResource(R.string.info_about, about)
     Box(
-        Modifier.size(32.dp).clip(CircleShape).clickable(onClick = onClick), contentAlignment = Alignment.Center,
+        Modifier.size(32.dp).clip(CircleShape).clickable(onClick = onClick)
+            .clearAndSetSemantics { contentDescription = name; role = Role.Button },
+        contentAlignment = Alignment.Center,
     ) {
         Box(Modifier.size(22.dp).border(1.5.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape), contentAlignment = Alignment.Center) {
             Text("i", color = MaterialTheme.colorScheme.outlineVariant, fontSize = 12.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
@@ -156,7 +190,7 @@ fun InfoDialog(title: String, text: String, list: String, onGuide: (() -> Unit)?
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(stringResource(R.string.info_open_guide), Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                    Text("›", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                    Chevron(MaterialTheme.colorScheme.primary)
                 }
             }
             if (action != null) PrimaryButton(action.first, null, onClick = action.second, height = 54)

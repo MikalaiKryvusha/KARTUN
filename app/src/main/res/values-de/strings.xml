@@ -109,7 +109,7 @@
     <string name="models_title">Modelle</string>
     <string name="models_all">Alle Modelle</string>
     <string name="models_count">Modelle: %1$d · auf dem Gerät: %2$d</string>
-    <string name="models_choose">Wählen ›</string>
+    <string name="models_choose">Wählen</string>
     <string name="filter_all">Alle</string>
     <string name="filter_photo">Fotos</string>
     <string name="filter_anime">Anime</string>
@@ -178,4 +178,8 @@
     <string name="error_no_access">Kein Zugriff auf die Datei. Liegt das Foto in der Cloud, lade es zuerst auf das Telefon herunter.</string>
     <string name="error_memory">Nicht genug Gerätespeicher, um dieses Foto zu öffnen. Schließe andere Apps und versuche es erneut.</string>
     <string name="scale_limited">Grenze: %1$s MP. %2$d× passt für dieses Foto nicht; %3$s× passt (%4$s)</string>
+    <string name="action_back">Zurück</string>
+    <string name="info_about">Mehr über: %1$s</string>
+    <string name="compare_handle">Trennlinie vorher / nachher</string>
+    <string name="panel_show">Zusammenfassung zeigen</string>
 </resources>

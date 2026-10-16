@@ -155,7 +155,7 @@ fun WorkingScreen(vm: UpscaleViewModel) {
             val w = (src.width * k).dp
             val h = (src.height * k).dp
             Box(Modifier.align(Alignment.Center).size(w, h)) {
-                Image(src.preview.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
+                Image(src.preview.asImageBitmap(), src.name, Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
                 val cols = ceil(src.width / tileOnPhoto).toInt()
                 val rows = ceil(src.height / tileOnPhoto).toInt()
                 // The tile being computed: a pink fill, no living animation on it (the owner, chat 2026-10-16, before 10:48

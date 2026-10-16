@@ -111,7 +111,7 @@
     <string name="models_title">Modelos</string>
     <string name="models_all">Todos os modelos</string>
     <string name="models_count">Modelos: %1$d · no aparelho: %2$d</string>
-    <string name="models_choose">Escolher ›</string>
+    <string name="models_choose">Escolher</string>
     <string name="filter_all">Todos</string>
     <string name="filter_photo">Fotos</string>
     <string name="filter_anime">Anime</string>
@@ -180,4 +180,8 @@
     <string name="error_no_access">Sem acesso ao arquivo. Se a foto está na nuvem, baixe-a primeiro para o telefone.</string>
     <string name="error_memory">Não há memória suficiente no dispositivo para abrir esta foto. Feche outros apps e tente novamente.</string>
     <string name="scale_limited">Limite: %1$s MP. %2$d× não cabe para esta foto; cabe %3$s× (%4$s)</string>
+    <string name="action_back">Voltar</string>
+    <string name="info_about">Mais sobre: %1$s</string>
+    <string name="compare_handle">Divisor de antes e depois</string>
+    <string name="panel_show">Mostrar o resumo</string>
 </resources>
