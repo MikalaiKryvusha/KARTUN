@@ -171,4 +171,8 @@
     <string name="stop_api_job">停止 API 任务</string>
     <string name="save_too_big">%1$s 每边最多 %2$s 像素。图片将缩小到 %3$s × %4$s。</string>
     <string name="save_reduced">缩小并保存</string>
+    <string name="error_not_photo">KARTUN 在此文件中未找到照片：格式不受支持或文件已损坏。</string>
+    <string name="error_incomplete">照片文件不完整，似乎没有下载完。</string>
+    <string name="error_no_access">无法访问该文件。如果照片存放在云端，请先将其下载到手机。</string>
+    <string name="error_memory">设备内存不足，无法打开这张照片。请关闭其他应用后重试。</string>
 </resources>

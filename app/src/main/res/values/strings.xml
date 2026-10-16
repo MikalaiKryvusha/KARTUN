@@ -40,6 +40,12 @@
 
     <string name="error_too_big">Photos over %1$s MP are not supported.</string>
     <string name="error_decode">Could not open this photo.</string>
+    <!-- Why a photo did not open (the owner 2026-10-16 ≈ 16:26: «можем в ошибке писать причину понятную?»); chosen by
+         UpscaleViewModel.openError, error_decode stays for anything else. -->
+    <string name="error_not_photo">KARTUN found no photo in this file: the format is not supported or the file is damaged.</string>
+    <string name="error_incomplete">The photo file is cut short — it looks like it was not fully downloaded.</string>
+    <string name="error_no_access">No access to the file. If the photo is stored in the cloud, download it to the phone first.</string>
+    <string name="error_memory">Not enough device memory to open this photo. Close other apps and try again.</string>
     <string name="error_model">Could not load the model. Please reinstall the app.</string>
     <string name="error_engine">The network could not process this photo.</string>
     <plurals name="duration_seconds">

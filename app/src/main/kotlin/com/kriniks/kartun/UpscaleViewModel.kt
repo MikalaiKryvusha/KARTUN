@@ -32,6 +32,28 @@ import kotlin.math.roundToInt
  * photo, the choices and the result; the runs themselves go through the shared [UpscaleEngine] on the process's one
  * engine thread (research 03 §B, lesson 7; plans/07 step 2). [TESTED: 2026-10-14 · walked by touch on the Titan - testcases/reports/2026-10-14_F2_screens_slice1.md]
  */
+/**
+ * Why a photo did not open, as a line the user understands (the owner 2026-10-16 ≈ 16:26: «можем в ошибке писать причину
+ * понятную? чтобы пользователь понимал примерно, что не так?»). The whole cause chain is read - ImageDecoder and the
+ * content resolver wrap their causes. The size limit has its own line (error_too_big) before this is asked.
+ * [TESTED: 2026-10-16 · «не нашёл фото», «нет доступа», «обрывается» read on the Titan's screen from broken and cut files;
+ * «не хватило памяти» by OpenErrorTest only - testcases/reports/2026-10-16_open_with_titan.md]
+ */
+@StringRes
+internal fun openError(e: Throwable): Int {
+    val chain = generateSequence(e) { it.cause }.take(8).toList()
+    return when {
+        chain.any { it is OutOfMemoryError } -> R.string.error_memory
+        chain.any { it is SecurityException || it is java.io.FileNotFoundException } -> R.string.error_no_access
+        chain.any { it is ImageDecoder.DecodeException && it.error == ImageDecoder.DecodeException.SOURCE_INCOMPLETE } ->
+            R.string.error_incomplete
+        // A read error past the decoder's start is a damaged file too: a HEIC cut in half gave «IOException: getPixels
+        // failed with error invalid input» on the Titan (testcases/reports/2026-10-16_open_with_titan.md).
+        chain.any { it is ImageDecoder.DecodeException || it is java.io.IOException } -> R.string.error_not_photo
+        else -> R.string.error_decode
+    }
+}
+
 class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
     enum class Screen { Home, Setup, Working, Result, Settings, Manual, About, Terms, Models }
@@ -116,7 +138,12 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                 // The reason goes to logcat: «Не удалось открыть это фото» alone left a shell-shared photo unexplained
                 // (testcases/reports/2026-10-16_epic06_A_step2_shared_engine.md, Found 1).
                 Log.w(TAG, "open failed: $uri", it)
-                error = if (it is UpscaleEngine.TooBig) R.string.error_too_big to mpLimitText() else R.string.error_decode to null
+                // The owner sees «Не удалось открыть это фото» «часто» (2026-10-16 ≈ 16:22) and logcat had already rolled
+                // over: the app's own journal keeps the cause - the source URI, its type and the exception chain.
+                val type = runCatching { ctx.contentResolver.getType(uri) }.getOrNull()
+                CrashLog.note("open failed: $uri type=$type ${generateSequence(it) { e -> e.cause }.take(3)
+                    .joinToString(" <- ") { e -> "${e.javaClass.simpleName}: ${e.message}" }}")
+                error = if (it is UpscaleEngine.TooBig) R.string.error_too_big to mpLimitText() else openError(it) to null
             }
         }
     }

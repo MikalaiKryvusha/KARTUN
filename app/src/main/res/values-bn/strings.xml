@@ -173,4 +173,8 @@
     <string name="stop_api_job">API-র কাজ থামান</string>
     <string name="save_too_big">%1$s প্রতি পাশে সর্বোচ্চ %2$s px রাখে। ছবিটি %3$s × %4$s-এ ছোট করা হবে।</string>
     <string name="save_reduced">ছোট করে সংরক্ষণ</string>
+    <string name="error_not_photo">এই ফাইলে KARTUN কোনো ছবি পায়নি: ফরম্যাটটি সমর্থিত নয় বা ফাইলটি নষ্ট।</string>
+    <string name="error_incomplete">ছবির ফাইলটি অসম্পূর্ণ — মনে হচ্ছে এটি পুরোপুরি ডাউনলোড হয়নি।</string>
+    <string name="error_no_access">ফাইলটিতে প্রবেশাধিকার নেই। ছবিটি ক্লাউডে থাকলে আগে সেটি ফোনে ডাউনলোড করুন।</string>
+    <string name="error_memory">এই ছবি খোলার মতো যথেষ্ট মেমরি ডিভাইসে নেই। অন্য অ্যাপ বন্ধ করে আবার চেষ্টা করুন।</string>
 </resources>

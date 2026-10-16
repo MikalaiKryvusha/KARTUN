@@ -54,11 +54,14 @@ class MainActivity : ComponentActivity() {
         sharedImage(intent)?.let(vm::open)
     }
 
-    /** The image another app sent with «Поделиться → KARTUN», if any. */
-    private fun sharedImage(intent: Intent): Uri? =
-        if (intent.action == Intent.ACTION_SEND && intent.type?.startsWith("image/") == true)
-            intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
-        else null
+    /** The image another app sent with «Поделиться → KARTUN» (ACTION_SEND) or opened with «Открыть с помощью → KARTUN»
+     *  (ACTION_VIEW); the manifest's filters decide the types - images and application/octet-stream (a TGA has no
+     *  type of its own on Android); a file that is not a picture ends in the decoder's honest error. */
+    private fun sharedImage(intent: Intent): Uri? = when (intent.action) {
+        Intent.ACTION_SEND -> intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+        Intent.ACTION_VIEW -> intent.data
+        else -> null
+    }
 }
 
 @Composable

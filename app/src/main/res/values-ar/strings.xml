@@ -181,6 +181,10 @@
     <string name="stop_api_job">إيقاف مهمة الـ API</string>
     <string name="save_too_big">تحفظ صيغة %1$s حتى %2$s بكسل لكل جانب كحد أقصى. ستُصغَّر الصورة إلى %3$s × %4$s.</string>
     <string name="save_reduced">تصغير وحفظ</string>
+    <string name="error_not_photo">لم يجد KARTUN صورة في هذا الملف: الصيغة غير مدعومة أو الملف تالف.</string>
+    <string name="error_incomplete">ملف الصورة غير مكتمل، ويبدو أنه لم يُنزَّل بالكامل.</string>
+    <string name="error_no_access">لا يمكن الوصول إلى الملف. إذا كانت الصورة محفوظة في السحابة، فنزّلها إلى الهاتف أولًا.</string>
+    <string name="error_memory">لا تكفي ذاكرة الجهاز لفتح هذه الصورة. أغلق التطبيقات الأخرى وحاول مرة أخرى.</string>
     <string name="arrow">←</string>
     <string name="size_to">%1$s ← %2$s</string>
 </resources>

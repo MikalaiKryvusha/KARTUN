@@ -32,11 +32,30 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- «Поделиться → KARTUN» from a gallery, Telegram or a browser (the share hint on the home screen). -->
+            <!-- «Поделиться → KARTUN» from a gallery, Telegram, a browser or a file manager (the share hint on the home
+                 screen). application/octet-stream: Android's media store has no type for .tga and the like (on the Titan
+                 2026-10-16 a TGA came as application/octet-stream), so without it a TGA never reaches the engine's second
+                 decoder; any other unknown file gets the honest «Не удалось открыть это фото». Snapseed on the same
+                 tablet takes the same type. -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/*" />
+                <data android:mimeType="application/octet-stream" />
+            </intent-filter>
+            <!-- «Открыть с помощью → KARTUN» from a file manager (plans/08 step 10): a content URI of an image, the home
+                 screen stays as approved ([OWNER] 2026-10-16 ≈ 16:10). The PSD types are those some file managers use;
+                 application/octet-stream - as for «Поделиться» above.
+                 [TESTED: 2026-10-16 · PSD (image/x-photoshop) and TIFF from the Files app on the Titan → «Улучшение» →
+                 result 1024 × 1024, by the UI agent; TGA needed octet-stream - testcases/reports/2026-10-16_open_with_titan.md] -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="application/x-photoshop" />
+                <data android:mimeType="application/photoshop" />
+                <data android:mimeType="application/octet-stream" />
             </intent-filter>
         </activity>
         <!-- «Поделиться»: the result's PNG copy in the cache, readable by the app the user picks (ResultStore.shareCopy). -->

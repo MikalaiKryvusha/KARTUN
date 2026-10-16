@@ -576,6 +576,43 @@ SAVE_LIMIT = {
     "ar": ("تحفظ صيغة %1$s حتى %2$s بكسل لكل جانب كحد أقصى. ستُصغَّر الصورة إلى %3$s × %4$s.", "تصغير وحفظ"),
 }
 
+# Why a photo did not open (the owner 2026-10-16 ≈ 16:26: «можем в ошибке писать причину понятную?») -
+# (error_not_photo, error_incomplete, error_no_access, error_memory). [AI] draft, like the rest.
+OPEN_ERRORS = {
+    "es": ("KARTUN no encontró una foto en este archivo: el formato no es compatible o el archivo está dañado.",
+           "El archivo de la foto está incompleto: parece que no se descargó del todo.",
+           "Sin acceso al archivo. Si la foto está en la nube, descárgala primero al teléfono.",
+           "No hay memoria suficiente en el dispositivo para abrir esta foto. Cierra otras apps e inténtalo de nuevo."),
+    "pt": ("O KARTUN não encontrou uma foto neste arquivo: o formato não é compatível ou o arquivo está danificado.",
+           "O arquivo da foto está incompleto: parece que não foi baixado por inteiro.",
+           "Sem acesso ao arquivo. Se a foto está na nuvem, baixe-a primeiro para o telefone.",
+           "Não há memória suficiente no dispositivo para abrir esta foto. Feche outros apps e tente novamente."),
+    "fr": ("KARTUN n’a trouvé aucune photo dans ce fichier : le format n’est pas pris en charge ou le fichier est endommagé.",
+           "Le fichier de la photo est incomplet : il semble ne pas avoir été entièrement téléchargé.",
+           "Pas d’accès au fichier. Si la photo est dans le cloud, téléchargez-la d’abord sur le téléphone.",
+           "Mémoire insuffisante sur l’appareil pour ouvrir cette photo. Fermez d’autres applis et réessayez."),
+    "de": ("KARTUN hat in dieser Datei kein Foto gefunden: Das Format wird nicht unterstützt oder die Datei ist beschädigt.",
+           "Die Fotodatei ist unvollständig – offenbar wurde sie nicht ganz heruntergeladen.",
+           "Kein Zugriff auf die Datei. Liegt das Foto in der Cloud, lade es zuerst auf das Telefon herunter.",
+           "Nicht genug Gerätespeicher, um dieses Foto zu öffnen. Schließe andere Apps und versuche es erneut."),
+    "zh": ("KARTUN 在此文件中未找到照片：格式不受支持或文件已损坏。",
+           "照片文件不完整，似乎没有下载完。",
+           "无法访问该文件。如果照片存放在云端，请先将其下载到手机。",
+           "设备内存不足，无法打开这张照片。请关闭其他应用后重试。"),
+    "hi": ("KARTUN को इस फ़ाइल में फ़ोटो नहीं मिली: फ़ॉर्मैट समर्थित नहीं है या फ़ाइल ख़राब है।",
+           "फ़ोटो की फ़ाइल अधूरी है — लगता है वह पूरी डाउनलोड नहीं हुई।",
+           "फ़ाइल तक पहुँच नहीं है। अगर फ़ोटो क्लाउड में है, तो पहले उसे फ़ोन पर डाउनलोड करें।",
+           "इस फ़ोटो को खोलने के लिए डिवाइस में पर्याप्त मेमोरी नहीं है। दूसरे ऐप बंद करें और फिर से कोशिश करें।"),
+    "bn": ("এই ফাইলে KARTUN কোনো ছবি পায়নি: ফরম্যাটটি সমর্থিত নয় বা ফাইলটি নষ্ট।",
+           "ছবির ফাইলটি অসম্পূর্ণ — মনে হচ্ছে এটি পুরোপুরি ডাউনলোড হয়নি।",
+           "ফাইলটিতে প্রবেশাধিকার নেই। ছবিটি ক্লাউডে থাকলে আগে সেটি ফোনে ডাউনলোড করুন।",
+           "এই ছবি খোলার মতো যথেষ্ট মেমরি ডিভাইসে নেই। অন্য অ্যাপ বন্ধ করে আবার চেষ্টা করুন।"),
+    "ar": ("لم يجد KARTUN صورة في هذا الملف: الصيغة غير مدعومة أو الملف تالف.",
+           "ملف الصورة غير مكتمل، ويبدو أنه لم يُنزَّل بالكامل.",
+           "لا يمكن الوصول إلى الملف. إذا كانت الصورة محفوظة في السحابة، فنزّلها إلى الهاتف أولًا.",
+           "لا تكفي ذاكرة الجهاز لفتح هذه الصورة. أغلق التطبيقات الأخرى وحاول مرة أخرى."),
+}
+
 # The model card lines (model_purpose_*) and the (i) texts (model_info_*) of every catalogue model, one data file for the 8
 # languages (tools/model-texts.json, `[AI]` like the rest; sources researches/11 and 12). Its keys must be exactly the
 # model_purpose_* / model_info_* names of values/strings.xml - a key missing on either side reddens here.
@@ -637,6 +674,8 @@ def main():
         for k, v in zip(WAITING_KEYS, WAITING[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in zip(("save_too_big", "save_reduced"), SAVE_LIMIT[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
+        for k, v in zip(("error_not_photo", "error_incomplete", "error_no_access", "error_memory"), OPEN_ERRORS[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')

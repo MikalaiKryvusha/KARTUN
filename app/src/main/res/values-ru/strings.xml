@@ -43,6 +43,11 @@
     <!-- [AI] error lines (the mockups have none; GOAL.md §3: understandable errors, not exception codes). -->
     <string name="error_too_big">Фото больше %1$s Мп не поддерживается.</string>
     <string name="error_decode">Не удалось открыть это фото.</string>
+    <!-- Почему фото не открылось (владелец 2026-10-16 ≈ 16:26: «можем в ошибке писать причину понятную?»). -->
+    <string name="error_not_photo">В этом файле KARTUN не нашёл фото: формат не поддерживается или файл повреждён.</string>
+    <string name="error_incomplete">Файл фото обрывается — похоже, он скачан не до конца.</string>
+    <string name="error_no_access">Нет доступа к файлу. Если фото хранится в облаке, сначала скачайте его на телефон.</string>
+    <string name="error_memory">Не хватило памяти устройства, чтобы открыть это фото. Закройте другие приложения и попробуйте снова.</string>
     <string name="error_model">Не удалось загрузить модель. Переустановите приложение.</string>
     <string name="error_engine">Нейросеть не смогла обработать фото.</string>
     <!-- Durations in whole words - the owner in chat 2026-10-14 ≈ 18:58: «минут секунд в кнопке улучшения писать целым слвом». -->

@@ -173,4 +173,8 @@
     <string name="stop_api_job">API का काम रोकें</string>
     <string name="save_too_big">%1$s में हर तरफ़ ज़्यादा से ज़्यादा %2$s px आते हैं। तस्वीर %3$s × %4$s तक छोटी की जाएगी।</string>
     <string name="save_reduced">छोटा करें और सहेजें</string>
+    <string name="error_not_photo">KARTUN को इस फ़ाइल में फ़ोटो नहीं मिली: फ़ॉर्मैट समर्थित नहीं है या फ़ाइल ख़राब है।</string>
+    <string name="error_incomplete">फ़ोटो की फ़ाइल अधूरी है — लगता है वह पूरी डाउनलोड नहीं हुई।</string>
+    <string name="error_no_access">फ़ाइल तक पहुँच नहीं है। अगर फ़ोटो क्लाउड में है, तो पहले उसे फ़ोन पर डाउनलोड करें।</string>
+    <string name="error_memory">इस फ़ोटो को खोलने के लिए डिवाइस में पर्याप्त मेमोरी नहीं है। दूसरे ऐप बंद करें और फिर से कोशिश करें।</string>
 </resources>

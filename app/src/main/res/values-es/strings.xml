@@ -175,4 +175,8 @@
     <string name="stop_api_job">Detener la tarea de la API</string>
     <string name="save_too_big">%1$s guarda como máximo %2$s px por lado. La imagen se reducirá a %3$s × %4$s.</string>
     <string name="save_reduced">Reducir y guardar</string>
+    <string name="error_not_photo">KARTUN no encontró una foto en este archivo: el formato no es compatible o el archivo está dañado.</string>
+    <string name="error_incomplete">El archivo de la foto está incompleto: parece que no se descargó del todo.</string>
+    <string name="error_no_access">Sin acceso al archivo. Si la foto está en la nube, descárgala primero al teléfono.</string>
+    <string name="error_memory">No hay memoria suficiente en el dispositivo para abrir esta foto. Cierra otras apps e inténtalo de nuevo.</string>
 </resources>
