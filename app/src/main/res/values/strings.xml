@@ -32,6 +32,9 @@
 
     <string name="working_title">The network is enhancing your photo</string>
     <string name="cancel">Cancel</string>
+    <!-- The first-launch speed check (ideas/04; the owner, 2026-10-16 ≈ 20:0x: «"Измеряем производительность GPU и CPU устройства..."» · «Закрыть можно кнопкой [Отмена]»). -->
+    <string name="bench_title">Measuring the device’s GPU and CPU performance…</string>
+    <string name="bench_cancel">Cancel</string>
     <string name="backend_gpu" translatable="false">GPU · Vulkan</string>
     <string name="backend_cpu" translatable="false">CPU</string>
 

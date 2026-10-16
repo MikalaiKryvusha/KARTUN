@@ -55,6 +55,10 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.style.TextAlign
 
 /**
  * Home screen, variant A v2 of the accepted mockups ('A-home'): the big «Выберите фото» card opens the system photo
@@ -182,6 +186,36 @@ fun LinkDialog(onDownload: (String) -> Unit, onClose: () -> Unit) {
         }
     }
     LaunchedEffect(Unit) { focus.requestFocus() }
+}
+
+/**
+ * The first-launch speed check over the home screen (ideas/04; the owner, chat 2026-10-16 ≈ 20:0x +03:00: «поверх главного
+ * экрана открывается тонировка темная и модальный диалог с текстом "Измеряем производительность GPU и CPU устройства..."
+ * ниже наша анимация живого спинера» · «Диалог сам заркывается после выполнения замера. Закрыть можно кнопкой [Отмена]»).
+ * The dialog window dims the screen behind it; a tap outside does nothing, the system Back is the same «Отмена». [NOT-TESTED]
+ */
+/** How dark the screen behind the speed check gets (0 = clear, 1 = black). */
+private const val BENCH_DIM = 0.85f
+
+@Composable
+fun BenchDialog(onCancel: () -> Unit) {
+    val c = MaterialTheme.colorScheme
+    Dialog(onDismissRequest = onCancel, properties = DialogProperties(dismissOnClickOutside = false)) {
+        // A darker veil than the dialog window's default 0.6 (the owner on the Redmi, 2026-10-16 ≈ 20:1x: «сильнее тонировку»).
+        (LocalView.current.parent as? DialogWindowProvider)?.window?.setDimAmount(BENCH_DIM)
+        Column(
+            Modifier.fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow)
+                .padding(start = 22.dp, end = 22.dp, top = 26.dp, bottom = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(stringResource(R.string.bench_title), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
+            PixelSpinner(Modifier.size(120.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Pill(stringResource(R.string.bench_cancel), outlined = true, onClick = onCancel)
+            }
+        }
+    }
 }
 
 @Composable

@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import com.kriniks.kartun.ui.AboutScreen
 import com.kriniks.kartun.ui.HomeScreen
 import com.kriniks.kartun.ui.LinkDialog
+import com.kriniks.kartun.ui.BenchDialog
 import com.kriniks.kartun.ui.ManualScreen
 import com.kriniks.kartun.ui.ModelsScreen
 import com.kriniks.kartun.ui.ResultScreen
@@ -79,6 +80,7 @@ private fun KartunApp(vm: UpscaleViewModel) {
                 downloading = vm.downloading, error = err, onDismissError = vm::dismissError,
             )
             if (vm.linkDialog) LinkDialog(onDownload = vm::downloadLink, onClose = vm::closeLinkDialog)
+            if (vm.benchRunning) BenchDialog(onCancel = vm::cancelBench)
         }
         UpscaleViewModel.Screen.Setup -> SetupScreen(vm, onPickOther = pick)
         UpscaleViewModel.Screen.Working -> WorkingScreen(vm)

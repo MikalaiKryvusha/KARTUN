@@ -77,6 +77,8 @@
     <string name="settings_manual">دليل المستخدم</string>
     <string name="settings_manual_sub">كيف تستخدم KARTUN ونماذجه</string>
     <string name="info_open_guide">افتح الدليل كاملًا</string>
+    <string name="bench_title">جارٍ قياس أداء GPU وCPU في الجهاز…</string>
+    <string name="bench_cancel">إلغاء</string>
     <string name="settings_notifications">الإشعارات</string>
     <string name="settings_notifications_on">مسموح بها: التقدم و«صورتك جاهزة»</string>
     <string name="settings_notifications_off">متوقفة — اضغط للسماح</string>

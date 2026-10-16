@@ -241,6 +241,17 @@ GUIDE = {
 OPEN_GUIDE = {"es": "Abrir la guía completa", "pt": "Abrir o guia completo", "fr": "Ouvrir le guide complet", "de": "Die ganze Anleitung öffnen",
               "zh": "打开完整指南", "hi": "पूरी गाइड खोलें", "bn": "পুরো নির্দেশিকা খুলুন", "ar": "افتح الدليل كاملًا"}
 
+# The first-launch speed check (ideas/04; the owner, chat 2026-10-16 ≈ 20:0x +03:00: «"Измеряем производительность GPU и
+# CPU устройства..."» · «Закрыть можно кнопкой [Отмена]»): bench_title · bench_cancel.
+BENCH = {"es": ("Midiendo el rendimiento de la GPU y la CPU del dispositivo…", "Cancelar"),
+         "pt": ("Medindo o desempenho da GPU e da CPU do dispositivo…", "Cancelar"),
+         "fr": ("Mesure des performances du GPU et du CPU de l’appareil…", "Annuler"),
+         "de": ("Leistung von GPU und CPU des Geräts wird gemessen…", "Abbrechen"),
+         "zh": ("正在测量设备 GPU 和 CPU 的性能…", "取消"),
+         "hi": ("डिवाइस के GPU और CPU का प्रदर्शन मापा जा रहा है…", "रद्द करें"),
+         "bn": ("ডিভাইসের GPU ও CPU-এর কার্যক্ষমতা মাপা হচ্ছে…", "বাতিল"),
+         "ar": ("جارٍ قياس أداء GPU وCPU في الجهاز…", "إلغاء")}
+
 # «О приложении»: about_title · about_tagline · about_device · about_model · about_engine · about_licences ·
 # about_project · about_inspired · about_author · about_source (the owner, chat 2026-10-14 ≈ 20:58 +03:00: «о приложении
 # и авторе нужна и ссылка на наш GH»; plan 03 step 21).
@@ -676,6 +687,8 @@ def main():
         for k, v in zip(("manual_title", "settings_manual", "settings_manual_sub"), GUIDE[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="info_open_guide">{xml_text(OPEN_GUIDE[lang])}</string>')
+        lines.append(f'    <string name="bench_title">{xml_text(BENCH[lang][0])}</string>')
+        lines.append(f'    <string name="bench_cancel">{xml_text(BENCH[lang][1])}</string>')
         assert len(NOTIF[lang]) == len(NOTIF_KEYS), (lang, "notif")
         for k, v in zip(NOTIF_KEYS, NOTIF[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')

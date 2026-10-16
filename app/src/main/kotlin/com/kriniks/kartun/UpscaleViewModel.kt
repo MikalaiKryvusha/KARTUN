@@ -171,6 +171,11 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     var useGpu by mutableStateOf(true); private set
     private var beforeSettings = Screen.Home
 
+    /** True while the first-launch speed check runs: the home screen shows its dialog (ideas/04, [DeviceBench]). Lives in
+     *  the ViewModel so a turn of the screen neither restarts the check nor loses the dialog. Declared above `init`, which starts the check:
+     *  a property below it is still null there (the launch crash of 2026-10-16 20:06 on the Redmi). [NOT-TESTED] */
+    var benchRunning by mutableStateOf(false); private set
+
     // GOAL.md §3: «Сохранять настройки между запусками» - the GPU switch, the model, the scale, the save format and quality
     // come back as the user left them.
     init {
@@ -183,6 +188,23 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         scaleIndex = prefs.getInt(PREF_SCALE, DEFAULT_SCALE_INDEX).coerceIn(0, SCALES.lastIndex)
         saveFormat = ResultStore.Format.entries.firstOrNull { it.name == prefs.getString(PREF_FORMAT, null) } ?: ResultStore.Format.Png
         saveQuality = prefs.getInt(PREF_QUALITY, DEFAULT_QUALITY)
+        startBenchIfNeeded()
+    }
+
+    private fun startBenchIfNeeded() {
+        val app = getApplication<Application>()
+        if (!DeviceBench.needed(app)) return
+        benchRunning = true
+        viewModelScope.launch {
+            runCatching { DeviceBench.run(app) { !benchRunning } }.onFailure { Log.w("KARTUN", "bench failed", it) }
+            benchRunning = false
+        }
+    }
+
+    /** «Отмена» of the check: the dialog closes now, the engine stops after its current pass and nothing is written. */
+    fun cancelBench() {
+        DeviceBench.skip(getApplication())
+        benchRunning = false
     }
 
     fun chooseGpu(on: Boolean) {

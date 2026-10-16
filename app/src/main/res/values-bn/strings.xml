@@ -69,6 +69,8 @@
     <string name="settings_manual">ব্যবহারকারী নির্দেশিকা</string>
     <string name="settings_manual_sub">KARTUN ও এর মডেল কীভাবে ব্যবহার করবেন</string>
     <string name="info_open_guide">পুরো নির্দেশিকা খুলুন</string>
+    <string name="bench_title">ডিভাইসের GPU ও CPU-এর কার্যক্ষমতা মাপা হচ্ছে…</string>
+    <string name="bench_cancel">বাতিল</string>
     <string name="settings_notifications">বিজ্ঞপ্তি</string>
     <string name="settings_notifications_on">অনুমোদিত: অগ্রগতি ও «আপনার ছবি প্রস্তুত»</string>
     <string name="settings_notifications_off">বন্ধ — অনুমতি দিতে চাপুন</string>

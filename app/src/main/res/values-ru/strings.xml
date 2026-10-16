@@ -33,6 +33,8 @@
 
     <string name="working_title">Нейросеть улучшает фото</string>
     <string name="cancel">Отменить</string>
+    <string name="bench_title">Измеряем производительность GPU и CPU устройства…</string>
+    <string name="bench_cancel">Отмена</string>
     <string name="backend_gpu">GPU · Vulkan</string>
     <string name="backend_cpu">CPU</string>
 

@@ -71,6 +71,8 @@
     <string name="settings_manual">Guia do usuário</string>
     <string name="settings_manual_sub">Como usar o KARTUN e seus modelos</string>
     <string name="info_open_guide">Abrir o guia completo</string>
+    <string name="bench_title">Medindo o desempenho da GPU e da CPU do dispositivo…</string>
+    <string name="bench_cancel">Cancelar</string>
     <string name="settings_notifications">Notificações</string>
     <string name="settings_notifications_on">Permitidas: progresso e «Sua foto está pronta»</string>
     <string name="settings_notifications_off">Desativadas — toque para permitir</string>
