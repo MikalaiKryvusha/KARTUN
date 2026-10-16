@@ -68,3 +68,10 @@ round trip for a routine commit) and owner-work-safety (an outward push is never
 
 The rule is applied in this deployment's agent memory (one git action per call, `-m` inline, push alone) since 2026-10-16
 ≈ 11:58; not yet in the canon text — waits for the origin's wording in 2.9 to avoid a local divergence.
+
+## Correction (2026-10-16 13:12 +03:00)
+
+«Then passed at once … and from there every commit of the session» is too wide: at ≈ 12:05 a single `git push -q` (its own
+call, nothing chained) was refused with the same «[Instruction Poisoning]», and the next single push at 12:16 passed; two
+single cross-session messages were refused too («[Auto-Mode Bypass]», «[Instruction Poisoning]»). Splitting removes most
+refusals, not all; a single refused action goes to the owner, never re-shaped. Not yet posted to #146.
