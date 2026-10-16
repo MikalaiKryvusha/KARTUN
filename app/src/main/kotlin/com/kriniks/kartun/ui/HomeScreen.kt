@@ -57,6 +57,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import androidx.compose.ui.platform.LocalView
@@ -241,7 +242,9 @@ fun BenchDialog(onCancel: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(stringResource(R.string.bench_title), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
+            // The title is drawn above the spinner: the scattering squares fly under the letters, never over them (RC3 check on
+            // the A52, 2026-10-16: a square hid the «o» of «performance»). [NOT-TESTED]
+            Text(stringResource(R.string.bench_title), Modifier.zIndex(1f), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
             PixelSpinner(Modifier.size(120.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Pill(stringResource(R.string.bench_cancel), outlined = true, onClick = onCancel)
