@@ -23,6 +23,10 @@ moments of the runs below are ≈ (no clock probe per run; the probes at 12:35:2
 4. 12:38–12:40 — U1 attempt: `am start -S -W -f 0x10008000 -n …/MainActivity`, the UI agent «Выберите фото» → KARTUN_test;
    `dumpsys window`, `dumpsys power`, `input keyevent 224`, `wm dismiss-keyguard`, a screenshot; `input keyevent 223`.
 
+5. 13:05 — `.\gradlew.bat :probe:assembleDebug` (the new test-only module `probe/`); `adb install probe-debug.apk`;
+   `am start -W -n com.kriniks.kartun.probe/.ProbeActivity --es target com.kriniks.kartun.debug`;
+   `logcat -T … | grep -E 'A7PROBE|Permission Denial.*AgentService'`; `ls …/files/agent/`; `adb uninstall com.kriniks.kartun.probe`.
+
 ## Checks
 - Hygiene: none new in this step.
 - Functional run: the agent's path by the CLI and raw adb, read from stdout JSON, PSNR, `dumpsys`.
@@ -33,6 +37,7 @@ moments of the runs below are ≈ (no clock probe per run; the probes at 12:35:2
 | 2 | A5 cancel at 30 s | pass | `"state":"canceled"`, `"tiles_done":10,"tiles_total":36`; 3.1 s from the `cancel` call to its answer; `upscale` exit 1 |
 | 3 | A7 another app's uid | partial | `run-as` uid `10247(u0_a247)` (the debug app) → `Error: Not found; no service started.` — the release package is invisible to the debug app (Android package visibility), so the `DUMP` guard was not the refusing layer; control from the adb shell: `Starting service …`, `info.json` `"build":"release"` |
 | 4 | R1 the R8 release build | pass | `"ok":true`, 1024 × 1024 in 5 348 ms on the GPU; PSNR to the debug build's output of the same model: `120 (1)` — identical |
+| 7 | A7 a visible foreign caller | pass | `W ActivityManager: Permission Denial: Accessing service com.kriniks.kartun.debug/com.kriniks.kartun.agent.AgentService from pid=24267, uid=10302 requires android.permission.DUMP`; `W A7PROBE : refused: java.lang.SecurityException: Not allowed to start service … without permission android.permission.DUMP`; `files/agent/` empty; the probe uninstalled |
 | 5 | U1 UI during an agent job — first attempt | blocked | focus `NotificationShade`, `isKeyguardShowing=true` after waking; `wm dismiss-keyguard` did not dismiss it; the screenshot is black (a secure lock screen) |
 | 6 | U1 — after the owner unlocked the Titan («я разлочил титан», ≈ 12:42) | pass | 12:43:44 agent job x4plus on `test1mp.png`; 12:43:49 `titan-tap 848 2326` («Улучшить», Siax 8× on beach); at +3 s the Working screen «0% · проход 1/2 · тайл — · прошло 3 с»; 12:44:09 `cancel` → `canceled`; at 12:44:2x «30% · проход 2/2 · тайл 4/13»; 12:45 result «256 × 256 → 2048 × 2048 · 51 секунда · GPU · Vulkan»; `engine-stderr.log`: `12-43-45 load realesrgan-x4plus … thread=kartun-engine`, `12-44-10 load 4x-NMKD-Siax-fp16 … thread=kartun-engine`; `crashes/` 7 entries as before; `files/agent/` empty |
 
@@ -58,5 +63,4 @@ moments of the runs below are ≈ (no clock probe per run; the probes at 12:35:2
 empty, the release build uninstalled, the screen asleep.
 
 ## Verdict
-partial — A1–A6, A8, A9, U1, R1 pass (with the step 7/8 runs); A7 partial (refused, not by `DUMP` — waits for a probe APK
-with `<queries>`); A10 blocked (waits for the USB cable).
+partial — A1–A9, U1, R1 pass (with the step 7/8 runs; A7 by the probe app at 13:05); A10 blocked (waits for the USB cable).

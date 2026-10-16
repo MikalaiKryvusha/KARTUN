@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The A7 probe (plans/07 step 9): sees both KARTUN builds, holds no permission, has no screen. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <queries>
+        <package android:name="com.kriniks.kartun" />
+        <package android:name="com.kriniks.kartun.debug" />
+    </queries>
+    <application android:label="KARTUN A7 probe">
+        <activity
+            android:name=".ProbeActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.NoDisplay" />
+    </application>
+</manifest>

@@ -15,3 +15,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "KARTUN"
 include(":app", ":engine")
+// :probe - the test-only A7 caller of the agent door (plans/07 step 9); not part of KARTUN's APK.
+include(":probe")
