@@ -121,7 +121,7 @@ Jobs run one at a time, in the order they were sent; at most 8 wait. A running j
  "gpu":"gpu_count=1 name=Mali-G615 MC6 fp16_storage=1 fp16_arith=1 heap_budget_mb=8038",
  "gpu_default":true,"charging":false,"queue":0,
  "models":[{"id":"4xNomosWebPhoto-RealPLKSR-fp16","name":"4xNomosWebPhoto RealPLKSR","scale":4,"installed":true,"default":true,"licence":"CC BY 4.0","commercial":true}],
- "limits":{"max_input_mp":100,"max_output_mp":500,"scales":[1,2,4,8,16],"formats":["png","jpg","webp"]}}
+ "limits":{"max_input_mp":200,"max_output_mp":536,"scales":[1,2,4,8,16],"formats":["png","jpg","webp"]}}
 ```
 
 (`models` is shortened here; it lists the whole catalogue.) Models not installed are downloaded by the user in the app,
@@ -134,7 +134,7 @@ Jobs run one at a time, in the order they were sent; at most 8 wait. A running j
 | `bad_request` | a field outside the contract (job id, a path in `in`, scale, format, quality), or a WebP result over 16 383 px per side | fix the request; for big results use png or jpg |
 | `input_missing` | no input file under that name in `<dir>` | push it first |
 | `decode_failed` | the input is not a picture the device can read | send a format Android decodes: JPEG, PNG, WebP, HEIC, AVIF, GIF, BMP |
-| `too_big` | input over 100 MP, or the result over 500 MP | a smaller scale or a smaller picture |
+| `too_big` | input over 200 MP, or the result over 536 MP | a smaller scale or a smaller picture |
 | `model_not_installed` | the model is not on the device | `models` lists the installed ones |
 | `model_load_failed` | the model's files did not load | reinstall the model in the app |
 | `engine_failed` | the network failed on GPU and CPU | retry with `--cpu`, or a smaller picture |
@@ -148,7 +148,7 @@ problem on the PC; exit 1), and `canceled` on Ctrl+C.
 
 ## Limits
 
-- Input up to 100 MP; result up to 500 MP (so 1× for a 100 MP photo, up to 2× for 50 MP).
+- Input up to 200 MP; result up to 536 MP (so 1× for a 200 MP photo, 2× up to 134 MP, 4× up to 33.5 MP).
 - WebP results up to 16 383 px per side.
 - Scales 1×, 2×, 4× take one pass of the network, 8× and 16× two passes.
 - Android allows a background job of this kind 6 hours per 24 hours (`quota`).

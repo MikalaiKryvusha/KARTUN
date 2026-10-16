@@ -43,7 +43,6 @@
     <string name="saved">Pictures/KARTUN-এ সংরক্ষিত</string>
     <string name="save_failed">ছবি সংরক্ষণ করা যায়নি।</string>
     <string name="saving">সংরক্ষণ হচ্ছে…</string>
-    <string name="webp_too_big">WebP প্রতি পাশে 16 383 px পর্যন্ত; এই ফলাফলের জন্য PNG বা JPEG বেছে নিন</string>
     <plurals name="duration_seconds">
         <item quantity="one">%1$d সেকেন্ড</item>
         <item quantity="other">%1$d সেকেন্ড</item>
@@ -172,4 +171,6 @@
     <string name="metric_waiting">অপেক্ষা</string>
     <string name="metric_work">কাজ</string>
     <string name="stop_api_job">API-র কাজ থামান</string>
+    <string name="save_too_big">%1$s প্রতি পাশে সর্বোচ্চ %2$s px রাখে। ছবিটি %3$s × %4$s-এ ছোট করা হবে।</string>
+    <string name="save_reduced">ছোট করে সংরক্ষণ</string>
 </resources>

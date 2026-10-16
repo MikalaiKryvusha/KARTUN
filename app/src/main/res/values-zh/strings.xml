@@ -43,7 +43,6 @@
     <string name="saved">已保存到 Pictures/KARTUN</string>
     <string name="save_failed">无法保存照片。</string>
     <string name="saving">正在保存…</string>
-    <string name="webp_too_big">WebP 每边最多 16 383 像素；此结果请选择 PNG 或 JPEG</string>
     <plurals name="duration_seconds">
         <item quantity="other">%1$d 秒</item>
     </plurals>
@@ -170,4 +169,6 @@
     <string name="metric_waiting">等待</string>
     <string name="metric_work">处理</string>
     <string name="stop_api_job">停止 API 任务</string>
+    <string name="save_too_big">%1$s 每边最多 %2$s 像素。图片将缩小到 %3$s × %4$s。</string>
+    <string name="save_reduced">缩小并保存</string>
 </resources>

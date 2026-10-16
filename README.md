@@ -122,8 +122,8 @@ minutes. On the way we found an out-of-bounds read in an ncnn attention shader a
 |---|---|
 | Input | any picture format Android itself opens: JPEG, PNG, WebP, HEIC, AVIF, GIF, BMP and others |
 | Output | PNG (lossless), JPEG and WebP with a quality slider; WebP up to 16 383 px per side |
-| Largest input photo | 100 MP |
-| Largest result | 500 MP |
+| Largest input photo | 200 MP |
+| Largest result | 536 MP |
 | 8× and 16× | two passes of the network: four to sixteen times longer than 2×–4× |
 | Translations | English and Russian are written by hand; the other eight are AI translations checked by the author |
 
@@ -307,8 +307,8 @@ KARTUN запускает и трансформер: 4x UltraSharp V2 автор
 |---|---|
 | Вход | любой формат картинки, который открывает сам Android: JPEG, PNG, WebP, HEIC, AVIF, GIF, BMP и другие |
 | Выход | PNG без потерь, JPEG и WebP с ползунком качества; WebP — до 16 383 пикселей по стороне |
-| Самое большое исходное фото | 100 Мп |
-| Самый большой результат | 500 Мп |
+| Самое большое исходное фото | 200 Мп |
+| Самый большой результат | 536 Мп |
 | 8× и 16× | два прохода нейросети: в 4–16 раз дольше, чем 2×–4× |
 | Переводы | английский и русский написаны руками; остальные восемь — переводы ИИ, проверенные автором |
 

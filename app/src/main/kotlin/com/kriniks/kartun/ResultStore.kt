@@ -25,12 +25,35 @@ object ResultStore {
         Webp("webp", "image/webp", Bitmap.CompressFormat.WEBP_LOSSY, true),
     }
 
-    /** WebP stores at most 16 383 px per side (plans/01 §4.5): a larger result is offered PNG or JPEG instead. */
+    /** WebP stores at most 16 383 px per side (plans/01 §4.5). */
     const val WEBP_MAX_SIDE = 16_383
+    /** JPEG: libjpeg's JPEG_MAX_DIMENSION, 65 500 px per side. PNG has no limit KARTUN can reach (536 MP at most). */
+    const val JPEG_MAX_SIDE = 65_500
     private const val FOLDER = "Pictures/KARTUN"
     private const val SHARE_DIR = "shared"
 
-    fun fits(format: Format, bmp: Bitmap) = format != Format.Webp || maxOf(bmp.width, bmp.height) <= WEBP_MAX_SIDE
+    /** The longest side [format] can store. */
+    fun maxSide(format: Format): Int = when (format) {
+        Format.Webp -> WEBP_MAX_SIDE
+        Format.Jpeg -> JPEG_MAX_SIDE
+        Format.Png -> Int.MAX_VALUE
+    }
+
+    fun fits(format: Format, bmp: Bitmap) = fits(format, bmp.width, bmp.height)
+    fun fits(format: Format, w: Int, h: Int) = maxOf(w, h) <= maxSide(format)
+
+    /**
+     * [w] x [h] reduced in proportion so that the longer side is exactly [format]'s limit; unchanged when it fits (the
+     * owner, chat 2026-10-16 ≈ 15:14 +03:00: «если при сохранении пользователь упирается в лимит формата, то нужно
+     * предупреждать в диалоге сохранения, и предложить выполнить сжатие до допустимого размера»).
+     * [TESTED: SaveLimitTest - WebP and JPEG boundaries, the aspect kept]
+     */
+    fun fitSize(format: Format, w: Int, h: Int): Pair<Int, Int> {
+        val side = maxSide(format)
+        if (maxOf(w, h) <= side) return w to h
+        val k = side.toDouble() / maxOf(w, h)
+        return if (w >= h) side to maxOf(1, Math.round(h * k).toInt()) else maxOf(1, Math.round(w * k).toInt()) to side
+    }
 
     /** Sample patches per side for [estimateBytes] and their edge, px. */
     private const val SAMPLE_GRID = 3
@@ -79,8 +102,19 @@ object ResultStore {
         return "${base}_kartun_${model}_${scale}x.$ext"
     }
 
-    /** Writes [bmp] into the gallery; returns the new item's uri. Pending until fully written, so the gallery never shows half a file. */
-    fun saveToGallery(ctx: Context, bmp: Bitmap, name: String, format: Format, quality: Int, cancel: AtomicBoolean): Uri {
+    /** Writes [full] into the gallery; returns the new item's uri. Pending until fully written, so the gallery never shows
+     *  half a file. A result over [format]'s side limit is first reduced to [fitSize] - the save dialog said so. */
+    fun saveToGallery(ctx: Context, full: Bitmap, name: String, format: Format, quality: Int, cancel: AtomicBoolean): Uri {
+        val (tw, th) = fitSize(format, full.width, full.height)
+        val bmp = if (tw == full.width && th == full.height) full else Bitmap.createScaledBitmap(full, tw, th, true)
+        try {
+            return saveFitting(ctx, bmp, name, format, quality, cancel)
+        } finally {
+            if (bmp !== full) bmp.recycle()
+        }
+    }
+
+    private fun saveFitting(ctx: Context, bmp: Bitmap, name: String, format: Format, quality: Int, cancel: AtomicBoolean): Uri {
         val resolver = ctx.contentResolver
         val values = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, name)
@@ -110,7 +144,7 @@ object ResultStore {
      * ([IllegalArgumentException] naming PNG/JPEG). Returns the bytes written. [NOT-TESTED]
      */
     fun writeFile(bmp: Bitmap, file: File, format: Format, quality: Int, cancel: AtomicBoolean): Long {
-        require(fits(format, bmp)) { "WebP stores at most $WEBP_MAX_SIDE px per side; this result is ${bmp.width} x ${bmp.height} - use png or jpg" }
+        require(fits(format, bmp)) { "${format.ext} stores at most ${maxSide(format)} px per side; this result is ${bmp.width} x ${bmp.height} - use png" }
         val tmp = File(file.parentFile, file.name + ".tmp")
         try {
             Cancellable(tmp.outputStream().buffered(), cancel).use {

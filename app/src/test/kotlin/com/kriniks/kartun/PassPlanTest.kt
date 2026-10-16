@@ -36,16 +36,28 @@ class PassPlanTest {
         assertEquals(35, tiles(960, 1280)); assertEquals(1, tiles(200, 200)); assertEquals(4, tiles(201, 201))
     }
 
-    // The 500 MP output limit (the owner, chat 2026-10-15 ≈ 12:14 +03:00: «давай поднимем макс лимит до 500 Мегапикселей»):
-    // the owner's 960x1280 photo now fits even at 16× (314.6 MP); the boundary itself is 31.25 MP at 4× = 500 MP.
+    // The 536 MP output limit (the owner, chat 2026-10-16 ≈ 15:13 +03:00: «лимит Android ~2,1 ГБ/536 М - тогда вот такой
+    // лимит делаем»): the owner's 960x1280 photo fits even at 16× (314.6 MP); the boundary itself is 33.5 MP at 4× = 536 MP.
     @Test fun outputLimitOnTheOwnersPhoto() {
         val mp = 960f * 1280 / 1_000_000f
         assertTrue(fits(mp, 8)); assertTrue(fits(mp, 16))
-        assertTrue(fits(31.25f, 4)); assertFalse(fits(31.3f, 4))
+        assertTrue(fits(33.5f, 4)); assertFalse(fits(33.6f, 4))
     }
 
-    // The largest input (100 MP): 2× gives 400 MP and fits, 4× gives 1600 MP and does not.
-    @Test fun outputLimitOnTheLargestInput() {
+    // The limit stays inside Android's ceiling for one Bitmap: width x height x 4 bytes <= 2^31 - 1.
+    @Test fun outputLimitFitsOneBitmap() {
+        assertTrue(UpscaleViewModel.MAX_OUTPUT_MP * 1_000_000.0 * 4 <= Int.MAX_VALUE.toDouble())
+    }
+
+    // A 100 MP photo: 2× gives 400 MP and fits, 4× gives 1600 MP and does not.
+    @Test fun outputLimitOnA100MpPhoto() {
         assertTrue(fits(100f, 2)); assertFalse(fits(100f, 4))
+    }
+
+    // The largest input since 2026-10-16 (200 MP, the owner: «давай лимит входных поднимем до 200 мегапикселей»): 1× fits,
+    // 2× gives 800 MP and does not.
+    @Test fun outputLimitOnTheLargestInput() {
+        assertEquals(200f, UpscaleViewModel.MAX_INPUT_MP, 0f)
+        assertTrue(fits(200f, 1)); assertFalse(fits(200f, 2))
     }
 }

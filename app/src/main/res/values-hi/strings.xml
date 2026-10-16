@@ -43,7 +43,6 @@
     <string name="saved">Pictures/KARTUN में सहेजा गया</string>
     <string name="save_failed">फ़ोटो सहेजी नहीं जा सकी।</string>
     <string name="saving">सहेजा जा रहा है…</string>
-    <string name="webp_too_big">WebP में हर तरफ़ 16 383 px तक; इस नतीजे के लिए PNG या JPEG चुनें</string>
     <plurals name="duration_seconds">
         <item quantity="one">%1$d सेकंड</item>
         <item quantity="other">%1$d सेकंड</item>
@@ -172,4 +171,6 @@
     <string name="metric_waiting">इंतज़ार</string>
     <string name="metric_work">काम</string>
     <string name="stop_api_job">API का काम रोकें</string>
+    <string name="save_too_big">%1$s में हर तरफ़ ज़्यादा से ज़्यादा %2$s px आते हैं। तस्वीर %3$s × %4$s तक छोटी की जाएगी।</string>
+    <string name="save_reduced">छोटा करें और सहेजें</string>
 </resources>

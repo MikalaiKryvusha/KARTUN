@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateCentroid
 import androidx.compose.foundation.gestures.calculatePan
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -87,10 +88,12 @@ fun FullPhoto(bitmap: Bitmap, onClose: () -> Unit) {
                         val event = awaitPointerEvent()
                         val fingers = event.changes.count { it.pressed }
                         if (fingers >= 2 || zoom > 1f) {
-                            zoom = (zoom * event.calculateZoom()).coerceIn(1f, MAX_ZOOM)
+                            // About the point between the fingers, not the picture's centre (Pinch.kt, the owner 2026-10-16).
+                            val centre = Offset(size.width / 2f, size.height / 2f)
+                            val (z, p) = pinchStep(zoom, pan, event.calculateCentroid(useCurrent = false), centre, event.calculateZoom(), event.calculatePan(), MAX_ZOOM)
+                            zoom = z
                             val maxX = size.width * (zoom - 1) / 2
                             val maxY = size.height * (zoom - 1) / 2
-                            val p = pan + event.calculatePan()
                             pan = Offset(p.x.coerceIn(-maxX, maxX), p.y.coerceIn(-maxY, maxY))
                         } else {
                             dragY += event.calculatePan().y

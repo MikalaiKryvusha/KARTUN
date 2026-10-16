@@ -39,7 +39,8 @@ import kotlin.random.Random
  * The squares gather into a heart, a pixel ring or a square of nine tiles - and, since 2026-10-15 ≈ 17:55, into the states
  * the owner picked from design/spinner-states.html (ideas/03; «Нейросеть… Свертка… Внимание… Квадродерево… Игра в жизнь…
  * Сортировка… Фурье… Остальные не берём» · «можешь уже в коде делать»): a three-layer neural network, a 3x3 convolution,
- * attention, a quadtree of the heart, Conway's Life on 16x16 with real seeds, a bubble sort, a Fourier wave. Every 4-7 s
+ * attention, a quadtree of the heart, a bubble sort, a Fourier wave (Life was dropped by the owner 2026-10-16 ≈ 15:32:
+ * «из живой анимации нашей убираем игру Жизнь»). Every 4-7 s
  * they regroup into another figure. A regroup opens with a small explosion one time in three, then each square flies by the
  * regroup's mood (burst, swirl, rain, snake, and the owner's matrix and wind) and its own character (straight, arc, shy,
  * spinner, overshooter). A figure with fewer places merges the spare squares into the nearest host; a figure that needs more
@@ -48,7 +49,7 @@ import kotlin.random.Random
  * a wave; the new states live the heart's colour life with their meaning on top. Small spinners (under 40 dp: the 22 dp one on a loading model card) skip the
  * fine-grained states. All time is 1.5x slower than the first take; the new states run their own steps on real time.
  * [TESTED: 2026-10-15 · seen on the Titan, debug probe screen at 150 dp: ~100 frames over two minutes show heart, ring,
- * tiles, net with links and sparks, convolution, attention, Life (pulsar, glider, spaceship, pentadecathlon), sort, wave,
+ * tiles, net with links and sparks, convolution, attention, sort, wave,
  * the regroups between them, no crash; the owner watched it live - «да, анимация очень красивая стала». NOT walked: the
  * 48 dp processing screen and the 22 dp model card (compact set), the quadtree seen only in a moment. The 18:20-18:27
  * tweaks - quadtree grid and pixel ends, the gliding convolution window without placeholders, the smart random - built,
@@ -159,37 +160,6 @@ private const val QUAD_CYCLE = 4400f
 private const val QUAD_GAP = .16f
 
 /*
- * Conway's Game of Life (≈ 17:45: «Игра в жизнь: больше размерность сетки, быстрее, и сидить реальными сидами, чтобы там
- * рально считались интересные узнаваемые паттерны, и переливы цветов, быстрее»): a 16x16 torus, seeded in turn with four
- * gliders, the pulsar, a lightweight spaceship, the pentadecathlon and the R-pentomino.
- */
-private const val LIFE_G = 16
-private const val LIFE_CELL = .9f / LIFE_G
-private const val LIFE_STEP = 110f
-private class Seed(val ms: Float, val cells: List<Int>)
-private fun lifeRows(r: List<String>, ox: Int, oy: Int) = r.flatMapIndexed { y, s ->
-    s.mapIndexedNotNull { x, ch -> if (ch == 'O') ((y + oy) % LIFE_G) * LIFE_G + (x + ox) % LIFE_G else null }
-}
-private val GLIDER = listOf(".O.", "..O", "OOO")
-private val PULSAR = buildList {
-    for (r in intArrayOf(0, 5, 7, 12)) for (c in intArrayOf(2, 3, 4, 8, 9, 10)) add((r + 1) * LIFE_G + c + 1)
-    for (r in intArrayOf(2, 3, 4, 8, 9, 10)) for (c in intArrayOf(0, 5, 7, 12)) add((r + 1) * LIFE_G + c + 1)
-}
-private val LIFE_SEEDS = listOf(
-    Seed(5200f, lifeRows(GLIDER, 1, 1) + lifeRows(GLIDER, 9, 2) + lifeRows(GLIDER, 2, 9) + lifeRows(GLIDER, 10, 10)),
-    Seed(4000f, PULSAR),
-    Seed(4800f, lifeRows(listOf(".O..O", "O....", "O...O", "OOOO."), 2, 6)),
-    Seed(4400f, lifeRows(listOf("..O....O..", "OO.OOOO.OO", "..O....O.."), 3, 7)),
-    Seed(7000f, lifeRows(listOf(".OO", "OO.", ".O."), 7, 7)),
-)
-private val LIFE_TOTAL = LIFE_SEEDS.fold(0f) { s, x -> s + x.ms }
-private fun lifeStep(c: BooleanArray) = BooleanArray(c.size) { i ->
-    val x = i % LIFE_G; val y = i / LIFE_G; var n = 0
-    for (a in -1..1) for (b in -1..1) if ((a != 0 || b != 0) && c[((y + b + LIFE_G) % LIFE_G) * LIFE_G + (x + a + LIFE_G) % LIFE_G]) n++
-    n == 3 || (c[i] && n == 2)
-}
-
-/*
  * Sorting (≈ 17:45: «Сортировка: веселее, быстрее, переливы»): 8 columns of 1..8 squares - 36 in all; a bubble sort, the
  * swapped columns hop over each other; a victory wave when sorted, then the columns jump into the next shuffle.
  */
@@ -212,7 +182,7 @@ private const val WAVE_CYCLE = 4500f
 private enum class Fig(val size: Float, val count: Int, val stagger: Float, val hold: Float, val fine: Boolean = false) {
     Heart(.1f, HEART_PTS.size, 1000f, 0f), Ring(.085f, 18, 0f, 0f), Tiles(TILE_SUB, 36, 0f, 0f),
     Net(.075f, NET_PTS.size, 0f, 3500f), Conv(.085f, 34, 0f, 3400f, true), Attn(.1f, 48, 0f, 2600f, true),
-    Quad(.1f, 64, 0f, 1800f, true), Life(LIFE_CELL, LIFE_G * LIFE_G, 0f, 4000f, true), Sort(.085f, 36, 0f, 3200f),
+    Quad(.1f, 64, 0f, 1800f, true), Sort(.085f, 36, 0f, 3200f),
     Wave(.042f, 36, 0f, 1500f);
 
     fun target(i: Int): Pt = when (this) {
@@ -230,7 +200,6 @@ private enum class Fig(val size: Float, val count: Int, val stagger: Float, val 
             else -> Pt(.22f + (i - 42) * .12f, .08f)
         }
         Quad -> Pt(.1f + (i % 8 + .5f) * .1f, .1f + (i / 8 + .5f) * .1f)
-        Life -> Pt(.05f + (i % LIFE_G + .5f) * LIFE_CELL, .05f + (i / LIFE_G + .5f) * LIFE_CELL)
         Sort -> { val (h, k) = SORT_HK[i]; Pt(sortColX(h - 1), .88f - k * .095f) }
         Wave -> Pt(.07f + i / 35f * .86f, .5f)
     }
@@ -372,28 +341,6 @@ private class PixelSpinnerState(private val pink: Color, private val grey: Color
     /** 0..1: the links fade in once the neurons stand in their layers. */
     fun netLinks(t: Float) = if (fig == Fig.Net) clamp01((t - formedAt - 900) / 800) else 0f
 
-    // ---- Life: the board of the current seed, stepped on from its seed and cached per generation
-
-    private var lifeSeedBase = 0
-    private var lifeKey = -1
-    private var lifeGen = 0
-    private var lifeCur = BooleanArray(LIFE_G * LIFE_G)
-    private var lifePrev = lifeCur
-    private var lifeF = 0f
-
-    private fun lifeAt(t: Float) {
-        val r = scene(t); var rr = r % LIFE_TOTAL; var idx = 0
-        while (rr >= LIFE_SEEDS[(idx + lifeSeedBase) % LIFE_SEEDS.size].ms) { rr -= LIFE_SEEDS[(idx + lifeSeedBase) % LIFE_SEEDS.size].ms; idx++ }
-        val key = (r / LIFE_TOTAL).toInt() * LIFE_SEEDS.size + idx
-        val gen = (rr / LIFE_STEP).toInt(); lifeF = frac(rr / LIFE_STEP)
-        if (key != lifeKey || gen < lifeGen) {
-            val c = BooleanArray(LIFE_G * LIFE_G)
-            for (cell in LIFE_SEEDS[(idx + lifeSeedBase) % LIFE_SEEDS.size].cells) c[cell] = true
-            lifeKey = key; lifeGen = 0; lifeCur = c; lifePrev = c
-        }
-        while (lifeGen < gen) { lifePrev = lifeCur; lifeCur = lifeStep(lifeCur); lifeGen++ }
-    }
-
     // ---- sorting: the columns now, worked out once per frame
 
     private var sortT = Float.NaN
@@ -466,17 +413,6 @@ private class PixelSpinnerState(private val pink: Color, private val grey: Color
             // a fixed gap between pixels and blocks, a grid like the heart's (the owner, ≈ 18:20: «пусть у квадродерева
             // между пикселями будет промежуток сетка небольшая» · «как в сердчке»): side = cells - QUAD_GAP
             Look((mixF(a.side.toFloat(), b.side.toFloat(), fr) - QUAD_GAP) * g.k, g.c, mixF(a.x, b.x, fr) - tg.x, mixF(a.y, b.y, fr) - tg.y)
-        }
-        Fig.Life -> {
-            lifeAt(t); val j = i % (LIFE_G * LIFE_G)
-            when {
-                lifeCur[j] -> { val g = glow(j, t, .6f + .4f * sin(scene(t) / 250 + j)); Look(.86f * g.k, if (!lifePrev[j]) lerp(light, g.c, lifeF) else g.c) }
-                // the empty board stays visible grey, like the ring's unlit squares: squares land on it and take off from
-                // it (near-black, they seemed to vanish into nothing and come out of nothing - the owner, ≈ 18:05: «пиксели
-                // словно из ниоткуда появляются и в никуда исчезают - раньше было, что они делились, или схлопывались»)
-                lifePrev[j] -> Look(mixF(.86f, .55f, lifeF), lerp(deep, grey, lifeF))
-                else -> Look(.55f, grey)
-            }
         }
         Fig.Sort -> sortLife(i % 36, t)
         Fig.Wave -> {
@@ -609,7 +545,6 @@ private class PixelSpinnerState(private val pink: Color, private val grey: Color
     private fun regroup(t: Float, next: Fig, nextMood: Mood) {
         val guests = IntArray(N)
         val explode = rnd.nextFloat() < EXPLODE_SHARE
-        if (next == Fig.Life) lifeSeedBase = (lifeSeedBase + 1) % LIFE_SEEDS.size
         // Only the squares one of the two figures needs fly; the rest stay hidden inside hosts (the owner, ≈ 18:03: «в
         // анимациях переходов как-то очень много пикселей стало, не?» - all 256 flew in every regroup since Life came in).
         val active = max(fig.count, next.count)

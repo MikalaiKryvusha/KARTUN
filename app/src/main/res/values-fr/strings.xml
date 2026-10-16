@@ -43,7 +43,6 @@
     <string name="saved">Enregistré dans Pictures/KARTUN</string>
     <string name="save_failed">Impossible d’enregistrer la photo.</string>
     <string name="saving">Enregistrement…</string>
-    <string name="webp_too_big">Le WebP va jusqu’à 16 383 px par côté ; choisissez PNG ou JPEG pour ce résultat</string>
     <plurals name="duration_seconds">
         <item quantity="one">%1$d seconde</item>
         <item quantity="many">%1$d secondes</item>
@@ -174,4 +173,6 @@
     <string name="metric_waiting">Attente</string>
     <string name="metric_work">Travail</string>
     <string name="stop_api_job">Arrêter la tâche de l’API</string>
+    <string name="save_too_big">Le %1$s accepte au plus %2$s px par côté. L’image sera réduite à %3$s × %4$s.</string>
+    <string name="save_reduced">Réduire et enregistrer</string>
 </resources>

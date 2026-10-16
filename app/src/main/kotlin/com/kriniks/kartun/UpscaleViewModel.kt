@@ -511,12 +511,14 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         /** Input limit: the owner, chat 2026-10-15 ≈ 11:35 +03:00: «нужно сделать на входе поддержку файлов больше 12 мб.
          *  Думаю, до 100 мб можно давтаь поддержку» - read as 100 MP (the old limit he saw was «12,5 Мп»). With the
          *  output limit below, a 100 MP photo is offered 1×, a 50 MP one up to 2×. */
-        const val MAX_INPUT_MP = 100f
+        // 200 MP since the owner, chat 2026-10-16 ≈ 15:39 +03:00: «давай лимит входных поднимем до 200 мегапикселей».
+        const val MAX_INPUT_MP = 200f
         /** JPEG/WebP quality by default - the value the accepted mockup 'save' shows («Качество · 92»). */
         const val DEFAULT_QUALITY = 92
-        /** Output limit: the owner, chat 2026-10-15 ≈ 12:14 +03:00: «давай поднимем макс лимит до 500 Мегапикселей» (was
-         *  200). 500 MP in ARGB_8888 is 2.0 GB - just under Android's 2^31-byte ceiling for one Bitmap. */
-        const val MAX_OUTPUT_MP = 500f
+        /** Output limit: Android's ceiling for one Bitmap - 2^31 - 1 bytes, 536.87 MP in ARGB_8888 (the owner, chat 2026-10-16
+         *  ≈ 15:13 +03:00: «лимит Android ~2,1 ГБ/536 М - тогда вот такой лимит делаем»; was 500 since 2026-10-15). A scale whose
+         *  result is over it is not offered (the same rule: «если более … - то всё, нельзя, выбирай шаг меньше»). */
+        const val MAX_OUTPUT_MP = 536f
 
         /** The input limit as the error line shows it: «100», not «100.0». */
         fun mpLimitText(): String = if (MAX_INPUT_MP % 1f == 0f) MAX_INPUT_MP.toInt().toString() else MAX_INPUT_MP.toString()

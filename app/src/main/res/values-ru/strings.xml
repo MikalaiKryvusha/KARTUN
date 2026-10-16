@@ -86,7 +86,8 @@
     <string name="format_points_png">• Без потерь: каждая точка как в результате\n• Самый большой файл\n• Для печати и дальнейшей обработки</string>
     <string name="format_points_jpeg">• Открывается везде\n• Файл заметно меньше PNG\n• Для отправки и соцсетей</string>
     <string name="format_points_webp">• Самый маленький файл при том же виде\n• Понимают Android, браузеры и мессенджеры\n• Для хранения и отправки</string>
-    <string name="webp_too_big">WebP — до 16 383 px по стороне, для этого результата выберите PNG или JPEG</string>
+    <string name="save_too_big">%1$s хранит не больше %2$s точек по стороне. Картинка будет уменьшена до %3$s × %4$s.</string>
+    <string name="save_reduced">Уменьшить и сохранить</string>
     <!-- [AI] «Вставить ссылку» (LinkDownloader). -->
     <string name="link_title">Ссылка на фото</string>
     <string name="link_download">Скачать</string>

@@ -43,7 +43,6 @@
     <string name="saved">In Pictures/KARTUN gespeichert</string>
     <string name="save_failed">Das Foto ließ sich nicht speichern.</string>
     <string name="saving">Wird gespeichert…</string>
-    <string name="webp_too_big">WebP fasst bis 16 383 px pro Seite; wähle für dieses Ergebnis PNG oder JPEG</string>
     <plurals name="duration_seconds">
         <item quantity="one">%1$d Sekunde</item>
         <item quantity="other">%1$d Sekunden</item>
@@ -172,4 +171,6 @@
     <string name="metric_waiting">Wartet</string>
     <string name="metric_work">Arbeit</string>
     <string name="stop_api_job">API-Auftrag stoppen</string>
+    <string name="save_too_big">%1$s speichert höchstens %2$s px pro Seite. Das Bild wird auf %3$s × %4$s verkleinert.</string>
+    <string name="save_reduced">Verkleinern und speichern</string>
 </resources>

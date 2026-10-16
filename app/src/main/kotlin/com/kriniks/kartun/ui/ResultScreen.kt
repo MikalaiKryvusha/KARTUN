@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateCentroid
 import androidx.compose.foundation.gestures.calculatePan
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -171,15 +172,18 @@ fun ResultScreen(vm: UpscaleViewModel) {
         val shown = 1f - (panelShift / screenW).coerceIn(0f, 1f)
         return centre + (panelTop / 2f - centre) * shown
     }
+    // The height of the visible picture area: from the screen's top to twice the knob's height (its centre is knobY()).
+    fun visibleH(): Float = (knobY() * 2f).coerceAtLeast(1f)
     val stopSettle: suspend CoroutineScope.(Offset) -> Unit = { settleJob?.cancel() }
 
     Box(Modifier.fillMaxSize().background(c.background).onSizeChanged { screenW = it.width.toFloat(); screenH = it.height.toFloat() }) {
         BoxWithConstraints(
             Modifier.fillMaxSize().pointerInput(Unit) {
-                // Keep the picture covering what it covered at 1×: pan is bounded by how much the zoom enlarged it.
+                // Keep the picture covering what it covered at 1×: pan is bounded by how much the zoom enlarged it. The
+                // picture lives in the visible area above the summary panel (visibleH), centred at knobY().
                 fun bounded(p: Offset): Offset {
                     val maxX = size.width * (zoom - 1) / 2
-                    val maxY = size.height * (zoom - 1) / 2
+                    val maxY = visibleH() * (zoom - 1) / 2
                     return Offset(p.x.coerceIn(-maxX, maxX), p.y.coerceIn(-maxY, maxY))
                 }
                 awaitEachGesture {
@@ -193,8 +197,10 @@ fun ResultScreen(vm: UpscaleViewModel) {
                         val fingers = event.changes.count { it.pressed }
                         if (fingers >= 2) {
                             pinching = true
-                            zoom = (zoom * event.calculateZoom()).coerceIn(1f, MAX_ZOOM)
-                            pan = bounded(pan + event.calculatePan())
+                            // About the point between the fingers (Pinch.kt; the owner 2026-10-16: «центр тяжести … в центре фото»).
+                            val (z, p) = pinchStep(zoom, pan, event.calculateCentroid(useCurrent = false), Offset(size.width / 2f, knobY()), event.calculateZoom(), event.calculatePan(), MAX_ZOOM)
+                            zoom = z
+                            pan = bounded(p)
                         } else if (!pinching) {
                             val f = event.changes.firstOrNull { it.pressed }
                             if (f != null) {
@@ -211,16 +217,20 @@ fun ResultScreen(vm: UpscaleViewModel) {
                     else {
                         // Zoom in about the tapped point: that point stays under the finger.
                         zoom = TAP_ZOOM
-                        val centre = Offset(size.width / 2f, size.height / 2f)
+                        val centre = Offset(size.width / 2f, knobY())
                         val maxX = size.width * (zoom - 1) / 2
-                        val maxY = size.height * (zoom - 1) / 2
+                        val maxY = visibleH() * (zoom - 1) / 2
                         val p = (centre - at) * (zoom - 1)
                         pan = Offset(p.x.coerceIn(-maxX, maxX), p.y.coerceIn(-maxY, maxY))
                     }
                 })
             },
         ) {
-            val layer = Modifier.fillMaxSize().graphicsLayer { scaleX = zoom; scaleY = zoom; translationX = pan.x; translationY = pan.y }
+            // The picture is fitted into the area between the screen's top and the summary panel's top edge, so it stands in
+            // the middle of what is visible; as the panel is swiped away the area grows to the whole screen (the owner, chat
+            // 2026-10-16 ≈ 15:30: «нужно в центр между верхом экрана и верхней границей нижнего виджета сводки»). [NOT-TESTED]
+            val visibleDp = with(LocalDensity.current) { visibleH().toDp() }
+            val layer = Modifier.fillMaxWidth().height(visibleDp).graphicsLayer { scaleX = zoom; scaleY = zoom; translationX = pan.x; translationY = pan.y }
             Image(res.before.asImageBitmap(), null, layer, contentScale = ContentScale.Fit)
             // «После» is the same frame clipped to the right of the divider (screen space, so zoom keeps them aligned).
             Box(Modifier.fillMaxSize().drawWithContent { clipRect(left = split * size.width) { this@drawWithContent.drawContent() } }) {
@@ -362,13 +372,19 @@ private fun SaveDialog(vm: UpscaleViewModel, full: android.graphics.Bitmap, onCl
             SectionLabelPlain(stringResource(R.string.label_format))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 ResultStore.Format.entries.forEach { f ->
-                    val ok = ResultStore.fits(f, full)
-                    Pill(f.name.uppercase(), on = vm.saveFormat == f, modifier = Modifier.alpha(if (ok) 1f else 0.4f),
-                        onClick = if (ok) ({ vm.saveFormat = f }) else null)
+                    Pill(f.name.uppercase(), on = vm.saveFormat == f, onClick = { vm.saveFormat = f })
                 }
             }
-            if (!ResultStore.fits(ResultStore.Format.Webp, full)) {
-                Text(stringResource(R.string.webp_too_big), style = MaterialTheme.typography.bodySmall, color = c.error)
+            // Over the chosen format's side limit: say so and offer the reduced size (the owner, 2026-10-16 ≈ 15:14: «нужно
+            // предупреждать в диалоге сохранения, и предложить выполнить сжатие до допустимого размера»). [NOT-TESTED]
+            val (fitW, fitH) = ResultStore.fitSize(vm.saveFormat, full.width, full.height)
+            val reduced = fitW != full.width || fitH != full.height
+            if (reduced) {
+                val n = java.text.NumberFormat.getIntegerInstance()
+                Text(
+                    stringResource(R.string.save_too_big, vm.saveFormat.name.uppercase(), n.format(ResultStore.maxSide(vm.saveFormat)), n.format(fitW), n.format(fitH)),
+                    style = MaterialTheme.typography.bodySmall, color = c.error,
+                )
             }
             // What the chosen format is for, as three short points (the owner, chat 2026-10-15 ≈ 12:01 +03:00: «нужно писать
             // краткое описания преимуществ выбранного формата, булет-дот списком»). `[AI]` wording, awaiting the owner's read.
@@ -393,14 +409,16 @@ private fun SaveDialog(vm: UpscaleViewModel, full: android.graphics.Bitmap, onCl
             LaunchedEffect(vm.saveFormat, vm.saveQuality) {
                 estimate = null
                 kotlinx.coroutines.delay(ESTIMATE_DEBOUNCE_MS)
-                estimate = withContext(Dispatchers.Default) { ResultStore.estimateBytes(full, vm.saveFormat, vm.saveQuality) }
+                // A reduced save holds fewer points: the estimate scales by the area that is actually written.
+                val area = fitW.toDouble() * fitH / (full.width.toDouble() * full.height)
+                estimate = withContext(Dispatchers.Default) { (ResultStore.estimateBytes(full, vm.saveFormat, vm.saveQuality) * area).toLong() }
             }
             Text(
                 boldDigits(stringResource(R.string.save_estimate, estimate?.let { mbText(it) } ?: "…")),
                 style = MaterialTheme.typography.bodyMedium, color = c.onBackground,
             )
             Text(stringResource(R.string.save_folder), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
-            PrimaryButton(stringResource(R.string.save), R.drawable.ic_save, onClick = { vm.save(); onClose() })
+            PrimaryButton(stringResource(if (reduced) R.string.save_reduced else R.string.save), R.drawable.ic_save, onClick = { vm.save(); onClose() })
         }
     }
 }

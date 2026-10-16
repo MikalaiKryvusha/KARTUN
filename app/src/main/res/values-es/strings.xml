@@ -43,7 +43,6 @@
     <string name="saved">Guardado en Pictures/KARTUN</string>
     <string name="save_failed">No se pudo guardar la foto.</string>
     <string name="saving">Guardando…</string>
-    <string name="webp_too_big">WebP admite hasta 16 383 px por lado; elige PNG o JPEG para este resultado</string>
     <plurals name="duration_seconds">
         <item quantity="one">%1$d segundo</item>
         <item quantity="many">%1$d segundos</item>
@@ -174,4 +173,6 @@
     <string name="metric_waiting">Espera</string>
     <string name="metric_work">Trabajo</string>
     <string name="stop_api_job">Detener la tarea de la API</string>
+    <string name="save_too_big">%1$s guarda como máximo %2$s px por lado. La imagen se reducirá a %3$s × %4$s.</string>
+    <string name="save_reduced">Reducir y guardar</string>
 </resources>

@@ -43,7 +43,6 @@
     <string name="saved">حُفظت في Pictures/KARTUN</string>
     <string name="save_failed">تعذّر حفظ الصورة.</string>
     <string name="saving">جارٍ الحفظ…</string>
-    <string name="webp_too_big">تتسع WebP حتى 16 383 بكسل لكل جانب؛ اختر PNG أو JPEG لهذه النتيجة</string>
     <plurals name="duration_seconds">
         <item quantity="zero">%1$d ثانية</item>
         <item quantity="one">ثانية واحدة</item>
@@ -180,6 +179,8 @@
     <string name="metric_waiting">انتظار</string>
     <string name="metric_work">العمل</string>
     <string name="stop_api_job">إيقاف مهمة الـ API</string>
+    <string name="save_too_big">تحفظ صيغة %1$s حتى %2$s بكسل لكل جانب كحد أقصى. ستُصغَّر الصورة إلى %3$s × %4$s.</string>
+    <string name="save_reduced">تصغير وحفظ</string>
     <string name="arrow">←</string>
     <string name="size_to">%1$s ← %2$s</string>
 </resources>
