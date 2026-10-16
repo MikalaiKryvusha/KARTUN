@@ -2,7 +2,7 @@
 
 > **Создан:** 2026-10-16 (agent, `/plan-epic` rung 3 on the owner's order in chat 2026-10-15: «API для ИИ-агентов по ADB и HTTPS (ideas/02); Сейчас делаем!»)
 > **Родитель:** `plans/06_EPIC_agent_api.md` §3 row «A — кабель», gate: A1–A10 pass on the Titan with a run report; recon `researches/10_agent_api_recon.md`
-> **Статус:** 🔧 written 2026-10-16; step 0 ✅ (catalogue committed `fc6b8d5`); step 1 ✅ partial 2026-10-16 11:55 +03:00 — the door works on the Titan (INFO from a stopped app, screen asleep, no notification, the app reads pushed files), A7 not observed (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`); step 2 ✅ 2026-10-16 12:15 (`UpscaleEngine`); next — step 3
+> **Статус:** 🔧 written 2026-10-16; step 0 ✅ (catalogue committed `fc6b8d5`); step 1 ✅ partial 2026-10-16 11:55 +03:00 — the door works on the Titan (INFO from a stopped app, screen asleep, no notification, the app reads pushed files), A7 not observed (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`); step 2 ✅ 2026-10-16 12:15 (`UpscaleEngine`); step 3 ✅ 12:18 (`AgentJob` + test); next — step 4
 > **Вовне:** the owner's fork `plans/06` §6.3 (the ADB door in the release build) — until answered, the door is built in `src/main` and moves to `src/debug` on a «только Debug» answer
 
 ## Goal vector
@@ -90,7 +90,8 @@ quota · internal`. The CLI adds its own `no_device · adb_missing · timeout`.
    `PassPlanTest`, `EstimateTest` among them); on the Titan, by touch: one 4× run, one 8× run, one «Отменить» mid-run,
    results and ring as before (screenshots in WebP, R4).
 
-3. [ ] **The job contract in pure Kotlin** (`plans/06` §4.4; A6). New file `app/src/main/kotlin/com/kriniks/kartun/agent/AgentJob.kt`:
+3. [x] **The job contract in pure Kotlin** (done 2026-10-16 12:18 +03:00: `agent/AgentJob.kt` + `AgentJobTest` 11 cases, 54 JVM
+   tests green; mutant without the `..` check → `pathTraversalIsRefused` red, restored; the JSON escaper `q` now lives only here) (`plans/06` §4.4; A6). New file `app/src/main/kotlin/com/kriniks/kartun/agent/AgentJob.kt`:
    `JobSpec.parse(extras: Map<String, Any?>)` → spec or `bad_request` (job id regex, `in` = a bare file name with no `/`
    or `..`, scale ∈ `UpscaleViewModel.SCALES`, format ∈ png/jpg/webp, quality 1–100); `JobStatus` → JSON string; the
    file names (`<job>.in.*`, `<job>.json`, `<job>.out.<ext>`). JSON is written by a 20-line escaper in this file:

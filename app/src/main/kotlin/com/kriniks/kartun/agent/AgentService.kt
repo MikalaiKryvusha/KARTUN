@@ -79,20 +79,5 @@ class AgentService : Service() {
         private const val NOTIFICATION_ID = 3
         private const val DIR = "agent"
         private const val INFO_FILE = "info.json"
-
-        /** A JSON string literal: quotes, backslashes and control characters escaped. */
-        internal fun q(s: String): String = buildString {
-            append('"')
-            for (c in s) when {
-                c == '"' -> append("\\\"")
-                c == '\\' -> append("\\\\")
-                c == '\n' -> append("\\n")
-                c == '\r' -> append("\\r")
-                c == '\t' -> append("\\t")
-                c < ' ' -> append("\\u%04x".format(c.code))
-                else -> append(c)
-            }
-            append('"')
-        }
     }
 }
