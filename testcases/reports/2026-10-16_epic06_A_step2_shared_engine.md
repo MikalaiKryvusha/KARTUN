@@ -45,9 +45,9 @@ Working screen through `KARTUN_SERIAL=100.99.111.48:5555 node tools/titan-tap.mj
 ## Found
 1. A photo shared from the adb SHELL (`--grant-read-uri-permission` on a MediaStore URI) does not open — «Не удалось открыть
    это фото.», nothing in logcat (`open()` maps every decode failure to that line without logging). Not a regression of this
-   step: the same photo opens through the picker on the same build. The shell most likely cannot grant a media URI it does
-   not own — a harness limit, not tested further. `[AI]` `open()` logging its failure with `Log.w` would have answered
-   this in one line — left for the owner's backlog, not done (out of the step's scope).
+   step: the same photo opens through the picker on the same build. Confirmed 13:03 the same day, after `open()` got its
+   `Log.w`: `java.lang.SecurityException: com.kriniks.kartun.debug has no access to content://media/external/images/media/63267`
+   — the shell cannot grant a media URI it does not own; a harness limit, not an app defect.
 2. Run 4's «Отменить» (≈ 3 s into a 7 s, 4-tile run) still showed the result: the tap reached the last tile, and the
    listener is read between tiles. Not a defect — the repeat on a 13-tile run (case 5) cancelled.
 

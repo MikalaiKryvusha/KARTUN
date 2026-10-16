@@ -101,6 +101,9 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
                 screen = Screen.Setup
                 preload()
             }.onFailure {
+                // The reason goes to logcat: «Не удалось открыть это фото» alone left a shell-shared photo unexplained
+                // (testcases/reports/2026-10-16_epic06_A_step2_shared_engine.md, Found 1).
+                Log.w(TAG, "open failed: $uri", it)
                 error = if (it is UpscaleEngine.TooBig) R.string.error_too_big to mpLimitText() else R.string.error_decode to null
             }
         }
