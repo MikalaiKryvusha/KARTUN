@@ -94,9 +94,14 @@ function packageName() {
   return pkg;
 }
 
-device();
-const PKG = packageName();
-const DIR = `/sdcard/Android/data/${PKG}/files/agent`;
+// The device is reached only after the arguments are checked: a typo answers `bad_arguments` without touching adb.
+let PKG = '';
+let DIR = '';
+function connect() {
+  device();
+  PKG = packageName();
+  DIR = `/sdcard/Android/data/${PKG}/files/agent`;
+}
 
 /** Starts the agent service with an action and extras (`--es`/`--ei`/`--ez` triples). Never an activity. */
 function send(action, extras = []) {
@@ -197,6 +202,7 @@ async function upscale() {
   if (!(timeout > 0)) usage('--timeout must be a number of seconds');
   if (opt.gpu && opt.cpu) usage('--gpu and --cpu exclude each other');
   const settings = { model: opt.model || 'default', scale, format, quality, timeout, gpu: opt.gpu ? true : opt.cpu ? false : null };
+  connect();
   // Ctrl+C: the running job is canceled on the device before the CLI leaves.
   process.on('SIGINT', () => {
     if (current) send('CANCEL', ['--es', 'job', current]);
@@ -215,11 +221,12 @@ async function upscale() {
 
 async function main() {
   switch (cmd) {
-    case 'info': { const j = await info(); out({ ok: true, ...j }); break; }
-    case 'models': { const j = await info(); out({ ok: true, models: j.models }); break; }
+    case 'info': { connect(); const j = await info(); out({ ok: true, ...j }); break; }
+    case 'models': { connect(); const j = await info(); out({ ok: true, models: j.models }); break; }
     case 'upscale': await upscale(); break;
     case 'status': {
       if (!args[0]) usage('status needs a job id');
+      connect();
       const s = readJson(`${args[0]}.json`);
       if (!s) { out({ ok: false, job: args[0], error: { code: 'unknown_job', message: 'no status file for this job' } }); process.exit(1); }
       out({ ok: s.state !== 'failed', ...s });
@@ -227,6 +234,7 @@ async function main() {
     }
     case 'cancel': {
       if (!args[0]) usage('cancel needs a job id');
+      connect();
       send('CANCEL', ['--es', 'job', args[0]]);
       for (let t = 0; t < INFO_WAIT_MS; t += POLL_MS) {
         const s = readJson(`${args[0]}.json`);

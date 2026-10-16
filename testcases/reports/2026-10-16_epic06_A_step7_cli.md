@@ -42,8 +42,9 @@ send SIGINT to a native Node process; to try from a Windows console by hand).
 
 ## Found
 1. `info` left `info.json` on the device (R1) — fixed in this step and re-run (case 7).
-2. Argument errors are reported after the device check (`upscale x.png --scale 3` first runs `adb get-state`): harmless, the
-   answer and the exit code are right.
+2. Argument errors were reported after the device check (`upscale x.png --scale 3` first ran `adb get-state`). Fixed 13:04
+   the same day (`connect()` after the checks): `upscale x.png --scale 3 --serial 10.255.255.1:5555` → `bad_arguments`,
+   exit 2; `info`, `status nosuchjob1` (exit 1), `upscale test256.png --scale 2` (exit 0) re-run on the Titan.
 3. none else.
 
 ## Traces
