@@ -84,6 +84,8 @@ import kotlin.math.roundToInt
 private val PILL_PAD_H = 14.dp
 /** «Другое фото» never shrinks below this (icon + one short word) however long the size line is. */
 private val OTHER_PHOTO_MIN = 96.dp
+/** Spare width on the size chip's first line, so rounding of the measured text never pushes its last digit down. */
+private val SIZE_LINE_RESERVE = 4.dp
 private val HERO_MAX = 330.dp
 private val HERO_MIN = 80.dp
 /** The handle released below this share of the screen height opens the photo full screen (the owner, 2026-10-16 ≈ 12:46:
@@ -315,7 +317,9 @@ private fun PhotoCard(src: UpscaleViewModel.Source, onOpen: () -> Unit, onPickOt
                 Modifier.weight(1f, fill = false), translucent = true, heavyDigits = true)
             Spacer(Modifier.weight(0.001f))
             Row(
-                Modifier.widthIn(max = (rowW - sizeLineW - 8.dp).coerceAtLeast(OTHER_PHOTO_MIN))
+                // Two 8 dp gaps (chip | spacer | button) and a small reserve: with one gap the chip came out 8 dp short and
+                // still broke «960 × 128 / 0» (RC6 check on the S21 FE, 2026-10-16).
+                Modifier.widthIn(max = (rowW - sizeLineW - 8.dp * 2 - SIZE_LINE_RESERVE).coerceAtLeast(OTHER_PHOTO_MIN))
                     .clip(CircleShape).background(c.background.copy(alpha = 0.72f))
                     .clickable(onClick = onPickOther).padding(horizontal = 14.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
