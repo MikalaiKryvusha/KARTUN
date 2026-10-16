@@ -78,6 +78,13 @@ private val HERO_MIN = 80.dp
 /** The handle released below this share of the screen height opens the photo full screen (the owner, 2026-10-16 ≈ 12:46:
  *  «на всеь экран пусть разворачивается, когда драг хендл ниже, чем 80% высоты экрана»). */
 private const val FULL_SCREEN_AT = 0.8f
+/** Hysteresis between the row and the card (the owner, 2026-10-16 ≈ 12:53: «разворот фото из строки во вьюшку слишком
+ *  быстры, без гистерезиса»): the row stretches with the handle and turns into the card only this far past its own height;
+ *  the card turns back into the row only this close to it; ≈ 12:55: «нужно добавить там чуть-чуть тоже гистерезиса в
+ *  начале, чтобы микро подвижки туда сюда не переключали из строки во вью, а держали строку». `[AI]` values, for the
+ *  owner's feel on the Titan. */
+private val ROW_TO_CARD = 24.dp
+private val CARD_TO_ROW = 8.dp
 /** The drag handle's height: the 5 dp bar and 8 dp above and below it (DragHandle). */
 private val HANDLE_H = 21.dp
 /** Zoom of a double tap inside the preview, and of a hold on the un-zoomed photo (room to move it). */
@@ -134,6 +141,10 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
         }
     }
     val heroDp = with(density) { heroPx.toDp() }
+    // Row or card, with hysteresis: the switch points differ by direction, so the layout never flips under a resting finger.
+    var asRow by remember { mutableStateOf(true) }
+    if (asRow && heroDp >= HERO_MIN + ROW_TO_CARD) asRow = false
+    if (!asRow && heroDp <= HERO_MIN + CARD_TO_ROW) asRow = true
     BackHandler { vm.back() }
 
     // Landscape (the owner, 2026-10-14 ≈ 19:12: «лендскейп нужно поддерживать тоже»): the photo on the left at full height,
@@ -179,9 +190,9 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                 },
             )
             Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 4.dp).onGloballyPositioned { previewTop = it.positionInRoot().y }) {
-                if (heroDp <= HERO_MIN + 0.5.dp) {
+                if (asRow) {
                     Row(
-                        Modifier.fillMaxWidth().height(HERO_MIN).then(drag).clip(MaterialTheme.shapes.medium).background(c.surfaceContainer).padding(8.dp),
+                        Modifier.fillMaxWidth().height(heroDp).then(drag).clip(MaterialTheme.shapes.medium).background(c.surfaceContainer).padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         Image(src.preview.asImageBitmap(), null, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
