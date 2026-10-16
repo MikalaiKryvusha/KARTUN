@@ -58,7 +58,9 @@ private fun speedText(mps: Float?): String {
     if (mps == null) return "—"
     val locale = LocalConfiguration.current.locales[0]
     val digits = if (mps >= 10f) 0 else if (mps >= 1f) 1 else if (mps >= 0.1f) 2 else 3
-    return stringResource(R.string.about_speed_value, ltr(String.format(locale, "%.${digits}f", mps)))
+    // Whole on its line: spaces glued, and a word joiner after «/» - a line may break after a slash, and in Chinese «秒» stood
+    // alone on the second line (RC5 check on the A52, 2026-10-16). [NOT-TESTED]
+    return glue(stringResource(R.string.about_speed_value, ltr(String.format(locale, "%.${digits}f", mps)))).replace("/", "/⁠")
 }
 
 /** Our repository; the inspiration and the engine (the owner, plan 03 step 21: «ссылаться на вдохновителей - репозиторий
@@ -129,7 +131,7 @@ fun AboutScreen(onBack: () -> Unit) {
                 "GPU" to ltr(gpuName(gpu)),
                 stringResource(R.string.about_engine) to ltr(NCNN_VERSION),
                 // One line for both chips (the owner, ≈ 22:2x: «в одну строку»).
-                stringResource(R.string.about_speed) to "GPU ${speedText(speed.first)} · CPU ${speedText(speed.second)}",
+                stringResource(R.string.about_speed) to "${glue("GPU ${speedText(speed.first)}")} · ${glue("CPU ${speedText(speed.second)}")}",
             ))
             LinkGroup(stringResource(R.string.about_project), listOf(stringResource(R.string.about_source) to REPO_URL))
             // The engine first - our fork (the owner, 2026-10-16 ≈ 19:1x: «где движок, пишем MikalaiKryvusha/ncnn - кастомный

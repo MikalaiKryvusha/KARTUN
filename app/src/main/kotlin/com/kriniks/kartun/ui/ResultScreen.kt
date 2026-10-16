@@ -107,6 +107,10 @@ private val KNOB_GRAB = 72.dp
 private val DIVIDER_FADE = 24.dp
 /** The divider's gap from the status bar above and the navigation bar below. */
 private val DIVIDER_GAP = 8.dp
+/** Below this height (dp) a landscape screen is «low» - a phone turned sideways; the Titan in landscape is ~ 800 dp high. */
+private const val LOW_SCREEN_DP = 600
+/** The result panel's width on a low landscape screen: the save and share buttons still fit side by side. */
+private val LOW_SCREEN_PANEL = 360.dp
 /** A released panel hides when dragged past this share of the screen width (or flung right faster than PANEL_FLING px/s). */
 private const val PANEL_HIDE_AT = 0.25f
 private const val PANEL_FLING = 1200f
@@ -178,9 +182,13 @@ fun ResultScreen(vm: UpscaleViewModel) {
     // экрана, как сейчас»). Read by both the drawing and the grab test, so the grab zone travels with the knob.
     var screenH by remember { mutableFloatStateOf(0f) }
     var panelTop by remember { mutableFloatStateOf(0f) }
+    // A phone in landscape (a low screen): the panel above it left the photo a strip of ~ 275 × 365 px under the knob (RC5 check
+    // on the S21 FE and the Redmi, 2026-10-16). There the photo takes the whole height and the panel is a compact card in the
+    // bottom-right corner, over the dark sides of the fitted photo; tablets keep the panel below the photo. [NOT-TESTED]
+    val lowScreen = androidx.compose.ui.platform.LocalConfiguration.current.let { it.screenWidthDp > it.screenHeightDp && it.screenHeightDp < LOW_SCREEN_DP }
     fun knobY(): Float {
         val centre = screenH / 2f
-        if (screenW <= 0f || panelTop <= 0f) return centre
+        if (lowScreen || screenW <= 0f || panelTop <= 0f) return centre
         val shown = 1f - (panelShift / screenW).coerceIn(0f, 1f)
         return centre + (panelTop / 2f - centre) * shown
     }
@@ -290,13 +298,13 @@ fun ResultScreen(vm: UpscaleViewModel) {
             // widthIn: in landscape the panel stays a compact card at the bottom instead of a full-width strip
             // (the owner: «лендскейп нужно поддерживать тоже»). [NOT-TESTED: landscape - built only; the device run waits for the owner («потом потестируем»)]
             // bottom 8 dp, was 28 (the owner, chat 2026-10-14 ≈ 21:01 +03:00: «виджет сводки чуть ниже сместить»).
-            Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(start = 12.dp, end = 12.dp, bottom = 8.dp)
+            Modifier.align(if (lowScreen) Alignment.BottomEnd else Alignment.BottomCenter).navigationBarsPadding().padding(start = 12.dp, end = 12.dp, bottom = 8.dp)
                 .offset { IntOffset(panelShift.roundToInt(), 0) }.onSizeChanged { panelH = it.height.toFloat() }
                 .onGloballyPositioned { panelTop = it.positionInParent().y }
                 .draggable(panelDrag, Orientation.Horizontal, onDragStarted = stopSettle, onDragStopped = { v ->
                     settle(show = panelShift < screenW * PANEL_HIDE_AT && v < PANEL_FLING)
                 })
-                .widthIn(max = 600.dp).fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow).padding(16.dp),  // opaque: at 94 % the divider showed through (RC2 check, Titan)
+                .widthIn(max = if (lowScreen) LOW_SCREEN_PANEL else 600.dp).fillMaxWidth().clip(MaterialTheme.shapes.extraLarge).background(c.surfaceContainerLow).padding(16.dp),  // opaque: at 94 % the divider showed through (RC2 check, Titan)
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             // Which model made it (the owner, chat 2026-10-14 ≈ 20:59 +03:00: «в сводке внизу нужно писать, какая модель улучшила»).

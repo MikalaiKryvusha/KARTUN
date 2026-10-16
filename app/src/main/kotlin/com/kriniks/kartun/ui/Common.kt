@@ -329,10 +329,12 @@ fun durationText(ms: Long): String {
     val (m, s) = durationParts(ms)
     val sec = pluralStringResource(R.plurals.duration_seconds, s, s)
     val min = pluralStringResource(R.plurals.duration_minutes, m, m)
+    // Each number stays with its unit (glue); the line may break only between the minutes and the seconds - a card broke
+    // «≈ 1 / minute 37 seconds» and «46 / ثانية» (RC5 check on the S21 FE and the Redmi, 2026-10-16). [NOT-TESTED]
     return when {
-        m == 0 -> sec
-        s == 0 -> min
-        else -> "$min $sec"
+        m == 0 -> glue(sec)
+        s == 0 -> glue(min)
+        else -> "${glue(min)} ${glue(sec)}"
     }
 }
 

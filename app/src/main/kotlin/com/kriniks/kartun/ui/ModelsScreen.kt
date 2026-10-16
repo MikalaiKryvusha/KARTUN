@@ -169,8 +169,10 @@ private fun ModelRow(
                 LicenceBadge(m)
                 Text(stringResource(R.string.model_author, m.author), style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp), color = c.onSurfaceVariant)
             }
+            // The right-hand note is held to a narrow column and wraps: unbounded, «Встроена в приложение» took the width the
+            // licence chip needed, and the chip broke «WTF / PL» (RC5 check on the S21 FE, 2026-10-16). [NOT-TESTED]
             when {
-                m.builtin -> Text(stringResource(R.string.model_builtin), style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp), color = c.tertiary)
+                m.builtin -> Text(stringResource(R.string.model_builtin), Modifier.widthIn(max = 104.dp), textAlign = TextAlign.End, style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp), color = c.tertiary)
                 onDevice && download == null -> Text(
                     stringResource(R.string.model_delete),
                     Modifier.clip(CircleShape).border(1.5.dp, c.outline, CircleShape).clickable(onClick = onDelete).padding(horizontal = 12.dp, vertical = 6.dp),
@@ -237,12 +239,15 @@ private fun loadPreview(ctx: android.content.Context, name: String): ImageBitmap
 fun LicenceBadge(m: Model) {
     val c = MaterialTheme.colorScheme
     val (text, color) = when (m.badge) {
-        Model.Badge.Free -> stringResource(R.string.licence_commercial, m.licenceLabel) to c.tertiary
-        Model.Badge.Credit -> stringResource(R.string.licence_commercial, m.licenceLabel) to c.secondary
+        // The licence name stays whole («CC BY / 4.0» broke in a narrow chip - RC5 check on the A52, 2026-10-16). [NOT-TESTED]
+        Model.Badge.Free -> stringResource(R.string.licence_commercial, glue(m.licenceLabel)) to c.tertiary
+        Model.Badge.Credit -> stringResource(R.string.licence_commercial, glue(m.licenceLabel)) to c.secondary
         Model.Badge.NonCommercial -> stringResource(R.string.licence_noncommercial) to NonCommercialViolet
     }
     Text(
-        glueDots(text), Modifier.clip(CircleShape).background(color.copy(alpha = 0.14f)).padding(horizontal = 9.dp, vertical = 4.dp),
+        // A rounded rectangle, not a circle shape: on two or more lines the circle's ends cut into the first and last letters
+        // («Р», «4» - RC5 check on the A52); on one line the 11 dp radius still reads as a pill.
+        glueDots(text), Modifier.clip(RoundedCornerShape(11.dp)).background(color.copy(alpha = 0.14f)).padding(horizontal = 9.dp, vertical = 4.dp),
         style = MaterialTheme.typography.labelSmall.copy(letterSpacing = MaterialTheme.typography.bodySmall.letterSpacing), color = color,
     )
 }

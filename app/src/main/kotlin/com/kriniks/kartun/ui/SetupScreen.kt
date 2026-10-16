@@ -2,6 +2,8 @@ package com.kriniks.kartun.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.runtime.CompositionLocalProvider
@@ -78,6 +80,10 @@ import kotlin.math.roundToInt
 
 /** How far a downward scroll of the settings grows the preview back, and the height at which it becomes the small row
  *  ('A-setup-scrolled'). The handle itself grows the preview past HERO_MAX, as far as it is pulled. */
+/** The size chip's side padding - the same 14 dp as [Pill]'s. */
+private val PILL_PAD_H = 14.dp
+/** «Другое фото» never shrinks below this (icon + one short word) however long the size line is. */
+private val OTHER_PHOTO_MIN = 96.dp
 private val HERO_MAX = 330.dp
 private val HERO_MIN = 80.dp
 /** The handle released below this share of the screen height opens the photo full screen (the owner, 2026-10-16 ≈ 12:46:
@@ -291,22 +297,34 @@ private fun PhotoCard(src: UpscaleViewModel.Source, onOpen: () -> Unit, onPickOt
         )
         // The size chip and «Другое фото» share one row with a gap: placed in the corners on their own, the button covered
         // «960 × 1280 · 1,2 Мп» from the «Мп» on a 1080 px phone (RC2 check on the A52, 2026-10-16). [NOT-TESTED]
+        // The chip's first line «960 × 1280 ·» is never narrower than itself: the button takes at most what is left and wraps
+        // its words onto a second line - unbounded, it squeezed the chip to «960 × 128 / 0 · 1.2 MP» (RC5 check on the
+        // S21 FE, 2026-10-16). [NOT-TESTED]
+        val sizePart = ltr(glue(sizeText(src.width, src.height)))
+        val measurer = rememberTextMeasurer()
+        val sizeLineW = with(LocalDensity.current) {
+            measurer.measure(boldDigits("$sizePart ·"), MaterialTheme.typography.labelMedium).size.width.toDp()
+        } + PILL_PAD_H * 2
+        BoxWithConstraints(Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(12.dp)) {
+        val rowW = maxWidth
         Row(
-            Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(12.dp),
+            Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom,
         ) {
-            Pill("${ltr(glue(sizeText(src.width, src.height)))} · ${glue(stringResource(R.string.megapixels, mpText(src.megapixels)))}",
+            Pill("$sizePart · ${glue(stringResource(R.string.megapixels, mpText(src.megapixels)))}",
                 Modifier.weight(1f, fill = false), translucent = true, heavyDigits = true)
             Spacer(Modifier.weight(0.001f))
             Row(
-                Modifier.clip(CircleShape).background(c.background.copy(alpha = 0.72f))
+                Modifier.widthIn(max = (rowW - sizeLineW - 8.dp).coerceAtLeast(OTHER_PHOTO_MIN))
+                    .clip(CircleShape).background(c.background.copy(alpha = 0.72f))
                     .clickable(onClick = onPickOther).padding(horizontal = 14.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(painterResource(R.drawable.ic_image), null, Modifier.size(16.dp), tint = c.onBackground)
                 Spacer(Modifier.width(6.dp))
-                Text(stringResource(R.string.setup_other_photo), style = MaterialTheme.typography.labelMedium.copy(fontSize = MaterialTheme.typography.bodySmall.fontSize), maxLines = 1, softWrap = false)
+                Text(stringResource(R.string.setup_other_photo), style = MaterialTheme.typography.labelMedium.copy(fontSize = MaterialTheme.typography.bodySmall.fontSize), maxLines = 2)
             }
+        }
         }
     }
 }
