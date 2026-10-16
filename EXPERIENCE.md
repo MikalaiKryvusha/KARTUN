@@ -90,6 +90,20 @@
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
 
+### EXP-0030 · 2026-10-16 · ❌ · #titan #owner #device #lock
+class: stand-left-dirty
+**Context:** criterion A4 of the agent API («the job runs with the screen off») on the owner's Titan, then a UI run.
+**Tried / did:** `adb shell input keyevent 223` to turn the screen off, the job, `keyevent 224` to wake it; later a UI run.
+**Result:** ❌ the wake-up brought a SECURE lock screen (`isKeyguardShowing=true`, screenshots black, `wm dismiss-keyguard`
+refused) — before the test the tablet was unlocked on the launcher; the UI case waited for the owner («я разлочил титан»),
+and one UI-agent tap, one raw `input tap` and one `titan-tap` (its focus check still saw KARTUN) landed on the locked tablet.
+**Lesson:** turning the owner's screen off locks his device; a screen-off test is the LAST device step of a run, and every
+tap first reads that the Titan is awake and unlocked. The owner then set the lock delay to 30 min («или поставь на 30 минут»).
+**Repro:** `adb shell dumpsys window | grep isKeyguardShowing` → `true` after `input keyevent 223` + `224` on the Titan.
+**Trigger:** about to send `input keyevent 223` / `KEYCODE_SLEEP` / `POWER` to the owner's device, or to tap it.
+**Not for:** a test device without a lock.
+mechanized: tools/titan-tap.mjs (refuses asleep or locked; the refusal not yet seen red — that needs locking the owner's tablet)
+
 ### EXP-0029 · 2026-10-16 · ❌→✅ · #crash #openmp #ncnn #thread #device
 class: guessed-instead-of-looked
 **Context:** bugs/01 — the app aborted in libomp's affinity init on a model load; six repro variants (masks, cpusets, races) all ran clean.

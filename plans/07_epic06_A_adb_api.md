@@ -2,7 +2,9 @@
 
 > **Создан:** 2026-10-16 (agent, `/plan-epic` rung 3 on the owner's order in chat 2026-10-15: «API для ИИ-агентов по ADB и HTTPS (ideas/02); Сейчас делаем!»)
 > **Родитель:** `plans/06_EPIC_agent_api.md` §3 row «A — кабель», gate: A1–A10 pass on the Titan with a run report; recon `researches/10_agent_api_recon.md`
-> **Статус:** 🔧 written 2026-10-16; step 0 ✅ (catalogue committed `fc6b8d5`); step 1 ✅ partial 2026-10-16 11:55 +03:00 — the door works on the Titan (INFO from a stopped app, screen asleep, no notification, the app reads pushed files), A7 not observed (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`); step 2 ✅ 2026-10-16 12:15 (`UpscaleEngine`); step 3 ✅ 12:18 (`AgentJob` + test); steps 4–6 ✅ 12:24 (the service, file output, strings); step 7 ✅ 12:30 (CLI); step 8 ✅ 12:34 (docs/agent-api.md); next — step 9 (the A1–A10 run with a case set)
+> **Статус:** 🔧 written 2026-10-16; step 0 ✅ (catalogue committed `fc6b8d5`); step 1 ✅ partial 2026-10-16 11:55 +03:00 — the door works on the Titan (INFO from a stopped app, screen asleep, no notification, the app reads pushed files), A7 not observed (`testcases/reports/2026-10-16_epic06_A_step1_door_spike.md`); step 2 ✅ 2026-10-16 12:15 (`UpscaleEngine`); step 3 ✅ 12:18 (`AgentJob` + test); steps 4–6 ✅ 12:24 (the service, file output, strings); step 7 ✅ 12:30 (CLI); step 8 ✅ 12:34 (docs/agent-api.md); step 9 🟡 12:45 — A1–A6, A8, A9, U1 and the R8 release pass, A7 partial (refused by
+package visibility, `DUMP` not reached — a probe APK with `<queries>`), A10 waits for the USB cable
+(`testcases/reports/2026-10-16_epic06_A_agent_api.md`); then step 10
 > **Вовне:** the owner's fork `plans/06` §6.3 (the ADB door in the release build) — until answered, the door is built in `src/main` and moves to `src/debug` on a «только Debug» answer
 
 ## Goal vector
