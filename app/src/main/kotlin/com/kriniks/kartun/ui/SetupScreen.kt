@@ -58,6 +58,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import android.content.res.Configuration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -68,13 +71,15 @@ import com.kriniks.kartun.Model
 import com.kriniks.kartun.UpscaleViewModel
 import kotlin.math.roundToInt
 
-/** Preview height at rest, and the height at which it becomes the small row ('A-setup-scrolled'). */
+/** How far a downward scroll of the settings grows the preview back, and the height at which it becomes the small row
+ *  ('A-setup-scrolled'). The handle itself grows the preview past HERO_MAX, as far as it is pulled. */
 private val HERO_MAX = 330.dp
 private val HERO_MIN = 80.dp
-/** How far past the full preview a downward pull must stretch it to open the photo full screen (plans/03 step 9). */
-private val PULL_OPEN = 90.dp
-/** The stretch never grows beyond this - the rubber band of the pull. */
-private val PULL_MAX = 160.dp
+/** The handle released below this share of the screen height opens the photo full screen (the owner, 2026-10-16 ≈ 12:46:
+ *  «на всеь экран пусть разворачивается, когда драг хендл ниже, чем 80% высоты экрана»). */
+private const val FULL_SCREEN_AT = 0.8f
+/** The drag handle's height: the 5 dp bar and 8 dp above and below it (DragHandle). */
+private val HANDLE_H = 21.dp
 /** Zoom of a double tap inside the preview, and of a hold on the un-zoomed photo (room to move it). */
 private const val PREVIEW_ZOOM = 2.5f
 private const val PREVIEW_HOLD_ZOOM = 1.6f
@@ -97,51 +102,38 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
     // («прыгает картинка на экране Улучшение», 2026-10-14) came from shrinking the preview BY the scroll offset.
     val maxPx = with(density) { HERO_MAX.toPx() }
     val minPx = with(density) { HERO_MIN.toPx() }
-    var heroPx by remember { mutableFloatStateOf(maxPx) }
-    // Pull-down past the full preview: the photo stretches like a rubber band; released past PULL_OPEN it opens full
-    // screen - the owner in chat 2026-10-14 ≈ 18:57: «свайпом вниз было бы здорово раскрывать вью картинки на весь экран».
-    var pullPx by remember { mutableFloatStateOf(0f) }
+    val handlePx = with(density) { HANDLE_H.toPx() }
+    // Collapsed into the row by default (the owner, 2026-10-16 ≈ 12:46: «по-умолчанию открывать со свернутым фото в строку»).
+    var heroPx by remember { mutableFloatStateOf(minPx) }
     var fullscreen by remember { mutableStateOf(false) }
-    val openPx = with(density) { PULL_OPEN.toPx() }
-    val pullMaxPx = with(density) { PULL_MAX.toPx() }
+    // Where the preview starts on the screen, and the screen's height: the handle may travel to the bottom, and the 80 %
+    // line of FULL_SCREEN_AT is measured on the whole screen.
+    var previewTop by remember { mutableFloatStateOf(0f) }
+    val screenH = LocalWindowInfo.current.containerSize.height.toFloat()
+    val heroLimit = (screenH - previewTop - handlePx).coerceAtLeast(minPx)
     val collapse = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 if (available.y >= 0) return Offset.Zero
-                // An upward move first takes back the stretch, then shrinks the preview.
-                var left = available.y
-                if (pullPx > 0f) {
-                    val p = (pullPx + left).coerceAtLeast(0f)
-                    left -= p - pullPx
-                    pullPx = p
-                }
-                val next = (heroPx + left).coerceAtLeast(minPx)
-                left -= next - heroPx
+                // An upward move of the settings first shrinks the preview, down to the row.
+                val next = (heroPx + available.y).coerceAtLeast(minPx)
+                val used = next - heroPx
                 heroPx = next
-                return Offset(0f, available.y - left)
+                return Offset(0f, used)
             }
 
             override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-                if (available.y <= 0) return Offset.Zero
+                // A downward scroll of the settings at their top grows the preview back to HERO_MAX; further only the
+                // handle pulls it (a fling of the list must not throw the photo across the screen).
+                if (available.y <= 0 || heroPx >= maxPx) return Offset.Zero
                 val next = (heroPx + available.y).coerceAtMost(maxPx)
-                var left = available.y - (next - heroPx)
+                val used = next - heroPx
                 heroPx = next
-                // Only a finger drag stretches (a fling arriving at the top must not open the viewer).
-                if (left > 0f && source == NestedScrollSource.UserInput) {
-                    pullPx = (pullPx + left * 0.5f).coerceAtMost(pullMaxPx)
-                    left = 0f
-                }
-                return Offset(0f, available.y - left)
-            }
-
-            override suspend fun onPreFling(available: Velocity): Velocity {
-                if (pullPx >= openPx) fullscreen = true
-                pullPx = 0f
-                return Velocity.Zero
+                return Offset(0f, used)
             }
         }
     }
-    val heroDp = with(density) { (heroPx + pullPx).toDp() }
+    val heroDp = with(density) { heroPx.toDp() }
     BackHandler { vm.back() }
 
     // Landscape (the owner, 2026-10-14 ≈ 19:12: «лендскейп нужно поддерживать тоже»): the photo on the left at full height,
@@ -171,15 +163,22 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
     Box(Modifier.fillMaxSize().background(c.background)) {
         Column(Modifier.fillMaxSize().statusBarsPadding().nestedScroll(collapse)) {
             SetupTopBar(vm)
-            // Pinned preview: the photo card shrinking with the swipe; at its floor it is the compact row.
-            // The photo (card or compact row) is a handle too: dragging it feeds the same collapse/stretch as the settings do.
-            val pull = rememberDraggableState { d ->
-                val delta = Offset(0f, d)
-                if (d < 0) collapse.onPreScroll(delta, NestedScrollSource.UserInput)
-                else collapse.onPostScroll(Offset.Zero, delta, NestedScrollSource.UserInput)
-            }
-            val drag = Modifier.draggable(pull, Orientation.Vertical, onDragStopped = { collapse.onPreFling(Velocity.Zero) })
-            Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 4.dp)) {
+            // Pinned preview: the photo card; at its floor it is the compact row. The handle and the photo (card or row)
+            // pull it 1:1 with the finger and it stays where it is let go - no snap points (the owner, 2026-10-16 ≈ 12:46:
+            // «Драг хендл чтобы не прилипал к конкретным местам, а превью фото разворачивалось на такой размер, на который
+            // драг хендл пролистнули»). Let go with the handle below FULL_SCREEN_AT of the screen, the photo opens full
+            // screen and the preview goes back to the size it had before that pull. [NOT-TESTED]
+            var heroBefore by remember { mutableFloatStateOf(minPx) }
+            val pull = rememberDraggableState { d -> heroPx = (heroPx + d).coerceIn(minPx, heroLimit) }
+            val drag = Modifier.draggable(
+                pull, Orientation.Vertical,
+                onDragStarted = { heroBefore = heroPx },
+                onDragStopped = {
+                    val handleCentre = previewTop + heroPx + handlePx / 2
+                    if (handleCentre > screenH * FULL_SCREEN_AT) { fullscreen = true; heroPx = heroBefore }
+                },
+            )
+            Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 4.dp).onGloballyPositioned { previewTop = it.positionInRoot().y }) {
                 if (heroDp <= HERO_MIN + 0.5.dp) {
                     Row(
                         Modifier.fillMaxWidth().height(HERO_MIN).then(drag).clip(MaterialTheme.shapes.medium).background(c.surfaceContainer).padding(8.dp),
