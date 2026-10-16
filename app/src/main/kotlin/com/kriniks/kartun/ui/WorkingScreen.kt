@@ -65,14 +65,36 @@ private val RING = 84.dp
 /** Pads a counter to the width of its total: digits and this space have the same width with tabular figures. */
 private const val FIGURE_SPACE = '\u2007'
 
-/** One metric tile of the panel: a small upper-case label over a value in tabular figures. */
+/**
+ * One metric tile of the panel: a small upper-case label over a value in tabular figures. Both stay on ONE line and shrink
+ * to the tile's width instead of being cut: «459 / 1 344» showed as «459 /» (maxLines = 1 kept only the first soft-wrapped
+ * line) and «ОСТАЛО» lost its end in landscape - the owner, 2026-10-16 17:03 screenshots: «Смотри, чтобы эти плитки
+ * уважительно работали с длинными текстами и номерами». [TESTED: 2026-10-16 · Titan, «21 / 2176» portrait and landscape - testcases/reports/2026-10-16_fractional_scale_titan.md]
+ */
 @Composable
 internal fun Metric(label: String, value: String, modifier: Modifier) {
     val c = MaterialTheme.colorScheme
     Column(modifier.clip(RoundedCornerShape(16.dp)).background(c.surfaceContainer).padding(horizontal = 12.dp, vertical = 10.dp)) {
-        Text(label.uppercase(LocalConfiguration.current.locales[0]), style = MaterialTheme.typography.labelSmall, color = c.onSurfaceVariant, maxLines = 1)
-        Text(value, style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight(700), fontFeatureSettings = "tnum"), maxLines = 1)
+        val labelStyle = MaterialTheme.typography.labelSmall
+        val valueStyle = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight(700), fontFeatureSettings = "tnum")
+        FitText(label.uppercase(LocalConfiguration.current.locales[0]), labelStyle.copy(color = c.onSurfaceVariant), MIN_LABEL_SP)
+        FitText(value, valueStyle.copy(color = c.onSurface), MIN_VALUE_SP)
     }
+}
+
+/** Smallest sizes a tile's label and value may shrink to before the text is cut. */
+private const val MIN_LABEL_SP = 8f
+private const val MIN_VALUE_SP = 10f
+private const val MIN_TITLE_SP = 11f
+
+/** One line that shrinks from its style's size down to [minSp] to fit the width; never wraps, never cuts mid-word. */
+@Composable
+private fun FitText(text: String, style: androidx.compose.ui.text.TextStyle, minSp: Float, maxLines: Int = 1) {
+    androidx.compose.foundation.text.BasicText(
+        text, style = style, maxLines = maxLines, softWrap = maxLines > 1,
+        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+        autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(minFontSize = minSp.sp, maxFontSize = style.fontSize, stepSize = 0.5.sp),
+    )
 }
 
 /** «1 мин 12 с» / «38 с» / «3 мин»: the short form that fits a metric tile (the long one is «1 минута 12 секунд»). */
@@ -185,10 +207,10 @@ fun WorkingScreen(vm: UpscaleViewModel) {
                 }
                 Spacer(Modifier.width(16.dp))
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    // 15 sp: at 17 the wide heading font cut the title even beside the small «Отменить» (Titan 12:37).
-                    Text(stringResource(if (waiting) R.string.waiting_title else R.string.working_title),
-                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp), maxLines = 1,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    // 15 sp: at 17 the wide heading font cut the title even beside the small «Отменить» (Titan 12:37). Two
+                    // lines and a shrink to 11 sp: landscape cut it to «Нейросеть улу…» (the owner's screenshot 2026-10-16 17:03).
+                    FitText(stringResource(if (waiting) R.string.waiting_title else R.string.working_title),
+                        MaterialTheme.typography.titleMedium.copy(fontSize = 15.sp, color = c.onSurface), MIN_TITLE_SP, maxLines = 2)
                     if (waiting) Text(stringResource(R.string.waiting_text), style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
                     else Row(
                         Modifier.clip(CircleShape).background(c.surfaceContainer).padding(horizontal = 12.dp, vertical = 6.dp),
@@ -206,17 +228,26 @@ fun WorkingScreen(vm: UpscaleViewModel) {
             // and the done count padded with figure spaces to the total's width. The pass shows on one-pass scales too
             // («1 / 1» - the owner, 12:17: «и надпись номера прогона исчезла =(»). Elapsed ticks every second (12:18).
             val total = "%d".format(p.total)
-            if (waiting) Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Metric(stringResource(R.string.metric_pass), "—", Modifier.weight(1f))
-                Metric(stringResource(R.string.metric_tile), "—", Modifier.weight(1f))
-                Metric(stringResource(R.string.metric_waiting), shortDuration(now - waitFrom), Modifier.weight(1f))
-                Metric(stringResource(R.string.metric_work), "≈ " + shortDuration(p.estimateMs), Modifier.weight(1f))
-            } else Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Metric(stringResource(R.string.metric_pass), "${if (inPass2) 2 else 1} / ${if (mid != null) 2 else 1}", Modifier.weight(1f))
-                Metric(stringResource(R.string.metric_tile),
-                    if (p.total > 0) "${"%d".format(p.done).padStart(total.length, FIGURE_SPACE)} / $total" else "—", Modifier.weight(1f))
-                Metric(stringResource(R.string.metric_elapsed), shortDuration(spentMs), Modifier.weight(1f))
-                Metric(stringResource(R.string.metric_left), "≈ " + shortDuration(if (p.total > 0) leftMs else p.estimateMs), Modifier.weight(1f))
+            val metrics = if (waiting) listOf(
+                stringResource(R.string.metric_pass) to "—",
+                stringResource(R.string.metric_tile) to "—",
+                stringResource(R.string.metric_waiting) to shortDuration(now - waitFrom),
+                stringResource(R.string.metric_work) to "≈ " + shortDuration(p.estimateMs),
+            ) else listOf(
+                stringResource(R.string.metric_pass) to "${if (inPass2) 2 else 1} / ${if (mid != null) 2 else 1}",
+                stringResource(R.string.metric_tile) to
+                    (if (p.total > 0) "${"%d".format(p.done).padStart(total.length, FIGURE_SPACE)} / $total" else "—"),
+                stringResource(R.string.metric_elapsed) to shortDuration(spentMs),
+                stringResource(R.string.metric_left) to "≈ " + shortDuration(if (p.total > 0) leftMs else p.estimateMs),
+            )
+            // Portrait: one row of four. Landscape: the panel is PANEL_WIDTH wide, four tiles in a row left ~65 dp of text
+            // each («ОСТАЛО», «≈ 4» on the owner's screenshot 2026-10-16 17:03) - two rows of two. [TESTED: 2026-10-16 · Titan landscape - testcases/reports/2026-10-16_fractional_scale_titan.md]
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                metrics.chunked(if (landscape) 2 else 4).forEach { row ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        row.forEach { (label, value) -> Metric(label, value, Modifier.weight(1f)) }
+                    }
+                }
             }
             // Small and to the left, as in the accepted mockup C - the main action stays «Отменить».
             if (waiting) SecondaryButton(stringResource(R.string.stop_api_job), null, onClick = vm::stopApiJob, height = 34,

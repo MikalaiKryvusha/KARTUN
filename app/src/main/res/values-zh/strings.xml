@@ -175,4 +175,5 @@
     <string name="error_incomplete">照片文件不完整，似乎没有下载完。</string>
     <string name="error_no_access">无法访问该文件。如果照片存放在云端，请先将其下载到手机。</string>
     <string name="error_memory">设备内存不足，无法打开这张照片。请关闭其他应用后重试。</string>
+    <string name="scale_limited">上限 %1$s 百万像素。此照片放不下 %2$d×，可以 %3$s×（%4$s）</string>
 </resources>

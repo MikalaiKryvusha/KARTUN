@@ -97,7 +97,10 @@ object ResultStore {
     }
 
     /** "IMG_2026_kartun_x4plus_4x.png" - the original's name, the model and the scale: never the original's own name. */
-    fun fileName(original: String, model: String, scale: Int, ext: String): String {
+    fun fileName(original: String, model: String, scale: Int, ext: String): String = fileName(original, model, "$scale", ext)
+
+    /** The same with the scale as text - «3.2» for a result limited by the output size (plans/08 step 9). */
+    fun fileName(original: String, model: String, scale: String, ext: String): String {
         val base = original.substringBeforeLast('.').ifBlank { "photo" }.replace(Regex("[^\\p{L}\\p{N}_-]+"), "_").trim('_').ifBlank { "photo" }
         return "${base}_kartun_${model}_${scale}x.$ext"
     }

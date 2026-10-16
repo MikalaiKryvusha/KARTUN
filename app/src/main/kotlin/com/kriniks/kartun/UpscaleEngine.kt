@@ -10,6 +10,7 @@ import com.kriniks.kartun.UpscaleViewModel.Companion.ENGINE_SCALE
 import com.kriniks.kartun.UpscaleViewModel.Companion.MAX_INPUT_MP
 import com.kriniks.kartun.UpscaleViewModel.Companion.TILE_PX
 import com.kriniks.kartun.UpscaleViewModel.Companion.fits
+import com.kriniks.kartun.UpscaleViewModel.Companion.limitedSize
 import com.kriniks.kartun.UpscaleViewModel.Companion.rateKey
 import com.kriniks.kartun.UpscaleViewModel.Companion.secondPassInput
 import com.kriniks.kartun.UpscaleViewModel.Companion.startRate
@@ -98,15 +99,19 @@ object UpscaleEngine {
         onProgress: (done: Int, total: Int, gpu: Boolean) -> Unit, cancelled: () -> Boolean,
     ): Output {
         val mp = input.width.toFloat() * input.height / 1_000_000f
-        if (!fits(mp, scale)) throw OutputTooBig()
+        // Over the output limit the result is the largest size that fits (plans/08 step 9, the owner 2026-10-16 ≈ 16:10:
+        // «да, правильно» to «4× для этого фото не поместится, можем 3,2×»): the last pass resamples into it.
+        val limited = limitedSize(input.width, input.height, scale)
+        if (limited == null && !fits(mp, scale)) throw OutputTooBig()
         // Normally already loaded by preload(); a start during loading waits for it on this same thread.
         val u = ensureLoaded(ctx, m, useGpu)
         var done = 0
         var total = 0
         var gpuUsed = u.usesGpu
         onProgress(done, total, gpuUsed)
-        // Tiles of both passes are known up front, so the ring runs 0..100 % once across the whole run.
-        val mid = secondPassInput(scale)
+        // Tiles of both passes are known up front, so the ring runs 0..100 % once across the whole run. A limited
+        // result at most 4× the photo needs one pass whatever step was chosen.
+        val mid = if (limited != null && limited.first <= input.width * ENGINE_SCALE) null else secondPassInput(scale)
         val pass1 = tiles(input.width, input.height)
         val pass2 = mid?.let { tiles(input.width * it, input.height * it) } ?: 0
         val grand = pass1 + pass2
@@ -121,18 +126,20 @@ object UpscaleEngine {
             }
         }
         val onCpu = { gpuUsed = false; onProgress(done, total, false) }
+        // outScale 0 = the limited size (the last pass only).
         val pass = { bmp: Bitmap, outScale: Int, listener: TileListener ->
-            withFallback(ctx, m, u, bmp, outScale, listener, onCpu).also { (_, gpu) -> gpuUsed = gpuUsed && gpu }.first
+            withFallback(ctx, m, u, bmp, outScale, listener, onCpu, limited).also { (_, gpu) -> gpuUsed = gpuUsed && gpu }.first
         }
         val tRun = SystemClock.elapsedRealtime()
         // Pass 1 comes out of the engine already at the size it is needed at - the target for 1×/2×/4×,
         // the second pass's input (2× for 8×, 4× for 16×) otherwise: the network's 4× tiles are shrunk
         // inside the engine, so no full 4× image is held (photos up to MAX_INPUT_MP, the owner 11:35).
-        val first = pass(input, mid ?: scale, report(0, pass1))
+        val last = if (limited != null) 0 else null
+        val first = pass(input, mid ?: last ?: scale, report(0, pass1))
         learnRate(ctx, m, gpuUsed, mp, SystemClock.elapsedRealtime() - tRun)
         // 8×: the 2× result feeds the second 4× pass (2 x 4 = 8); 16×: the 4× result does (4 x 4 = 16).
         // [TESTED: 2026-10-15 · 8× on the Titan - testcases/reports/2026-10-15_F2_guarded_loop_device_run.md run 8, before this change]
-        val full = if (mid == null) first else pass(first, ENGINE_SCALE, report(pass1, pass2)).also { first.recycle() }
+        val full = if (mid == null) first else pass(first, last ?: ENGINE_SCALE, report(pass1, pass2)).also { first.recycle() }
         return Output(full, gpuUsed)
     }
 
@@ -189,14 +196,20 @@ object UpscaleEngine {
      */
     private fun withFallback(
         ctx: Context, m: Model, u: NcnnUpscaler, input: Bitmap, outScale: Int, listener: TileListener, onCpu: () -> Unit,
+        limited: Pair<Int, Int>? = null,
     ): Pair<Bitmap, Boolean> {
+        // outScale 0: the network's 4× resampled into the limited size (fractional scale at the output limit).
+        val run = { net: NcnnUpscaler, tile: Int ->
+            if (outScale == 0 && limited != null) net.upscaleTo(input, ENGINE_SCALE, tile, limited.first, limited.second, listener)
+            else net.upscale(input, ENGINE_SCALE, tile, listener, outScale)
+        }
         try {
-            return u.upscale(input, ENGINE_SCALE, TILE_PX, listener, outScale) to u.usesGpu
+            return run(u, TILE_PX) to u.usesGpu
         } catch (e: IllegalStateException) {
             Log.w(TAG, "pass failed with tile $TILE_PX (${e.message}); retry with ${TILE_PX / 2}")
         }
         try {
-            return u.upscale(input, ENGINE_SCALE, TILE_PX / 2, listener, outScale) to u.usesGpu
+            return run(u, TILE_PX / 2) to u.usesGpu
         } catch (e: IllegalStateException) {
             Log.w(TAG, "pass failed with tile ${TILE_PX / 2} (${e.message}); retry on the CPU")
         }
@@ -206,7 +219,7 @@ object UpscaleEngine {
         CrashLog.note("load ${m.id} gpu=false (fallback) ${CrashLog.cpuState()}")
         val cpu = NcnnUpscaler.load(param.path, bin.path, useGpu = false) ?: throw EngineFailed()
         return cpu.use {
-            try { it.upscale(input, ENGINE_SCALE, TILE_PX, listener, outScale) to false }
+            try { run(it, TILE_PX) to false }
             catch (e: IllegalStateException) { Log.w(TAG, "CPU pass failed too (${e.message})"); throw EngineFailed() }
         }
     }

@@ -177,4 +177,5 @@
     <string name="error_incomplete">Die Fotodatei ist unvollständig – offenbar wurde sie nicht ganz heruntergeladen.</string>
     <string name="error_no_access">Kein Zugriff auf die Datei. Liegt das Foto in der Cloud, lade es zuerst auf das Telefon herunter.</string>
     <string name="error_memory">Nicht genug Gerätespeicher, um dieses Foto zu öffnen. Schließe andere Apps und versuche es erneut.</string>
+    <string name="scale_limited">Grenze: %1$s MP. %2$d× passt für dieses Foto nicht; %3$s× passt (%4$s)</string>
 </resources>

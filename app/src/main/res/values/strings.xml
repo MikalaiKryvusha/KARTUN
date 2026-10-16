@@ -18,6 +18,9 @@
     <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
     <string name="scale_too_big">The result would exceed %1$s MP — for this photo choose up to %2$d×</string>
     <string name="scale_two_pass">2 passes · longer · a large file</string>
+    <!-- Over the output limit (plans/08 step 9): %1$s the limit in MP, %2$d the chosen step, %3$s the factor that fits,
+         %4$s its size. -->
+    <string name="scale_limited">Limit — %1$s MP. %2$d× does not fit for this photo; %3$s× does (%4$s)</string>
     <string name="upscale">Enhance</string>
     <string name="upscale_with_estimate">Enhance · ≈ %1$s</string>
 

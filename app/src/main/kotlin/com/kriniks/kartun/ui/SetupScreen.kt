@@ -198,7 +198,8 @@ fun SetupScreen(vm: UpscaleViewModel, onPickOther: () -> Unit) {
                         Image(src.preview.asImageBitmap(), null, Modifier.size(64.dp).clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop)
                         Column(Modifier.weight(1f)) {
                             Text(src.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            Text(boldDigits(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(src.width * vm.scale, src.height * vm.scale))),
+                            Text(boldDigits(stringResource(R.string.size_to, sizeText(src.width, src.height),
+                                vm.limited?.let { (lw, lh) -> sizeText(lw, lh) } ?: sizeText(src.width * vm.scale, src.height * vm.scale))),
                                 style = MaterialTheme.typography.bodySmall, color = c.onSurfaceVariant)
                         }
                         Pill(stringResource(R.string.setup_other_short), outlined = true, onClick = onPickOther)
@@ -397,35 +398,41 @@ private fun ModelCard(m: Model, on: Boolean, loading: Boolean, estimate: String,
 private fun ScaleSlider(vm: UpscaleViewModel) {
     val src = vm.source ?: return
     val c = MaterialTheme.colorScheme
-    val last = UpscaleViewModel.SCALES.lastIndex
+    // Over the output limit the slider ends at the first step that does not fit, and that step reads as the factor that
+    // does («3,2×» - plans/08 step 9, the owner 2026-10-16 ≈ 16:10: «да, правильно»). [TESTED: 2026-10-16 · Titan 50 MP: 1× · 2× · 3,2× - testcases/reports/2026-10-16_fractional_scale_titan.md]
+    val last = vm.scaleCap
+    val limited = vm.limited
     Column(Modifier.padding(horizontal = 6.dp)) {
         // The native Material 3 slider, styled like the quality slider of the save dialog (the owner, chat 2026-10-14
         // ≈ 22:41 +03:00: «как ползунок качества сделал - по дизайну современного андроид. Так и сделай в таком стиле выбор
         // масштаба» · «нативным элементом ползунка»): five positions, the chosen one lit in the marks below.
         Slider(
-            value = vm.scaleIndex.toFloat(), onValueChange = { vm.scaleIndex = it.roundToInt().coerceIn(0, last) },
-            valueRange = 0f..last.toFloat(), steps = last - 1,
+            value = minOf(vm.scaleIndex, last).toFloat(), onValueChange = { vm.scaleIndex = it.roundToInt().coerceIn(0, last) },
+            valueRange = 0f..maxOf(last, 1).toFloat(), steps = maxOf(last - 1, 0),
             colors = SliderDefaults.colors(thumbColor = c.onBackground, activeTrackColor = c.primary, inactiveTrackColor = c.surfaceContainerHigh),
         )
         // Step marks at 0, 25, 50, 75, 100 % - the first left-aligned, the last right-aligned, the rest centred.
         Box(Modifier.fillMaxWidth().padding(top = 6.dp)) {
-            UpscaleViewModel.SCALES.forEachIndexed { i, s ->
+            val locale = LocalConfiguration.current.locales[0]
+            UpscaleViewModel.SCALES.take(last + 1).forEachIndexed { i, s ->
                 // Plain «2×», no «по умолч.» (the owner, chat 2026-10-14 ≈ 20:49 +03:00: «убрать строчку По умолч»).
+                val label = if (i == last && limited != null)
+                    String.format(locale, "%.1f×", UpscaleViewModel.limitedFactor(src.width, limited.first)) else "$s×"
                 Text(
-                    "$s×",
+                    label,
                     Modifier.layout { measurable, constraints ->
                         val pl = measurable.measure(constraints.copy(minWidth = 0))
                         val at = constraints.maxWidth * i / last
                         val left = when (i) { 0 -> 0; last -> at - pl.width; else -> at - pl.width / 2 }
                         layout(constraints.maxWidth, pl.height) { pl.place(left, 0) }
                     },
-                    style = if (i == vm.scaleIndex) MaterialTheme.typography.titleSmall else MaterialTheme.typography.bodySmall,
-                    color = if (i == vm.scaleIndex) c.primary else c.onSurfaceVariant,
+                    style = if (i == minOf(vm.scaleIndex, last)) MaterialTheme.typography.titleSmall else MaterialTheme.typography.bodySmall,
+                    color = if (i == minOf(vm.scaleIndex, last)) c.primary else c.onSurfaceVariant,
                 )
             }
         }
-        val w = src.width * vm.scale
-        val h = src.height * vm.scale
+        val w = limited?.first ?: (src.width * vm.scale)
+        val h = limited?.second ?: (src.height * vm.scale)
         Row(Modifier.fillMaxWidth().padding(top = 12.dp)) {
             Text(boldDigits(stringResource(R.string.size_to, sizeText(src.width, src.height), sizeText(w, h))), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = c.onBackground)
             Text(stringResource(R.string.megapixels, mpText(w.toFloat() * h / 1_000_000f)), style = MaterialTheme.typography.bodyMedium, color = c.onSurfaceVariant)
@@ -433,7 +440,9 @@ private fun ScaleSlider(vm: UpscaleViewModel) {
         // 8× and 16× run two passes (plans/04 step 1): the mockup's amber «2 прохода · дольше · большой файл»; a result over
         // the output limit is refused with the largest scale that fits this photo.
         val notice = when {
-            !vm.scaleSupported -> stringResource(R.string.scale_too_big, UpscaleViewModel.MAX_OUTPUT_MP.toInt().toString(), vm.largestFittingScale)
+            limited != null -> stringResource(R.string.scale_limited, UpscaleViewModel.MAX_OUTPUT_MP.toInt().toString(), vm.scale,
+                String.format(LocalConfiguration.current.locales[0], "%.1f", UpscaleViewModel.limitedFactor(src.width, limited.first)),
+                sizeText(limited.first, limited.second))
             vm.scale > UpscaleViewModel.ENGINE_SCALE -> stringResource(R.string.scale_two_pass)
             else -> null
         }

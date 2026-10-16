@@ -19,6 +19,8 @@
     <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
     <string name="scale_too_big">Результат больше %1$s Мп — для этого фото подойдёт масштаб до %2$d×</string>
     <string name="scale_two_pass">2 прохода · дольше · большой файл</string>
+    <!-- Пример агента, принятый владельцем 2026-10-16 ≈ 16:10 («да, правильно»). -->
+    <string name="scale_limited">Предел — %1$s Мп. %2$d× для этого фото не поместится, можем %3$s× (%4$s)</string>
     <string name="upscale">Улучшить</string>
     <string name="upscale_with_estimate">Улучшить · ≈ %1$s</string>
 

@@ -44,6 +44,24 @@ class NcnnUpscaler private constructor(private var handle: Long, val usesGpu: Bo
     }
 
     /**
+     * The network's [scale]× result resampled to exactly [outW] × [outH] (any size up to [scale]× the input) by area
+     * averaging inside the engine - the fractional scale at the output limit (plans/08 step 9). [TESTED: 2026-10-16 · Titan 50 MP - testcases/reports/2026-10-16_fractional_scale_titan.md]
+     */
+    fun upscaleTo(input: Bitmap, scale: Int, tile: Int, outW: Int, outH: Int, listener: TileListener? = null): Bitmap {
+        check(handle != 0L) { "upscaler is closed" }
+        require(outW in 1..input.width * scale && outH in 1..input.height * scale) { "output $outW x $outH out of range" }
+        val src = if (input.config == Bitmap.Config.ARGB_8888) input else input.copy(Bitmap.Config.ARGB_8888, false)
+        val out = Bitmap.createBitmap(outW, outH, Bitmap.Config.ARGB_8888)
+        val rc = nativeUpscale(handle, src, out, scale, 0, tile, listener)
+        if (rc != 0) {
+            out.recycle()
+            if (rc == ERR_CANCELLED) throw UpscaleCancelledException()
+            throw IllegalStateException("native upscale failed, code $rc")
+        }
+        return out
+    }
+
+    /**
      * Debug probe: runs the net up to [blob] (a blob name from the .param) and returns the time in ms, or a negative code.
      * The input is [input] when it is exactly w×h, else a flat 0.5 picture; the blob's numbers go to logcat, and with
      * [dumpPath] its raw float32 values (c, h, w) are written to that file - the device side of a float-vs-float check

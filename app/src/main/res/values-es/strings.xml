@@ -179,4 +179,5 @@
     <string name="error_incomplete">El archivo de la foto está incompleto: parece que no se descargó del todo.</string>
     <string name="error_no_access">Sin acceso al archivo. Si la foto está en la nube, descárgala primero al teléfono.</string>
     <string name="error_memory">No hay memoria suficiente en el dispositivo para abrir esta foto. Cierra otras apps e inténtalo de nuevo.</string>
+    <string name="scale_limited">Límite: %1$s MP. %2$d× no cabe para esta foto; cabe %3$s× (%4$s)</string>
 </resources>

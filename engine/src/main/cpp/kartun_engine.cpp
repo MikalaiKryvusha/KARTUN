@@ -22,6 +22,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cerrno>
+#include <cmath>
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -261,23 +262,84 @@ static void boxDown(const unsigned char* src, int sw, int sh, int f, unsigned ch
     }
 }
 
+// The fractional scale at the output limit (plans/08 step 9; the owner 2026-10-16 ≈ 16:10: «да, правильно» to «4× для
+// этого фото не поместится, можем 3,2×»). `src` is the network's whole padded tile in RGBA (sw x sh), its pixel (0, 0)
+// standing at (ox, oy) of the network-scale image (imgW x imgH). Output pixels [dx0, dx1) x [dy0, dy1) of `dst` are each
+// the area average of their own span [X * fx, (X + 1) * fx) of that image, partial pixels weighted by their overlap. A
+// tile writes the output pixels whose CENTRE falls inside it; a span that crosses into the next tile reads the tile's own
+// context padding (kPrepadding x scale >= fx), so neighbouring tiles agree on every pixel and no seam appears.
+// [TESTED: 2026-10-16 · Titan, 8640 x 5760 -> 28 354 x 18 903, seams border/near 1.025 / 1.035 - testcases/reports/2026-10-16_fractional_scale_titan.md]
+static void areaResample(const unsigned char* src, int sw, int sh, double ox, double oy, int imgW, int imgH, double fx, double fy,
+                         unsigned char* dst, size_t dstStride, int dx0, int dx1, int dy0, int dy1) {
+    // Horizontal spans once per tile: first source column and the weights of the columns it covers.
+    // `first` is the span's first column in the tile's own coordinates (may be off the tile; reads are clamped).
+    struct Span { int first; std::vector<float> w; };
+    auto spans = [](int d0, int d1, double f, double origin, int limit) {
+        std::vector<Span> out(static_cast<size_t>(std::max(d1 - d0, 0)));
+        for (int d = d0; d < d1; ++d) {
+            const double a = d * f, b = std::min((d + 1) * f, static_cast<double>(limit));
+            const int i0 = static_cast<int>(std::floor(a)), i1 = std::max(static_cast<int>(std::ceil(b)), i0 + 1);
+            Span& s = out[static_cast<size_t>(d - d0)];
+            s.first = i0 - static_cast<int>(origin);
+            for (int i = i0; i < i1; ++i)
+                s.w.push_back(static_cast<float>(std::max(std::min(b, i + 1.0) - std::max(a, static_cast<double>(i)), 1e-6)));
+        }
+        return out;
+    };
+    const auto xs = spans(dx0, dx1, fx, ox, imgW);
+    const auto ys = spans(dy0, dy1, fy, oy, imgH);
+    for (int y = dy0; y < dy1; ++y) {
+        const Span& sy = ys[static_cast<size_t>(y - dy0)];
+        unsigned char* d = dst + static_cast<size_t>(y) * dstStride;
+        for (int x = dx0; x < dx1; ++x) {
+            const Span& sx = xs[static_cast<size_t>(x - dx0)];
+            float r = 0, g = 0, b = 0, tot = 0;
+            for (size_t j = 0; j < sy.w.size(); ++j) {
+                const int row = std::clamp(sy.first + static_cast<int>(j), 0, sh - 1);
+                const unsigned char* p = src + (static_cast<size_t>(row) * sw) * 4;
+                for (size_t i = 0; i < sx.w.size(); ++i) {
+                    const int col = std::clamp(sx.first + static_cast<int>(i), 0, sw - 1);
+                    const float wgt = sy.w[j] * sx.w[i];
+                    const unsigned char* q = p + static_cast<size_t>(col) * 4;
+                    r += q[0] * wgt; g += q[1] * wgt; b += q[2] * wgt; tot += wgt;
+                }
+            }
+            d[x * 4 + 0] = static_cast<unsigned char>(std::lround(r / tot));
+            d[x * 4 + 1] = static_cast<unsigned char>(std::lround(g / tot));
+            d[x * 4 + 2] = static_cast<unsigned char>(std::lround(b / tot));
+            d[x * 4 + 3] = 255;
+        }
+    }
+}
+
+// The first output pixel whose centre lies at or after network-scale coordinate `edge` (f = network pixels per output pixel).
+static int firstOwned(double edge, double f) { return static_cast<int>(std::ceil(edge / f - 0.5)); }
+
 // Upscales `input` into `output` tile by tile, reporting each finished tile to `listener`. The network enlarges by
-// `scale`; the output is `outScale` x input (outScale divides scale: each tile is box-averaged down by scale/outScale).
+// `scale`; the output is `outScale` x input (outScale divides scale: each tile is box-averaged down by scale/outScale),
+// or, with outScale 0, exactly the output bitmap's size - any factor up to `scale` (areaResample).
 JNIEXPORT jint JNICALL
 Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, jlong handle, jobject input,
                                                           jobject output, jint scale, jint outScale, jint tile, jobject listener) {
     auto* u = reinterpret_cast<Upscaler*>(handle);
     // A fixed-size net decides the tile itself: its input minus the context on both sides.
     if (u && u->fixedW > 0) tile = std::min(u->fixedW, u->fixedH) - 2 * kPrepadding;
-    if (!u || scale < 1 || outScale < 1 || scale % outScale != 0 || tile < 16) return kErrBadArgs;
-    const int shrink = scale / outScale;
+    const bool fractional = outScale == 0;
+    if (!u || scale < 1 || outScale < 0 || tile < 16 || (!fractional && scale % outScale != 0)) return kErrBadArgs;
+    const int shrink = fractional ? 0 : scale / outScale;
 
     AndroidBitmapInfo inInfo{}, outInfo{};
     if (AndroidBitmap_getInfo(env, input, &inInfo) < 0 || AndroidBitmap_getInfo(env, output, &outInfo) < 0)
         return kErrBitmap;
-    if (inInfo.format != ANDROID_BITMAP_FORMAT_RGBA_8888 || outInfo.format != ANDROID_BITMAP_FORMAT_RGBA_8888 ||
-        outInfo.width != inInfo.width * outScale || outInfo.height != inInfo.height * outScale)
+    if (inInfo.format != ANDROID_BITMAP_FORMAT_RGBA_8888 || outInfo.format != ANDROID_BITMAP_FORMAT_RGBA_8888)
         return kErrBadArgs;
+    if (fractional ? (outInfo.width < 1 || outInfo.height < 1 || outInfo.width > inInfo.width * scale ||
+                      outInfo.height > inInfo.height * scale)
+                   : (outInfo.width != inInfo.width * outScale || outInfo.height != inInfo.height * outScale))
+        return kErrBadArgs;
+    // Fractional: network-scale pixels per output pixel on each axis (>= 1).
+    const double fx = fractional ? static_cast<double>(inInfo.width) * scale / outInfo.width : 0;
+    const double fy = fractional ? static_cast<double>(inInfo.height) * scale / outInfo.height : 0;
 
     void* inPixels = nullptr;
     void* outPixels = nullptr;
@@ -336,6 +398,25 @@ Java_com_kriniks_kartun_engine_NcnnUpscaler_nativeUpscale(JNIEnv* env, jclass, j
             const float rmean[3] = {kRoundMean, kRoundMean, kRoundMean};
             const float denorm[3] = {kDenorm, kDenorm, kDenorm};
             out.substract_mean_normalize(rmean, denorm);
+
+            if (fractional) {
+                // The whole padded tile as pixels; its output cells are the pixels whose centres fall inside the tile.
+                tilePx.resize(static_cast<size_t>(out.w) * out.h * 4);
+                out.to_pixels(tilePx.data(), ncnn::Mat::PIXEL_RGB2RGBA, out.w * 4);
+                const int dx0 = firstOwned(static_cast<double>(tx) * scale, fx);
+                const int dx1 = tx + tw >= w ? static_cast<int>(outInfo.width) : firstOwned(static_cast<double>(tx + tw) * scale, fx);
+                const int dy0 = firstOwned(static_cast<double>(ty) * scale, fy);
+                const int dy1 = ty + th >= h ? static_cast<int>(outInfo.height) : firstOwned(static_cast<double>(ty + th) * scale, fy);
+                areaResample(tilePx.data(), out.w, out.h, static_cast<double>(x0) * scale, static_cast<double>(y0) * scale,
+                             w * scale, h * scale, fx, fy, static_cast<unsigned char*>(outPixels), outInfo.stride,
+                             std::max(dx0, 0), std::min(dx1, static_cast<int>(outInfo.width)),
+                             std::max(dy0, 0), std::min(dy1, static_cast<int>(outInfo.height)));
+                ++done;
+                LOGI("tile %d/%d %dx%d", done, total, in.w, in.h);
+                if (onTile && !env->CallBooleanMethod(listener, onTile, done, total)) rc = kErrCancelled;
+                if (env->ExceptionCheck()) { env->ExceptionClear(); rc = kErrCancelled; }
+                continue;
+            }
 
             // Crop the padding away: the tile starts at (tx - x0) * scale inside `out`.
             const int ox = (tx - x0) * scale;

@@ -613,6 +613,19 @@ OPEN_ERRORS = {
            "لا تكفي ذاكرة الجهاز لفتح هذه الصورة. أغلق التطبيقات الأخرى وحاول مرة أخرى."),
 }
 
+# Over the output limit the slider's last step runs at the largest factor that fits (plans/08 step 9; the owner
+# 2026-10-16 ≈ 16:10 «да, правильно») - scale_limited: %1$s the limit in MP, %2$d the step, %3$s the factor, %4$s its size.
+SCALE_LIMITED = {
+    "es": "Límite: %1$s MP. %2$d× no cabe para esta foto; cabe %3$s× (%4$s)",
+    "pt": "Limite: %1$s MP. %2$d× não cabe para esta foto; cabe %3$s× (%4$s)",
+    "fr": "Limite : %1$s Mpx. %2$d× ne tient pas pour cette photo ; %3$s× tient (%4$s)",
+    "de": "Grenze: %1$s MP. %2$d× passt für dieses Foto nicht; %3$s× passt (%4$s)",
+    "zh": "上限 %1$s 百万像素。此照片放不下 %2$d×，可以 %3$s×（%4$s）",
+    "hi": "सीमा — %1$s MP। इस फ़ोटो के लिए %2$d× नहीं समाएगा; %3$s× हो सकता है (%4$s)",
+    "bn": "সীমা — %1$s MP। এই ছবির জন্য %2$d× আঁটবে না; %3$s× সম্ভব (%4$s)",
+    "ar": "الحد %1$s ميغابكسل. لا يتسع %2$d× لهذه الصورة؛ يمكن %3$s× (%4$s)",
+}
+
 # The model card lines (model_purpose_*) and the (i) texts (model_info_*) of every catalogue model, one data file for the 8
 # languages (tools/model-texts.json, `[AI]` like the rest; sources researches/11 and 12). Its keys must be exactly the
 # model_purpose_* / model_info_* names of values/strings.xml - a key missing on either side reddens here.
@@ -677,6 +690,7 @@ def main():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in zip(("error_not_photo", "error_incomplete", "error_no_access", "error_memory"), OPEN_ERRORS[lang]):
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
+        lines.append(f'    <string name="scale_limited">{xml_text(SCALE_LIMITED[lang])}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         body = "\n".join(lines)

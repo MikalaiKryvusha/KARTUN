@@ -177,4 +177,5 @@
     <string name="error_incomplete">ছবির ফাইলটি অসম্পূর্ণ — মনে হচ্ছে এটি পুরোপুরি ডাউনলোড হয়নি।</string>
     <string name="error_no_access">ফাইলটিতে প্রবেশাধিকার নেই। ছবিটি ক্লাউডে থাকলে আগে সেটি ফোনে ডাউনলোড করুন।</string>
     <string name="error_memory">এই ছবি খোলার মতো যথেষ্ট মেমরি ডিভাইসে নেই। অন্য অ্যাপ বন্ধ করে আবার চেষ্টা করুন।</string>
+    <string name="scale_limited">সীমা — %1$s MP। এই ছবির জন্য %2$d× আঁটবে না; %3$s× সম্ভব (%4$s)</string>
 </resources>

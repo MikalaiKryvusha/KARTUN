@@ -106,11 +106,16 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     private val _progress = MutableStateFlow(Progress())
     val progress: StateFlow<Progress> = _progress
 
-    val scale get() = SCALES[scaleIndex]
-    /** The result of the chosen scale fits the output limit (plans/04 step 1). */
-    val scaleSupported get() = source?.let { fits(it.megapixels, scale) } ?: false
-    /** The largest scale of the slider whose result fits the limit for the picked photo (for the notice). */
-    val largestFittingScale get() = source?.let { s -> SCALES.lastOrNull { fits(s.megapixels, it) } } ?: SCALES.first()
+    /** The last slider step for the picked photo: the first step whose result does not fit the output limit (it runs at
+     *  the largest size that fits - [limited]); the steps above it would give the same result and are not offered. */
+    val scaleCap get() = source?.let { s -> SCALES.indexOfFirst { !fits(s.megapixels, it) }.takeIf { it >= 0 } } ?: SCALES.lastIndex
+    /** The scale the run uses: the chosen step, at most [scaleCap] (the chosen step itself stays remembered). */
+    val scale get() = SCALES[minOf(scaleIndex, scaleCap)]
+    /** The result size when [scale] is over the output limit - «4× не поместится, можем 3,2×» (plans/08 step 9); null
+     *  when the scale fits. [TESTED: 2026-10-16 · Titan 50 MP - testcases/reports/2026-10-16_fractional_scale_titan.md] */
+    val limited get() = source?.let { limitedSize(it.width, it.height, scale) }
+    /** A photo is open (every step runs: over the limit at the largest size that fits). */
+    val scaleSupported get() = source != null
 
     // One preferences file for the learned speed AND the remembered settings (its name predates the settings).
     private val prefs = app.getSharedPreferences(UpscaleEngine.PREFS, Context.MODE_PRIVATE)
@@ -426,7 +431,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val outcome = withContext(Dispatchers.IO) {
                 runCatching {
-                    ResultStore.saveToGallery(getApplication(), res.full, ResultStore.fileName(src.name, res.model.id, res.scale, format.ext), format, quality, renderCancel)
+                    ResultStore.saveToGallery(getApplication(), res.full, ResultStore.fileName(src.name, res.model.id, scaleLabel(src, res), format.ext), format, quality, renderCancel)
                 }.onFailure { if (it !is ResultStore.RenderCancelled) Log.w(TAG, "save failed", it) }
             }
             saving = false
@@ -453,7 +458,7 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         saving = true
         renderCancel.set(false)
         return withContext(Dispatchers.IO) {
-            runCatching { ResultStore.shareCopy(getApplication(), res.full, ResultStore.fileName(src.name, res.model.id, res.scale, "png"), renderCancel) }
+            runCatching { ResultStore.shareCopy(getApplication(), res.full, ResultStore.fileName(src.name, res.model.id, scaleLabel(src, res), "png"), renderCancel) }
                 .onFailure { if (it !is ResultStore.RenderCancelled) Log.w(TAG, "share copy failed", it) }.getOrNull()
         }.also { saving = false }
     }
@@ -552,6 +557,25 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
         /** The result of a [mp]-megapixel photo at [scale] fits the output limit. */
         fun fits(mp: Float, scale: Int) = mp * scale * scale <= MAX_OUTPUT_MP
+
+        /**
+         * The result size when [scale] does not fit the output limit: the largest w × h of the photo's proportions
+         * within MAX_OUTPUT_MP (plans/08 step 9 - «4× для этого фото не поместится, можем 3,2×»); null when [scale]
+         * fits. [TESTED: 2026-10-16 · LimitedSizeTest; Titan 50 MP - testcases/reports/2026-10-16_fractional_scale_titan.md]
+         */
+        fun limitedSize(w: Int, h: Int, scale: Int): Pair<Int, Int>? {
+            if (fits(w.toFloat() * h / 1_000_000f, scale)) return null
+            val f = kotlin.math.sqrt(MAX_OUTPUT_MP * 1_000_000.0 / (w.toDouble() * h))
+            return (w * f).toInt().coerceAtLeast(1) to (h * f).toInt().coerceAtLeast(1)
+        }
+
+        /** The factor of a limited result, as the slider shows it («3,2×»): one decimal, rounded down. */
+        fun limitedFactor(w: Int, limitedW: Int): Float = kotlin.math.floor(limitedW * 10f / w) / 10f
+
+        /** The scale in a file name: «4», or «3.2» when the result was limited by the output size. */
+        fun scaleLabel(src: Source, res: Result): String =
+            if (res.full.width == src.width * res.scale) "${res.scale}"
+            else String.format(java.util.Locale.ROOT, "%.1f", limitedFactor(src.width, res.full.width))
 
         /** The scale of the image the second 4× pass works on: 2 for 8×, 4 for 16×; null for one-pass scales. */
         fun secondPassInput(scale: Int): Int? = if (scale > ENGINE_SCALE) scale / ENGINE_SCALE else null
