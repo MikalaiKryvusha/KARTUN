@@ -109,10 +109,27 @@ every file's SHA-256 before using it. The models belong to their authors; licenc
 Measured on a HEADWOLF Titan 1 tablet: MediaTek MT8792, Mali-G615 MC6 graphics, Vulkan 1.3, Android 16. A 960 × 1280
 photo enlarged 8× by ClearReality V1 takes 25 s.
 
-KARTUN also runs a transformer: 4x UltraSharp V2 by Kim2091, a DAT2 network, works entirely on the graphics chip through
-Vulkan. Its output differs from the original PyTorch network by 66.6 dB PSNR; the 960 × 1280 photo takes about 29
-minutes. On the way we found an out-of-bounds read in an ncnn attention shader; the fix lives in KARTUN's engine,
-[MikalaiKryvusha/ncnn](https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1) — a custom modified and improved fork of ncnn.
+#### Under the hood: the first DAT2 transformer on ncnn
+
+KARTUN is the first to run a window-attention transformer on ncnn: 4x UltraSharp V2 by Kim2091, a DAT2 network, works
+entirely on the phone's graphics chip through Vulkan. ncnn could not run this family (DAT, SwinIR, HAT) — its issues
+[#3542](https://github.com/Tencent/ncnn/issues/3542) and [#4299](https://github.com/Tencent/ncnn/issues/4299) are open
+since 2022, and no ncnn upscaler ships such a model. What it took:
+
+1. **6-D tensors folded into 4-D.** DAT cuts the picture into attention windows with 6-dimensional reshapes; ncnn keeps
+   at most 4 dimensions. We rewrote the window cutting and assembly in ≤ 4 dimensions without changing the maths — each
+   step checked against the original PyTorch network to 1e-5.
+2. **Attention on the GPU.** 126 attention layers as ncnn's Vulkan SDPA, the shift mask built on the fly (as a constant
+   it blew the file up to 942 MB); linear layers turned into 1 × 1 convolutions. Together with the fix in point 4, a
+   128 px tile went from 267 s to 11 s on a Mali-G615.
+3. **fp16 weights:** an 84 MB model instead of the original 140 MB.
+4. **A bug fixed in ncnn itself:** an attention shader read past its buffer; desktop GPUs forgive it, Mali writes
+   nothing. We found it by layer-by-layer comparison with the PC and fixed it in KARTUN's engine,
+   [MikalaiKryvusha/ncnn](https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1) — a custom modified and improved
+   fork of ncnn ([report: ncnn #7120](https://github.com/Tencent/ncnn/issues/7120)).
+
+The result on the phone differs from the original PyTorch network by 66.6 dB PSNR — the same picture to 0.002 of a
+pixel value. A 960 × 1280 photo takes about 29 minutes. The whole story: [researches/08](researches/08_dat2_on_ncnn.md).
 
 <a name="en-4"></a>
 ### 4. Privacy
@@ -301,10 +318,27 @@ SHA-256 каждого файла перед работой. Модели при
 Замер на планшете HEADWOLF Titan 1: MediaTek MT8792, графика Mali-G615 MC6, Vulkan 1.3, Android 16. Фото 960 × 1280,
 увеличенное в 8 раз моделью ClearReality V1, считается 25 с.
 
-KARTUN запускает и трансформер: 4x UltraSharp V2 автора Kim2091, сеть DAT2, целиком работает на видеочипе через Vulkan.
-Её результат отличается от оригинальной нейросети PyTorch на 66,6 дБ PSNR; фото 960 × 1280 считается около 29 минут.
-По дороге мы нашли в шейдере внимания ncnn чтение за краем буфера; исправление живёт в движке KARTUN —
-[MikalaiKryvusha/ncnn](https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1), кастомном модифицированном и улучшенном форке ncnn.
+#### Под капотом: первый трансформер DAT2 на ncnn
+
+KARTUN первым запустил на ncnn трансформер с оконным вниманием: 4x UltraSharp V2 автора Kim2091, сеть DAT2, целиком
+работает на видеочипе телефона через Vulkan. Это семейство (DAT, SwinIR, HAT) ncnn запускать не умел — его тикеты
+[#3542](https://github.com/Tencent/ncnn/issues/3542) и [#4299](https://github.com/Tencent/ncnn/issues/4299) открыты с
+2022 года, и ни один апскейлер на ncnn такой модели не возит. Что для этого понадобилось:
+
+1. **6-мерные тензоры свёрнуты в 4-мерные.** DAT режет картинку на окна внимания 6-мерными reshape, а ncnn держит не
+   больше 4 измерений. Мы переписали нарезку окон и сборку в ≤ 4 измерениях, не меняя математику, — каждый шаг сверен с
+   исходной сетью PyTorch с точностью 1e-5.
+2. **Внимание на видеочипе.** 126 слоёв внимания — на Vulkan-слое SDPA ncnn, маска сдвига собирается на ходу (константой
+   она раздувала файл до 942 МБ); линейные слои стали свёртками 1 × 1. Вместе с исправлением из пункта 4 кусок 128 точек
+   на Mali-G615 ускорился с 267 до 11 с.
+3. **Веса в fp16:** модель весит 84 МБ вместо исходных 140 МБ.
+4. **Исправлена ошибка в самом ncnn:** шейдер внимания читал за краем своего буфера; видеокарты ПК это прощают, а Mali
+   не пишет ничего. Мы нашли её сверкой слой за слоем с ПК и исправили в движке KARTUN —
+   [MikalaiKryvusha/ncnn](https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1), кастомном модифицированном и
+   улучшенном форке ncnn ([отчёт: ncnn #7120](https://github.com/Tencent/ncnn/issues/7120)).
+
+Результат на телефоне отличается от оригинальной нейросети PyTorch на 66,6 дБ PSNR — та же картинка с точностью до 0,002
+значения точки. Фото 960 × 1280 считается около 29 минут. Вся история — [researches/08](researches/08_dat2_on_ncnn.md).
 
 <a name="ru-4"></a>
 ### 4. Приватность
