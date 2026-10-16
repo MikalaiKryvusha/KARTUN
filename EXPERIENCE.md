@@ -57,7 +57,7 @@
 >      claim-before-evidence, owner-decision-not-applied, text-in-agents-world,
 >      etalon-from-dirty-tree, shell-lied, escaping-layer, twins-missed,
 >      field-dropped-in-rebuild, platform-layer-unseen, silent-noop-edit, replace-crossed-scope, stand-left-dirty, shallow-scan,
->      proxy-for-the-thing, stale-artifact -->
+>      proxy-for-the-thing, stale-artifact, guessed-instead-of-looked -->
 >
 > | Class slug | The failure it names |
 > |---|---|
@@ -79,6 +79,7 @@
 | `shallow-scan` | a selection walked less of the tree than the action that follows it (top-level `ls` before a recursive delete) |
 | `proxy-for-the-thing` | a check on a stand-in (the desktop GPU, the PC) taken as the check on the target (the phone's GPU) |
 | `stale-artifact` | a build or file believed to carry a change that it does not carry (timestamps, caches) |
+| `guessed-instead-of-looked` | a cause hunted on a guessed axis while the evidence (a journal, a thread name) already named it |
 >
 > The `#tags` are **trigger-tags**: before a task, grep by the task's tags and QUOTE the relevant
 > lessons in your report (id + one line) — or state "no relevant lessons". An unquoted recall is
@@ -89,6 +90,39 @@
 ## Entries
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
+
+### EXP-0032 · 2026-10-16 · ✅ · #docs #agent-api #fresh-agent
+class: proxy-for-the-thing
+**Context:** plans/07 step 10 — is `docs/agent-api.md` enough for an agent that never saw the repo?
+**Tried / did:** a clean subagent got only the doc, the CLI and the serial: «get the device info, upscale this PNG 4×».
+**Result:** ✅ it worked — and its FIRST upscale lost the result: `--out` into a missing folder, the pull failed, and the CLI
+still wiped the device copy; `ok:false` next to `state:"succeeded"` was nowhere in the doc. Every one of these had passed
+my own runs, because I always gave an existing folder.
+**Lesson:** the author's runs prove the paths the author walks; a doc for strangers is checked by a stranger — a clean
+instance with the doc alone — and every question or slip it has becomes a fix and a rerun.
+**Repro:** `node tools/kartun-cli.mjs upscale <png> --out <missing-dir>/x.png` → `ok:true`, the folder made; `--out <a file>/x.png` → `pull_failed`, the device copy kept.
+**Trigger:** a document or tool meant for other agents or people is about to be called done.
+**Not for:** internal notes only the author reads.
+none-cheap: the check is a clean model's reading, no script can be the stranger; the CLI paths it found are now handled in tools/kartun-cli.mjs
+
+### EXP-0031 · 2026-10-16 · ❌→✅ · #android #permission #adb #agent-api
+class: proxy-for-the-thing
+**Context:** criterion A7 — another app must not start the agent door (`android:permission="android.permission.DUMP"`).
+**Tried / did:** `adb shell run-as com.kriniks.kartun.debug am start-foreground-service …` against our own door (step 1),
+then against the release build's door from the debug app (step 9).
+**Result:** ❌ both «refusals» tested something else: `run-as <pkg>` runs as THAT package's uid, and a component's permission
+never blocks its own uid (the refusal was the background-FGS rule); the debug app could not even SEE the release package
+(«Error: Not found», Android package visibility). ✅ a probe app of our own with `<queries>` for KARTUN, started into the
+foreground: `Permission Denial … uid=10302 requires android.permission.DUMP`.
+**Lesson:** a permission guard is proved only by a caller of a DIFFERENT uid that can SEE the target and is otherwise
+allowed to make the call; read the refusal text — it names the layer that refused.
+**Repro:** `.\gradlew.bat :probe:assembleDebug`; `adb install probe/build/outputs/apk/debug/probe-debug.apk`; `adb shell am start -W -n com.kriniks.kartun.probe/.ProbeActivity`; `adb logcat -d | grep A7PROBE`; `adb uninstall com.kriniks.kartun.probe`.
+**Trigger:** writing a check that «app X cannot call Y».
+**Not for:** checks of our own app's behaviour.
+mechanized: probe/ (the test-only caller module)
+
+Also found in step 1: `adb push` keeps the PC file's mtime — a fresh input arrived dated two days back; the agent folder's
+24 h sweep keys on the app-written status file for that reason (agent/AgentService.kt `sweep`).
 
 ### EXP-0030 · 2026-10-16 · ❌ · #titan #owner #device #lock
 class: stand-left-dirty
