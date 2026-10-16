@@ -184,21 +184,6 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
      *  a property below it is still null there (the launch crash of 2026-10-16 20:06 on the Redmi). [NOT-TESTED] */
     var benchRunning by mutableStateOf(false); private set
 
-    // GOAL.md §3: «Сохранять настройки между запусками» - the GPU switch, the model, the scale, the save format and quality
-    // come back as the user left them.
-    init {
-        useGpu = prefs.getBoolean(PREF_GPU, true)
-        migrateModelPrefs()
-        refreshOnDevice()
-        model = catalogue.byId(prefs.getString(PREF_MODEL, null))?.takeIf { it.id in onDevice } ?: catalogue.default
-        // A model picked in «Все модели» by an older build was not put on the cards: it takes the top one now.
-        if (model !in recentModels) putOnTop(model)
-        scaleIndex = prefs.getInt(PREF_SCALE, DEFAULT_SCALE_INDEX).coerceIn(0, SCALES.lastIndex)
-        saveFormat = ResultStore.Format.entries.firstOrNull { it.name == prefs.getString(PREF_FORMAT, null) } ?: ResultStore.Format.Png
-        saveQuality = prefs.getInt(PREF_QUALITY, DEFAULT_QUALITY)
-        startBenchIfNeeded()
-    }
-
     /** True while battery saver holds the first-launch check back: the home screen warns and offers to turn it off (the
      *  owner, 2026-10-16 ≈ 22:1x: «предупреждать, что он включен на устройстве. Предлагается выключить, а затем запустить
      *  бенч»; ≈ 22:1x «ЗАПУСКАТЬ!» - «Замерить так» runs it anyway). In saver the GPU ran the short check 1.7× slower while a
@@ -575,6 +560,25 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         // Release the net on its own thread (ncnn/Vulkan objects must not cross threads). The thread itself stays: it is
         // the process's one engine thread, and stopping it is what aborted the next screen's model load (bugs/01).
         UpscaleEngine.releaseLater()
+    }
+
+    // GOAL.md §3: «Сохранять настройки между запусками» - the GPU switch, the model, the scale, the save format and quality
+    // come back as the user left them.
+    // The init block stands LAST in the class, below every property: Kotlin runs property initializers and init blocks in
+    // source order, so a property declared below `init` is still null while init runs. That killed the first launch twice on
+    // 2026-10-16 - `benchRunning` (20:06, Redmi) and `benchSaver` (22:32, RC4 on the Titan and the Redmi, `pm clear` +
+    // launch: NPE in the ViewModel constructor). Guard: InitLastGuardTest. [NOT-TESTED]
+    init {
+        useGpu = prefs.getBoolean(PREF_GPU, true)
+        migrateModelPrefs()
+        refreshOnDevice()
+        model = catalogue.byId(prefs.getString(PREF_MODEL, null))?.takeIf { it.id in onDevice } ?: catalogue.default
+        // A model picked in «Все модели» by an older build was not put on the cards: it takes the top one now.
+        if (model !in recentModels) putOnTop(model)
+        scaleIndex = prefs.getInt(PREF_SCALE, DEFAULT_SCALE_INDEX).coerceIn(0, SCALES.lastIndex)
+        saveFormat = ResultStore.Format.entries.firstOrNull { it.name == prefs.getString(PREF_FORMAT, null) } ?: ResultStore.Format.Png
+        saveQuality = prefs.getInt(PREF_QUALITY, DEFAULT_QUALITY)
+        startBenchIfNeeded()
     }
 
     companion object {

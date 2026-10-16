@@ -92,6 +92,20 @@
 
 <!-- class-ok: claim-before-evidence — re-checked 2026-10-14 for the whole class: the cheap halves are mechanized (moments - tools/stamp-guard.mjs, EXP-0005; icon geometry - tools/make-icon.py, EXP-0006); what is left are counts and states written in prose and chat, with no single producing tool a guard could watch - the check is the Repro command run in the same turn as the claim -->
 
+### EXP-0035 · 2026-10-16 · ❌→✅ · #crash #kotlin #release #guard
+class: fix-without-guard
+**Context:** RC4 final round; the first launch after `pm clear` died in the `UpscaleViewModel` constructor (bugs/04).
+**Tried / did:** at 20:06 the same class (a property below `init`, null while init runs) was fixed by moving ONE field and a
+comment; a later commit added `benchSaver` below `init`, marked `[NOT-TESTED]`, and RC4 was frozen on top of it.
+**Result:** ❌ the release candidate crashed on every fresh install (Titan, Redmi). ✅ `init` moved to the end of the class +
+`InitLastGuardTest` (red on the RC4 source).
+**Lesson:** the second hit of one class in a day means the first fix closed the instance, not the class — close it by form and
+a guard on the spot; and a `[NOT-TESTED]` commit is never frozen into an RC without `pm clear` + launch on one device.
+**Repro:** `git show 3c8ca15:app/src/main/kotlin/com/kriniks/kartun/UpscaleViewModel.kt` → `benchSaver` at line 206, `init` at 189.
+**Trigger:** writing an `init` block, or freezing an RC over a `[NOT-TESTED]` commit.
+**Not for:** —
+mechanized: app/src/test/kotlin/com/kriniks/kartun/InitLastGuardTest.kt
+
 ### EXP-0034 · 2026-10-16 · ❌→✅ · #owner-word #ui #layout
 class: owner-word-retold
 **Context:** the processing panel; the owner had asked (2026-10-15 ≈ 12:35) «Кнопку отменить меньше, ниже» · «чтобы высвободить
