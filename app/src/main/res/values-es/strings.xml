@@ -140,4 +140,9 @@
     <string name="error_model_downloaded">No se pudo cargar el modelo. Elimínalo en «Todos los modelos» y descárgalo de nuevo.</string>
     <string name="info_model_list">• Esta pantalla muestra los dos modelos que usaste por última vez.\n• «Todos los modelos» lista cada modelo: para qué sirve, su autor, licencia y tamaño. Descarga los que necesites; funcionan sin red.</string>
     <string name="agent_job_progress">Tarea del agente · %1$d%%</string>
+    <string name="waiting_title">En cola</string>
+    <string name="waiting_text">KARTUN está ocupado con una tarea de la API. Tu foto es la siguiente.</string>
+    <string name="metric_waiting">Espera</string>
+    <string name="metric_work">Trabajo</string>
+    <string name="stop_api_job">Detener la tarea de la API</string>
 </resources>

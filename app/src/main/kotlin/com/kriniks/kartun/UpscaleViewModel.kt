@@ -51,8 +51,16 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
 
     class Result(val full: Bitmap, val display: Bitmap, val before: Bitmap, val ms: Long, val gpu: Boolean, val model: Model, val scale: Int)
 
-    /** Tile progress of the running job; [total] is 0 until the engine reports its first tile. */
-    data class Progress(val done: Int = 0, val total: Int = 0, val elapsedMs: Long = 0, val estimateMs: Long = 0, val gpu: Boolean = true)
+    /** Tile progress of the running job; [total] is 0 until the engine reports its first tile. [started] turns true when the
+     *  engine takes this run - before that it may wait behind a job of the API (UpscaleEngine.apiBusy). */
+    data class Progress(val done: Int = 0, val total: Int = 0, val elapsedMs: Long = 0, val estimateMs: Long = 0, val gpu: Boolean = true,
+        val started: Boolean = false)
+
+    /** True while a job of the API holds the engine (the Working screen's «Ждёт очереди», variant C). */
+    val apiBusy: StateFlow<Boolean> = UpscaleEngine.apiBusy
+
+    /** «Остановить задание по API» on the Working screen. */
+    fun stopApiJob() = UpscaleEngine.stopApiJob()
 
     var screen by mutableStateOf(Screen.Home); private set
     var source by mutableStateOf<Source?>(null); private set
@@ -334,13 +342,17 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         // Keep the process alive and show the notification while the network works (plans/03 slice 2).
         UpscaleService.start(getApplication())
         job = viewModelScope.launch {
-            val t0 = SystemClock.elapsedRealtime()
+            // The run's clock starts when the engine takes it, never while it waits behind an API job: the wait is shown
+            // apart («Ждёт») and stays out of the result's time (the owner's variant C, 2026-10-16).
+            var t0 = SystemClock.elapsedRealtime()
+            var started = false
             val outcome = runCatching {
                 // The shared engine runs the passes (UpscaleEngine.run); the screen only maps its progress and the result.
                 val out = UpscaleEngine.run(
                     getApplication(), src.bitmap, chosen, target, useGpu,
                     onProgress = { done, total, gpu ->
-                        publish(_progress.value.copy(done = done, total = total, elapsedMs = SystemClock.elapsedRealtime() - t0, gpu = gpu))
+                        if (!started) { started = true; t0 = SystemClock.elapsedRealtime() }
+                        publish(_progress.value.copy(done = done, total = total, elapsedMs = SystemClock.elapsedRealtime() - t0, gpu = gpu, started = true))
                     },
                     cancelled = { ProcessingState.cancelRequested },
                 )

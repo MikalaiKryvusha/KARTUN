@@ -138,4 +138,9 @@
     <string name="error_model_downloaded">मॉडल लोड नहीं हो सका। इसे «सभी मॉडल» में हटाएँ और फिर से डाउनलोड करें।</string>
     <string name="info_model_list">• इस स्क्रीन पर आपके पिछली बार इस्तेमाल किए गए दो मॉडल हैं।\n• «सभी मॉडल» में हर मॉडल है: किस काम का है, लेखक, लाइसेंस और आकार। ज़रूरी मॉडल डाउनलोड करें; वे बिना नेटवर्क के चलते हैं।</string>
     <string name="agent_job_progress">एजेंट का काम · %1$d%%</string>
+    <string name="waiting_title">कतार में</string>
+    <string name="waiting_text">KARTUN अभी API से मिले काम में व्यस्त है। आपकी फ़ोटो अगली है।</string>
+    <string name="metric_waiting">इंतज़ार</string>
+    <string name="metric_work">काम</string>
+    <string name="stop_api_job">API का काम रोकें</string>
 </resources>

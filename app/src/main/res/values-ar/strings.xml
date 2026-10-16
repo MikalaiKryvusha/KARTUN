@@ -146,6 +146,11 @@
     <string name="error_model_downloaded">تعذّر تحميل النموذج. احذفه من «كل النماذج» ثم نزّله من جديد.</string>
     <string name="info_model_list">• تعرض هذه الشاشة آخر نموذجين استخدمتهما.\n• تسرد «كل النماذج» كل نموذج: الغرض منه ومؤلفه وترخيصه وحجمه. نزّل ما تحتاجه؛ تعمل النماذج دون شبكة.</string>
     <string name="agent_job_progress">مهمة الوكيل · %1$d%%</string>
+    <string name="waiting_title">في الانتظار</string>
+    <string name="waiting_text">KARTUN مشغول بمهمة عبر الـ API. صورتك هي التالية.</string>
+    <string name="metric_waiting">انتظار</string>
+    <string name="metric_work">العمل</string>
+    <string name="stop_api_job">إيقاف مهمة الـ API</string>
     <string name="arrow">←</string>
     <string name="size_to">%1$s ← %2$s</string>
 </resources>

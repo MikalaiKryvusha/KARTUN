@@ -76,6 +76,8 @@ fun PrimaryButton(text: String, icon: Int?, onClick: () -> Unit, modifier: Modif
 /** Width of a small «Отменить» that must not stretch its card (the render card, the processing panel B1): 104 dp after the
  *  owner's «Кнопку отменить меньше, ниже» · «чтобы высвободить место для заголовка» (chat 2026-10-15 ≈ 12:35 +03:00). */
 val COMPACT_BUTTON = 104.dp
+/** «Остановить задание по API» on the Working screen: small and to the left (mockup C, design/processing-waiting.html). */
+val STOP_API_BUTTON = 260.dp
 
 /** Outlined (.btn.ghost) or filled-dark (.btn.soft) secondary pill button; it fills its width - pass a width to keep it small. */
 @Composable

@@ -138,4 +138,9 @@
     <string name="error_model_downloaded">Das Modell konnte nicht geladen werden. Lösche es unter „Alle Modelle“ und lade es erneut herunter.</string>
     <string name="info_model_list">• Dieser Bildschirm zeigt die zwei zuletzt benutzten Modelle.\n• „Alle Modelle“ listet jedes Modell: wofür es gut ist, Autor, Lizenz und Größe. Lade die benötigten herunter; sie arbeiten ohne Netz.</string>
     <string name="agent_job_progress">Agent-Auftrag · %1$d%%</string>
+    <string name="waiting_title">Wartet</string>
+    <string name="waiting_text">KARTUN bearbeitet gerade einen Auftrag über die API. Ihr Foto ist als Nächstes dran.</string>
+    <string name="metric_waiting">Wartet</string>
+    <string name="metric_work">Arbeit</string>
+    <string name="stop_api_job">API-Auftrag stoppen</string>
 </resources>

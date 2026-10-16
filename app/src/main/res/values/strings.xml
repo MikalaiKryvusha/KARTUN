@@ -125,6 +125,12 @@
     <string name="notif_done_text">Tap to compare before and after</string>
     <!-- The agent door (plans/07): an AI agent's job running over adb. -->
     <string name="agent_job_progress">Agent job · %1$d%%</string>
+    <!-- The Working screen while an API job holds the engine (variant C of design/processing-waiting.html). -->
+    <string name="waiting_title">Waiting in line</string>
+    <string name="waiting_text">KARTUN is busy with a job over the API. Your photo is next.</string>
+    <string name="metric_waiting">Waiting</string>
+    <string name="metric_work">Work</string>
+    <string name="stop_api_job">Stop the API job</string>
     <!-- [OWNER] interview #004 (the permission row and its window; the window text follows his comment). -->
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notifications_on">Allowed: progress and “Your photo is ready”</string>

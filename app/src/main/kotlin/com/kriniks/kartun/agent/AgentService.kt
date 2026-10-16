@@ -165,7 +165,7 @@ class AgentService : Service() {
                     // At most every STATUS_EVERY_MS while running (the engine thread calls this once per tile).
                     if (now - last >= STATUS_EVERY_MS || done == total) { last = now; write(current); showProgress(current.progress) }
                 },
-                cancelled = { cancel.get() })
+                cancelled = { cancel.get() }, fromApi = true)
         } catch (e: UpscaleCancelledException) {
             write(current.copy(state = JobState.Canceled)); return
         } catch (e: UpscaleEngine.OutputTooBig) {

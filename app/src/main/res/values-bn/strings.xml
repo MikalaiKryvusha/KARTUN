@@ -138,4 +138,9 @@
     <string name="error_model_downloaded">মডেল লোড করা যায়নি। «সব মডেল»-এ এটি মুছে আবার ডাউনলোড করুন।</string>
     <string name="info_model_list">• এই স্ক্রিনে আপনার শেষ ব্যবহার করা দুটি মডেল থাকে।\n• «সব মডেল»-এ প্রতিটি মডেল আছে: কী কাজে লাগে, লেখক, লাইসেন্স ও আকার। দরকারি মডেল ডাউনলোড করুন; এগুলো নেটওয়ার্ক ছাড়াই চলে।</string>
     <string name="agent_job_progress">এজেন্টের কাজ · %1$d%%</string>
+    <string name="waiting_title">সারিতে</string>
+    <string name="waiting_text">KARTUN এখন API-র একটি কাজে ব্যস্ত। আপনার ছবি পরেরটি।</string>
+    <string name="metric_waiting">অপেক্ষা</string>
+    <string name="metric_work">কাজ</string>
+    <string name="stop_api_job">API-র কাজ থামান</string>
 </resources>

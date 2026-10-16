@@ -628,6 +628,20 @@ AGENT = {"es": "Tarea del agente · %1$d%%", "pt": "Tarefa do agente · %1$d%%",
          "de": "Agent-Auftrag · %1$d%%", "zh": "代理任务 · %1$d%%", "hi": "एजेंट का काम · %1$d%%",
          "bn": "এজেন্টের কাজ · %1$d%%", "ar": "مهمة الوكيل · %1$d%%"}
 
+# The Working screen while an API job holds the engine (variant C, the owner 2026-10-16: «нужно писать, что KARTUN занят
+# заданием по API»): waiting_title, waiting_text, metric_waiting, metric_work, stop_api_job. [AI] draft, like the rest.
+WAITING_KEYS = ["waiting_title", "waiting_text", "metric_waiting", "metric_work", "stop_api_job"]
+WAITING = {
+    "es": ["En cola", "KARTUN está ocupado con una tarea de la API. Tu foto es la siguiente.", "Espera", "Trabajo", "Detener la tarea de la API"],
+    "pt": ["Na fila", "O KARTUN está ocupado com uma tarefa da API. Sua foto é a próxima.", "Espera", "Trabalho", "Parar a tarefa da API"],
+    "fr": ["En file d’attente", "KARTUN traite une tâche reçue par l’API. Votre photo est la suivante.", "Attente", "Travail", "Arrêter la tâche de l’API"],
+    "de": ["Wartet", "KARTUN bearbeitet gerade einen Auftrag über die API. Ihr Foto ist als Nächstes dran.", "Wartet", "Arbeit", "API-Auftrag stoppen"],
+    "zh": ["排队中", "KARTUN 正在处理一个 API 任务。您的照片排在下一个。", "等待", "处理", "停止 API 任务"],
+    "hi": ["कतार में", "KARTUN अभी API से मिले काम में व्यस्त है। आपकी फ़ोटो अगली है।", "इंतज़ार", "काम", "API का काम रोकें"],
+    "bn": ["সারিতে", "KARTUN এখন API-র একটি কাজে ব্যস্ত। আপনার ছবি পরেরটি।", "অপেক্ষা", "কাজ", "API-র কাজ থামান"],
+    "ar": ["في الانتظار", "KARTUN مشغول بمهمة عبر الـ API. صورتك هي التالية.", "انتظار", "العمل", "إيقاف مهمة الـ API"],
+}
+
 # Arabic reads right to left: the flow arrow and the «from → to» line point the other way.
 EXTRA = {"ar": {"arrow": "←", "size_to": "%1$s ← %2$s"}}
 
@@ -672,6 +686,9 @@ def main():
         for k, v in CATALOGUE[lang].items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         lines.append(f'    <string name="agent_job_progress">{xml_text(AGENT[lang])}</string>')
+        assert len(WAITING[lang]) == len(WAITING_KEYS), (lang, "waiting")
+        for k, v in zip(WAITING_KEYS, WAITING[lang]):
+            lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         for k, v in EXTRA.get(lang, {}).items():
             lines.append(f'    <string name="{k}">{xml_text(v)}</string>')
         body = "\n".join(lines)

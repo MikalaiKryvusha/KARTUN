@@ -129,6 +129,12 @@
     <string name="notif_done_text">Нажмите, чтобы сравнить «до» и «после»</string>
     <!-- Дверь для агентов (plans/07): задание ИИ-агента по adb. -->
     <string name="agent_job_progress">Задание агента · %1$d%%</string>
+    <!-- Экран обработки, пока движок занят заданием по API (вариант C, слово владельца 2026-10-16). -->
+    <string name="waiting_title">Ждёт очереди</string>
+    <string name="waiting_text">KARTUN занят заданием по API. Ваше фото — следующее.</string>
+    <string name="metric_waiting">Ждёт</string>
+    <string name="metric_work">Работа</string>
+    <string name="stop_api_job">Остановить задание по API</string>
     <!-- [OWNER] interview #004 (the permission row and its window; the window text follows his comment). -->
     <string name="settings_notifications">Уведомления</string>
     <string name="settings_notifications_on">Разрешены: прогресс и «Фото готово»</string>

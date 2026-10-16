@@ -16,6 +16,7 @@ import com.kriniks.kartun.UpscaleViewModel.Companion.startRate
 import com.kriniks.kartun.UpscaleViewModel.Companion.tiles
 import com.kriniks.kartun.engine.NcnnUpscaler
 import com.kriniks.kartun.engine.TileListener
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 
 /**
@@ -34,6 +35,16 @@ object UpscaleEngine {
 
     /** The process-wide engine thread, never closed (bugs/01 - see EngineThread). */
     val dispatcher = EngineThread.dispatcher
+
+    /** True while a job of the agent door (the API) holds the engine: the app's own run waits behind it and its screen says
+     *  so (variant C of design/processing-waiting.html, the owner 2026-10-16: «макет C принят … нужно писать, что KARTUN
+     *  занят заданием по API»). */
+    val apiBusy = MutableStateFlow(false)
+    // Set by «Остановить задание по API»; read between the API job's tiles, cleared when the next API job starts.
+    @Volatile private var apiStop = false
+
+    /** «Остановить задание по API»: the running API job stops after its current tile (it ends `canceled`). */
+    fun stopApiJob() { apiStop = true }
 
     // The loaded net lives on the engine thread only (touched inside withContext(dispatcher)).
     private var loaded: NcnnUpscaler? = null
@@ -71,8 +82,20 @@ object UpscaleEngine {
      */
     suspend fun run(
         ctx: Context, input: Bitmap, m: Model, scale: Int, useGpu: Boolean,
-        onProgress: (done: Int, total: Int, gpu: Boolean) -> Unit, cancelled: () -> Boolean,
+        onProgress: (done: Int, total: Int, gpu: Boolean) -> Unit, cancelled: () -> Boolean, fromApi: Boolean = false,
     ): Output = withContext(dispatcher) {
+        if (!fromApi) return@withContext runPasses(ctx, input, m, scale, useGpu, onProgress, cancelled)
+        apiStop = false
+        apiBusy.value = true
+        try { runPasses(ctx, input, m, scale, useGpu, onProgress) { cancelled() || apiStop } }
+        finally { apiBusy.value = false }
+    }
+
+    /** Engine thread only: the passes of one run (the body of [run]). */
+    private fun runPasses(
+        ctx: Context, input: Bitmap, m: Model, scale: Int, useGpu: Boolean,
+        onProgress: (done: Int, total: Int, gpu: Boolean) -> Unit, cancelled: () -> Boolean,
+    ): Output {
         val mp = input.width.toFloat() * input.height / 1_000_000f
         if (!fits(mp, scale)) throw OutputTooBig()
         // Normally already loaded by preload(); a start during loading waits for it on this same thread.
@@ -109,7 +132,7 @@ object UpscaleEngine {
         // 8×: the 2× result feeds the second 4× pass (2 x 4 = 8); 16×: the 4× result does (4 x 4 = 16).
         // [TESTED: 2026-10-15 · 8× on the Titan - testcases/reports/2026-10-15_F2_guarded_loop_device_run.md run 8, before this change]
         val full = if (mid == null) first else pass(first, ENGINE_SCALE, report(pass1, pass2)).also { first.recycle() }
-        Output(full, gpuUsed)
+        return Output(full, gpuUsed)
     }
 
     /** Decodes a photo as ARGB_8888 sRGB in software memory; throws [TooBig] above MAX_INPUT_MP. */

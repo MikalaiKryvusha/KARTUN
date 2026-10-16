@@ -136,4 +136,9 @@
     <string name="error_model_downloaded">无法加载模型。请在“所有模型”中删除后重新下载。</string>
     <string name="info_model_list">• 此页面显示你最近使用的两个模型。\n• “所有模型”列出每个模型：用途、作者、许可证和大小。下载你需要的模型，它们无需网络即可工作。</string>
     <string name="agent_job_progress">代理任务 · %1$d%%</string>
+    <string name="waiting_title">排队中</string>
+    <string name="waiting_text">KARTUN 正在处理一个 API 任务。您的照片排在下一个。</string>
+    <string name="metric_waiting">等待</string>
+    <string name="metric_work">处理</string>
+    <string name="stop_api_job">停止 API 任务</string>
 </resources>
