@@ -15,8 +15,8 @@
     <string name="setup_other_short">Другое фото</string>
     <string name="label_model">Модель</string>
     <string name="label_scale">Масштаб</string>
-    <string name="model_fast_desc">Быстрая · убирает шум и размытие</string>
-    <string name="model_max_desc">Детальная · чётче мелкие детали</string>
+    <string name="model_fast_desc">Быстрая · для фото с шумом и размытием</string>
+    <string name="model_max_desc">Детальная · для фото, где важны мелкие детали</string>
     <string name="megapixels">%1$s Мп</string>
     <!-- [AI] the output limit notice (plans/04 step 1); the two-pass line is the mockup's .warn2 text. -->
     <string name="scale_too_big">Результат больше %1$s Мп — для этого фото подойдёт масштаб до %2$d×</string>
@@ -139,16 +139,18 @@
     <string name="notif_open_settings">Открыть настройки</string>
 
     <!-- The model catalogue and «All models» (plans/05 step 5). -->
-    <string name="model_purpose_web_photo">Фото из интернета · убирает сжатие и размытие</string>
-    <string name="model_purpose_universal">Универсальная · чистые и слегка сжатые снимки</string>
-    <string name="model_purpose_clean_photo">Фото · чистые снимки с камеры</string>
-    <string name="model_purpose_photo">Фото · естественные детали</string>
-    <string name="model_purpose_balanced">Фото · баланс резкости и деталей</string>
-    <string name="model_purpose_faces">Лица, волосы, природа · быстрая</string>
-    <string name="model_purpose_anime">Аниме и рисунки</string>
-    <string name="model_purpose_anime_fast">Аниме и кадры видео · самая лёгкая</string>
-    <string name="model_purpose_sharp">Резкость · фото, арт, аниме</string>
-    <string name="model_purpose_sharpest">Больше всего деталей · очень медленная</string>
+    <!-- Purposes say what the model is FOR, the pictures fed to it (the owner, 2026-10-16 ≈ 12:52: «Нужно писать для каких
+         целей модель» · «Для чистых, но слегка сжатых снимков» · «и так в описаниях по всем моделям»). -->
+    <string name="model_purpose_web_photo">Для сжатых и размытых фото из интернета</string>
+    <string name="model_purpose_universal">Универсальная · для чистых, но слегка сжатых снимков</string>
+    <string name="model_purpose_clean_photo">Для чистых снимков с камеры</string>
+    <string name="model_purpose_photo">Для фото, где нужны естественные детали</string>
+    <string name="model_purpose_balanced">Для фото, где нужны и резкость, и детали</string>
+    <string name="model_purpose_faces">Быстрая · для лиц, волос и природы</string>
+    <string name="model_purpose_anime">Для аниме и рисунков</string>
+    <string name="model_purpose_anime_fast">Самая лёгкая · для аниме и кадров из видео</string>
+    <string name="model_purpose_sharp">Для фото, арта и аниме, которым нужна резкость</string>
+    <string name="model_purpose_sharpest">Очень медленная · для снимков, где нужно больше всего деталей</string>
     <string name="licence_commercial">Разрешена для коммерческого использования · %1$s</string>
     <string name="licence_noncommercial">Не для коммерческого использования</string>
     <string name="models_title">Модели</string>
