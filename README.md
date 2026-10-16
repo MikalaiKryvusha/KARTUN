@@ -123,7 +123,7 @@ minutes. On the way we found an out-of-bounds read in an ncnn attention shader a
 | Input | what Android itself opens (JPEG, PNG, WebP, HEIC, AVIF, GIF, BMP, ICO) plus TGA, PSD, PPM/PGM, HDR, QOI and TIFF |
 | Output | PNG (lossless), JPEG and WebP with a quality slider; a result wider than WebP's 16 383 px or JPEG's 65 500 px per side is offered reduced to fit |
 | Largest input photo | 200 MP |
-| Largest result | 536 MP |
+| Largest result | 536 MP; a scale that would go over it runs at the largest factor that fits (4× of a 50 MP photo becomes 3.2×) |
 | 8× and 16× | two passes of the network: four to sixteen times longer than 2×–4× |
 | Translations | English and Russian are written by hand; the other eight are AI translations checked by the author |
 
@@ -308,7 +308,7 @@ KARTUN запускает и трансформер: 4x UltraSharp V2 автор
 | Вход | всё, что открывает сам Android (JPEG, PNG, WebP, HEIC, AVIF, GIF, BMP, ICO), а также TGA, PSD, PPM/PGM, HDR, QOI и TIFF |
 | Выход | PNG без потерь, JPEG и WebP с ползунком качества; результат шире 16 383 точек для WebP или 65 500 для JPEG KARTUN предлагает уменьшить до допустимого размера |
 | Самое большое исходное фото | 200 Мп |
-| Самый большой результат | 536 Мп |
+| Самый большой результат | 536 Мп; масштаб, который вышел бы за предел, KARTUN делает наибольшим помещающимся (4× для фото 50 Мп становится 3,2×) |
 | 8× и 16× | два прохода нейросети: в 4–16 раз дольше, чем 2×–4× |
 | Переводы | английский и русский написаны руками; остальные восемь — переводы ИИ, проверенные автором |
 
