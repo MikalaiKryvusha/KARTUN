@@ -4,6 +4,14 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+// versionCode = the number of commits on this branch: it grows by itself with every commit, so two builds of different
+// code never share a version and an update over an older build is always seen as newer (the owner, 2026-10-16 ≈ 20:3x:
+// «ты много сборок собирал, а код версию по каждой сборке (1) не поднимал НИ РАЗУ»). A clone without git history (or
+// without git) builds as 1. [NOT-TESTED]
+val buildNumber: Int = runCatching {
+    providers.exec { commandLine("git", "rev-list", "--count", "HEAD") }.standardOutput.asText.get().trim().toInt()
+}.getOrDefault(1)
+
 android {
     // The engine's NDK (engine/build.gradle.kts): AGP strips the native libraries with it - without it the default NDK is
     // looked up, is not installed here, and libkartun_engine.so shipped with its debug symbols («Unable to strip»).
@@ -15,8 +23,8 @@ android {
         applicationId = "com.kriniks.kartun"
         minSdk = 34
         targetSdk = 37
-        versionCode = 1
-        versionName = "0.1 (1)"
+        versionCode = buildNumber
+        versionName = "0.1 ($buildNumber)"
         ndk { abiFilters += "arm64-v8a" }
     }
 

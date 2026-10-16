@@ -24,22 +24,25 @@ object DeviceBench {
     /** Set once the first-launch check has run or was cancelled: it is offered once per installation. */
     private const val KEY_DONE = "bench_done"
     private const val OUTPUT_BLOB = "output"
-    /** The square's side per backend: big enough for a time in tens of ms on a fast chip, small enough for seconds on a slow one. */
-    private const val GPU_SIDE = 64
+    /** The square's side per backend: big enough to load a six-core GPU (64² did not), small enough for seconds on a slow one. */
+    private const val GPU_SIDE = 128
     private const val CPU_SIDE = 32
     /** The first pass builds the Vulkan pipelines and warms the caches; the best of the next ones is the speed. */
     private const val WARMUP_SIDE = 32
-    private const val RUNS = 2
+    private const val RUNS = 1
 
     /**
-     * The bench's time on the reference device, ms (the catalogue's rates are the Titan's). Calibrated 2026-10-16 on the
-     * Redmi Note 12 Pro+ (Mali-G68 MC4), whose real rates of the default model were measured the same day - GPU: photo
-     * 960 × 1280 in 262 s = 213 216 ms/MP; CPU: 256 × 256 in 70.0 s = 1 068 206 ms/MP; its bench, three first launches:
-     * GPU 734 / 791 / 756 ms, CPU 1121 / 1108 / 1124 ms. REF = bench(Redmi) × catalogue rate / real rate(Redmi):
-     * GPU 760 × 64 850 / 213 216, CPU 1118 × 972 750 / 1 068 206 - testcases/reports/2026-10-16_first_launch_bench.md.
+     * The bench's time on the reference device, ms (the catalogue's rates are the Titan's), calibrated 2026-10-16 on TWO
+     * devices with real runs of the default model the same evening: per device REF = bench × catalogue rate / real rate,
+     * the constant is their geometric mean, so neither errs by more than ~1.3×.
+     * GPU (128²): Titan bench 830 ms, real photo 960 × 1280 in 74.1 s = 60 300 ms/MP -> 893; Redmi Note 12 Pro+ bench
+     * 4698 ms, real 262 s = 213 216 ms/MP -> 1429; mean 1130.
+     * CPU (32²): Titan bench 582 ms, real 256 × 256 in 40.4 s = 617 000 ms/MP -> 917; Redmi bench 1118 ms (cool), real
+     * 70.0 s = 1 068 206 ms/MP -> 1018; mean 966. A 64² GPU square under-loaded the Titan's six-core Mali (its factor
+     * came out 1.5 on the reference device itself). testcases/reports/2026-10-16_first_launch_bench.md.
      */
-    private const val REF_GPU_MS = 231f
-    private const val REF_CPU_MS = 1018f
+    private const val REF_GPU_MS = 1130f
+    private const val REF_CPU_MS = 966f
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(UpscaleEngine.PREFS, Context.MODE_PRIVATE)
 
