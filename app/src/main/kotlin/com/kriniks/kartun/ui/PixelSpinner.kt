@@ -205,10 +205,25 @@ private enum class Fig(val size: Float, val count: Int, val stagger: Float, val 
     }
 }
 
-/** Weights of the smart random of figures: just shown, the gain per regroup not chosen, the cap. */
-private const val FIG_W_SHOWN = .15f
-private const val FIG_W_GROW = .5f
-private const val FIG_W_MAX = 4f
+/** «Never shown yet» for the smart random's memory: older than any real pick. */
+internal const val NEVER_SHOWN = -1_000
+
+/**
+ * The smart random of the live spinner's figures (the owner, 2026-10-15 ≈ 18:26 and 2026-10-16 ≈ 15:50 - see pickFig):
+ * picks one of [pool] (figure ordinals). A figure shown within the last pool.size / 2 picks is not drawn at all; the rest are
+ * drawn with weight age² (age = picks since it was last shown, capped at twice the pool), so the longest-unseen comes most
+ * often. [lastShown] holds the pick number each figure was last shown at ([NEVER_SHOWN] if never); [picks] is the current one.
+ * [TESTED: SmartPickTest - 10 000 picks over 9 and 6 figures, no repeat inside half the pool, every figure shown]
+ */
+internal fun smartPick(pool: List<Int>, lastShown: IntArray, picks: Int, rnd: Random): Int {
+    val recent = pool.size / 2
+    val cap = pool.size * 2
+    val cands = pool.filter { picks - lastShown[it] > recent }.ifEmpty { pool }
+    val w = cands.map { val age = min(cap, picks - lastShown[it]).toFloat(); age * age }
+    var r = rnd.nextFloat() * w.sum()
+    for (i in cands.indices) { r -= w[i]; if (r <= 0f) return cands[i] }
+    return cands.last()
+}
 
 /** As many squares as the largest figure needs; the others merge the spare ones into hosts. */
 private val N = Fig.entries.maxOf { it.count }
@@ -604,22 +619,21 @@ private class PixelSpinnerState(private val pink: Color, private val grey: Color
 
     /** Smart random of the next figure (the owner, ≈ 18:26: «нужен умный рандом переключения состояний живой анимации.
      *  Состояния, которые были показаны - теряют вес в случайности следующего показа» · «каждый раз, когда их не выбирают -
-     *  вес растёт»): the chosen figure's weight drops to FIG_W_SHOWN, every figure not chosen gains FIG_W_GROW, up to FIG_W_MAX;
-     *  the next one is drawn by weight. */
-    private val figWeight = FloatArray(Fig.entries.size) { 1f }
+     *  вес растёт»): a figure's weight is how long ago it was shown, squared, and a figure shown in the last half of the pool is
+     *  out of the draw altogether (smartPick). The first take (shown drops to .15, each pass not chosen adds .5) let a figure
+     *  come back two states later (the owner, 2026-10-16 ≈ 15:50: «умный рандом у тебя плохо работает … состояния, которые вот
+     *  только что были, опять показываются через два состояния»). */
+    private val lastShown = IntArray(Fig.entries.size) { NEVER_SHOWN }
+    private var picks = 0
 
     private fun pickFig(): Fig {
-        val cands = Fig.entries.filter { it != fig && !(compact && it.fine) }
-        var r = rnd.nextFloat() * cands.fold(0f) { s, f -> s + figWeight[f.ordinal] }
-        var chosen = cands.last()
-        for (c in cands) { r -= figWeight[c.ordinal]; if (r <= 0f) { chosen = c; break } }
+        val pool = Fig.entries.filter { !(compact && it.fine) }.map { it.ordinal }
+        val chosen = Fig.entries[smartPick(pool, lastShown, picks, rnd)]
         noteShown(chosen)
         return chosen
     }
 
-    private fun noteShown(shown: Fig) {
-        for (f in Fig.entries) figWeight[f.ordinal] = if (f == shown) FIG_W_SHOWN else min(FIG_W_MAX, figWeight[f.ordinal] + FIG_W_GROW)
-    }
+    private fun noteShown(shown: Fig) { lastShown[shown.ordinal] = picks; picks++ }
 
     fun start() { noteShown(Fig.Heart); regroup(0f, Fig.Heart, Mood.Burst) }
 
