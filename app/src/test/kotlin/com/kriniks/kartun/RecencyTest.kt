@@ -1,6 +1,7 @@
 package com.kriniks.kartun
 
 import com.kriniks.kartun.UpscaleViewModel.Companion.RECENT_CARDS
+import com.kriniks.kartun.UpscaleViewModel.Companion.pickedFirst
 import com.kriniks.kartun.UpscaleViewModel.Companion.recent
 import com.kriniks.kartun.UpscaleViewModel.Companion.usedFirst
 import org.junit.Assert.assertEquals
@@ -34,6 +35,17 @@ class RecencyTest {
     @Test fun junkRepeatsAndDeletedModelsAreSkipped() {
         // «NoSuchModel» is not in the catalogue; the downloaded model was deleted (not on the device any more).
         assertEquals(listOf(other, default), recent("$other,NoSuchModel,$other,$downloaded", cat, builtIn))
+    }
+
+    /** A pick in «Все модели» takes the top card, the former top card moves down (the owner, chat 2026-10-16, before
+     *  10:48 +03:00) - also when the top card was a built-in filler nobody ran yet. */
+    @Test fun aPickInAllModelsTakesTheTopCardAndPushesTheTopOneDown() {
+        val onDevice = builtIn + downloaded
+        assertEquals(listOf(downloaded, default), recent(pickedFirst(null, cat, onDevice, downloaded), cat, onDevice))
+        val stored = usedFirst(null, other) // shown: other, default
+        assertEquals(listOf(downloaded, other), recent(pickedFirst(stored, cat, onDevice, downloaded), cat, onDevice))
+        // picking the lower card swaps the two
+        assertEquals(listOf(default, other), recent(pickedFirst(stored, cat, onDevice, default), cat, onDevice))
     }
 
     @Test fun alwaysTwoCards() {

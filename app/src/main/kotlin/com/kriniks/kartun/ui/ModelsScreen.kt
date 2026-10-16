@@ -73,7 +73,7 @@ fun ModelsScreen(vm: UpscaleViewModel) {
     val c = MaterialTheme.colorScheme
     BackHandler(onBack = vm::back)
     var filter by rememberSaveable { mutableStateOf(Filter.All) }
-    val shown = vm.catalogue.models.filter { filter.keeps(it) }
+    val shown = vm.catalogue.byAuthor.filter { filter.keeps(it) }
 
     Column(Modifier.fillMaxSize().background(c.background).systemBarsPadding()) {
         Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {

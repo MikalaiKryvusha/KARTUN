@@ -60,6 +60,22 @@ class Catalogue(val release: String, val models: List<Model>) {
 
     /** Where [file] of a catalogue model is downloaded from. */
     fun url(file: ModelFile): String = release.trimEnd('/') + "/" + file.name
+
+    /** The list of «Все модели», grouped by author (the owner, chat 2026-10-16, before 10:48 +03:00: «Список всех моделей
+     *  сортируем по авторам моделей. В начале вверху списка модели автора моделей Ультрамикс ультрашарп»): [LEAD_AUTHOR]
+     *  first, then the other authors A-Z; `[AI]` inside one author - by name A-Z. [NOT-TESTED] */
+    val byAuthor: List<Model>
+        get() = models.sortedWith(
+            compareBy<Model> { it.author != LEAD_AUTHOR }
+                .thenBy(String.CASE_INSENSITIVE_ORDER) { it.author }
+                .thenBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                .thenBy { it.id },
+        )
+
+    companion object {
+        /** The author of UltraSharp and UltraMix, as `docs/model-catalogue.json` spells it. */
+        const val LEAD_AUTHOR = "Kim2091"
+    }
 }
 
 object ModelCatalog {

@@ -301,8 +301,9 @@ private fun SettingsBlock(vm: UpscaleViewModel, onInfo: (Int) -> Unit) {
     vm.error?.let { (res, arg) -> Notice(if (arg != null) stringResource(res, arg) else stringResource(res), vm::dismissError) }
     SectionLabel(stringResource(R.string.label_model)) { onInfo(R.string.label_model) }
     vm.recentModels.forEach { m -> ModelCard(m, m == vm.model, m == vm.model && vm.modelLoading, durationText(vm.estimateMs(m))) { vm.chooseModel(m) } }
-    // The chosen model may come from «Все модели» and not be one of the two last used yet: it stands under them.
-    if (vm.model !in vm.recentModels) ModelCard(vm.model, true, vm.modelLoading, durationText(vm.estimateMs(vm.model))) {}
+    // A model picked in «Все модели» takes the top card (vm.pickFromCatalogue), so the row below stays a plain button -
+    // no third card above it (the owner, chat 2026-10-16, before 10:48 +03:00: «Кнопка Все модели не принимает в себя вид
+    // модели, остается обычной кнопкой ведущей на экран списка моделей»).
     AllModelsRow(vm.catalogue.models.size, vm.onDevice.size, vm::openModels)
     SectionLabel(stringResource(R.string.label_scale)) { onInfo(R.string.label_scale) }
     ScaleSlider(vm)

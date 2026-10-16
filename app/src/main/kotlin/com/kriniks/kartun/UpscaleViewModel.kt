@@ -136,6 +136,8 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
         migrateModelPrefs()
         refreshOnDevice()
         model = catalogue.byId(prefs.getString(PREF_MODEL, null))?.takeIf { it.id in onDevice } ?: catalogue.default
+        // A model picked in «Все модели» by an older build was not put on the cards: it takes the top one now.
+        if (model !in recentModels) putOnTop(model)
         scaleIndex = prefs.getInt(PREF_SCALE, DEFAULT_SCALE_INDEX).coerceIn(0, SCALES.lastIndex)
         saveFormat = ResultStore.Format.entries.firstOrNull { it.name == prefs.getString(PREF_FORMAT, null) } ?: ResultStore.Format.Png
         saveQuality = prefs.getInt(PREF_QUALITY, DEFAULT_QUALITY)
@@ -209,11 +211,21 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
     /** «Все модели» from «Улучшение». */
     fun openModels() { modelsMessage = null; screen = Screen.Models }
 
-    /** A card of «Все модели» on the device: it becomes the chosen model and the user is back on «Улучшение». */
+    /** A card of «Все модели» on the device: it becomes the chosen model in the TOP card of «Улучшение», the model that
+     *  was on top moves to the lower card, and the user is back there (the owner, chat 2026-10-16, before 10:48 +03:00:
+     *  «Выбранная модель становится выбранной в верхней плиточке. Предыдущая которая была в верхней плиточки смещается в
+     *  нижнюю»). [NOT-TESTED] */
     fun pickFromCatalogue(m: Model) {
         if (m.id !in onDevice) return
+        putOnTop(m)
         chooseModel(m)
         screen = Screen.Setup
+    }
+
+    /** [m] becomes the top card of «Улучшение», the former top card the lower one. */
+    private fun putOnTop(m: Model) {
+        prefs.edit { putString(PREF_MODEL_ORDER, pickedFirst(prefs.getString(PREF_MODEL_ORDER, null), catalogue, onDevice, m.id)) }
+        refreshOnDevice()
     }
 
     /** «Скачать» on a card: the files come from the release `models` into the app's folder, hash-checked; the card shows
@@ -253,7 +265,12 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
             withContext(engineThread) { if (loadedModel == m) release() }
             withContext(Dispatchers.IO) { ModelStore.delete(getApplication(), m) }
             refreshOnDevice()
-            if (model == m) { model = catalogue.default; prefs.edit { putString(PREF_MODEL, model.id) } }
+            if (model == m) {
+                model = catalogue.default
+                prefs.edit { putString(PREF_MODEL, model.id) }
+                // The chosen model always has its card: «Все модели» is a plain button, it shows no model.
+                if (model !in recentModels) putOnTop(model)
+            }
         }
     }
 
@@ -543,6 +560,11 @@ class UpscaleViewModel(app: Application) : AndroidViewModel(app) {
             val fill = catalogue.models.filter { it.builtin }.sortedByDescending { it.isDefault }.map { it.id }.filter { it !in used }
             return (used + fill).take(RECENT_CARDS)
         }
+
+        /** The stored order after [id] was picked in «Все модели»: [id] on top, then the cards shown until now - so the
+         *  former top card becomes the lower one even when it was only a built-in filler, never stored. [NOT-TESTED] */
+        fun pickedFirst(stored: String?, catalogue: Catalogue, onDevice: Set<String>, id: String): String =
+            usedFirst((recent(stored, catalogue, onDevice) + storedIds(stored)).distinct().joinToString(","), id)
         private const val PREF_SCALE = "scale_index"
         private const val PREF_FORMAT = "save_format"
         private const val PREF_QUALITY = "save_quality"
