@@ -287,16 +287,24 @@ private fun PhotoCard(src: UpscaleViewModel.Source, onOpen: () -> Unit, onPickOt
             Modifier.fillMaxSize().graphicsLayer { scaleX = zoom; scaleY = zoom; translationX = pan.x; translationY = pan.y },
             contentScale = ContentScale.Crop,
         )
-        Pill("${ltr(sizeText(src.width, src.height))} · ${stringResource(R.string.megapixels, mpText(src.megapixels))}",
-            Modifier.align(Alignment.BottomStart).padding(12.dp), translucent = true, heavyDigits = true)
+        // The size chip and «Другое фото» share one row with a gap: placed in the corners on their own, the button covered
+        // «960 × 1280 · 1,2 Мп» from the «Мп» on a 1080 px phone (RC2 check on the A52, 2026-10-16). [NOT-TESTED]
         Row(
-            Modifier.align(Alignment.BottomEnd).padding(12.dp).clip(CircleShape).background(c.background.copy(alpha = 0.72f))
-                .clickable(onClick = onPickOther).padding(horizontal = 14.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom,
         ) {
-            Icon(painterResource(R.drawable.ic_image), null, Modifier.size(16.dp), tint = c.onBackground)
-            Spacer(Modifier.width(6.dp))
-            Text(stringResource(R.string.setup_other_photo), style = MaterialTheme.typography.labelMedium.copy(fontSize = MaterialTheme.typography.bodySmall.fontSize))
+            Pill("${ltr(sizeText(src.width, src.height))} · ${stringResource(R.string.megapixels, mpText(src.megapixels))}",
+                Modifier.weight(1f, fill = false), translucent = true, heavyDigits = true)
+            Spacer(Modifier.weight(0.001f))
+            Row(
+                Modifier.clip(CircleShape).background(c.background.copy(alpha = 0.72f))
+                    .clickable(onClick = onPickOther).padding(horizontal = 14.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(painterResource(R.drawable.ic_image), null, Modifier.size(16.dp), tint = c.onBackground)
+                Spacer(Modifier.width(6.dp))
+                Text(stringResource(R.string.setup_other_photo), style = MaterialTheme.typography.labelMedium.copy(fontSize = MaterialTheme.typography.bodySmall.fontSize), maxLines = 1, softWrap = false)
+            }
         }
     }
 }
