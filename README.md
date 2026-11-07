@@ -22,7 +22,7 @@ Open source · Offline · AI on the device</p>
   <a href="#en-3"><img src="https://img.shields.io/badge/DAT2_transformer-on_the_Vulkan_GPU-FF1A8C.svg" alt="DAT2 transformer: on the Vulkan GPU"></a>
   <a href="#en-5"><img src="https://img.shields.io/badge/platform-Android_14%2B-3DDC84.svg" alt="platform: Android 14+"></a>
   <a href="#en-1"><img src="https://img.shields.io/badge/languages-10-0EA5E9.svg" alt="languages: 10"></a>
-  <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest"><img src="https://img.shields.io/badge/release-1.0-FF1A8C.svg" alt="release: 1.0"></a>
+  <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest"><img src="https://img.shields.io/badge/release-1.0.1-FF1A8C.svg" alt="release: 1.0.1"></a>
   <a href="https://github.com/MikalaiKryvusha/KAIF"><img src="https://img.shields.io/badge/framework-KAIF-7F52FF.svg" alt="framework: KAIF"></a>
 </p>
 
