@@ -26,6 +26,7 @@ import com.kriniks.kartun.ui.SettingsScreen
 import com.kriniks.kartun.ui.SetupScreen
 import com.kriniks.kartun.ui.WorkingScreen
 import com.kriniks.kartun.ui.theme.KartunTheme
+import org.woheller69.freeDroidWarn.FreeDroidWarn
 
 /**
  * The one activity: the main path of phase 2 (plans/03) - home → setup → processing → result, switched by
@@ -44,6 +45,9 @@ class MainActivity : ComponentActivity() {
         // release ignore it (src/nodebug/DebugTools).
         if (savedInstanceState == null) DebugTools.onIntent(this, intent)
         if (savedInstanceState == null) sharedImage(intent)?.let(vm::open)
+        // FreeDroidWarn: once per versionCode, the dialog about Google's developer verification (the owner 2026-11-07:
+        // «во все их нужно встроить FreeDroidWarn», KAST plans/15). Not on re-creation - the user already saw it.
+        if (savedInstanceState == null) FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE)
         setContent { KartunTheme { if (!DebugTools.Overlay()) KartunApp(vm) } }
     }
 
