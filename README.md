@@ -42,10 +42,13 @@ on. The picture never leaves the device: the network runs on the phone's graphic
 </p>
 
 <p align="center">
-  <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest/download/KARTUN.apk"><img src="docs/download-en.svg" width="440" alt="Download the KARTUN APK"></a>
+  <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest/download/KARTUN.apk"><img src="docs/download-en.svg" height="72" alt="Download the KARTUN APK"></a>
+  &nbsp;&nbsp;
+  <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22com.kriniks.kartun%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2FMikalaiKryvusha%2FKARTUN%22%2C%22author%22%3A%22MikalaiKryvusha%22%2C%22name%22%3A%22KARTUN%22%2C%22additionalSettings%22%3A%22%7B%7D%22%7D"><img src="docs/get-it-on-obtainium-en.svg" height="72" alt="Get it on Obtainium"></a>
 </p>
 
 <p align="center">Android 14 or newer, 64-bit ARM. When Android asks, allow your browser to install apps.<br>
+Obtainium installs KARTUN from GitHub Releases and keeps it updated.<br>
 Every version: <a href="https://github.com/MikalaiKryvusha/KARTUN/releases">Releases</a>.</p>
 
 <p align="center">
@@ -56,7 +59,7 @@ Every version: <a href="https://github.com/MikalaiKryvusha/KARTUN/releases">Rele
   <img src="docs/screenshots/en/06_settings.webp" width="19%" alt="Settings">
 </p>
 
-Sections: [1 What it does](#en-1) · [2 Screens](#en-2) · [3 Models and speed](#en-3) · [4 Privacy](#en-4) · [5 Formats and limits](#en-5) · [6 Build](#en-6) · [7 Project map](#en-7) · [8 Status and plans](#en-8) · [9 Credits and licence](#en-9).
+Sections: [1 What it does](#en-1) · [2 Screens](#en-2) · [3 Models and speed](#en-3) · [4 Privacy](#en-4) · [5 Formats and limits](#en-5) · [6 Build it yourself](#en-6) · [7 Project map](#en-7) · [8 Status and plans](#en-8) · [9 Credits and licence](#en-9).
 
 <a name="en-1"></a>
 ### 1. What it does
@@ -162,14 +165,29 @@ pixel value. A 960 × 1280 photo takes about 29 minutes. The whole story: [resea
 | Translations | English and Russian are written by hand; the other eight are AI translations checked by the author |
 
 <a name="en-6"></a>
-### 6. Build
+### 6. Build it yourself
 
-The ready APK is behind the button at the top. To build the app from source on Windows you need JDK 21, the Android SDK
-with platform 37, NDK `29.0.14206865` and CMake `3.31.6`, Node.js and Python 3.
+The ready APK is behind the buttons at the top. The commands below are for Windows PowerShell.
+
+#### Requirements
+
+- JDK 21.
+- The Android SDK with platform 37, NDK `29.0.14206865` and CMake `3.31.6`. `tools/build-ncnn.mjs` takes the SDK from
+  `ANDROID_HOME`, or from `C:\Android\Sdk` when it is not set.
+- Git, Node.js, and Python 3 for the signing-key script.
+
+#### Get the code
 
 ```powershell
 git clone https://github.com/MikalaiKryvusha/KARTUN.git
 cd KARTUN
+```
+
+#### Build
+
+The engine, libtiff and the models are prepared by Node scripts, and they must run before Gradle:
+
+```powershell
 node tools/build-ncnn.mjs                     # the engine: our ncnn fork 20260526-kartun.1, built from source
 node tools/fetch-libtiff.mjs                  # libtiff for TIFF input
 ```
@@ -181,8 +199,33 @@ Download the four files of the two built-in models from the
 
 ```powershell
 node tools/stage-models.mjs                   # copies the models into the APK and checks every hash
-.\gradlew.bat assembleDebug                   # app/build/outputs/apk/debug/app-debug.apk
+.\gradlew.bat assembleDebug                   # Debug KARTUN: app/build/outputs/apk/debug/app-debug.apk
+.\gradlew.bat assembleRelease                 # KARTUN (R8): app/build/outputs/apk/release/
 ```
+
+#### Signing a release
+
+Create your own release key once:
+
+```powershell
+python -I tools/make-release-key.py
+```
+
+The script writes `kartun-release.jks` and `.env` (`KARTUN_KEYSTORE`, `KARTUN_KEYSTORE_PASSWORD`, `KARTUN_KEY_ALIAS`,
+`KARTUN_KEY_PASSWORD`) into the project root. Both files are ignored by git, and the passwords are never printed. The
+script refuses to run when the key already exists, because a second key would make installed releases impossible to
+update. It calls `keytool` of JDK 21 at `C:\Program Files\Microsoft\jdk-21.0.11.10-hotspot`; for another JDK, change
+`KEYTOOL` in the script, or fill in `.env` by hand from [.env.example](.env.example). When `.env` exists,
+`assembleRelease` signs the APK with this key; without it, the release APK stays unsigned. Keep a copy of both files
+outside the project.
+
+#### Project notes
+
+- `tools/build-ncnn.mjs` builds the engine from [MikalaiKryvusha/ncnn](https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1),
+  pinned by tag and by commit, for `arm64-v8a` only, the one ABI the app ships. It takes about 5 minutes; a second run
+  does nothing.
+- `tools/stage-models.mjs` refuses a model whose SHA-256 is not listed in [docs/model-licenses.md](docs/model-licenses.md).
+- Two builds install side by side: Debug KARTUN (`com.kriniks.kartun.debug`) and KARTUN (`com.kriniks.kartun`).
 
 <a name="en-7"></a>
 ### 7. Project map
@@ -261,10 +304,13 @@ Vulkan.
 </p>
 
 <p align="center">
-  <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest/download/KARTUN.apk"><img src="docs/download-ru.svg" width="440" alt="Скачать APK KARTUN"></a>
+  <a href="https://github.com/MikalaiKryvusha/KARTUN/releases/latest/download/KARTUN.apk"><img src="docs/download-ru.svg" height="72" alt="Скачать APK KARTUN"></a>
+  &nbsp;&nbsp;
+  <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22com.kriniks.kartun%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2FMikalaiKryvusha%2FKARTUN%22%2C%22author%22%3A%22MikalaiKryvusha%22%2C%22name%22%3A%22KARTUN%22%2C%22additionalSettings%22%3A%22%7B%7D%22%7D"><img src="docs/get-it-on-obtainium-ru.svg" height="72" alt="Скачать через Obtainium"></a>
 </p>
 
 <p align="center">Android 14 и новее, 64-битный ARM. Когда Android спросит, разрешите браузеру устанавливать приложения.<br>
+Obtainium ставит KARTUN из GitHub Releases и сам обновляет его.<br>
 Все версии: <a href="https://github.com/MikalaiKryvusha/KARTUN/releases">Releases</a>.</p>
 
 <p align="center">
@@ -275,7 +321,7 @@ Vulkan.
   <img src="docs/screenshots/ru/06_settings.webp" width="19%" alt="Настройки">
 </p>
 
-Разделы: [1 Что умеет](#ru-1) · [2 Экраны](#ru-2) · [3 Модели и скорость](#ru-3) · [4 Приватность](#ru-4) · [5 Форматы и ограничения](#ru-5) · [6 Сборка](#ru-6) · [7 Карта проекта](#ru-7) · [8 Состояние и планы](#ru-8) · [9 Благодарности и лицензия](#ru-9).
+Разделы: [1 Что умеет](#ru-1) · [2 Экраны](#ru-2) · [3 Модели и скорость](#ru-3) · [4 Приватность](#ru-4) · [5 Форматы и ограничения](#ru-5) · [6 Собрать самому](#ru-6) · [7 Карта проекта](#ru-7) · [8 Состояние и планы](#ru-8) · [9 Благодарности и лицензия](#ru-9).
 
 <a name="ru-1"></a>
 ### 1. Что умеет
@@ -382,14 +428,29 @@ KARTUN первым в мире запустил на ncnn трансформе�
 | Переводы | английский и русский написаны руками; остальные восемь — переводы ИИ, проверенные автором |
 
 <a name="ru-6"></a>
-### 6. Сборка
+### 6. Собрать самому
 
-Готовый APK — под кнопкой в начале страницы. Чтобы собрать приложение из исходников под Windows, нужны JDK 21,
-Android SDK с платформой 37, NDK `29.0.14206865` и CMake `3.31.6`, Node.js и Python 3.
+Готовый APK можно скачать кнопками в начале страницы. Команды ниже написаны для Windows PowerShell.
+
+#### Что нужно
+
+- JDK 21.
+- Android SDK с платформой 37, NDK `29.0.14206865` и CMake `3.31.6`. `tools/build-ncnn.mjs` берёт SDK из
+  `ANDROID_HOME`, а если переменная не задана, из `C:\Android\Sdk`.
+- Git, Node.js и Python 3 для скрипта ключа подписи.
+
+#### Получить код
 
 ```powershell
 git clone https://github.com/MikalaiKryvusha/KARTUN.git
 cd KARTUN
+```
+
+#### Собрать
+
+Движок, libtiff и модели готовят скрипты Node, и запускать их нужно до Gradle:
+
+```powershell
 node tools/build-ncnn.mjs                     # движок: наш форк ncnn 20260526-kartun.1, сборка из исходников
 node tools/fetch-libtiff.mjs                  # libtiff для чтения TIFF
 ```
@@ -397,12 +458,36 @@ node tools/fetch-libtiff.mjs                  # libtiff для чтения TIFF
 Скачайте четыре файла двух встроенных моделей из
 [релиза models](https://github.com/MikalaiKryvusha/KARTUN/releases/tag/models) в `engine/third_party/catalogue/`:
 `4xNomosWebPhoto-RealPLKSR-fp16.param`, `4xNomosWebPhoto-RealPLKSR-fp16.bin`, `4x-NMKD-Siax-fp16.param`,
-`4x-NMKD-Siax-fp16.bin` (источники и хеши — в [docs/model-licenses.md](docs/model-licenses.md)).
+`4x-NMKD-Siax-fp16.bin` (источники и хеши лежат в [docs/model-licenses.md](docs/model-licenses.md)).
 
 ```powershell
 node tools/stage-models.mjs                   # кладёт модели в APK и сверяет каждый хеш
-.\gradlew.bat assembleDebug                   # app/build/outputs/apk/debug/app-debug.apk
+.\gradlew.bat assembleDebug                   # Debug KARTUN: app/build/outputs/apk/debug/app-debug.apk
+.\gradlew.bat assembleRelease                 # KARTUN (R8): app/build/outputs/apk/release/
 ```
+
+#### Подписать релиз
+
+Один раз создайте свой ключ релиза:
+
+```powershell
+python -I tools/make-release-key.py
+```
+
+Скрипт кладёт в корень проекта `kartun-release.jks` и `.env` (`KARTUN_KEYSTORE`, `KARTUN_KEYSTORE_PASSWORD`,
+`KARTUN_KEY_ALIAS`, `KARTUN_KEY_PASSWORD`). Оба файла git не видит, пароли скрипт не печатает. Если ключ уже есть, скрипт
+откажется работать: со вторым ключом установленные релизы будет не обновить. Скрипт вызывает `keytool` из JDK 21 по пути
+`C:\Program Files\Microsoft\jdk-21.0.11.10-hotspot`. Для другого JDK поправьте `KEYTOOL` в скрипте или заполните `.env`
+вручную по образцу [.env.example](.env.example). Когда `.env` есть, `assembleRelease` подписывает APK этим ключом, а без
+него релизный APK остаётся неподписанным. Храните копию обоих файлов вне проекта.
+
+#### Особенности проекта
+
+- `tools/build-ncnn.mjs` собирает движок из [MikalaiKryvusha/ncnn](https://github.com/MikalaiKryvusha/ncnn/tree/20260526-kartun.1)
+  с закреплёнными тегом и коммитом, только под `arm64-v8a`: других ABI приложение не возит. Сборка идёт около 5 минут,
+  повторный запуск ничего не делает.
+- `tools/stage-models.mjs` не возьмёт модель, SHA-256 которой нет в [docs/model-licenses.md](docs/model-licenses.md).
+- Две сборки ставятся рядом: Debug KARTUN (`com.kriniks.kartun.debug`) и KARTUN (`com.kriniks.kartun`).
 
 <a name="ru-7"></a>
 ### 7. Карта проекта

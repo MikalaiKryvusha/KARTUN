@@ -24,7 +24,7 @@ android {
         minSdk = 34
         targetSdk = 37
         versionCode = buildNumber
-        versionName = "1.0 ($buildNumber)"  // release 1.0 (plans/08 step 8: «1.0 (<число коммитов>)»)
+        versionName = "1.0.1"  // x.y.z = the release tag vX.Y.Z, Obtainium reads it (KAST plans/17, 2026-11-07); the build number stays in versionCode
         ndk { abiFilters += "arm64-v8a" }
     }
 
